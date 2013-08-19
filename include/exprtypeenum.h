@@ -1,0 +1,60 @@
+#ifndef EXPRTYPEENUM_H
+#define EXPRTYPEENUM_H
+
+/*
+ * Enum for the various nodes in the system.
+ * Systems wishing to use this code must have nodes that
+ * a) match these values
+ * b) have some converter to get to the C++ nodes and tree structre
+ */
+typedef enum
+{
+
+  UNKNOWNEXPR_ENUM = 0x0000L ,
+
+  /*
+  * Data container tokens
+  */
+  OGREALSCALAR_ENUM             = 0x0001L ,
+  OGCOMPLEXSCALAR_ENUM          = 0X0002L ,
+  OGREALMATRIX_ENUM             = 0X0003L ,
+  OGCOMPLEXMATRIX_ENUM          = 0X0004L ,
+  OGREALSPARSEMATRIX_ENUM       = 0X0005L ,
+  OGCOMPLEXSPARSEMATRIX_ENUM    = 0X0006L ,
+  OGREALDIAGONALMATRIX_ENUM     = 0X0007L ,
+  OGCOMPLEXDIAGONALMATRIX_ENUM  = 0X0008L ,
+  OGLOGICALMATRIX_ENUM          = 0X0009L ,
+
+  /*
+  * expr tokens for assignment
+  */
+  SELECTRESULT0_ENUM  = 0X0010L ,
+  SELECTRESULT1_ENUM  = 0X0020L ,
+  SELECTRESULT2_ENUM  = 0X0030L ,
+  SELECTRESULT3_ENUM  = 0X0040L ,
+  SELECTRESULT4_ENUM  = 0X0050L ,
+  SELECTRESULT5_ENUM  = 0X0060L ,
+  SELECTRESULT6_ENUM  = 0X0070L ,
+  SELECTRESULT7_ENUM  = 0X0080L ,
+  SELECTRESULT8_ENUM  = 0X0090L ,
+  SELECTRESULT9_ENUM  = 0X00A0L ,
+  SELECTRESULT10_ENUM = 0X00B0L ,
+  SELECTRESULT11_ENUM = 0X00C0L ,
+  SELECTRESULT12_ENUM = 0X00D0L ,
+  SELECTRESULT13_ENUM = 0X00E0L ,
+  SELECTRESULT14_ENUM = 0X00F0L ,
+
+  /*
+  * EXPR TOKENS FOR FUNCTIONS
+  */
+
+  PLUS_ENUM    = 0X0100L ,
+  MINUS_ENUM   = 0X0200L ,
+  TIMES_ENUM   = 0X0200L ,
+  LDIVIDE_ENUM = 0X0300L ,
+  MTIMES_ENUM  = 0X0500L ,
+  COPY_ENUM    = 0X0600L ,
+
+} ExprType_t;
+
+#endif
