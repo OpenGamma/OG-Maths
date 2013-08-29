@@ -11,6 +11,7 @@ import com.opengamma.longdog.datacontainers.ExprTypeEnum;
 import com.opengamma.longdog.datacontainers.OGArray;
 import com.opengamma.longdog.helpers.Catchers;
 import com.opengamma.longdog.helpers.DenseMemoryManipulation;
+import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
 
 /**
  * Dense real matrix
@@ -21,14 +22,8 @@ public class OGRealMatrix extends OGArray {
   private double[] _data;
   private int _rows, _cols;
 
-  public OGRealMatrix(double[] data, int rows, int cols) {
-    _rows = rows;
-    _cols = cols;
-    _data = data;
-  }
-
   /**
-   * Takes a row major java double[][] and turns it into an OGDoubleArray
+   * Takes a row major java double[][] and turns it into an OGRealMatrix
    * @param dataIn a row major java double[][] 
    */
   public OGRealMatrix(double[][] dataIn) {
@@ -36,6 +31,53 @@ public class OGRealMatrix extends OGArray {
     _data = DenseMemoryManipulation.convertRowMajorDoublePointerToColumnMajorSinglePointer(dataIn);
     _rows = dataIn.length;
     _cols = dataIn[0].length;
+  }
+
+  /**
+   * Takes a column major double[] and turns it into an OGRealMatrix
+   * @param dataIn the backing data
+   * @param rows number of rows
+   * @param columns number of columns
+   */
+  public OGRealMatrix(double[] dataIn, int rows, int columns) {
+    Catchers.catchNullFromArgList(dataIn, 1);
+    if (rows < 1) {
+      throw new MathsExceptionIllegalArgument("Illegal number of rows specified. Value given was " + rows);
+    }
+    if (columns < 1) {
+      throw new MathsExceptionIllegalArgument("Illegal number of columns specified. Value given was " + columns);
+    }
+    int len = rows * columns;
+    if (len != dataIn.length) {
+      throw new MathsExceptionIllegalArgument("Number of rows and columns specified does not commute with the quantity of data supplied");
+    }
+    _data = new double[len];
+    System.arraycopy(dataIn, 0, _data, 0, len);
+    _rows = rows;
+    _cols = columns;
+  }
+
+  /**
+   * @param number the single number in this array
+   */
+  public OGRealMatrix(double number) {
+    _cols = 1;
+    _rows = 1;
+    _data = new double[1];
+    _data[0] = number;
+  }
+
+  /**
+   * Takes a double[] and turns it into an OGMatrix as a single row
+   * @param dataIn the backing data
+   */
+  public OGRealMatrix(double[] dataIn) {
+    Catchers.catchNullFromArgList(dataIn, 1);
+    int len = dataIn.length;
+    _data = new double[len];
+    System.arraycopy(dataIn, 0, _data, 0, len);
+    _rows = 1;
+    _cols = len;
   }
 
   @Override

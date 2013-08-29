@@ -212,10 +212,10 @@ public class MatrixPrimitiveUtils {
    */
   public static double[][] removeLowerTriangle(double[][] aMatrix) {
     if (isRagged(aMatrix)) {
-      throw new MathsException("Construction from ragged array is not implemented");
+      throw new MathsExceptionNotImplemented("Construction from ragged array is not implemented");
     }
     if (!isSquare(aMatrix)) {
-      throw new MathsException("Matrix is not square so removing lower triangle isn't clear cut enough to be implemented");
+      throw new MathsExceptionIllegalArgument("Matrix is not square so removing lower triangle isn't clear cut enough to be implemented");
     }
     int rows = aMatrix.length;
     int cols = aMatrix[0].length;
@@ -236,7 +236,7 @@ public class MatrixPrimitiveUtils {
    */
   public static boolean isUpperTriangular(double[][] aMatrix) {
     if (!isSquare(aMatrix)) {
-      throw new MathsException("Matrix is not square so the notion of Upper Triangular isn't clear cut enough to be implemented");
+      throw new MathsExceptionIllegalArgument("Matrix is not square so the notion of Upper Triangular isn't clear cut enough to be implemented");
     }
     int rows = aMatrix.length;
 
@@ -259,7 +259,7 @@ public class MatrixPrimitiveUtils {
     if (MatrixPrimitiveUtils.isUpperTriangular(aMatrix)) {
       return aMatrix;
     } else {
-      throw new MathsException("Upper triangular matrix called on data that isn't upper triangular!");
+      throw new MathsExceptionIllegalArgument("Upper triangular matrix called on data that isn't upper triangular!");
     }
   }
 
@@ -270,7 +270,7 @@ public class MatrixPrimitiveUtils {
    */
   public static boolean isLowerTriangular(double[][] aMatrix) {
     if (!isSquare(aMatrix)) {
-      throw new MathsException("Matrix is not square so the notion of Lower Triangular isn't clear cut enough to be implemented");
+      throw new MathsExceptionIllegalArgument("Matrix is not square so the notion of Lower Triangular isn't clear cut enough to be implemented");
     }
     int rows = aMatrix.length;
 
@@ -293,7 +293,7 @@ public class MatrixPrimitiveUtils {
     if (MatrixPrimitiveUtils.isLowerTriangular(aMatrix)) {
       return aMatrix;
     } else {
-      throw new MathsException("Lower triangular matrix called on data that isn't lower triangular!");
+      throw new MathsExceptionIllegalArgument("Lower triangular matrix called on data that isn't lower triangular!");
     }
   }
 
@@ -304,7 +304,7 @@ public class MatrixPrimitiveUtils {
    */
   public static boolean isUpperHessenberg(double[][] aMatrix) {
     if (!isSquare(aMatrix)) {
-      throw new MathsException("Matrix is not square so the notion of Upper Hessenberg isn't clear cut enough to be implemented");
+      throw new MathsExceptionIllegalArgument("Matrix is not square so the notion of Upper Hessenberg isn't clear cut enough to be implemented");
     }
     int rows = aMatrix.length;
 
@@ -327,7 +327,7 @@ public class MatrixPrimitiveUtils {
     if (MatrixPrimitiveUtils.isUpperHessenberg(aMatrix)) {
       return aMatrix;
     } else {
-      throw new MathsException("Upper Hessenberg matrix called on data that isn't upper Hessenberg!");
+      throw new MathsExceptionIllegalArgument("Upper Hessenberg matrix called on data that isn't upper Hessenberg!");
     }
   }
 
@@ -338,7 +338,7 @@ public class MatrixPrimitiveUtils {
    */
   public static boolean isLowerHessenberg(double[][] aMatrix) {
     if (!isSquare(aMatrix)) {
-      throw new MathsException("Matrix is not square so the notion of Lower Hessenberg isn't clear cut enough to be implemented");
+      throw new MathsExceptionIllegalArgument("Matrix is not square so the notion of Lower Hessenberg isn't clear cut enough to be implemented");
     }
     int rows = aMatrix.length;
 
@@ -361,7 +361,7 @@ public class MatrixPrimitiveUtils {
     if (MatrixPrimitiveUtils.isLowerHessenberg(aMatrix)) {
       return aMatrix;
     } else {
-      throw new MathsException("Lower Hessenberg matrix called on data that isn't lower Hessenberg!");
+      throw new MathsExceptionIllegalArgument("Lower Hessenberg matrix called on data that isn't lower Hessenberg!");
     }
   }
 
@@ -374,7 +374,7 @@ public class MatrixPrimitiveUtils {
     if (MatrixPrimitiveUtils.isTriDiag(aMatrix)) {
       return aMatrix;
     } else {
-      throw new MathsException("TriDiag matrix called on data that isn't Tri-Diagonal!");
+      throw new MathsExceptionIllegalArgument("TriDiag matrix called on data that isn't Tri-Diagonal!");
     }
   }
 
@@ -385,7 +385,7 @@ public class MatrixPrimitiveUtils {
    */
   public static boolean isTriDiag(double[][] aMatrix) {
     if (!isSquare(aMatrix)) {
-      throw new MathsException("Matrix is not square so the notion of Tri-Diagonal isn't clear cut enough to be implemented");
+      throw new MathsExceptionIllegalArgument("Matrix is not square so the notion of Tri-Diagonal isn't clear cut enough to be implemented");
     }
     final int rows = aMatrix.length;
 
@@ -432,7 +432,7 @@ public class MatrixPrimitiveUtils {
     if (MatrixPrimitiveUtils.isNDiag(aMatrix, n)) {
       return aMatrix;
     } else {
-      throw new MathsException("N-Diag matrix called on data that isn't N-Diagonal!");
+      throw new MathsExceptionIllegalArgument("N-Diag matrix called on data that isn't N-Diagonal!");
     }
   }
 
@@ -443,15 +443,15 @@ public class MatrixPrimitiveUtils {
    * @return boolean, true if matrix is N-Diagonal, false if matrix is not.
    */
   public static boolean isNDiag(double[][] aMatrix, int n) {
-    Catchers.catchNull(aMatrix);
+    Catchers.catchNull(aMatrix, "aMatrix");
     if (isEven(n) || n < 1) {
-      throw new MathsException("Matrix bandwidth must be odd (as in an odd number of bands) AND positive");
+      throw new MathsExceptionIllegalArgument("Matrix bandwidth must be odd (as in an odd number of bands) AND positive");
     }
     if (!isSquare(aMatrix)) {
-      throw new MathsException("Matrix is not square so the notion of N-Diagonal isn't clear cut enough to be implemented");
+      throw new MathsExceptionIllegalArgument("Matrix is not square so the notion of N-Diagonal isn't clear cut enough to be implemented");
     }
     if (n > aMatrix.length || n == 0) {
-      throw new MathsException("Impossible bandwidth suggested: bandwidth = " + n);
+      throw new MathsExceptionIllegalArgument("Impossible bandwidth suggested: bandwidth = " + n);
     }
 
     final int rows = aMatrix.length;

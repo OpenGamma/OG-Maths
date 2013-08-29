@@ -20,7 +20,7 @@ public class Catchers {
    */
   public static void catchNull(boolean[] thisArray, String varName) {
     if (thisArray == null) {
-      throw new MathsException("Array " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array " + varName + " points to NULL. STOPPING");
     }
   }
 
@@ -30,7 +30,7 @@ public class Catchers {
    */
   public static void catchNull(boolean[] thisArray) {
     if (thisArray == null) {
-      throw new MathsException("Array points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array points to NULL. STOPPING");
     }
   }
 
@@ -41,7 +41,7 @@ public class Catchers {
    */
   public static void catchNull(byte[] thisArray, String varName) {
     if (thisArray == null) {
-      throw new MathsException("Array " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array " + varName + " points to NULL. STOPPING");
     }
   }
 
@@ -51,7 +51,7 @@ public class Catchers {
    */
   public static void catchNull(byte[] thisArray) {
     if (thisArray == null) {
-      throw new MathsException("Array points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array points to NULL. STOPPING");
     }
   }
 
@@ -62,7 +62,7 @@ public class Catchers {
    */
   public static void catchNull(short[] thisArray, String varName) {
     if (thisArray == null) {
-      throw new MathsException("Array " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array " + varName + " points to NULL. STOPPING");
     }
   }
 
@@ -72,7 +72,7 @@ public class Catchers {
    */
   public static void catchNull(short[] thisArray) {
     if (thisArray == null) {
-      throw new MathsException("Array points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array points to NULL. STOPPING");
     }
   }
 
@@ -83,7 +83,7 @@ public class Catchers {
    */
   public static void catchNull(int[] thisArray, String varName) {
     if (thisArray == null) {
-      throw new MathsException("Array " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array " + varName + " points to NULL. STOPPING");
     }
   }
 
@@ -93,7 +93,7 @@ public class Catchers {
    */
   public static void catchNull(int[] thisArray) {
     if (thisArray == null) {
-      throw new MathsException("Array points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array points to NULL. STOPPING");
     }
   }
 
@@ -104,7 +104,7 @@ public class Catchers {
    */
   public static void catchNull(long[] thisArray, String varName) {
     if (thisArray == null) {
-      throw new MathsException("Array " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array " + varName + " points to NULL. STOPPING");
     }
   }
 
@@ -114,7 +114,7 @@ public class Catchers {
    */
   public static void catchNull(long[] thisArray) {
     if (thisArray == null) {
-      throw new MathsException("Array points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array points to NULL. STOPPING");
     }
   }
 
@@ -125,7 +125,7 @@ public class Catchers {
    */
   public static void catchNull(double[] thisArray, String varName) {
     if (thisArray == null) {
-      throw new MathsException("Array " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array " + varName + " points to NULL. STOPPING");
     }
   }
 
@@ -135,7 +135,7 @@ public class Catchers {
    */
   public static void catchNull(double[] thisArray) {
     if (thisArray == null) {
-      throw new MathsException("Array points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array points to NULL. STOPPING");
     }
   }
 
@@ -146,11 +146,11 @@ public class Catchers {
    */
   public static void catchNull(double[][] thisArray, String varName) {
     if (thisArray == null) {
-      throw new MathsException("Array " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array " + varName + " points to NULL. STOPPING");
     }
     for (int i = 0; i < thisArray.length; i++) {
       if (thisArray[i] == null) {
-        throw new MathsException("Array " + varName + " has row " + i + " pointing to NULL. STOPPING");
+        throw new MathsExceptionNullPointer("Array " + varName + " has row " + i + " pointing to NULL. STOPPING");
       }
     }
   }
@@ -162,7 +162,7 @@ public class Catchers {
    */
   public static void catchNull(float[] thisArray, String varName) {
     if (thisArray == null) {
-      throw new MathsException("Array " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array " + varName + " points to NULL. STOPPING");
     }
   }
 
@@ -172,7 +172,7 @@ public class Catchers {
    */
   public static void catchNull(float[] thisArray) {
     if (thisArray == null) {
-      throw new MathsException("Array points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Array points to NULL. STOPPING");
     }
   }
 
@@ -183,7 +183,7 @@ public class Catchers {
    */
   public static void catchNull(Object someBlob, String varName) {
     if (someBlob == null) {
-      throw new MathsException("Object " + varName + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Object " + varName + " points to NULL. STOPPING");
     }
   }
 
@@ -193,7 +193,7 @@ public class Catchers {
    */
   public static void catchNull(Object someBlob) {
     if (someBlob == null) {
-      throw new MathsException("Object ref " + someBlob + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Object ref " + someBlob + " points to NULL. STOPPING");
     }
   }
 
@@ -205,7 +205,7 @@ public class Catchers {
    */
   public static void catchNullFromArgList(boolean[] thisArray, int pos) {
     if (thisArray == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
   }
 
@@ -216,7 +216,7 @@ public class Catchers {
    */
   public static void catchNullFromArgList(short[] thisArray, int pos) {
     if (thisArray == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
   }
 
@@ -227,7 +227,7 @@ public class Catchers {
    */
   public static void catchNullFromArgList(int[] thisArray, int pos) {
     if (thisArray == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
   }
 
@@ -238,7 +238,7 @@ public class Catchers {
    */
   public static void catchNullFromArgList(long[] thisArray, int pos) {
     if (thisArray == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
   }
 
@@ -249,7 +249,7 @@ public class Catchers {
    */
   public static void catchNullFromArgList(float[] thisArray, int pos) {
     if (thisArray == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
   }
 
@@ -260,7 +260,7 @@ public class Catchers {
    */
   public static void catchNullFromArgList(double[] thisArray, int pos) {
     if (thisArray == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
   }
 
@@ -271,7 +271,7 @@ public class Catchers {
    */
   public static void catchNullFromArgList(Object someBlob, int pos) {
     if (someBlob == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
   }
 
@@ -282,11 +282,11 @@ public class Catchers {
    */
   public static void catchNullFromArgList(double[][] thisArray, int pos) {
     if (thisArray == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
     for (int i = 0; i < thisArray.length; i++) {
       if (thisArray[i] == null) {
-        throw new MathsException("Argument passed in position " + pos + " has row " + i + " pointing to NULL. STOPPING");
+        throw new MathsExceptionNullPointer("Argument passed in position " + pos + " has row " + i + " pointing to NULL. STOPPING");
       }
     }
   }
@@ -298,11 +298,11 @@ public class Catchers {
    */
   public static void catchNullFromArgList(int[][] thisArray, int pos) {
     if (thisArray == null) {
-      throw new MathsException("Argument passed in position " + pos + " points to NULL. STOPPING");
+      throw new MathsExceptionNullPointer("Argument passed in position " + pos + " points to NULL. STOPPING");
     }
     for (int i = 0; i < thisArray.length; i++) {
       if (thisArray[i] == null) {
-        throw new MathsException("Argument passed in position " + pos + " has row " + i + " pointing to NULL. STOPPING");
+        throw new MathsExceptionNullPointer("Argument passed in position " + pos + " has row " + i + " pointing to NULL. STOPPING");
       }
     }
   }
@@ -318,7 +318,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeFromArgList(short aNumber, int pos) {
     if (aNumber < 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
     }
   }
 
@@ -329,7 +329,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeFromArgList(int aNumber, int pos) {
     if (aNumber < 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
     }
   }
 
@@ -340,7 +340,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeFromArgList(long aNumber, int pos) {
     if (aNumber < 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
     }
   }
 
@@ -351,7 +351,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeFromArgList(float aNumber, int pos) {
     if (aNumber < 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
     }
   }
 
@@ -362,7 +362,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeFromArgList(double aNumber, int pos) {
     if (aNumber < 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to zero. STOPPING");
     }
   }
 
@@ -374,7 +374,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeOrZeroFromArgList(short aNumber, int pos) {
     if (aNumber <= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than zero. STOPPING");
     }
   }
 
@@ -385,7 +385,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeOrZeroFromArgList(int aNumber, int pos) {
     if (aNumber <= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than zero. STOPPING");
     }
   }
 
@@ -396,7 +396,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeOrZeroFromArgList(long aNumber, int pos) {
     if (aNumber <= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than zero. STOPPING");
     }
   }
 
@@ -407,7 +407,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeOrZeroFromArgList(float aNumber, int pos) {
     if (aNumber <= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than zero. STOPPING");
     }
   }
 
@@ -418,7 +418,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBeNegativeOrZeroFromArgList(double aNumber, int pos) {
     if (aNumber <= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than zero. STOPPING");
     }
   }
 
@@ -430,7 +430,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveOrZeroFromArgList(short aNumber, int pos) {
     if (aNumber >= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
     }
   }
 
@@ -441,7 +441,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveOrZeroFromArgList(int aNumber, int pos) {
     if (aNumber >= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
     }
   }
 
@@ -452,7 +452,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveOrZeroFromArgList(long aNumber, int pos) {
     if (aNumber >= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
     }
   }
 
@@ -463,7 +463,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveOrZeroFromArgList(float aNumber, int pos) {
     if (aNumber >= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
     }
   }
 
@@ -474,7 +474,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveOrZeroFromArgList(double aNumber, int pos) {
     if (aNumber >= 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to zero. STOPPING");
     }
   }
 
@@ -486,7 +486,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveFromArgList(short aNumber, int pos) {
     if (aNumber > 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than zero. STOPPING");
     }
   }
 
@@ -497,7 +497,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveFromArgList(int aNumber, int pos) {
     if (aNumber > 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than zero. STOPPING");
     }
   }
 
@@ -508,7 +508,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveFromArgList(long aNumber, int pos) {
     if (aNumber > 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than zero. STOPPING");
     }
   }
 
@@ -519,7 +519,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveFromArgList(float aNumber, int pos) {
     if (aNumber > 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than zero. STOPPING");
     }
   }
 
@@ -530,7 +530,7 @@ public class Catchers {
    */
   public static void catchValueShouldNotBePositiveFromArgList(double aNumber, int pos) {
     if (aNumber > 0) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than zero. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than zero. STOPPING");
     }
   }
 
@@ -543,7 +543,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanXFromArgList(short aNumber, short aValue, int pos) {
     if (aNumber >= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
     }
   }
 
@@ -555,7 +555,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanXFromArgList(int aNumber, int aValue, int pos) {
     if (aNumber >= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
     }
   }
 
@@ -567,7 +567,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanXFromArgList(long aNumber, long aValue, int pos) {
     if (aNumber >= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
     }
   }
 
@@ -579,7 +579,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanXFromArgList(float aNumber, float aValue, int pos) {
     if (aNumber >= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
     }
   }
 
@@ -591,7 +591,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanXFromArgList(double aNumber, double aValue, int pos) {
     if (aNumber >= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than " + aValue + ". STOPPING");
     }
   }
 
@@ -604,7 +604,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanOrEqualToXFromArgList(short aNumber, short aValue, int pos) {
     if (aNumber > aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -616,7 +616,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanOrEqualToXFromArgList(int aNumber, int aValue, int pos) {
     if (aNumber > aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -628,7 +628,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanOrEqualToXFromArgList(long aNumber, long aValue, int pos) {
     if (aNumber > aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -640,7 +640,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanOrEqualToXFromArgList(float aNumber, float aValue, int pos) {
     if (aNumber > aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -652,7 +652,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeLessThanOrEqualToXFromArgList(double aNumber, double aValue, int pos) {
     if (aNumber > aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be less than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -665,7 +665,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanXFromArgList(short aNumber, short aValue, int pos) {
     if (aNumber <= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
     }
   }
 
@@ -677,7 +677,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanXFromArgList(int aNumber, int aValue, int pos) {
     if (aNumber <= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
     }
   }
 
@@ -689,7 +689,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanXFromArgList(long aNumber, long aValue, int pos) {
     if (aNumber <= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
     }
   }
 
@@ -701,7 +701,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanXFromArgList(float aNumber, float aValue, int pos) {
     if (aNumber <= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
     }
   }
 
@@ -713,7 +713,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanXFromArgList(double aNumber, double aValue, int pos) {
     if (aNumber <= aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than " + aValue + ". STOPPING");
     }
   }
 
@@ -726,7 +726,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanOrEqualToXFromArgList(short aNumber, short aValue, int pos) {
     if (aNumber < aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -738,7 +738,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanOrEqualToXFromArgList(int aNumber, int aValue, int pos) {
     if (aNumber < aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -750,7 +750,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanOrEqualToXFromArgList(long aNumber, long aValue, int pos) {
     if (aNumber < aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -762,7 +762,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanOrEqualToXFromArgList(float aNumber, float aValue, int pos) {
     if (aNumber < aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -774,7 +774,7 @@ public class Catchers {
    */
   public static void catchValueShouldBeGreaterThanOrEqualToXFromArgList(double aNumber, double aValue, int pos) {
     if (aNumber < aValue) {
-      throw new MathsException("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " should be greater than or equal to " + aValue + ". STOPPING");
     }
   }
 
@@ -794,12 +794,27 @@ public class Catchers {
   public static void catchInsufficientDataSizeFromArgList(double[] aMatrix, int expectedMinimumLength, int pos) {
     catchNull(aMatrix);
     if (aMatrix.length < expectedMinimumLength) {
-      throw new MathsException("Argument passed in position " + pos + " does not contain a sufficient quantity of data to continue. STOPPING");
+      throw new MathsExceptionIllegalArgument("Argument passed in position " + pos + " does not contain a sufficient quantity of data to continue. STOPPING");
     }
   }
 
+  //////////////// commute catch
 
+  /**
+   * Catches bad commutes, given two dimensions, if they are not the same an exception is thrown 
+   * @param dim1 the first dimension
+   * @param varName1 the literal name of the first variable so that the error string makes sense
+   * @param dim2 the second dimension
+   * @param varName2 the literal name of the second variable so that the error string makes sense
+   */
+  public static void catchBadCommute(int dim1, String varName1, int dim2, String varName2) {
+    if (dim1 != dim2) {
+      throw new MathsExceptionNonConformance(varName1 + " (" + dim1 + ") and " + varName2 + " (" + dim2 + ") do not commute. STOPPING");
+    }
+  }
 
-
+  public static void catchBadCommute(String message) {
+    throw new MathsExceptionNonConformance("Problem with arrays not commuting. STOPPING. Error message is:" + message);
+  }
 
 }

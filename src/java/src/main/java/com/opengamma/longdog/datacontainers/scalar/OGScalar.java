@@ -12,11 +12,5 @@ import com.opengamma.longdog.datacontainers.OGArray;
  * Scalar Numeric class
  */
 public abstract class OGScalar extends OGArray {
-
-  private double[] _data;
-
-  @Override
-  public double[] getData() {
-    return _data;
-  }
+  
 }

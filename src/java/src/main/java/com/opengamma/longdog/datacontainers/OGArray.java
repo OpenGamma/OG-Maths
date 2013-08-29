@@ -7,7 +7,7 @@ package com.opengamma.longdog.datacontainers;
 
 
 /**
- * 
+ * Concrete numeric type base class
  */
 public abstract class OGArray implements OGNumeric {
 

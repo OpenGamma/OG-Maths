@@ -5,7 +5,6 @@
  */
 package com.opengamma.longdog.helpers;
 
-
 /**
  * Function for shipping data from one format to another
  */
@@ -18,7 +17,7 @@ public class DenseMemoryManipulation {
    */
   public static double[] convertRowMajorDoublePointerToColumnMajorSinglePointer(double[][] dataIn) {
     if (MatrixPrimitiveUtils.isRagged(dataIn)) {
-      throw new MathsException("Backing array is ragged");
+      throw new MathsExceptionIllegalArgument("Backing array is ragged");
     }
     int rows = dataIn.length;
     int cols = dataIn[0].length;
@@ -39,7 +38,7 @@ public class DenseMemoryManipulation {
    */
   public static int[] convertRowMajorIntPointerToColumnMajorSinglePointer(int[][] dataIn) {
     if (MatrixPrimitiveUtils.isRagged(dataIn)) {
-      throw new MathsException("Backing array is ragged");
+      throw new MathsExceptionIllegalArgument("Backing array is ragged");
     }
     int rows = dataIn.length;
     int cols = dataIn[0].length;
@@ -60,7 +59,7 @@ public class DenseMemoryManipulation {
    */
   public static double[] convertRowMajorDoublePointerToRowMajorSinglePointer(double[][] dataIn) {
     if (MatrixPrimitiveUtils.isRagged(dataIn)) {
-      throw new MathsException("Backing array is ragged");
+      throw new MathsExceptionIllegalArgument("Backing array is ragged");
     }
     int rows = dataIn.length;
     int cols = dataIn[0].length;
@@ -81,7 +80,7 @@ public class DenseMemoryManipulation {
    */
   public static double[] convertRowMajorDoublePointerToColumnMajorZeroInterleavedSinglePointer(double[][] dataIn) {
     if (MatrixPrimitiveUtils.isRagged(dataIn)) {
-      throw new MathsException("Backing array is ragged");
+      throw new MathsExceptionIllegalArgument("Backing array is ragged");
     }
     int rows = dataIn.length;
     int cols = dataIn[0].length;
@@ -105,10 +104,10 @@ public class DenseMemoryManipulation {
    */
   public static double[] convertTwoRowMajorDoublePointerToColumnMajorInterleavedSinglePointer(double[][] dataIn1, double[][] dataIn2) {
     if (MatrixPrimitiveUtils.isRagged(dataIn1)) {
-      throw new MathsException("Backing array is ragged");
+      throw new MathsExceptionIllegalArgument("Backing array is ragged");
     }
     if (MatrixPrimitiveUtils.isRagged(dataIn2)) {
-      throw new MathsException("Backing array is ragged");
+      throw new MathsExceptionIllegalArgument("Backing array is ragged");
     }
     int rows = dataIn1.length;
     int cols = dataIn1[0].length;
@@ -170,7 +169,6 @@ public class DenseMemoryManipulation {
       arrayToFill[i + 1] = value[1];
     }
   }
-  
 
   /**
    * Copies and array
