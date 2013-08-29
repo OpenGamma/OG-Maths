@@ -37,15 +37,15 @@ set(longdog_VERSION
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 # tweak flags
-set(CMAKE_C_FLAGS "-ffast-math -O2 -march=core2 -funroll-loops" ${CMAKE_C_FLAGS})
-set(CMAKE_C_FLAGS_DEBUG "-ffast-math -O2 -march=core2 -funroll-loops" ${CMAKE_C_FLAGS_DEBUG})
-set(CMAKE_C_FLAGS_RELEASE "-ffast-math -O2 -march=core2 -funroll-loops" ${CMAKE_C_FLAGS_RELEASE})
-set(CMAKE_C_FLAGS_RELWITHDEBINFO "-ffast-math -O2 -march=core2 -funroll-loops" ${CMAKE_C_FLAGS_RELWITHDEBINFO})
+set(CMAKE_C_FLAGS "-ffast-math -O2 -march=core2 -funroll-loops ${CMAKE_C_FLAGS}")
+set(CMAKE_C_FLAGS_DEBUG "-ffast-math -O2 -march=core2 -funroll-loops ${CMAKE_C_FLAGS_DEBUG}")
+set(CMAKE_C_FLAGS_RELEASE "-ffast-math -O2 -march=core2 -funroll-loops ${CMAKE_C_FLAGS_RELEASE}")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "-ffast-math -O2 -march=core2 -funroll-loops ${CMAKE_C_FLAGS_RELWITHDEBINFO}")
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -ffast-math -O2 -march=core2 -funroll-loops" ${CMAKE_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS_DEBUG "-std=c++11 -ffast-math -O2 -march=core2 -funroll-loops" ${CMAKE_CXX_FLAGS_DEBUG})
-set(CMAKE_CXX_FLAGS_RELEASE "-std=c++11 -ffast-math -O2 -march=core2 -funroll-loops" ${CMAKE_CXX_FLAGS_RELEASE})
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-std=c++11 -ffast-math -O2 -march=core2 -funroll-loops" ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
+set(CMAKE_CXX_FLAGS "-std=c++11 -ffast-math -O2 -march=core2 -funroll-loops ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "-std=c++11 -ffast-math -O2 -march=core2 -funroll-loops ${CMAKE_CXX_FLAGS_DEBUG}")
+set(CMAKE_CXX_FLAGS_RELEASE "-std=c++11 -ffast-math -O2 -march=core2 -funroll-loops ${CMAKE_CXX_FLAGS_RELEASE}")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-std=c++11 -ffast-math -O2 -march=core2 -funroll-loops ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
 
 # Add Java
