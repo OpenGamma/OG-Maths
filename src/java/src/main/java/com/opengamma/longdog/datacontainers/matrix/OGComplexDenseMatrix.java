@@ -18,7 +18,7 @@ import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
 /**
  * Dense complex matrix
  */
-public class OGComplexMatrix extends OGMatrix {
+public class OGComplexDenseMatrix extends OGDenseMatrix {
   private static ExprTypeEnum s_type = ExprTypeEnum.OGComplexMatrix;
 
   private double[] _data;
@@ -28,7 +28,7 @@ public class OGComplexMatrix extends OGMatrix {
    * Takes a row major java double[][] and turns it into an OGComplexArray
    * @param dataIn a row major java double[][] 
    */
-  public OGComplexMatrix(double[][] dataIn) {
+  public OGComplexDenseMatrix(double[][] dataIn) {
     Catchers.catchNullFromArgList(dataIn, 1);
     _data = DenseMemoryManipulation.convertRowMajorDoublePointerToColumnMajorZeroInterleavedSinglePointer(dataIn);
     _rows = dataIn.length;
@@ -40,7 +40,7 @@ public class OGComplexMatrix extends OGMatrix {
    * @param realPart a row major java double[][] that is to be the real part of a complex array
    * @param imaginaryPart a row major java double[][] that is to be the imaginary part of a complex array
    */
-  public OGComplexMatrix(double[][] realPart, double[][] imaginaryPart) {
+  public OGComplexDenseMatrix(double[][] realPart, double[][] imaginaryPart) {
     Catchers.catchNullFromArgList(realPart, 1);
     Catchers.catchNullFromArgList(imaginaryPart, 2);
     if (MatrixPrimitiveUtils.isRagged(realPart)) {
@@ -63,7 +63,7 @@ public class OGComplexMatrix extends OGMatrix {
    * @param rows number of rows
    * @param columns number of columns
    */
-  public OGComplexMatrix(double[] dataIn, int rows, int columns) {
+  public OGComplexDenseMatrix(double[] dataIn, int rows, int columns) {
     Catchers.catchNullFromArgList(dataIn, 1);
     if (rows < 1) {
       throw new MathsExceptionIllegalArgument("Illegal number of rows specified. Value given was " + rows);
@@ -94,7 +94,7 @@ public class OGComplexMatrix extends OGMatrix {
    * @param rows number of rows
    * @param columns number of columns
    */
-  public OGComplexMatrix(double[] realData, double[] imagData, int rows, int columns) {
+  public OGComplexDenseMatrix(double[] realData, double[] imagData, int rows, int columns) {
     Catchers.catchNullFromArgList(realData, 1);
     Catchers.catchNullFromArgList(imagData, 2);
     Catchers.catchValueShouldNotBeNegativeOrZeroFromArgList(rows, 3);
@@ -118,7 +118,7 @@ public class OGComplexMatrix extends OGMatrix {
    * Construct from a row major (m * n)  array of ComplexTypes
    * @param data a non ragged array of ComplexTypes
    */
-  public OGComplexMatrix(OGComplexScalar[][] data) {
+  public OGComplexDenseMatrix(OGComplexScalar[][] data) {
     Catchers.catchNullFromArgList(data, 1);
     final int rows = data.length;
     // check for nulls now
@@ -149,7 +149,7 @@ public class OGComplexMatrix extends OGMatrix {
   /**
    * @param number the single real number in this array
    */
-  public OGComplexMatrix(double number) {
+  public OGComplexDenseMatrix(double number) {
     _cols = 1;
     _rows = 1;
     _data = new double[2];
@@ -159,7 +159,7 @@ public class OGComplexMatrix extends OGMatrix {
   /**
    * @param number a complex type to enter in this array
    */
-  public OGComplexMatrix(OGComplexScalar number) {
+  public OGComplexDenseMatrix(OGComplexScalar number) {
     Catchers.catchNullFromArgList(number, 1);
     _cols = 1;
     _rows = 1;

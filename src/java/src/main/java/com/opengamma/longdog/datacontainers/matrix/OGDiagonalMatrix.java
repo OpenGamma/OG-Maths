@@ -5,7 +5,6 @@
  */
 package com.opengamma.longdog.datacontainers.matrix;
 
-import com.opengamma.longdog.datacontainers.OGArray;
 
 /**
  * Diagonal matrix super type

@@ -35,14 +35,14 @@ public class OGComplexMatrixTest {
     { new OGComplexScalar(4, 40), new OGComplexScalar(5, 50), new OGComplexScalar(6, 60) }, { new OGComplexScalar(7, 70), new OGComplexScalar(8, 80), new OGComplexScalar(9, 90) },
     { new OGComplexScalar(10, 100), new OGComplexScalar(11, 110), new OGComplexScalar(12, 120) } };
 
-  OGComplexMatrix getRow = new OGComplexMatrix(new double[] { 7, 70, 8, 80, 9, 90 }, 1, 3);
-  OGComplexMatrix getCol = new OGComplexMatrix(new double[] { 2, 20, 5, 50, 8, 80, 11, 110 }, 4, 1);
+  OGComplexDenseMatrix getRow = new OGComplexDenseMatrix(new double[] { 7, 70, 8, 80, 9, 90 }, 1, 3);
+  OGComplexDenseMatrix getCol = new OGComplexDenseMatrix(new double[] { 2, 20, 5, 50, 8, 80, 11, 110 }, 4, 1);
 
   // sending in null ptr double[][] constructor
   @Test(expectedExceptions = MathsExceptionNullPointer.class)
   public void testDoublePtrPtrConstructorNullPtrTest() {
     double[][] tmp = null;
-    new OGComplexMatrix(tmp);
+    new OGComplexDenseMatrix(tmp);
   }
 
   // sending in embedded null ptr double[][] constructor
@@ -51,7 +51,7 @@ public class OGComplexMatrixTest {
     double[][] tmp = new double[2][1];
     tmp[0] = new double[] { 1 };
     tmp[1] = null;
-    new OGComplexMatrix(tmp);
+    new OGComplexDenseMatrix(tmp);
   }
 
   // sending in null ptr double[][] double[][] constructor 
@@ -59,7 +59,7 @@ public class OGComplexMatrixTest {
   public void testDoublePtrPtrDoublePtrPtrConstructorNullPtrFirstTest() {
     double[][] tmp1 = null;
     double[][] tmp2 = new double[2][3];
-    new OGComplexMatrix(tmp1, tmp2);
+    new OGComplexDenseMatrix(tmp1, tmp2);
   }
 
   // sending in null ptr double[][] double[][] constructor 
@@ -67,7 +67,7 @@ public class OGComplexMatrixTest {
   public void testDoublePtrPtrDoublePtrPtrConstructorNullPtrSecondTest() {
     double[][] tmp1 = new double[2][3];
     double[][] tmp2 = null;
-    new OGComplexMatrix(tmp1, tmp2);
+    new OGComplexDenseMatrix(tmp1, tmp2);
   }
 
   // sending in embedded null ptr double[][] double[][] constructor
@@ -77,7 +77,7 @@ public class OGComplexMatrixTest {
     tmp1[0] = new double[] { 1 };
     tmp1[1] = null;
     double[][] tmp2 = new double[2][1];
-    new OGComplexMatrix(tmp1, tmp2);
+    new OGComplexDenseMatrix(tmp1, tmp2);
   }
 
   // sending in embedded null ptr double[][] double[][] constructor
@@ -87,14 +87,14 @@ public class OGComplexMatrixTest {
     double[][] tmp1 = new double[2][];
     tmp1[0] = new double[] { 1 };
     tmp1[1] = null;
-    new OGComplexMatrix(tmp1, tmp2);
+    new OGComplexDenseMatrix(tmp1, tmp2);
   }
 
   // sending in null ptr double[] constructor  
   @Test(expectedExceptions = MathsExceptionNullPointer.class)
   public void testDoublePtrConstructorNullPtrTest() {
     double[] tmp = null;
-    new OGComplexMatrix(tmp, 1, 1);
+    new OGComplexDenseMatrix(tmp, 1, 1);
   }
 
   // sending in null ptr double[] double [] int int constructor  
@@ -102,7 +102,7 @@ public class OGComplexMatrixTest {
   public void testDoublePtrDoublePtrConstructorNullPtrFirstTest() {
     double[] tmp1 = null;
     double[] tmp2 = new double[1];
-    new OGComplexMatrix(tmp1, tmp2, 1, 1);
+    new OGComplexDenseMatrix(tmp1, tmp2, 1, 1);
   }
 
   // sending in null ptr double[] double [] int int constructor  
@@ -110,14 +110,14 @@ public class OGComplexMatrixTest {
   public void testDoublePtrDoublePtrConstructorNullPtrSecondTest() {
     double[] tmp1 = new double[1];
     double[] tmp2 = null;
-    new OGComplexMatrix(tmp1, tmp2, 1, 1);
+    new OGComplexDenseMatrix(tmp1, tmp2, 1, 1);
   }
 
   // sending in null ptr OGComplexScalar[][] constructor
   @Test(expectedExceptions = MathsExceptionNullPointer.class)
   public void testOGComplexScalarPtrPtrConstructorNullPtrTest() {
     OGComplexScalar[][] tmp = null;
-    new OGComplexMatrix(tmp);
+    new OGComplexDenseMatrix(tmp);
   }
 
   // sending in embedded null ptr OGComplexScalar[][] constructor
@@ -126,7 +126,7 @@ public class OGComplexMatrixTest {
     OGComplexScalar[][] tmp = new OGComplexScalar[2][1];
     tmp[0] = new OGComplexScalar[] { new OGComplexScalar(1) };
     tmp[1] = null;
-    new OGComplexMatrix(tmp);
+    new OGComplexDenseMatrix(tmp);
   }
 
   // sending in null ptr OGComplexScalar constructor
@@ -134,7 +134,7 @@ public class OGComplexMatrixTest {
   public void testOGComplexScalarConstructorNullPtrTest() {
     OGComplexScalar tmp = new OGComplexScalar(0);
     tmp = null;
-    new OGComplexMatrix((OGComplexScalar) tmp);
+    new OGComplexDenseMatrix((OGComplexScalar) tmp);
   }
 
   // sending in ragged[][] double[][] constructor
@@ -143,7 +143,7 @@ public class OGComplexMatrixTest {
     double[][] tmp = new double[2][];
     tmp[0] = new double[] { 1 };
     tmp[1] = new double[] { 1, 2, 3 };
-    new OGComplexMatrix(tmp);
+    new OGComplexDenseMatrix(tmp);
   }
 
   // sending in ragged[][] first double[][] double[][] constructor
@@ -153,7 +153,7 @@ public class OGComplexMatrixTest {
     double[][] tmp2 = new double[2][2];
     tmp1[0] = new double[] { 1 };
     tmp1[1] = new double[] { 1, 2, 3 };
-    new OGComplexMatrix(tmp1, tmp2);
+    new OGComplexDenseMatrix(tmp1, tmp2);
   }
 
   // sending in ragged[][] second double[][] double[][] constructor
@@ -163,7 +163,7 @@ public class OGComplexMatrixTest {
     double[][] tmp2 = new double[2][];
     tmp2[0] = new double[] { 1 };
     tmp2[1] = new double[] { 1, 2, 3 };
-    new OGComplexMatrix(tmp1, tmp2);
+    new OGComplexDenseMatrix(tmp1, tmp2);
   }
 
   // sending in ragged OGComplexScalar[][] constructor
@@ -172,14 +172,14 @@ public class OGComplexMatrixTest {
     OGComplexScalar[][] tmp = new OGComplexScalar[2][1];
     tmp[0] = new OGComplexScalar[] { new OGComplexScalar(1), new OGComplexScalar(2) };
     tmp[1] = new OGComplexScalar[] { new OGComplexScalar(1) };
-    new OGComplexMatrix(tmp);
+    new OGComplexDenseMatrix(tmp);
   }
 
   // sending in ok double[][] constructor
   @Test
   public void testDoublePtrPtrConstructorInternalDataTest() {
-    OGComplexMatrix D = new OGComplexMatrix(realdata4x3);
-    assertTrue(D.getClass() == OGComplexMatrix.class);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(realdata4x3);
+    assertTrue(D.getClass() == OGComplexDenseMatrix.class);
     assertTrue(Arrays.equals(D.getData(), DenseMemoryManipulation.convertRowMajorDoublePointerToColumnMajorZeroInterleavedSinglePointer(realdata4x3)));
     assertTrue(D.getRows() == 4);
     assertTrue(D.getCols() == 3);
@@ -188,8 +188,8 @@ public class OGComplexMatrixTest {
   // sending in ok double[][] double[][] constructor
   @Test
   public void testDoublePtrPtrDoublePtrPtrConstructorInternalDataTest() {
-    OGComplexMatrix D = new OGComplexMatrix(realdata4x3, imagdata4x3);
-    assertTrue(D.getClass() == OGComplexMatrix.class);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(realdata4x3, imagdata4x3);
+    assertTrue(D.getClass() == OGComplexDenseMatrix.class);
     assertTrue(Arrays.equals(D.getData(), DenseMemoryManipulation.convertTwoRowMajorDoublePointerToColumnMajorInterleavedSinglePointer(realdata4x3, imagdata4x3)));
     assertTrue(D.getRows() == 4);
     assertTrue(D.getCols() == 3);
@@ -198,26 +198,26 @@ public class OGComplexMatrixTest {
   //sending in bad rows double[] constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrConstructorBadRowsDataTest() {
-    new OGComplexMatrix(realdata4x3unwound, -1, 3);
+    new OGComplexDenseMatrix(realdata4x3unwound, -1, 3);
   }
 
   //sending in bad rows double[] constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrConstructorBadColsDataTest() {
-    new OGComplexMatrix(realdata4x3unwound, 3, -1);
+    new OGComplexDenseMatrix(realdata4x3unwound, 3, -1);
   }
 
   //sending in bad data count double[] constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrConstructorDataCountDataTest() {
-    new OGComplexMatrix(realdata4x3unwound, 3, 17);
+    new OGComplexDenseMatrix(realdata4x3unwound, 3, 17);
   }
 
   //sending in ok REAL double[] constructor
   @Test
   public void testDoublePtrConstructorRealDataOKTest() {
-    OGComplexMatrix D = new OGComplexMatrix(realdata4x3unwound, 4, 3);
-    assertTrue(D.getClass() == OGComplexMatrix.class);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(realdata4x3unwound, 4, 3);
+    assertTrue(D.getClass() == OGComplexDenseMatrix.class);
     assertTrue(Arrays.equals(D.getData(), DenseMemoryManipulation.convertSinglePointerToZeroInterleavedSinglePointer(realdata4x3unwound)));
     assertTrue(D.getRows() == 4);
     assertTrue(D.getCols() == 3);
@@ -226,8 +226,8 @@ public class OGComplexMatrixTest {
   //sending in ok REAL double[] constructor, interleaved data branch
   @Test
   public void testDoublePtrConstructorInterleavedDataOKTest() {
-    OGComplexMatrix D = new OGComplexMatrix(interleaved4x3, 4, 3);
-    assertTrue(D.getClass() == OGComplexMatrix.class);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
+    assertTrue(D.getClass() == OGComplexDenseMatrix.class);
     assertTrue(Arrays.equals(D.getData(), DenseMemoryManipulation.convertTwoSinglePointersToInterleavedSinglePointer(realdata4x3unwound, imagdata4x3unwound)));
     assertTrue(D.getRows() == 4);
     assertTrue(D.getCols() == 3);
@@ -236,32 +236,32 @@ public class OGComplexMatrixTest {
   //sending in bad rows double[] double[] constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrDoublePtrConstructorBadRowsDataTest() {
-    new OGComplexMatrix(realdata4x3unwound, imagdata4x3unwound, -1, 3);
+    new OGComplexDenseMatrix(realdata4x3unwound, imagdata4x3unwound, -1, 3);
   }
 
   //sending in bad rows double[] double[] constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrDoublePtrConstructorBadColsDataTest() {
-    new OGComplexMatrix(realdata4x3unwound, imagdata4x3unwound, 3, -1);
+    new OGComplexDenseMatrix(realdata4x3unwound, imagdata4x3unwound, 3, -1);
   }
 
   //sending in bad data count double[] double[] constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrDoublePtrConstructorDataCountDataTest() {
-    new OGComplexMatrix(realdata4x3unwound, imagdata4x3unwound, 3, 17);
+    new OGComplexDenseMatrix(realdata4x3unwound, imagdata4x3unwound, 3, 17);
   }
 
   //sending in bad data lengths double[] double[] constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrDoublePtrConstructorBadDataLengthTest() {
-    new OGComplexMatrix(realdata4x3unwound, new double[4], 3, 17);
+    new OGComplexDenseMatrix(realdata4x3unwound, new double[4], 3, 17);
   }
 
   //sending in ok double[] double[] constructor
   @Test
   public void testDoublePtrDoublePtrConstructorRealDataOKTest() {
-    OGComplexMatrix D = new OGComplexMatrix(realdata4x3unwound, imagdata4x3unwound, 4, 3);
-    assertTrue(D.getClass() == OGComplexMatrix.class);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(realdata4x3unwound, imagdata4x3unwound, 4, 3);
+    assertTrue(D.getClass() == OGComplexDenseMatrix.class);
     assertTrue(Arrays.equals(D.getData(), DenseMemoryManipulation.convertTwoSinglePointersToInterleavedSinglePointer(realdata4x3unwound, imagdata4x3unwound)));
     assertTrue(D.getRows() == 4);
     assertTrue(D.getCols() == 3);
@@ -270,8 +270,8 @@ public class OGComplexMatrixTest {
   @Test
   // sending in single double for a 1x1 element array
   public void testDoubleConstructorInternalDataTest() {
-    OGComplexMatrix D = new OGComplexMatrix((double) 7.);
-    assertTrue(D.getClass() == OGComplexMatrix.class);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix((double) 7.);
+    assertTrue(D.getClass() == OGComplexDenseMatrix.class);
     assertTrue(Arrays.equals(D.getData(), new double[] { 7., 0 }));
     assertTrue(D.getRows() == 1);
     assertTrue(D.getCols() == 1);
@@ -281,8 +281,8 @@ public class OGComplexMatrixTest {
   @Test
   public void testOGComplexScalarConstructorInternalDataTest() {
     OGComplexScalar tmp = new OGComplexScalar(7.0);
-    OGComplexMatrix D = new OGComplexMatrix(tmp);
-    assertTrue(D.getClass() == OGComplexMatrix.class);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(tmp);
+    assertTrue(D.getClass() == OGComplexDenseMatrix.class);
     assertTrue(Arrays.equals(D.getData(), new double[] { 7., 0 }));
     assertTrue(D.getRows() == 1);
     assertTrue(D.getCols() == 1);
@@ -292,8 +292,8 @@ public class OGComplexMatrixTest {
   //sending in ok ComlpexType[][] constructor, interleaved data branch
   @Test
   public void testOGComplexScalarPtrPtrConstructorDataOKTest() {
-    OGComplexMatrix D = new OGComplexMatrix(cmplx4x3);
-    assertTrue(D.getClass() == OGComplexMatrix.class);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(cmplx4x3);
+    assertTrue(D.getClass() == OGComplexDenseMatrix.class);
     assertTrue(Arrays.equals(D.getData(), DenseMemoryManipulation.convertTwoSinglePointersToInterleavedSinglePointer(realdata4x3unwound, imagdata4x3unwound)));
     assertTrue(D.getRows() == 4);
     assertTrue(D.getCols() == 3);
@@ -302,20 +302,20 @@ public class OGComplexMatrixTest {
   // test get rows
   @Test
   public void testGetRowsTest() {
-    OGComplexMatrix D = new OGComplexMatrix(interleaved4x3, 4, 3);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
     assertTrue(D.getRows() == 4);
   }
 
   // test get cols
   @Test
   public void testGetColumnsTest() {
-    OGComplexMatrix D = new OGComplexMatrix(interleaved4x3, 4, 3);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
     assertTrue(D.getCols() == 3);
   }
 
   @Test
   public void testGetTypeEnum() {
-    OGComplexMatrix D = new OGComplexMatrix(interleaved4x3, 4, 3);
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
     assertTrue(D.getType().equals(ExprTypeEnum.OGComplexMatrix));
   }
 }

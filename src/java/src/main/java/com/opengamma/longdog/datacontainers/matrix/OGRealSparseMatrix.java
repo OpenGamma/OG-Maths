@@ -168,6 +168,7 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
    * Gets the colPtr.
    * @return the colPtr
    */
+  @Override
   public int[] getColPtr() {
     return _colPtr;
   }
@@ -176,6 +177,7 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
    * Gets the rowIdx.
    * @return the rowIdx
    */
+  @Override
   public int[] getRowIdx() {
     return _rowIdx;
   }

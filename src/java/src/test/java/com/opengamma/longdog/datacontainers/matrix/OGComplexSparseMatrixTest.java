@@ -281,13 +281,13 @@ public class OGComplexSparseMatrixTest {
   // sending in bad rowIdx  int[], int[], double[], int, int  constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrConstructorbadRowIdxTooHighTest() {
-    new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, 1, 0, 2, 1, 6, 3 }, compressedMixedData, 4, 4);
+    new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, -1, 2, 0, 1, 9, 0, 1, 2, 3, 2, 3 }, compressedMixedData, 4, 4);
   }
 
   // sending in bad rowIdx  int[], int[], double[], int, int  constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrConstructorbadRowIdxTooLowTest() {
-    new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, 1, 0, 2, 1, -1, 3 }, compressedMixedData, 4, 4);
+    new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, -1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 }, compressedMixedData, 4, 4);
   }
 
   // sending in bad rowIdx  int[], int[], double[], int, int  constructor
@@ -341,13 +341,13 @@ public class OGComplexSparseMatrixTest {
   // sending in bad rowIdx  int[], int[], double[], double[], int, int  constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrDoublePtrConstructorbadRowIdxTooLowTest() {
-    new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, 1, 0, 2, 1, -1, 3 }, compressedRealPartOfMixed, compressedImagPartOfMixed, 4, 4);
+    new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, -1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 }, compressedRealPartOfMixed, compressedImagPartOfMixed, 4, 4);
   }
 
   // sending in bad rowIdx  int[], int[], double[], double[], int, int  constructor
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void testDoublePtrDoublePtrConstructorbadRowIdxLengthTest() {
-    new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, 1, 0, 2, 1, 1 }, compressedRealPartOfMixed, compressedImagPartOfMixed, 4, 4);
+    new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, 1, 2, 0, 1, 9, 0, 1, 2, 3, 2, 3 }, compressedRealPartOfMixed, compressedImagPartOfMixed, 4, 4);
   }
 
   // sending in lengths that don't commute, imag is 1 short. int[], int[], double[], double[], int, int  constructor 
@@ -396,6 +396,15 @@ public class OGComplexSparseMatrixTest {
   }
 
   @Test
+  public void testDoublePtrDoublePtrConstructorInternalDataZerosInRealPartTest() {
+    OGComplexSparseMatrix D = new OGComplexSparseMatrix(compressedColPtr, compressedRowIdx, new double[compressedImagPartOfMixed.length], compressedImagPartOfMixed, 4, 4);
+    assertTrue(D.getClass() == OGComplexSparseMatrix.class);
+    assertTrue(Arrays.equals(D.getData(), new double[] { 0, 10, 0, 0, 0, 90, 0, 20, 0, 60, 0, 100, 0, 30, 0, 70, 0, 0, 0, 0, 0, 120, 0, 160 }));
+    assertTrue(D.getRows() == 4);
+    assertTrue(D.getCols() == 4);
+  }
+
+  @Test
   public void testOGComplexScalarPtrPtrConstructorInternalDataTest() {
     OGComplexSparseMatrix D = new OGComplexSparseMatrix(complexTData);
     assertTrue(D.getClass() == OGComplexSparseMatrix.class);
@@ -418,11 +427,31 @@ public class OGComplexSparseMatrixTest {
     OGComplexSparseMatrix D = new OGComplexSparseMatrix(realData, imagData);
     assertTrue(D.getCols() == 4);
   }
-  
+
+  // test get row idx
+  @Test
+  public void testGetRowIndexTest() {
+    OGComplexSparseMatrix D = new OGComplexSparseMatrix(realData, imagData);
+    assertTrue(Arrays.equals(D.getRowIdx(), compressedRowIdx));
+  }
+
+  // test get col ptr
+  @Test
+  public void testGetColPtrTest() {
+    OGComplexSparseMatrix D = new OGComplexSparseMatrix(realData, imagData);
+    assertTrue(Arrays.equals(D.getColPtr(), compressedColPtr));
+  }
+
   @Test
   public void testGetTypeEnum() {
     OGComplexSparseMatrix D = new OGComplexSparseMatrix(realData, imagData);
     assertTrue(D.getType().equals(ExprTypeEnum.OGComplexSparseMatrix));
+  }
+
+  @Test
+  public void toStringTest() {
+    OGComplexSparseMatrix D = new OGComplexSparseMatrix(new double[][] { { 1, -1 } }, new double[][] { { 1, -1 } });
+    D.toString();
   }
 
 }

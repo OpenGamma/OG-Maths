@@ -8,7 +8,6 @@ package com.opengamma.longdog.datacontainers.matrix;
 import java.util.Arrays;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
-import com.opengamma.longdog.datacontainers.OGArray;
 import com.opengamma.longdog.helpers.Catchers;
 import com.opengamma.longdog.helpers.DenseMemoryManipulation;
 import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
@@ -16,7 +15,7 @@ import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
 /**
  * Dense real matrix
  */
-public class OGRealMatrix extends OGArray {
+public class OGRealDenseMatrix extends OGArray {
   private static ExprTypeEnum s_type = ExprTypeEnum.OGRealMatrix;
 
   private double[] _data;
@@ -26,7 +25,7 @@ public class OGRealMatrix extends OGArray {
    * Takes a row major java double[][] and turns it into an OGRealMatrix
    * @param dataIn a row major java double[][] 
    */
-  public OGRealMatrix(double[][] dataIn) {
+  public OGRealDenseMatrix(double[][] dataIn) {
     Catchers.catchNullFromArgList(dataIn, 1);
     _data = DenseMemoryManipulation.convertRowMajorDoublePointerToColumnMajorSinglePointer(dataIn);
     _rows = dataIn.length;
@@ -39,7 +38,7 @@ public class OGRealMatrix extends OGArray {
    * @param rows number of rows
    * @param columns number of columns
    */
-  public OGRealMatrix(double[] dataIn, int rows, int columns) {
+  public OGRealDenseMatrix(double[] dataIn, int rows, int columns) {
     Catchers.catchNullFromArgList(dataIn, 1);
     if (rows < 1) {
       throw new MathsExceptionIllegalArgument("Illegal number of rows specified. Value given was " + rows);
@@ -60,7 +59,7 @@ public class OGRealMatrix extends OGArray {
   /**
    * @param number the single number in this array
    */
-  public OGRealMatrix(double number) {
+  public OGRealDenseMatrix(double number) {
     _cols = 1;
     _rows = 1;
     _data = new double[1];
@@ -71,7 +70,7 @@ public class OGRealMatrix extends OGArray {
    * Takes a double[] and turns it into an OGMatrix as a single row
    * @param dataIn the backing data
    */
-  public OGRealMatrix(double[] dataIn) {
+  public OGRealDenseMatrix(double[] dataIn) {
     Catchers.catchNullFromArgList(dataIn, 1);
     int len = dataIn.length;
     _data = new double[len];

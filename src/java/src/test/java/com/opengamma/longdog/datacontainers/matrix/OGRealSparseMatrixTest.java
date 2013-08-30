@@ -25,8 +25,8 @@ public class OGRealSparseMatrixTest {
   int[] compressedColPtr = { 0, 2, 4, 7, 7 };
   int[] compressedRowIdx = { 0, 1, 0, 2, 1, 2, 3 };
 
-  OGRealMatrix getRow = new OGRealMatrix(new double[] { 0, 5, 6, 0 }, 1, 4);
-  OGRealMatrix getCol = new OGRealMatrix(new double[] { 2, 0, 5, 0 }, 4, 1);
+  OGRealDenseMatrix getRow = new OGRealDenseMatrix(new double[] { 0, 5, 6, 0 }, 1, 4);
+  OGRealDenseMatrix getCol = new OGRealDenseMatrix(new double[] { 2, 0, 5, 0 }, 4, 1);
 
   // sending in null ptr double[][] constructor
   @Test(expectedExceptions = MathsExceptionNullPointer.class)
@@ -166,11 +166,17 @@ public class OGRealSparseMatrixTest {
     OGRealSparseMatrix D = new OGRealSparseMatrix(data);
     assertTrue(D.getCols() == 4);
   }
-  
+
   @Test
   public void testGetTypeEnum() {
     OGRealSparseMatrix D = new OGRealSparseMatrix(data);
     assertTrue(D.getType().equals(ExprTypeEnum.OGRealSparseMatrix));
+  }
+
+  @Test
+  public void toStringTest() {
+    OGRealSparseMatrix D = new OGRealSparseMatrix(data);
+    D.toString();
   }
 
 }

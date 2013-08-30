@@ -123,4 +123,10 @@ public class OGRealDiagonalMatrixTest {
     assertTrue(D.getType().equals(ExprTypeEnum.OGRealDiagonalMatrix));
   }
 
+  @Test
+  public void toStringTest() {
+    OGRealDiagonalMatrix D = new OGRealDiagonalMatrix(data4x3diagd, 4, 3);
+    D.toString();
+  }
+  
 }

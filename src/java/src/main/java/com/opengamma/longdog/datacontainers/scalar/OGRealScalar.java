@@ -35,4 +35,9 @@ public class OGRealScalar extends OGScalar {
     return s_type;
   }
 
+  @Override
+  public double[] getData() {
+    return _data;
+  }
+
 }

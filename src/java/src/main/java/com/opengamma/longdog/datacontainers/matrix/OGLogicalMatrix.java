@@ -12,7 +12,7 @@ import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
 /**
  * Logical matrix
  */
-public class OGLogicalMatrix extends OGRealMatrix {
+public class OGLogicalMatrix extends OGRealDenseMatrix {
 
   private static ExprTypeEnum s_type = ExprTypeEnum.OGLogicalMatrix;
 

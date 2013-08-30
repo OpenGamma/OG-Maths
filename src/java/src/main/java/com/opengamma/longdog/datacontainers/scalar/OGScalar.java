@@ -6,11 +6,11 @@
 
 package com.opengamma.longdog.datacontainers.scalar;
 
-import com.opengamma.longdog.datacontainers.OGArray;
+import com.opengamma.longdog.datacontainers.OGTerminal;
 
 /**
  * Scalar Numeric class
  */
-public abstract class OGScalar extends OGArray {
-  
+public abstract class OGScalar extends OGTerminal {
+
 }
