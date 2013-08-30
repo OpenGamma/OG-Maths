@@ -5,11 +5,10 @@
  */
 package com.opengamma.longdog.datacontainers.matrix;
 
-import com.opengamma.longdog.datacontainers.OGArray;
 
 /**
  * Dense matrix super type
  */
-public abstract class OGMatrix extends OGArray {
+public abstract class OGDenseMatrix extends OGArray {
 
 }

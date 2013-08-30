@@ -6,9 +6,9 @@
 
 package com.opengamma.longdog.materialisers;
 
-import com.opengamma.longdog.datacontainers.OGArray;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
+import com.opengamma.longdog.datacontainers.matrix.OGArray;
 
 /**
  * 

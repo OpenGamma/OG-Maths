@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
 import com.opengamma.longdog.helpers.Catchers;
-import com.opengamma.longdog.helpers.MathsException;
+import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
 
 /**
@@ -36,7 +36,7 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
   public OGRealSparseMatrix(double[][] matrix) {
     Catchers.catchNullFromArgList(matrix, 1);
     if (MatrixPrimitiveUtils.isRagged(matrix)) {
-      throw new MathsException("Matrix representation must not be ragged, i.e. all rows must be the same length");
+      throw new MathsExceptionIllegalArgument("Matrix representation must not be ragged, i.e. all rows must be the same length");
     }
 
     // check there is at least some data in the matrix.
@@ -49,7 +49,7 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
       }
     }
     if (!dataOK) {
-      throw new MathsException("Matrix representation has no non-zero values. Blank matrices are not allowed");
+      throw new MathsExceptionIllegalArgument("Matrix representation has no non-zero values. Blank matrices are not allowed");
     }
 
     final int rows = matrix.length;
@@ -95,6 +95,70 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
     _cols = cols;
   }
 
+  /**
+   * Construct from underlying CSC representation
+   * @param colPtr the columns pointers
+   * @param rowIdx the row indexes
+   * @param values the underlying values
+   * @param rows the number of rows
+   * @param columns the number of columns
+   */
+  public OGRealSparseMatrix(int[] colPtr, int[] rowIdx, double[] values, int rows, int columns) {
+    Catchers.catchNullFromArgList(colPtr, 1);
+    Catchers.catchNullFromArgList(rowIdx, 2);
+    Catchers.catchNullFromArgList(values, 3);
+    if (rows < 1) {
+      throw new MathsExceptionIllegalArgument("Illegal number of rows specified. Value given was " + rows);
+    }
+    if (columns < 1) {
+      throw new MathsExceptionIllegalArgument("Illegal number of columns specified. Value given was " + columns);
+    }
+
+    if (columns != colPtr.length - 1) {
+      throw new MathsExceptionIllegalArgument("Columns specified does not commute with length of colPtr. Length colPtr (-1)= " + (colPtr.length - 1) + ", columns given = " + columns + ".");
+    }
+
+    if (rowIdx.length != values.length) {
+      throw new MathsExceptionIllegalArgument("Insufficient data or rowIdx values given, they should be the same but got rowIdx.length=" + rowIdx.length + "values.length=" + values.length + " .");
+    }
+
+    final int vlen = values.length;
+    _data = new double[vlen];
+    System.arraycopy(values, 0, _data, 0, vlen);
+
+    final int clen = colPtr.length;
+    _colPtr = new int[clen];
+    // check colptr is ascending
+
+    if (colPtr[0] < 0) {
+      throw new MathsExceptionIllegalArgument("Illegal value in colPtr[0], values should be zero or greater, bad value was " + colPtr[0]);
+    }
+    _colPtr[0] = colPtr[0];
+
+    for (int i = 1; i < clen; i++) {
+      if (colPtr[i] < colPtr[i - 1]) {
+        throw new MathsExceptionIllegalArgument("Illegal value in colPtr, values should be ascending or static, descending value referenced at position " + i + ", bad value was " + colPtr[i]);
+      }
+      _colPtr[i] = colPtr[i];
+    }
+
+    final int rlen = rowIdx.length;
+    _rowIdx = new int[rlen];
+    // check rowIdx isn't out of range whilst copying in
+    for (int i = 0; i < rlen; i++) {
+      if (rowIdx[i] > rows || rowIdx[i] < 0) {
+        throw new MathsExceptionIllegalArgument("Illegal value in rowIdx, row out of range referenced at position " + i + ", bad value was " + rowIdx[i]);
+      }
+      _rowIdx[i] = rowIdx[i];
+    }
+
+    _rows = rows;
+
+    _cols = columns;
+
+    _els = rows * columns;
+  }
+
   @Override
   public ExprTypeEnum getType() {
     return s_type;
@@ -104,6 +168,7 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
    * Gets the colPtr.
    * @return the colPtr
    */
+  @Override
   public int[] getColPtr() {
     return _colPtr;
   }
@@ -112,6 +177,7 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
    * Gets the rowIdx.
    * @return the rowIdx
    */
+  @Override
   public int[] getRowIdx() {
     return _rowIdx;
   }

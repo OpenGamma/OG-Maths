@@ -10,15 +10,19 @@ extern "C" {
   extern JavaVM *JVMcache;
   extern jclass OGNumericClazz;
   extern jclass OGExprClazz;
-  extern jclass OGExprTypeEnumClazz;
+  extern jclass OGArrayClazz;
+  extern jclass OGTerminalClazz;
+  extern jclass OGScalarClazz;
   extern jclass OGSparseMatrixClazz;
+  extern jmethodID OGTerminalClazz_getData;
   extern jmethodID OGNumericClazz_getType;
   extern jmethodID OGExprClazz_getExprs;
-  extern jmethodID OGArrayClazz_getData;
+  extern jmethodID OGExprClazz_getNExprs;
   extern jmethodID OGArrayClazz_getRows;
   extern jmethodID OGArrayClazz_getCols;
   extern jmethodID OGSparseMatrixClazz_getColPtr;
   extern jmethodID OGSparseMatrixClazz_getRowIdx;
+  extern jclass OGExprTypeEnumClazz;
   extern jfieldID  OGExprTypeEnumClazz__hashdefined;
 #ifdef __cplusplus
 }

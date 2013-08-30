@@ -71,7 +71,7 @@ class JOGRealMatrix: public OGRealMatrix
     JOGRealMatrix(jobject * obj)
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGArrayClazz_getData);
+      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
       this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGRealMatrix()
@@ -105,7 +105,7 @@ class JOGComplexMatrix: public OGComplexMatrix
     JOGComplexMatrix(jobject * obj)
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGArrayClazz_getData);
+      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData);
       this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGComplexMatrix()
@@ -141,14 +141,14 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
     JOGRealSparseMatrix(jobject * obj)
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGArrayClazz_getData);
+      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
       int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr);
       int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx);
       this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGRealSparseMatrix()
     {
-      unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(), *_backingObject, OGArrayClazz_getData);
+      unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(), *_backingObject, OGTerminalClazz_getData);
       unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
       unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, OGSparseMatrixClazz_getRowIdx);
     };
@@ -180,14 +180,14 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
     JOGComplexSparseMatrix(jobject * obj)
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGArrayClazz_getData);
+      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData);
       int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr);
       int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx);
       this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGComplexSparseMatrix()
     {
-      unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(), *_backingObject, OGArrayClazz_getData);
+      unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(), *_backingObject, OGTerminalClazz_getData);
       unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
       unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, OGSparseMatrixClazz_getRowIdx);
     };
@@ -323,7 +323,7 @@ template <typename T> void unbindOGArrayData(T * nativeData, jobject obj)
 #endif
     exit(1);
   }
-  jobject dataobj = env->CallObjectMethod(obj, OGArrayClazz_getData);
+  jobject dataobj = env->CallObjectMethod(obj, OGTerminalClazz_getData);
   jdoubleArray * array = reinterpret_cast<jdoubleArray *>(&dataobj);
   env->ReleasePrimitiveArrayCritical(*array, (void *)nativeData, 0);
 };
