@@ -11,11 +11,13 @@ extern "C" {
   jclass OGNumericClazz = NULL;
   jclass OGExprClazz = NULL;
   jclass OGArrayClazz = NULL;
+  jclass OGTerminalClazz = NULL;
+  jclass OGScalarClazz = NULL;
   jclass OGSparseMatrixClazz = NULL;
+  jmethodID OGTerminalClazz_getData = NULL;
   jmethodID OGNumericClazz_getType = NULL;
   jmethodID OGExprClazz_getExprs = NULL;
   jmethodID OGExprClazz_getNExprs = NULL;
-  jmethodID OGArrayClazz_getData = NULL;
   jmethodID OGArrayClazz_getRows = NULL;
   jmethodID OGArrayClazz_getCols = NULL;
   jmethodID OGSparseMatrixClazz_getColPtr = NULL;
@@ -61,7 +63,16 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
     exit(1);
   }
 
-  jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/OGArray", &OGArrayClazz);
+  jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/OGTerminal", &OGTerminalClazz);
+  if(jstatus)
+  {
+#ifdef _DEBUG
+    printf("ERROR: could not get class pointer. Hard exiting.\n");
+#endif
+    exit(1);
+  }  
+  
+  jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/matrix/OGArray", &OGArrayClazz);
   if(jstatus)
   {
 #ifdef _DEBUG
@@ -110,7 +121,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
     exit(1);
   }
 
-  jstatus = registerGlobalMethodReference(env, &OGArrayClazz, &OGArrayClazz_getData, "getData",  "()[D");
+  jstatus = registerGlobalMethodReference(env, &OGTerminalClazz, &OGTerminalClazz_getData, "getData",  "()[D");
   if(jstatus)
   {
 #ifdef _DEBUG

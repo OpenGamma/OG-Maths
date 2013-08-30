@@ -5,28 +5,21 @@
  */
 package com.opengamma.longdog.datacontainers.matrix;
 
-import com.opengamma.longdog.datacontainers.OGArray;
 
 /**
  * Sparse matrix super type
  */
 public abstract class OGSparseMatrix extends OGArray {
-  private int[] _colPtr;
-  private int[] _rowIdx;
 
   /**
    * Gets the colPtr.
    * @return the colPtr
    */
-  public int[] getColPtr() {
-    return _colPtr;
-  }
+  public abstract int[] getColPtr();
 
   /**
    * Gets the rowIdx.
    * @return the rowIdx
    */
-  public int[] getRowIdx() {
-    return _rowIdx;
-  }
+  public abstract int[] getRowIdx();
 }
