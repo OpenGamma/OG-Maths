@@ -15,7 +15,7 @@ import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
 /**
  * Dense real matrix
  */
-public class OGRealDenseMatrix extends OGArray {
+public class OGRealDenseMatrix extends OGDenseMatrix {
   private static ExprTypeEnum s_type = ExprTypeEnum.OGRealMatrix;
 
   private double[] _data;
