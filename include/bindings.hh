@@ -236,10 +236,6 @@ template <typename T> class OGArray: public OGNumeric
     int _datalen = 0;
 };
 
-// force instantiation
-template class OGArray<real16>;
-template class OGArray<complex16>;
-
 /**
  * Things what extend OGMatrix
  */

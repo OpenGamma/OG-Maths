@@ -53,7 +53,7 @@ find_package(Java)
 include(UseJava)
 find_package(JNI)
 include(JNIUtils)
-
+include(NativeLibraryBuilder)
 
 # Always include debug info in Java, since it does no harm and we don't have multiple
 # build types for it in CMake as far as I am aware.
@@ -71,7 +71,16 @@ enable_testing()
 set(LONGDOG ${PROJECT_NAME}-${longdog_VERSION})
 set(LONGDOGJAR ${JARDIR}/${LONGDOG}.jar)
 set(LONGDOGTESTJAR ${JARDIR}/${LONGDOG}-tests.jar)
-add_test(Test java -cp ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+
+if (WIN32)
+  add_test(Test ${Java_JAVA_EXECUTABLE} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  string(REPLACE ";" "\\;" CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH};${LONGDOGJAR};${LONGDOGTESTJAR}")
+  set_tests_properties(Test PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
+else()
+  set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR})
+  add_test(Test ${Java_JAVA_EXECUTABLE} -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+endif()
+
 
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
