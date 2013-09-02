@@ -382,6 +382,32 @@ class JMINUS: public JOGExpr, MINUS
 };
 
 /**
+ * SVD node spec derived from a java SVD node
+ */
+class JSVD: public JOGExpr, SVD
+{
+  public:
+    JSVD(jobject * obj);
+    ~JSVD();
+    void debug_print();
+  private:
+    jobject * _backingObject = NULL;
+};
+
+/**
+ * SELECTRESULT node spec derived from a java SVD node
+ */
+class JSELECTRESULT: public JOGExpr, SELECTRESULT
+{
+  public:
+    JSELECTRESULT(jobject * obj);
+    ~JSELECTRESULT();
+    void debug_print();
+  private:
+    jobject * _backingObject = NULL;
+};
+
+/**
  * Generates expression nodes from a java object
  */
 class ExprFactory
@@ -460,6 +486,18 @@ class ExprFactory
       {
         printf("PLUS function\n");
         _expr = new JPLUS(&obj);
+      }
+      break;
+      case SVD_ENUM:
+      {
+        printf("SVD function\n");
+        _expr = new JSVD(&obj);
+      }
+      break;
+      case SELECTRESULT_ENUM:
+      {
+        printf("Select Result function\n");
+        _expr = new JSELECTRESULT(&obj);
       }
       break;
       default:
@@ -588,6 +626,34 @@ void JMINUS::debug_print()
   printf("JMINUS class\n");
 };
 JMINUS::~JMINUS()
+{
+  _backingObject = NULL;
+};
+
+/**
+ * JSVD implementation details
+ * SVD node derived from a java SVD node
+ */
+JSVD::JSVD(jobject * obj): JOGExpr(obj) { };
+void JSVD::debug_print()
+{
+  printf("JSVD class\n");
+};
+JSVD::~JSVD()
+{
+  _backingObject = NULL;
+};
+
+/**
+ * JSELECTRESULT implementation details
+ * SELECTRESULT node derived from a java SVD node
+ */
+JSELECTRESULT::JSELECTRESULT(jobject * obj): JOGExpr(obj) { };
+void JSELECTRESULT::debug_print()
+{
+  printf("JSELECTRESULT class\n");
+};
+JSELECTRESULT::~JSELECTRESULT()
 {
   _backingObject = NULL;
 };

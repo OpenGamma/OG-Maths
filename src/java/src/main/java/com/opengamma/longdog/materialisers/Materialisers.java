@@ -10,6 +10,7 @@ import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.matrix.OGArray;
 import com.opengamma.longdog.nativeloader.NativeLibraries;
+import com.opengamma.longdog.nodes.SELECTRESULT;
 
 /**
  * 
@@ -47,7 +48,12 @@ public class Materialisers {
     level++;
     while (!(OGArray.class.isAssignableFrom(arg.getClass()))) {
       OGExpr expr = (OGExpr) arg;
-      buf.append(new String(new char[level]).replace("\0", tab) + arg.getClass() + "\n");
+      buf.append(new String(new char[level]).replace("\0", tab) + arg.getClass());
+      if (expr instanceof SELECTRESULT) {
+        SELECTRESULT tmp = (SELECTRESULT) expr;
+        buf.append(". Result requested at position: " + tmp.getEntry());
+      }
+      buf.append("\n");
       for (int i = 0; i < expr.getExprs().length; i++) {
         printTree(expr.getExprs()[i], buf, level);
       }
