@@ -190,7 +190,12 @@ public class NativeLibraries {
         destination = new BufferedOutputStream(new FileOutputStream(fsPath));
         byte[] buffer = new byte[1024 * 1024];
         int len;
+        boolean haveReadBytes = false;
         while ((len = source.read(buffer)) != -1) {
+          if (!haveReadBytes && (len == 0)) {
+            throw new LongdogInitializationException("0 bytes read for resource" + name);
+          }
+          haveReadBytes = true;
           destination.write(buffer, 0, len);
         }
       } catch (Exception e) {
