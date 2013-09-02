@@ -5,6 +5,8 @@
 #
 # add_jar(target_name
 #         [SOURCES] source1 [source2 ...] [resource1 ...]
+#         [RESOURCES] resource1 [resource2 ...]
+#         [INCLUDE_NATIVE] TRUE | FALSE
 #         [INCLUDE_JARS jar1 [jar2 ...]]
 #         [ENTRY_POINT entry]
 #         [VERSION version]
@@ -207,16 +209,6 @@
 
 include(${CMAKE_CURRENT_LIST_DIR}/CMakeParseArguments.cmake)
 
-function (__java_copy_file src dest comment)
-    add_custom_command(
-        OUTPUT  ${dest}
-        COMMAND cmake -E copy_if_different
-        ARGS    ${src}
-                ${dest}
-        DEPENDS ${src}
-        COMMENT ${comment})
-endfunction ()
-
 # define helper scripts
 set(_JAVA_CLASS_FILELIST_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/UseJavaClassFilelist.cmake)
 set(_JAVA_SYMLINK_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/UseJavaSymlinks.cmake)
@@ -248,14 +240,21 @@ function(add_jar _TARGET_NAME)
     cmake_parse_arguments(_add_jar
       ""
       "VERSION;OUTPUT_DIR;OUTPUT_NAME;ENTRY_POINT"
-      "SOURCES;INCLUDE_JARS"
+      "SOURCES;RESOURCES;INCLUDE_NATIVE;INCLUDE_JARS"
       ${ARGN}
     )
 
     set(_JAVA_SOURCE_FILES ${_add_jar_SOURCES} ${_add_jar_UNPARSED_ARGUMENTS})
+    set(_JAVA_RESOURCES ${_add_jar_RESOURCES})
 
     if (NOT DEFINED _add_jar_OUTPUT_DIR)
         set(_add_jar_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR})
+    endif()
+
+    if (NOT DEFINED _add_jar_INCLUDE_NATIVE)
+        set(_JAVA_INCLUDE_NATIVE FALSE)
+    else()
+        set(_JAVA_INCLUDE_NATIVE _add_jar_INCLUDE_NATIVE)
     endif()
 
     if (_add_jar_ENTRY_POINT)
@@ -303,7 +302,6 @@ function(add_jar _TARGET_NAME)
     set(_JAVA_COMPILE_FILES)
     set(_JAVA_DEPENDS)
     set(_JAVA_COMPILE_DEPENDS)
-    set(_JAVA_RESOURCE_FILES)
     foreach(_JAVA_SOURCE_FILE ${_JAVA_SOURCE_FILES})
         get_filename_component(_JAVA_EXT ${_JAVA_SOURCE_FILE} EXT)
         get_filename_component(_JAVA_FILE ${_JAVA_SOURCE_FILE} NAME_WE)
@@ -335,13 +333,29 @@ function(add_jar _TARGET_NAME)
         elseif (_JAVA_EXT STREQUAL "")
             list(APPEND CMAKE_JAVA_INCLUDE_PATH ${JAVA_JAR_TARGET_${_JAVA_SOURCE_FILE}} ${JAVA_JAR_TARGET_${_JAVA_SOURCE_FILE}_CLASSPATH})
             list(APPEND _JAVA_DEPENDS ${JAVA_JAR_TARGET_${_JAVA_SOURCE_FILE}})
-
-        else ()
-            __java_copy_file(${CMAKE_CURRENT_SOURCE_DIR}/${_JAVA_SOURCE_FILE}
-                             ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/${_JAVA_SOURCE_FILE}
-                             "Copying ${_JAVA_SOURCE_FILE} to the build directory")
-            list(APPEND _JAVA_RESOURCE_FILES ${_JAVA_SOURCE_FILE})
         endif ()
+    endforeach()
+
+    set(_JAVA_RESOURCE_FILES)
+    foreach(_JAVA_RESOURCE ${_JAVA_RESOURCES})
+      get_filename_component(_JAVA_RESOURCE_FILE ${_JAVA_RESOURCE} NAME_WE)
+      set(_src ${_JAVA_RESOURCE})
+      set(_dest ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/${_JAVA_RESOURCE_FILE})
+      if(IS_DIRECTORY ${_JAVA_RESOURCE})
+        add_custom_command(OUTPUT  ${_dest}
+                           COMMAND cmake -E copy_directory
+                           ARGS    ${_src} ${_dest}
+                           DEPENDS ${_src}
+                           COMMENT "Copying dir ${_JAVA_RESOURCE_FILE} to the build directory")
+      else()
+        add_custom_command(OUTPUT  ${_dest}
+                           COMMAND cmake -E copy_if_different
+                           ARGS    ${_src} ${_dest}
+                           DEPENDS ${_src}
+                           COMMENT "Copying file ${_JAVA_RESOURCE_FILE} to the build directory")
+      endif()
+      list(APPEND _JAVA_RESOURCE_FILES ${_JAVA_RESOURCE_FILE})
+      list(APPEND _JAVA_DEPENDS ${_dest})
     endforeach()
 
     foreach(_JAVA_INCLUDE_JAR ${_add_jar_INCLUDE_JARS})
@@ -362,6 +376,20 @@ function(add_jar _TARGET_NAME)
             list(APPEND _JAVA_COMPILE_DEPENDS "${_JAVA_INCLUDE_JAR}")
         endif ()
     endforeach()
+
+    set(_JAVA_NATIVE_FILES)
+
+    if(_JAVA_INCLUDE_NATIVE)
+      set(_src ${CMAKE_BINARY_DIR}/lib)
+      set(_dest ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/lib)
+      add_custom_command(OUTPUT  ${_dest}
+                         COMMAND cmake -E copy_directory
+                         ARGS    ${_src} ${_dest}
+                         DEPENDS ${jar_native_libraries}
+                         COMMENT "Copying native libraries to the build directory")
+      list(APPEND _JAVA_NATIVE_FILES lib)
+      list(APPEND _JAVA_DEPENDS ${_dest})
+    endif()
 
     # create an empty java_class_filelist
     if (NOT EXISTS ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/java_class_filelist)
@@ -407,7 +435,7 @@ function(add_jar _TARGET_NAME)
             OUTPUT ${_JAVA_JAR_OUTPUT_PATH}
             COMMAND ${Java_JAR_EXECUTABLE}
                 -cf${_ENTRY_POINT_OPTION} ${_JAVA_JAR_OUTPUT_PATH} ${_ENTRY_POINT_VALUE}
-                ${_JAVA_RESOURCE_FILES} @java_class_filelist
+                ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} @java_class_filelist
             COMMAND ${CMAKE_COMMAND}
                 -D_JAVA_TARGET_DIR=${_add_jar_OUTPUT_DIR}
                 -D_JAVA_TARGET_OUTPUT_NAME=${_JAVA_TARGET_OUTPUT_NAME}
@@ -427,7 +455,7 @@ function(add_jar _TARGET_NAME)
             OUTPUT ${_JAVA_JAR_OUTPUT_PATH}
             COMMAND ${Java_JAR_EXECUTABLE}
                 -cf${_ENTRY_POINT_OPTION} ${_JAVA_JAR_OUTPUT_PATH} ${_ENTRY_POINT_VALUE}
-                ${_JAVA_RESOURCE_FILES} @java_class_filelist
+                ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} @java_class_filelist
             COMMAND ${CMAKE_COMMAND}
                 -D_JAVA_TARGET_DIR=${_add_jar_OUTPUT_DIR}
                 -D_JAVA_TARGET_OUTPUT_NAME=${_JAVA_TARGET_OUTPUT_NAME}

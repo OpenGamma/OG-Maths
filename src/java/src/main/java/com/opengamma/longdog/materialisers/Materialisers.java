@@ -9,6 +9,7 @@ package com.opengamma.longdog.materialisers;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.matrix.OGArray;
+import com.opengamma.longdog.nativeloader.NativeLibraries;
 
 /**
  * 
@@ -16,11 +17,7 @@ import com.opengamma.longdog.datacontainers.matrix.OGArray;
 public class Materialisers {
 
   static {
-    try {
-      System.loadLibrary("jshim");
-    } catch (Exception e) {
-      throw new RuntimeException("Library not found.");
-    }
+      NativeLibraries.initialize();
   }
 
   private static native OGNumeric materialise(OGNumeric arg0);
