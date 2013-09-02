@@ -31,8 +31,8 @@ typedef enum
 
   PLUS_ENUM            = 0X0100L ,
   MINUS_ENUM           = 0X0200L ,
-  TIMES_ENUM           = 0X0200L ,
-  LDIVIDE_ENUM         = 0X0300L ,
+  TIMES_ENUM           = 0X0300L ,
+  LDIVIDE_ENUM         = 0X0400L ,
   MTIMES_ENUM          = 0X0500L ,
   COPY_ENUM            = 0X0600L ,
   SELECTRESULT_ENUM    = 0X0700L ,
