@@ -15,3 +15,4 @@ target_link_libraries(jshim rdag)
 set_target_properties(jshim PROPERTIES SOVERSION ${longdog_VERSION_MAJOR} VERSION ${longdog_VERSION})
 install(TARGETS jshim DESTINATION lib)
 
+jar_native_library(jshim)

@@ -7,7 +7,11 @@ set(JARNAME ${PROJECT_NAME}-${longdog_VERSION})
 
 file(GLOB_RECURSE JAR_SOURCES *.java)
 
-add_jar(${JARNAME} ${JAR_SOURCES} OUTPUT_DIR ${JARDIR})
+add_jar(${JARNAME} ${JAR_SOURCES} 
+        RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/config
+        INCLUDE_NATIVE TRUE
+        DEPENDS ${jar_native_libraries} 
+        OUTPUT_DIR ${JARDIR})
 
 # Build source JAR
 add_custom_target(sources ALL
