@@ -116,7 +116,7 @@ public final class NativeLibraries {
     // Is the config file location overridden?
     String commandLineConfigLoc = System.getProperty("configfileloc");
 
-    if (!commandLineConfigLoc.isEmpty()) { // yes we are using a config file specified on the command line
+    if (commandLineConfigLoc != null) { // yes we are using a config file specified on the command line
       s_commandlineconfig = true;
       if (s_debug) {
         System.out.println("Using command line supplied configfileloc information");
