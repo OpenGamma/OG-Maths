@@ -76,4 +76,22 @@ public class OGComplexScalarTest {
     assertTrue(defaultVal.getType().equals(ExprTypeEnum.OGComplexScalar));
   }
 
+  @Test
+  public void getCmplxZero() {
+    assertTrue(OGComplexScalar.ZERO.getReal() == 0);
+    assertTrue(OGComplexScalar.ZERO.getImag() == 0);
+  }
+
+  @Test
+  public void getCmplxI() {
+    assertTrue(OGComplexScalar.I.getReal() == 0);
+    assertTrue(OGComplexScalar.I.getImag() == 1);
+  }
+
+  @Test
+  public void getCmplxNegI() {
+    assertTrue(OGComplexScalar.NEGATIVE_I.getReal() == 0);
+    assertTrue(OGComplexScalar.NEGATIVE_I.getImag() == -1);
+  }
+
 }
