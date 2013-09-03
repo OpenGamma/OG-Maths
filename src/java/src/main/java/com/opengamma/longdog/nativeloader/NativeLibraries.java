@@ -114,14 +114,14 @@ public final class NativeLibraries {
     InputStream propsFile = null;
 
     // Is the config file location overridden?
-    String commandLineConfigLoc = System.getProperty("configfileloc");
+    String commandLineConfig = System.getProperty("configFile");
 
-    if (commandLineConfigLoc != null) { // yes we are using a config file specified on the command line
+    if (commandLineConfig != null) { // yes we are using a config file specified on the command line
       s_commandlineconfig = true;
       if (s_debug) {
         System.out.println("Using command line supplied configfileloc information");
       }
-      s_configFileLocation = commandLineConfigLoc;
+      s_configFileLocation = commandLineConfig;
       try {
         if (s_debug) {
           System.out.println("Attempting load from " + s_configFileLocation);
