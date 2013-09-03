@@ -187,7 +187,7 @@ template <class T> class OGScalar: public OGNumeric
     OGScalar() {};
     OGScalar(T data)
     {
-      this._value=data;
+      this->_value=data;
     };
     void accept(Visitor &v)
     {
@@ -275,7 +275,7 @@ template <typename T> class OGMatrix: public OGArray<T>
     OGMatrix(T * data, int rows, int cols)
     {
       this->_datalen = rows*cols;
-      T * tmpdata =new T [this.getDatalen()];
+      T * tmpdata =new T [this->getDatalen()];
       memcpy(tmpdata, data, sizeof(T)*this->_datalen);
       this->_data=tmpdata;
       this->_rows=rows;
