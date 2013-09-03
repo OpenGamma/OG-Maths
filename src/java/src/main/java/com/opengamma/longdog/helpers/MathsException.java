@@ -16,11 +16,11 @@ public class MathsException extends RuntimeException {
   }
 
   public MathsException(final String s) {
-    super(s + " points to null.");
+    super(s);
   }
 
   public MathsException(final String s, final Throwable cause) {
-    super(s + " points to null.", cause);
+    super(s, cause);
   }
 
   public MathsException(final Throwable cause) {
