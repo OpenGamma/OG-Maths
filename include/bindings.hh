@@ -153,6 +153,26 @@ class MINUS: virtual public OGExpr
     }
 };
 
+class SVD: virtual public OGExpr
+{
+  public:
+    SVD() {};
+    void debug_print()
+    {
+      printf("SVD base class\n");
+    }
+};
+
+class SELECTRESULT: virtual public OGExpr
+{
+  public:
+    SELECTRESULT() {};
+    void debug_print()
+    {
+      printf("SELECTRESULT base class\n");
+    }
+};
+
 /**
  * Things what extend OGScalar
  */
