@@ -1,45 +1,31 @@
+/**
+ * Copyright (C) 2012 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
+#ifndef _EXPRESSION_HH
+#define _EXPRESSION_HH
+
 // bindings
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
-#include <complex>
 #include <vector>
 #include <memory>
 
+#include "numerictypes.hh"
+#include "visitor.hh"
+
 using namespace std;
 
-typedef complex<double> complex16;
-typedef complex<float> complex8;
-typedef double real16;
-typedef float real8;
+
 
 /*
- * The namespace for the
+ * The namespace for the DAG library
  */
 namespace librdag
 {
-
-/*
- * Forward declare types for visitor class
- */
-class OGExpr;
-template  <typename T> class OGArray;
-template  <typename T> class OGMatrix;
-template  <typename T> class OGScalar;
-
-/*
- * Pure function visitor class to access all fundamental types
- */
-class Visitor
-{
-  public:
-    virtual void visit(OGExpr *thing) = 0;
-    virtual void visit(OGArray<real16> *thing) = 0;
-    virtual void visit(OGArray<complex16> *thing) = 0;
-    virtual void visit(OGMatrix<real16> *thing) = 0;
-    virtual void visit(OGScalar<real16> *thing) = 0;
-    virtual void visit(OGScalar<complex16> *thing) = 0;
-};
 
 /*
  * Base class for absolutely everything!
@@ -47,147 +33,94 @@ class Visitor
 class OGNumeric
 {
   public:
-    OGNumeric() {};
-    ~OGNumeric()
-    {
-      printf("in OGNumeric destructor\n");
-    };
-    virtual void debug_print()
-    {
-      printf("Abstract OGNumeric type\n");
-    }
+    OGNumeric();
+    virtual ~OGNumeric();
+    virtual void debug_print();
     virtual void accept(Visitor &v)=0;
 };
 
 /**
- *  expr type
+ *  Expr type
  */
 class OGExpr: public OGNumeric
 {
   public:
-    OGExpr() {};
-    explicit OGExpr(OGExpr& copy)
-    {
-      this->_args = new std::vector<OGNumeric *>(*copy.getArgs());
-    }
-    OGExpr& operator=(OGExpr& rhs)
-    {
-      rhs.setArgs(this->getArgs());
-      return *this;
-    }
-    OGExpr(const librdag::OGNumeric * const args, const int nargs)
-    {
-      for(size_t i = 0; i < nargs; i++)
-      {
-        this->_args->push_back(const_cast<OGNumeric *> (&args[i]));
-      }
-    };
-    virtual ~OGExpr()
-    {
-      for (std::vector<OGNumeric *>::iterator it = this->_args->begin() ; it != this->_args->end(); it++)
-      {
-        delete &it;
-      }
-      delete this->_args;
-    };
-    std::vector<OGNumeric *> * getArgs()
-    {
-      return this->_args;
-    };
-    // should replace this with a construct from vector
-    void setArgs(std::vector<OGNumeric *> * args)
-    {
-      _args = args;
-    };
-    size_t getNArgs()
-    {
-      return this->_args->size();
-    };
-    void debug_print()
-    {
-      printf("OGExpr base class\n");
-    }
-    void accept(Visitor &v)
-    {
-      v.visit(this);
-    };
+    OGExpr();
+    explicit OGExpr(OGExpr& copy);
+    OGExpr(const librdag::OGNumeric * const args, const int nargs);
+    virtual ~OGExpr();
+
+    OGExpr& operator=(OGExpr& rhs);
+
+    std::vector<OGNumeric *> * getArgs();
+    // FIXME: should replace this with a construct from vector
+    void setArgs(std::vector<OGNumeric *> * args);
+    size_t getNArgs();
+    virtual void debug_print();
+    void accept(Visitor &v);
   private:
     std::vector<OGNumeric *> * _args = NULL;
 };
 
 /**
- * Things what extend OGExpr
+ * Things that extend OGExpr
  */
 
 class COPY: virtual public OGExpr
 {
   public:
-    COPY()
-    {
-    };
-    void debug_print()
-    {
-      printf("COPY base class\n");
-    }
+    COPY();
+    void debug_print();
 };
 
 
 class PLUS: virtual public OGExpr
 {
   public:
-    PLUS() {};
-    void debug_print()
-    {
-      printf("PLUS base class\n");
-    }
+    PLUS();
+    void debug_print();
 };
 
 
 class MINUS: virtual public OGExpr
 {
   public:
-    MINUS() {};
-    void debug_print()
-    {
-      printf("MINUS base class\n");
-    }
+    MINUS();
+    void debug_print();
 };
 
 class SVD: virtual public OGExpr
 {
   public:
-    SVD() {};
-    void debug_print()
-    {
-      printf("SVD base class\n");
-    }
+    SVD();
+    void debug_print();
 };
 
 class SELECTRESULT: virtual public OGExpr
 {
   public:
-    SELECTRESULT() {};
-    void debug_print()
-    {
-      printf("SELECTRESULT base class\n");
-    }
+    SELECTRESULT();
+    void debug_print();
 };
 
 /**
- * Things what extend OGScalar
+ * Things that extend OGScalar
  */
 template <class T> class OGScalar: public OGNumeric
 {
+  private:
     T _value;
   public:
+    OGScalar() {};
+
     OGScalar(const OGScalar& copy)
     {
-      copy._value=_value;
+      copy._value= this->_value;
     }
-    OGScalar() {};
+
     OGScalar(T data)
     {
-      this._value=data;
+      this->_value=data;
     };
     void accept(Visitor &v)
     {
@@ -229,7 +162,7 @@ template <typename T> class OGArray: public OGNumeric
     {
       return _rows;
     }
-    int setRows(int rows)
+    void setRows(int rows)
     {
       _rows = rows;
     }
@@ -237,7 +170,7 @@ template <typename T> class OGArray: public OGNumeric
     {
       return _cols;
     }
-    int setCols(int cols)
+    void setCols(int cols)
     {
       _cols = cols;
     }
@@ -245,7 +178,7 @@ template <typename T> class OGArray: public OGNumeric
     {
       return _datalen;
     }
-    int setDatalen(int datalen)
+    void setDatalen(int datalen)
     {
       _datalen = datalen;
     }
@@ -275,7 +208,7 @@ template <typename T> class OGMatrix: public OGArray<T>
     OGMatrix(T * data, int rows, int cols)
     {
       this->_datalen = rows*cols;
-      T * tmpdata =new T [this.getDatalen()];
+      T * tmpdata =new T [this->getDatalen()];
       memcpy(tmpdata, data, sizeof(T)*this->_datalen);
       this->_data=tmpdata;
       this->_rows=rows;
@@ -310,9 +243,9 @@ class OGRealMatrix: public OGMatrix<real16>
     {
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           printf("%6.4f, ",this->getData()[ptr++]);
         }
@@ -329,9 +262,9 @@ class OGComplexMatrix: public OGMatrix<complex16>
     {
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
           ptr++;
@@ -399,9 +332,9 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
     {
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           if(i==j)
           {
@@ -423,9 +356,9 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
     {
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           if(i==j)
           {
@@ -529,11 +462,11 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
     {
       double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
       printf("\nOGRealSparseMatrix\n");
-      printf("[nnz density = %4.2f\%. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
-      for (size_t ir = 0; ir < this->getCols(); ir++)
+      for (int ir = 0; ir < this->getCols(); ir++)
       {
-        for (size_t i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+        for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
         {
           printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
         }
@@ -548,11 +481,11 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     {
       double nnz = 100.e0 * this->getDatalen() / (double)(this->getRows() * this->getCols());
       printf("\nOGComplexSparseMatrix\n");
-      printf("[nnz density = %4.2f\%. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
-      for (size_t ir = 0; ir < this->getCols(); ir++)
+      for (int ir = 0; ir < this->getCols(); ir++)
       {
-        for (size_t i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+        for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
         {
           printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
         }
@@ -561,3 +494,5 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
 };
 
 }
+
+#endif

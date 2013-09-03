@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "entrypt.h"
-#include "bindings.hh"
+#include "expression.hh"
 #include "exprtypeenum.h"
 #include <typeinfo>
 #include <iostream>
@@ -45,7 +45,6 @@ class PrintTreeVisitor: public librdag::Visitor
       std::vector<librdag::OGNumeric *> * tmp = thing->getArgs();
       //hmmm perhaps we should either store the args as a raw array, or insist on everything being a vector.
       // anyway, walk over given args
-      librdag::OGNumeric * data = *(tmp->data());
       std::vector<librdag::OGNumeric *>::iterator it;
       for(it = tmp->begin();  it != tmp->end(); it++)
       {
@@ -54,23 +53,23 @@ class PrintTreeVisitor: public librdag::Visitor
     };
     void visit(librdag::OGArray<real16> *thing)
     {
-      cout << "Have OGArray<real16>\n";
+      cout << "Have OGArray<real16> " << thing << endl;
     }
     void visit(librdag::OGMatrix<real16> *thing)
     {
-      cout << "Have OGMatrix<real16>\n";
+      cout << "Have OGMatrix<real16> " << thing << endl;
     }
     void visit(librdag::OGArray<complex16> *thing)
     {
-      cout << "Have OGArray<complex16>\n";
+      cout << "Have OGArray<complex16> " << thing << endl;
     }
     void visit(librdag::OGScalar<real16> *thing)
     {
-      cout << "Have OGScalar<real16>\n";
+      cout << "Have OGScalar<real16> " << thing << endl;
     }
     void visit(librdag::OGScalar<complex16> *thing)
     {
-      cout << "Have OGScalar<complex16>\n";
+      cout << "Have OGScalar<complex16> " << thing << endl;
     }
 };
 
