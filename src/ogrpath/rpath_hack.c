@@ -1,12 +1,13 @@
 #include <jni.h>
 #include "rpath_hack.h"
+#include "warningmacros.h"
 
 #ifdef __MINGW32__
 
 #ifdef __cplusplus
 extern "C"
 #endif
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void SUPPRESS_UNUSED *reserved)
 {
      printf("OnLoad called for rpath_hack\n"); 
      
@@ -19,13 +20,15 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
      return JNI_VERSION_1_2;    
 }
 
+int varInThisLib = 0;
+
 #ifdef __cplusplus
 extern "C"
 #endif
 // gets the handle to *the current* module, use address of this lib and don't increment ref count
 HMODULE getThisLibHandle() {
     HMODULE lib = NULL;
-    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCTSTR)getThisLibHandle, &lib);
+    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS|GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCTSTR)&varInThisLib, &lib);
     return lib;
 }
 

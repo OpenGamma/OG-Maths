@@ -1,8 +1,9 @@
 #include "com_opengamma_longdog_materialisers_Materialisers.h"
 #include "entrypt.h"
 #include "jshim.h"
-#include "bindings.hh"
+#include "expression.hh"
 #include "exprtypeenum.h"
+#include "warningmacros.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -83,9 +84,9 @@ class JOGRealMatrix: public OGRealMatrix
       printf("\nJava bound OGRealMatrix\n");
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           printf("%6.4f, ",this->getData()[ptr++]);
         }
@@ -117,9 +118,9 @@ class JOGComplexMatrix: public OGComplexMatrix
       printf("\nJava bound OGComplexMatrix\n");
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           ptr++;
           printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
@@ -157,11 +158,11 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
       double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
       printf("\nJava bound OGRealSparseMatrix\n");
       printf("\ndata len = %d\n",this->getDatalen());
-      printf("[nnz density = %4.2f\%. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
-      for (size_t ir = 0; ir < this->getCols(); ir++)
+      for (int ir = 0; ir < this->getCols(); ir++)
       {
-        for (size_t i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+        for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
         {
           printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
         }
@@ -198,11 +199,11 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
       printf("datalen:%d\n",this->getDatalen());
       printf("rows:%d\n",this->getRows());
       printf("cols:%d\n",this->getCols());
-      printf("[nnz density = %4.2f\%. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
-      for (size_t ir = 0; ir < this->getCols(); ir++)
+      for (int ir = 0; ir < this->getCols(); ir++)
       {
-        for (size_t i = colPtr[ir]; i < colPtr[1]; i++)
+        for (int i = colPtr[ir]; i < colPtr[1]; i++)
         {
           printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
         }
@@ -257,7 +258,8 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
   }
   S * array = reinterpret_cast<S *>(&dataobj);
   T * _dataptr = (T *) env->GetPrimitiveArrayCritical(*array,NULL);
-};
+  return _dataptr;
+}
 
 /**
  * free (unbind) the data in an OGArray class from a T pointer
@@ -303,7 +305,7 @@ template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, 
   jobject dataobj = env->CallObjectMethod(obj, method);
   S * array = reinterpret_cast<S *>(&dataobj);
   env->ReleasePrimitiveArrayCritical(*array, (void *)nativeData, 0);
-};
+}
 
 /**
  * free (unbind) the data in an OGArray class from a T pointer
@@ -326,7 +328,7 @@ template <typename T> void unbindOGArrayData(T * nativeData, jobject obj)
   jobject dataobj = env->CallObjectMethod(obj, OGTerminalClazz_getData);
   jdoubleArray * array = reinterpret_cast<jdoubleArray *>(&dataobj);
   env->ReleasePrimitiveArrayCritical(*array, (void *)nativeData, 0);
-};
+}
 
 /**
  * Spec for an OGExpr node derived from a java object
@@ -439,7 +441,14 @@ class ExprFactory
       }
       jobject typeobj = env->CallObjectMethod(obj, OGNumericClazz_getType);
       jlong ID = env->GetLongField(typeobj,OGExprTypeEnumClazz__hashdefined);
-      printf("Clazz Type is hashdefined as %lld\n",ID);
+#ifdef __MINGW32__
+      unsigned int high, low;
+      low = (long long unsigned int)ID & 0x00000000FFFFFFFFULL;
+      high = ((long long unsigned int)ID & 0xFFFFFFFF00000000ULL) >> 32;
+      printf("Clazz Type is hashdefined as %x%x\n", high, low);
+#else
+      printf("Clazz Type is hashdefined as %lld\n",(long long int)ID);
+#endif
       switch(ID)
       {
       case OGREALMATRIX_ENUM:
@@ -580,83 +589,83 @@ JOGExpr::JOGExpr(jobject * obj)
   printf("Making assignment\n");
 #endif
   this->setArgs(local_args);
-};
+}
 
 JOGExpr:: ~JOGExpr()
 {
   _backingObject = NULL;
-};
+}
 
 
 /**
  * JCOPY implementation details
  * COPY node derived from a java COPY node
  */
-JCOPY::JCOPY(jobject * obj): JOGExpr(obj) { };
+JCOPY::JCOPY(jobject * obj): JOGExpr(obj) { }
 void JCOPY::debug_print()
 {
   printf("JCOPY class\n");
-};
+}
 JCOPY::~JCOPY()
 {
   _backingObject = NULL;
-};
+}
 
 /**
  * JPLUS implementation details
  * PLUS node derived from a java PLUS node
  */
-JPLUS::JPLUS(jobject * obj): JOGExpr(obj) { };
+JPLUS::JPLUS(jobject * obj): JOGExpr(obj) { }
 void JPLUS::debug_print()
 {
   printf("JPLUS class\n");
-};
+}
 JPLUS::~JPLUS()
 {
   _backingObject = NULL;
-};
+}
 
 /**
  * JMINUS implementation details
  * MINUS node derived from a java MINUS node
  */
-JMINUS::JMINUS(jobject * obj): JOGExpr(obj) { };
+JMINUS::JMINUS(jobject * obj): JOGExpr(obj) { }
 void JMINUS::debug_print()
 {
   printf("JMINUS class\n");
-};
+}
 JMINUS::~JMINUS()
 {
   _backingObject = NULL;
-};
+}
 
 /**
  * JSVD implementation details
  * SVD node derived from a java SVD node
  */
-JSVD::JSVD(jobject * obj): JOGExpr(obj) { };
+JSVD::JSVD(jobject * obj): JOGExpr(obj) { }
 void JSVD::debug_print()
 {
   printf("JSVD class\n");
-};
+}
 JSVD::~JSVD()
 {
   _backingObject = NULL;
-};
+}
 
 /**
  * JSELECTRESULT implementation details
  * SELECTRESULT node derived from a java SVD node
  */
-JSELECTRESULT::JSELECTRESULT(jobject * obj): JOGExpr(obj) { };
+JSELECTRESULT::JSELECTRESULT(jobject * obj): JOGExpr(obj) { }
 void JSELECTRESULT::debug_print()
 {
   printf("JSELECTRESULT class\n");
-};
+}
 JSELECTRESULT::~JSELECTRESULT()
 {
   _backingObject = NULL;
-};
+}
 
 
 
@@ -671,10 +680,10 @@ void * instantiateJClassAsCXXClass(jobject obj)
   printf("In converter\n");
   convert::ExprFactory * factory = new convert::ExprFactory();
   return factory->getExpr(obj);
-};
+}
 
 
-}; // namespace ends
+} // namespace ends
 
 #ifdef __cplusplus
 extern "C" {
@@ -691,7 +700,7 @@ extern "C" {
    * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/OGNumeric;
    */
   JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialise
-  (JNIEnv * env, jclass clazz, jobject obj)
+  (JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
   {
 
     printf("Entering materialise function\n");
@@ -703,7 +712,8 @@ extern "C" {
 
     printf("Calling entrypt function\n");
     // pass to entrypt
-    struct c_OGNumeric * answer = entrypt((struct c_OGNumeric *) chain);
+    //struct c_OGNumeric * answer = (should answer be used later?)
+    entrypt((struct c_OGNumeric *) chain);
 
     printf("Calling delete\n");
 //     delete chain;
