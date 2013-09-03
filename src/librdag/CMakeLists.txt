@@ -11,7 +11,7 @@ SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,--no-undefined")
 SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
  
 
-add_library(rdag SHARED entrypt.cc exprtypes.cc)
+add_library(rdag SHARED entrypt.cc exprtypes.cc expression.cc)
 set_target_properties(rdag PROPERTIES SOVERSION ${longdog_VERSION_MAJOR} VERSION ${longdog_VERSION})
 install(TARGETS rdag DESTINATION lib)
 

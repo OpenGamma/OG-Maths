@@ -1,7 +1,7 @@
 #include "com_opengamma_longdog_materialisers_Materialisers.h"
 #include "entrypt.h"
 #include "jshim.h"
-#include "bindings.hh"
+#include "expression.hh"
 #include "exprtypeenum.h"
 #include <stdio.h>
 #include <stdlib.h>
