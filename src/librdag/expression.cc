@@ -100,7 +100,15 @@ OGExpr::accept(Visitor &v)
  * Things that extend OGExpr
  */
 
-COPY::COPY() {}
+OGBinaryExpr::OGBinaryExpr() {}
+
+OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
+{
+	vector<OGNumeric*> *args = new vector<OGNumeric*>();
+	args->push_back(left);
+	args->push_back(right);
+	this->setArgs(args);
+}
 
 void
 COPY::debug_print()
@@ -110,6 +118,8 @@ COPY::debug_print()
 
 PLUS::PLUS() {}
 
+PLUS::PLUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
+
 void
 PLUS::debug_print()
 {
@@ -117,6 +127,8 @@ PLUS::debug_print()
 }
 
 MINUS::MINUS() {}
+
+MINUS::MINUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
 void
 MINUS::debug_print()

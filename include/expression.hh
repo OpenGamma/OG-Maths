@@ -20,7 +20,6 @@
 using namespace std;
 
 
-
 /*
  * The namespace for the DAG library
  */
@@ -53,39 +52,48 @@ class OGExpr: public OGNumeric
     OGExpr& operator=(OGExpr& rhs);
 
     std::vector<OGNumeric *> * getArgs();
-    // FIXME: should replace this with a construct from vector
-    void setArgs(std::vector<OGNumeric *> * args);
+
     size_t getNArgs();
     virtual void debug_print();
     void accept(Visitor &v);
   private:
     std::vector<OGNumeric *> * _args = NULL;
+  protected:
+    void setArgs(std::vector<OGNumeric *> * args);
 };
 
 /**
  * Things that extend OGExpr
  */
 
+class OGBinaryExpr : virtual public OGExpr
+{
+  public:
+	  OGBinaryExpr();
+	  OGBinaryExpr(OGNumeric* left, OGNumeric* right);
+};
+
 class COPY: virtual public OGExpr
 {
   public:
-    COPY();
     void debug_print();
 };
 
 
-class PLUS: virtual public OGExpr
+class PLUS: virtual public OGBinaryExpr
 {
   public:
-    PLUS();
+	  PLUS();
+	  PLUS(OGNumeric* left, OGNumeric* right);
     void debug_print();
 };
 
 
-class MINUS: virtual public OGExpr
+class MINUS: virtual public OGBinaryExpr
 {
   public:
     MINUS();
+	  MINUS(OGNumeric* left, OGNumeric* right);
     void debug_print();
 };
 
@@ -128,15 +136,8 @@ template <class T> class OGScalar: public OGNumeric
     };
 };
 
-class OGRealScalar: public OGScalar<real16>
-{
-
-};
-
-class OGComplexScalar: public OGScalar<complex16>
-{
-
-};
+typedef OGScalar<real16> OGRealScalar;
+typedef OGScalar<complex16> OGComplexScalar;
 
 
 template <typename T> class OGArray: public OGNumeric
