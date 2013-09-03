@@ -162,7 +162,7 @@ template <typename T> class OGArray: public OGNumeric
     {
       return _rows;
     }
-    int setRows(int rows)
+    void setRows(int rows)
     {
       _rows = rows;
     }
@@ -170,7 +170,7 @@ template <typename T> class OGArray: public OGNumeric
     {
       return _cols;
     }
-    int setCols(int cols)
+    void setCols(int cols)
     {
       _cols = cols;
     }
@@ -178,7 +178,7 @@ template <typename T> class OGArray: public OGNumeric
     {
       return _datalen;
     }
-    int setDatalen(int datalen)
+    void setDatalen(int datalen)
     {
       _datalen = datalen;
     }
@@ -243,9 +243,9 @@ class OGRealMatrix: public OGMatrix<real16>
     {
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           printf("%6.4f, ",this->getData()[ptr++]);
         }
@@ -262,9 +262,9 @@ class OGComplexMatrix: public OGMatrix<complex16>
     {
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
           ptr++;
@@ -332,9 +332,9 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
     {
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           if(i==j)
           {
@@ -356,9 +356,9 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
     {
       size_t ptr=0;
       printf("\n");
-      for(size_t i = 0 ; i < this->getRows(); i++)
+      for(int i = 0 ; i < this->getRows(); i++)
       {
-        for(size_t j = 0 ; j < this->getCols()-1; j++)
+        for(int j = 0 ; j < this->getCols()-1; j++)
         {
           if(i==j)
           {
@@ -462,11 +462,11 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
     {
       double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
       printf("\nOGRealSparseMatrix\n");
-      printf("[nnz density = %4.2f\%. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
-      for (size_t ir = 0; ir < this->getCols(); ir++)
+      for (int ir = 0; ir < this->getCols(); ir++)
       {
-        for (size_t i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+        for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
         {
           printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
         }
@@ -481,11 +481,11 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     {
       double nnz = 100.e0 * this->getDatalen() / (double)(this->getRows() * this->getCols());
       printf("\nOGComplexSparseMatrix\n");
-      printf("[nnz density = %4.2f\%. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
-      for (size_t ir = 0; ir < this->getCols(); ir++)
+      for (int ir = 0; ir < this->getCols(); ir++)
       {
-        for (size_t i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+        for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
         {
           printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
         }

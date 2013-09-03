@@ -25,6 +25,8 @@ template  <typename T> class OGScalar;
 class Visitor
 {
   public:
+	  Visitor();
+	  virtual ~Visitor();
     virtual void visit(OGExpr *thing) = 0;
     virtual void visit(OGArray<real16> *thing) = 0;
     virtual void visit(OGArray<complex16> *thing) = 0;

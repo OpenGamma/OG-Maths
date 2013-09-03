@@ -17,12 +17,12 @@ namespace librdag
  * OGNumeric
  */
 
-OGNumeric::OGNumeric() {};
+OGNumeric::OGNumeric() {}
 
 OGNumeric::~OGNumeric()
 {
   cout << "in OGNumeric destructor" << endl;
-};
+}
 
 void OGNumeric::debug_print()
 {
@@ -33,7 +33,7 @@ void OGNumeric::debug_print()
  * OGExpr
  */
 
-OGExpr::OGExpr() {};
+OGExpr::OGExpr() {}
 
 OGExpr::OGExpr(OGExpr& copy)
 {
@@ -43,11 +43,11 @@ OGExpr::OGExpr(OGExpr& copy)
 OGExpr::OGExpr(const librdag::OGNumeric * const args, const int nargs)
 {
 	this->_args = new std::vector<OGNumeric *>;
-	for(size_t i = 0; i < nargs; i++)
+	for(int i = 0; i < nargs; i++)
 	{
 		this->_args->push_back(const_cast<OGNumeric *> (&args[i]));
 	}
-};
+}
 
 OGExpr::~OGExpr()
 {
@@ -56,7 +56,7 @@ OGExpr::~OGExpr()
 		delete &it;
 	}
 	delete this->_args;
-};
+}
 
 OGExpr&
 OGExpr::operator=(OGExpr& rhs)
@@ -69,20 +69,20 @@ std::vector<OGNumeric *> *
 OGExpr::getArgs()
 {
 	return this->_args;
-};
+}
 
 // FIXME: Should replace this with construct from a vector
 void
 OGExpr::setArgs(std::vector<OGNumeric *> * args)
 {
 	this->_args = args;
-};
+}
 
 size_t
 OGExpr::getNArgs()
 {
   return this->_args->size();
-};
+}
 
 void
 OGExpr::debug_print()
@@ -94,13 +94,13 @@ void
 OGExpr::accept(Visitor &v)
 {
   v.visit(this);
-};
+}
 
 /**
  * Things that extend OGExpr
  */
 
-COPY::COPY() {};
+COPY::COPY() {}
 
 void
 COPY::debug_print()
@@ -108,7 +108,7 @@ COPY::debug_print()
 	cout << "COPY base class" << endl;
 }
 
-PLUS::PLUS() {};
+PLUS::PLUS() {}
 
 void
 PLUS::debug_print()
@@ -116,7 +116,7 @@ PLUS::debug_print()
 	cout << "PLUS base class" << endl;
 }
 
-MINUS::MINUS() {};
+MINUS::MINUS() {}
 
 void
 MINUS::debug_print()
@@ -124,7 +124,7 @@ MINUS::debug_print()
 	cout << "MINUS base class" << endl;
 }
 
-SVD::SVD() {};
+SVD::SVD() {}
 
 void
 SVD::debug_print()
@@ -132,7 +132,7 @@ SVD::debug_print()
 	cout << "SVD base class" << endl;
 }
 
-SELECTRESULT::SELECTRESULT() {};
+SELECTRESULT::SELECTRESULT() {}
 
 void
 SELECTRESULT::debug_print()

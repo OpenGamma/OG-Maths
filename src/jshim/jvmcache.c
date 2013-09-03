@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "jvmcache.h"
+#include "winprint64.h"
 #define _DEBUG
 
 #ifdef __cplusplus
@@ -31,7 +32,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C"
 #endif
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *reserved)
 {
 #ifdef _DEBUG
   printf("OnLoad called, caching VM ptr\n");
@@ -39,7 +40,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 
   JVMcache=jvm; // set the lib level JVM to the on-load JVM ptr
 #ifdef _DEBUG
-  printf("vm ptr at 0x%llx\n",JVMcache);
+#ifdef __MINGW32__
+  unsigned int high, low;
+  INT64HIGHLOW(JVMcache, high, low);
+  printf("vm ptr at 0x%x%x\n", high, low);
+#else
+  printf("vm ptr at 0x%llx\n", (long long unsigned int)JVMcache);
+#endif
 #endif
   JNIEnv *env=NULL;
   if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2))
@@ -217,12 +224,18 @@ jint registerGlobalMethodReference(JNIEnv * env, jclass * globalRef, jmethodID *
   else
   {
 #ifdef _DEBUG
-    printf("Method found %s() 0x%llx\n",methodName,methodToSet);
+#ifdef __MINGW32__
+  unsigned int high, low;
+  INT64HIGHLOW(methodToSet, high, low);
+  printf("Method found %s() 0x%x%x\n", methodName, high, low);
+#else
+    printf("Method found %s() 0x%llx\n",methodName,(long long unsigned int)methodToSet);
+#endif
 #endif
   }
 
   return 0;
-};
+}
 
 
 #ifdef __cplusplus
