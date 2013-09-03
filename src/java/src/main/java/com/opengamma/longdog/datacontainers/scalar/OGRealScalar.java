@@ -8,10 +8,10 @@ package com.opengamma.longdog.datacontainers.scalar;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
 import com.opengamma.longdog.helpers.Catchers;
-import com.opengamma.longdog.helpers.MathsException;
+import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
 
 /**
- * Real Scalar Numeric class
+ * Real Scalar Numeric class.
  */
 public class OGRealScalar extends OGScalar {
   private static ExprTypeEnum s_type = ExprTypeEnum.OGRealScalar;
@@ -26,7 +26,7 @@ public class OGRealScalar extends OGScalar {
     try {
       _data[0] = n.doubleValue();
     } catch (Exception e) {
-      throw new MathsException("Cannot construct real scalar from type that has no doublevalue");
+      throw new MathsExceptionIllegalArgument("Cannot construct real scalar from type that has no doublevalue");
     }
   }
 
