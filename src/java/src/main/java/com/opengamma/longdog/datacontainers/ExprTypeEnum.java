@@ -7,7 +7,7 @@
 package com.opengamma.longdog.datacontainers;
 
 /**
- * Enumerate expr types
+ * Enumerate expr types.
  */
 public enum ExprTypeEnum {
 

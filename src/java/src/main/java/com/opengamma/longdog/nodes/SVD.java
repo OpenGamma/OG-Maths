@@ -11,7 +11,7 @@ import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExprVariadicReturn;
 
 /**
- * SVD class
+ * SVD class.
  */
 public class SVD extends OGExprVariadicReturn {
 

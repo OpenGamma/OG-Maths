@@ -23,7 +23,7 @@ public class DOGMA2 {
   static {
     NativeLibraries.initialize();
   }
-  
+
   public static OGNumeric copy(OGNumeric arg0) {
     return new COPY(arg0);
   }

@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
 package com.opengamma.longdog.datacontainers;
 
 import org.testng.annotations.Test;
@@ -11,9 +17,15 @@ import com.opengamma.longdog.datacontainers.matrix.OGRealSparseMatrix;
 import com.opengamma.longdog.datacontainers.other.OGResult;
 import com.opengamma.longdog.materialisers.Materialisers;
 
+/**
+ * Test space for ideas.
+ */
 @Test
 public class TestLongdog {
 
+  /**
+   * The materialiser
+   */
   Materialisers materialiser = new Materialisers();
 
   @Test
@@ -49,7 +61,7 @@ public class TestLongdog {
   }
 
   @Test
-  public void test3() {
+  public void testf3() {
     OGNumeric A = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } });
     OGNumeric B = new OGComplexSparseMatrix(new double[][] { { 1, 0, 3 }, { 0, 5, 6 }, { 7, 8, 0 }, { 10, 0, 0 } }, new double[][] { { 0, 2, 3 }, { 3, 0, 6 }, { 0, 8, 0 }, { 10, 0, 12 } });
     OGNumeric C, D, E;

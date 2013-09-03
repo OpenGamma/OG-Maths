@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
 package com.opengamma.longdog.nativeloader;
 
 import java.io.File;
@@ -27,12 +32,12 @@ import static java.nio.file.Files.createTempDirectory;
  * The correct libraries are extracted and loaded depending on the architecture
  * that we are running on.
  */
-public class NativeLibraries {
+public final class NativeLibraries {
 
   /* Location that native libraries are extracted to */
-  private static String tmpDir;
+  private static String s_tmpDir;
   /* We initialize once only. Are we already initialized? */
-  private static boolean initialized = false;
+  private static boolean s_initialized;
   /* print debug info? */
   private static boolean s_debug = true;
   private static List<String> s_libsToExtract = new ArrayList<String>();
@@ -51,6 +56,11 @@ public class NativeLibraries {
     }
 
     Set<String> supportedPlatforms = new HashSet<String>() {
+      /**
+       * SID
+       */
+      private static final long serialVersionUID = 7866031787682964784L;
+
       {
         add("lin");
         add("win");
@@ -107,7 +117,6 @@ public class NativeLibraries {
       throw new LongdogInitializationException("Failed to close properties file stream.");
     }
 
-    
     // look for NativeLibraries specific entries
     String nlString = "NativeLibraries." + getShortPlatform() + ".*";
     Pattern nlPattern = Pattern.compile(nlString, Pattern.CASE_INSENSITIVE);
@@ -117,19 +126,17 @@ public class NativeLibraries {
       if (nlMatch.matches()) {
         if (key.endsWith("libraries")) {
           String value = (String) entry.getValue();
-          String libs[] = value.split(",");
-          for (String lib: libs)
-          {
+          String[] libs = value.split(",");
+          for (String lib : libs) {
             s_libsToExtract.add(lib.trim());
-          }   
+          }
         }
         if (key.endsWith("load")) {
           String value = (String) entry.getValue();
-          String libs[] = value.split(",");
-          for (String lib: libs)
-          {
+          String[] libs = value.split(",");
+          for (String lib : libs) {
             s_libsToLoad.add(lib.trim());
-          } 
+          }
         }
       }
     }
@@ -145,7 +152,7 @@ public class NativeLibraries {
    */
   public static synchronized void initialize() {
 
-    if (initialized) {
+    if (s_initialized) {
       // Initialise once only.
       if (s_debug) {
         System.out.println("Skipping initialization - already initialized");
@@ -166,11 +173,11 @@ public class NativeLibraries {
     } catch (IOException e) {
       throw new LongdogInitializationException("Could not create temp directory for native libaries", e);
     }
-    tmpDir = libDir.toString();
+    s_tmpDir = libDir.toString();
 
     String url = "/lib";
 
-    Class c = NativeLibraries.class;
+    Class<?> c = NativeLibraries.class;
     for (String name : s_libsToExtract) {
       if (s_debug) {
         System.out.println("Extracting " + name);
@@ -232,7 +239,7 @@ public class NativeLibraries {
     for (String name : s_libsToLoad) {
       load(name);
     }
-    initialized = true;
+    s_initialized = true;
   }
 
   /**
@@ -244,7 +251,7 @@ public class NativeLibraries {
    */
   private static synchronized void load(String lib) {
 
-    String libPath = tmpDir + File.separatorChar + lib;
+    String libPath = s_tmpDir + File.separatorChar + lib;
 
     try {
       if (s_debug) {

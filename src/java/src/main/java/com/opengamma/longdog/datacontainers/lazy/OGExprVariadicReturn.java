@@ -26,7 +26,7 @@ public abstract class OGExprVariadicReturn extends OGExpr {
     Catchers.catchCondition(nReturnItems < 0, "nReturnItems must be >=0");
     _nReturnItems = nReturnItems;
   }
-  
+
   /**
    * Gets the nReturnItems.
    * @return the nReturnItems
@@ -39,7 +39,5 @@ public abstract class OGExprVariadicReturn extends OGExpr {
   public String toString() {
     return this.getClass().getName();
   }
-  
-  
 
 }

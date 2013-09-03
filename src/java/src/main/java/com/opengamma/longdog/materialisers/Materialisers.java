@@ -18,7 +18,7 @@ import com.opengamma.longdog.nodes.SELECTRESULT;
 public class Materialisers {
 
   static {
-      NativeLibraries.initialize();
+    NativeLibraries.initialize();
   }
 
   private static native OGNumeric materialise(OGNumeric arg0);
