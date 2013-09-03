@@ -8,10 +8,10 @@ package com.opengamma.longdog.datacontainers.scalar;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
 import com.opengamma.longdog.helpers.Catchers;
-import com.opengamma.longdog.helpers.MathsException;
+import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
 
 /**
- * Complex Scalar Numeric class
+ * Complex Scalar Numeric class.
  */
 public class OGComplexScalar extends OGScalar {
 
@@ -36,8 +36,9 @@ public class OGComplexScalar extends OGScalar {
    * Construct from real only, imaginary set to 0
    * @param real the real part
    */
-  public OGComplexScalar(double real) {
-    _data[0] = real;
+  public OGComplexScalar(Number real) {
+    Catchers.catchNullFromArgList(real, 1);
+    _data[0] = real.doubleValue();
     _data[1] = 0.d;
   }
 
@@ -46,9 +47,11 @@ public class OGComplexScalar extends OGScalar {
    * @param real the real part
    * @param imag the imaginary part
    */
-  public OGComplexScalar(double real, double imag) {
-    _data[0] = real;
-    _data[1] = imag;
+  public OGComplexScalar(Number real, Number imag) {
+    Catchers.catchNullFromArgList(real, 1);
+    Catchers.catchNullFromArgList(imag, 2);
+    _data[0] = real.doubleValue();
+    _data[1] = imag.doubleValue();
   }
 
   /**
@@ -58,7 +61,7 @@ public class OGComplexScalar extends OGScalar {
   public OGComplexScalar(double[] complex) {
     Catchers.catchNullFromArgList(complex, 1);
     if (complex.length != 2) {
-      throw new MathsException("Assignment from a double[] to OGComplexScalar can only be performed from a double[] of length 2");
+      throw new MathsExceptionIllegalArgument("Assignment from a double[] to OGComplexScalar can only be performed from a double[] of length 2");
     }
     _data[0] = complex[0];
     _data[1] = complex[1];
