@@ -14,7 +14,10 @@ set(TESTS check_entrypt)
 # Compile and link each test and add to the list of tests
 foreach(TEST ${TESTS})
   add_executable(${TEST} ${TEST}.cc)
-  target_link_libraries(${TEST} rdag)
+  target_link_libraries(${TEST} rdag ${GTEST_BOTH_LIBRARIES})
   get_target_property(TEST_LOC ${TEST} LOCATION)
   add_test(${TEST} ${TEST_LOC})
+  GTEST_ADD_TESTS(${TEST_LOC} "" check_expressions.cc)
 endforeach()
+
+

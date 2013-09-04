@@ -68,6 +68,9 @@ set(CMAKE_JAVA_INCLUDE_PATH $ENV{CLASSPATH})
 # Place executables and libraries in bin on Windows so that its linker can find them.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${longdog_BINARY_DIR}/bin)
 
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
 enable_testing()
 
 add_subdirectory(src)

@@ -134,6 +134,10 @@ template <class T> class OGScalar: public OGNumeric
     {
       v.visit(this);
     };
+    T getValue()
+    {
+      return this->_value;
+    }
 };
 
 typedef OGScalar<real16> OGRealScalar;
