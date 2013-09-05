@@ -76,6 +76,7 @@ class OGBinaryExpr : virtual public OGExpr
 class COPY: virtual public OGExpr
 {
   public:
+	  COPY();
     void debug_print();
 };
 
@@ -121,9 +122,14 @@ template <class T> class OGScalar: public OGNumeric
   public:
     OGScalar() {};
 
+    OGScalar(const OGScalar * const copy)
+    {
+    	this->_value = copy->_value;
+    }
+
     OGScalar(const OGScalar& copy)
     {
-      copy._value= this->_value;
+      this->_value= copy._value;
     }
 
     OGScalar(T data)

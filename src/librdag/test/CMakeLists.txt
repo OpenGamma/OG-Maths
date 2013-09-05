@@ -9,14 +9,13 @@ SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 
 link_directories(${longdog_BINARY_DIR}/src/librdag})
 
-set(TESTS check_entrypt)
+set(TESTS check_expressions)
 
 # Compile and link each test and add to the list of tests
 foreach(TEST ${TESTS})
   add_executable(${TEST} ${TEST}.cc)
-  target_link_libraries(${TEST} rdag ${GTEST_BOTH_LIBRARIES})
+  target_link_libraries(${TEST} rdag ${GTEST_BOTH_LIBRARIES} pthread)
   get_target_property(TEST_LOC ${TEST} LOCATION)
-  add_test(${TEST} ${TEST_LOC})
   GTEST_ADD_TESTS(${TEST_LOC} "" check_expressions.cc)
 endforeach()
 

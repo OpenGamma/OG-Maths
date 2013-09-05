@@ -110,6 +110,8 @@ OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
 	this->setArgs(args);
 }
 
+COPY::COPY() {}
+
 void
 COPY::debug_print()
 {
