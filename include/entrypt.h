@@ -1,5 +1,6 @@
-#ifndef entrypt_h
-#define entrypt_h
+#ifndef _ENTRYPT_H
+#define _ENTRYPT_H
+
 struct c_OGNumeric;
 
 #ifdef __cplusplus
