@@ -46,7 +46,7 @@ class OGExpr: public OGNumeric
   public:
     OGExpr();
     explicit OGExpr(OGExpr& copy);
-    OGExpr(const librdag::OGNumeric * const args, const int nargs);
+    OGExpr(const OGNumeric * const args, const int nargs);
     virtual ~OGExpr();
 
     OGExpr& operator=(OGExpr& rhs);
@@ -73,7 +73,7 @@ class OGBinaryExpr : virtual public OGExpr
 	  OGBinaryExpr(OGNumeric* left, OGNumeric* right);
 };
 
-class COPY: virtual public OGExpr
+class COPY: public OGExpr
 {
   public:
 	  COPY();
@@ -81,7 +81,7 @@ class COPY: virtual public OGExpr
 };
 
 
-class PLUS: virtual public OGBinaryExpr
+class PLUS: public OGBinaryExpr
 {
   public:
 	  PLUS();
@@ -90,7 +90,7 @@ class PLUS: virtual public OGBinaryExpr
 };
 
 
-class MINUS: virtual public OGBinaryExpr
+class MINUS: public OGBinaryExpr
 {
   public:
     MINUS();
@@ -98,14 +98,14 @@ class MINUS: virtual public OGBinaryExpr
     void debug_print();
 };
 
-class SVD: virtual public OGExpr
+class SVD: public OGExpr
 {
   public:
     SVD();
     void debug_print();
 };
 
-class SELECTRESULT: virtual public OGExpr
+class SELECTRESULT: public OGExpr
 {
   public:
     SELECTRESULT();

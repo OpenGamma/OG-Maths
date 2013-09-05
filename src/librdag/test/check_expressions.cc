@@ -5,8 +5,6 @@
 using namespace std;
 using namespace librdag;
 
-
-
 TEST(OGExprTest, ScalarValues) {
 	// Constructor
   OGRealScalar *real = new OGRealScalar(1.0);
