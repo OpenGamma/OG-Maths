@@ -13,7 +13,7 @@ import com.opengamma.longdog.nativeloader.NativeLibraries;
 import com.opengamma.longdog.nodes.SELECTRESULT;
 
 /**
- * 
+ * Contains functions that materialise DOGMA ASTs.
  */
 public class Materialisers {
 

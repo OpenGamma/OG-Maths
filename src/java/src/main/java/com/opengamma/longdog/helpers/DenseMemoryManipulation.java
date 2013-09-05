@@ -5,6 +5,8 @@
  */
 package com.opengamma.longdog.helpers;
 
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
+
 /**
  * Function for shipping data from one format to another
  */

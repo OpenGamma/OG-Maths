@@ -5,6 +5,11 @@
  */
 package com.opengamma.longdog.helpers;
 
+import com.opengamma.longdog.exceptions.MathsException;
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
+import com.opengamma.longdog.exceptions.MathsExceptionNonConformance;
+import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
+
 
 /**
  * Catch things that will cause problems
