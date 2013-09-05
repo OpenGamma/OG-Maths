@@ -5,6 +5,8 @@
 #include <typeinfo>
 #include <iostream>
 
+using namespace std;
+
 namespace parser
 {
 /*

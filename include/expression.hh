@@ -20,7 +20,6 @@
 using namespace std;
 
 
-
 /*
  * The namespace for the DAG library
  */
@@ -47,56 +46,66 @@ class OGExpr: public OGNumeric
   public:
     OGExpr();
     explicit OGExpr(OGExpr& copy);
-    OGExpr(const librdag::OGNumeric * const args, const int nargs);
+    OGExpr(const OGNumeric * const args, const int nargs);
     virtual ~OGExpr();
 
     OGExpr& operator=(OGExpr& rhs);
 
     std::vector<OGNumeric *> * getArgs();
-    // FIXME: should replace this with a construct from vector
-    void setArgs(std::vector<OGNumeric *> * args);
+
     size_t getNArgs();
     virtual void debug_print();
     void accept(Visitor &v);
   private:
     std::vector<OGNumeric *> * _args = NULL;
+  protected:
+    void setArgs(std::vector<OGNumeric *> * args);
 };
 
 /**
  * Things that extend OGExpr
  */
 
-class COPY: virtual public OGExpr
+class OGBinaryExpr : virtual public OGExpr
 {
   public:
-    COPY();
+	  OGBinaryExpr();
+	  OGBinaryExpr(OGNumeric* left, OGNumeric* right);
+};
+
+class COPY: public OGExpr
+{
+  public:
+	  COPY();
     void debug_print();
 };
 
 
-class PLUS: virtual public OGExpr
+class PLUS: public OGBinaryExpr
 {
   public:
-    PLUS();
+	  PLUS();
+	  PLUS(OGNumeric* left, OGNumeric* right);
     void debug_print();
 };
 
 
-class MINUS: virtual public OGExpr
+class MINUS: public OGBinaryExpr
 {
   public:
     MINUS();
+	  MINUS(OGNumeric* left, OGNumeric* right);
     void debug_print();
 };
 
-class SVD: virtual public OGExpr
+class SVD: public OGExpr
 {
   public:
     SVD();
     void debug_print();
 };
 
-class SELECTRESULT: virtual public OGExpr
+class SELECTRESULT: public OGExpr
 {
   public:
     SELECTRESULT();
@@ -113,9 +122,14 @@ template <class T> class OGScalar: public OGNumeric
   public:
     OGScalar() {};
 
+    OGScalar(const OGScalar * const copy)
+    {
+    	this->_value = copy->_value;
+    }
+
     OGScalar(const OGScalar& copy)
     {
-      copy._value= this->_value;
+      this->_value= copy._value;
     }
 
     OGScalar(T data)
@@ -126,17 +140,14 @@ template <class T> class OGScalar: public OGNumeric
     {
       v.visit(this);
     };
+    T getValue()
+    {
+      return this->_value;
+    }
 };
 
-class OGRealScalar: public OGScalar<real16>
-{
-
-};
-
-class OGComplexScalar: public OGScalar<complex16>
-{
-
-};
+typedef OGScalar<real16> OGRealScalar;
+typedef OGScalar<complex16> OGComplexScalar;
 
 
 template <typename T> class OGArray: public OGNumeric
