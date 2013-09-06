@@ -69,7 +69,7 @@ class OGExpr: public OGNumeric
     virtual void debug_print();
     void accept(Visitor &v);
   private:
-    std::vector<OGNumeric *> * _args = NULL;
+    std::vector<OGNumeric *> * _args;
     explicit OGExpr(OGExpr& other);
     OGExpr& operator=(OGExpr& rhs);
   protected:
@@ -79,6 +79,14 @@ class OGExpr: public OGNumeric
 /**
  * Things that extend OGExpr
  */
+
+class OGUnaryExpr: public OGExpr
+{
+  public:
+    OGUnaryExpr();
+    OGUnaryExpr(std::vector<OGNumeric *> * args);
+    OGUnaryExpr(OGNumeric * args);
+};
 
 class OGBinaryExpr : public OGExpr
 {
@@ -90,7 +98,7 @@ class OGBinaryExpr : public OGExpr
     explicit OGBinaryExpr(OGBinaryExpr& other);
 };
 
-class COPY: public OGExpr
+class COPY: public OGUnaryExpr
 {
   public:
     COPY();
@@ -125,7 +133,7 @@ class MINUS: public OGBinaryExpr
     explicit MINUS(MINUS& other);
 };
 
-class SVD: public OGExpr
+class SVD: public OGUnaryExpr
 {
   public:
     SVD();
@@ -135,7 +143,7 @@ class SVD: public OGExpr
     explicit SVD(SVD& other);
 };
 
-class SELECTRESULT: public OGExpr
+class SELECTRESULT: public OGUnaryExpr
 {
   public:
     SELECTRESULT();

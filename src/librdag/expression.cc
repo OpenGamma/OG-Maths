@@ -21,7 +21,6 @@ OGNumeric::OGNumeric() {}
 
 OGNumeric::~OGNumeric()
 {
-  cout << "in OGNumeric destructor" << endl;
 }
 
 void OGNumeric::debug_print()
@@ -33,7 +32,10 @@ void OGNumeric::debug_print()
  * OGExpr
  */
 
-OGExpr::OGExpr() {}
+OGExpr::OGExpr()
+{
+  this->_args = NULL;
+}
 
 OGExpr::OGExpr(OGExpr& copy)
 {
@@ -104,6 +106,28 @@ OGExpr::accept(Visitor &v)
  * Things that extend OGExpr
  */
 
+OGUnaryExpr::OGUnaryExpr(): OGExpr()
+{
+}
+
+OGUnaryExpr::OGUnaryExpr(std::vector<OGNumeric*>* args)
+{
+  if (args->size() != 1)
+  {
+      //FIXME: Replace with exception when implemented.
+      // For now just die
+      exit(1);
+    }
+    this->setArgs(args);
+}
+
+OGUnaryExpr::OGUnaryExpr(OGNumeric* arg)
+{
+  vector<OGNumeric*> *args = new vector<OGNumeric*>();
+  args->push_back(arg);
+  this->setArgs(args);
+}
+
 OGBinaryExpr::OGBinaryExpr() {}
 
 OGBinaryExpr::OGBinaryExpr(std::vector<OGNumeric*>* args) : OGExpr() {
@@ -113,7 +137,7 @@ OGBinaryExpr::OGBinaryExpr(std::vector<OGNumeric*>* args) : OGExpr() {
     // For now just die
     exit(1);
   }
-  this->_args = args;
+  this->setArgs(args);
 }
 
 OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
@@ -133,7 +157,8 @@ COPY::COPY(OGNumeric *arg)
   this->setArgs(args);
 }
 
-COPY::COPY(std::vector<OGNumeric*>* args) {
+COPY::COPY(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {
+
 }
 
 void
@@ -146,8 +171,7 @@ PLUS::PLUS() {}
 
 PLUS::PLUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
-PLUS::PLUS(std::vector<OGNumeric*>* args) {
-}
+PLUS::PLUS(std::vector<OGNumeric*>* args): OGBinaryExpr(args) {}
 
 void
 PLUS::debug_print()
@@ -159,7 +183,7 @@ MINUS::MINUS() {}
 
 MINUS::MINUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
-MINUS::MINUS(std::vector<OGNumeric*>* args) {
+MINUS::MINUS(std::vector<OGNumeric*>* args): OGBinaryExpr(args) {
 }
 
 void
@@ -170,7 +194,7 @@ MINUS::debug_print()
 
 SVD::SVD() {}
 
-SVD::SVD(std::vector<OGNumeric*>* args) {
+SVD::SVD(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {
 }
 
 void
@@ -181,7 +205,7 @@ SVD::debug_print()
 
 SELECTRESULT::SELECTRESULT() {}
 
-SELECTRESULT::SELECTRESULT(std::vector<OGNumeric*>* args) {
+SELECTRESULT::SELECTRESULT(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {
 }
 
 void
