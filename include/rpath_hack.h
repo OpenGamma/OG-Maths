@@ -19,6 +19,4 @@ extern "C"
 HMODULE getThisLibHandle();
 
 #endif //__MINGW32__
-
 #endif // RPATH_HACK_H
-

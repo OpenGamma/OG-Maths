@@ -15,9 +15,9 @@ namespace librdag {
  * Forward declare types for visitor class
  */
 class OGExpr;
-template  <typename T> class OGArray;
-template  <typename T> class OGMatrix;
-template  <typename T> class OGScalar;
+template<typename T> class OGArray;
+template<typename T> class OGMatrix;
+template<typename T> class OGScalar;
 
 /*
  * Pure function visitor class to access all fundamental types
@@ -25,8 +25,8 @@ template  <typename T> class OGScalar;
 class Visitor
 {
   public:
-	  Visitor();
-	  virtual ~Visitor();
+    Visitor();
+    virtual ~Visitor();
     virtual void visit(OGExpr *thing) = 0;
     virtual void visit(OGArray<real16> *thing) = 0;
     virtual void visit(OGArray<complex16> *thing) = 0;

@@ -6,7 +6,8 @@
 #define _DEBUG
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
   JavaVM *JVMcache = NULL;
   jclass OGNumericClazz = NULL;
@@ -24,7 +25,7 @@ extern "C" {
   jmethodID OGSparseMatrixClazz_getColPtr = NULL;
   jmethodID OGSparseMatrixClazz_getRowIdx = NULL;
   jclass OGExprTypeEnumClazz = NULL;
-  jfieldID  OGExprTypeEnumClazz__hashdefined = NULL;
+  jfieldID OGExprTypeEnumClazz__hashdefined = NULL;
 #ifdef __cplusplus
 }
 #endif
@@ -58,7 +59,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
   // REGISTER CLASS REFERENCES
   //
 
-
   // static cache all the offsets
   jint jstatus = 0;
   jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/OGNumeric", &OGNumericClazz);
@@ -77,8 +77,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
     printf("ERROR: could not get class pointer. Hard exiting.\n");
 #endif
     exit(1);
-  }  
-  
+  }
+
   jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/matrix/OGArray", &OGArrayClazz);
   if(jstatus)
   {
@@ -128,7 +128,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
     exit(1);
   }
 
-  jstatus = registerGlobalMethodReference(env, &OGTerminalClazz, &OGTerminalClazz_getData, "getData",  "()[D");
+  jstatus = registerGlobalMethodReference(env, &OGTerminalClazz, &OGTerminalClazz_getData, "getData", "()[D");
   if(jstatus)
   {
 #ifdef _DEBUG
@@ -137,8 +137,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
     exit(1);
   }
 
-
-  jstatus = registerGlobalMethodReference(env, &OGArrayClazz, &OGArrayClazz_getRows, "getRows",  "()I");
+  jstatus = registerGlobalMethodReference(env, &OGArrayClazz, &OGArrayClazz_getRows, "getRows", "()I");
   if(jstatus)
   {
 #ifdef _DEBUG
@@ -147,7 +146,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
     exit(1);
   }
 
-  jstatus = registerGlobalMethodReference(env, &OGArrayClazz, &OGArrayClazz_getCols, "getCols",  "()I");
+  jstatus = registerGlobalMethodReference(env, &OGArrayClazz, &OGArrayClazz_getCols, "getCols", "()I");
   if(jstatus)
   {
 #ifdef _DEBUG
@@ -156,8 +155,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
     exit(1);
   }
 
-
-  jstatus = registerGlobalMethodReference(env, &OGSparseMatrixClazz, &OGSparseMatrixClazz_getColPtr, "getColPtr",  "()[I");
+  jstatus = registerGlobalMethodReference(env, &OGSparseMatrixClazz, &OGSparseMatrixClazz_getColPtr, "getColPtr", "()[I");
   if(jstatus)
   {
 #ifdef _DEBUG
@@ -166,8 +164,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
     exit(1);
   }
 
-
-  jstatus = registerGlobalMethodReference(env, &OGSparseMatrixClazz, &OGSparseMatrixClazz_getRowIdx, "getRowIdx",  "()[I");
+  jstatus = registerGlobalMethodReference(env, &OGSparseMatrixClazz, &OGSparseMatrixClazz_getRowIdx, "getRowIdx", "()[I");
   if(jstatus)
   {
 #ifdef _DEBUG
@@ -176,7 +173,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
     exit(1);
   }
 
-  jstatus = registerGlobalMethodReference(env, &OGExprClazz, &OGExprClazz_getExprs, "getExprs",  "()[Lcom/opengamma/longdog/datacontainers/OGNumeric;");
+  jstatus = registerGlobalMethodReference(env, &OGExprClazz, &OGExprClazz_getExprs, "getExprs", "()[Lcom/opengamma/longdog/datacontainers/OGNumeric;");
   if(jstatus)
   {
 #ifdef _DEBUG
@@ -184,7 +181,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
 #endif
     exit(1);
   }
-
 
   OGExprTypeEnumClazz__hashdefined = NULL;
   OGExprTypeEnumClazz__hashdefined = (*env)->GetFieldID(env, OGExprTypeEnumClazz, "_hashDefined", "J");
@@ -202,9 +198,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
 
   return JNI_VERSION_1_2;
 }
-
-
-
 
 #ifdef __cplusplus
 extern "C"
@@ -225,9 +218,9 @@ jint registerGlobalMethodReference(JNIEnv * env, jclass * globalRef, jmethodID *
   {
 #ifdef _DEBUG
 #ifdef __MINGW32__
-  unsigned int high, low;
-  INT64HIGHLOW(methodToSet, high, low);
-  printf("Method found %s() 0x%x%x\n", methodName, high, low);
+    unsigned int high, low;
+    INT64HIGHLOW(methodToSet, high, low);
+    printf("Method found %s() 0x%x%x\n", methodName, high, low);
 #else
     printf("Method found %s() 0x%llx\n",methodName,(long long unsigned int)methodToSet);
 #endif
@@ -236,7 +229,6 @@ jint registerGlobalMethodReference(JNIEnv * env, jclass * globalRef, jmethodID *
 
   return 0;
 }
-
 
 #ifdef __cplusplus
 extern "C"
@@ -247,7 +239,7 @@ jint registerGlobalClassReference(JNIEnv * env, const char * FQclassname, jclass
   jclass tmpClass = NULL; // tmp class reference
   // find OGNumeric
   tmpClass = NULL;
-  tmpClass = (*env)->FindClass(env,FQclassname); // find class
+  tmpClass = (*env)->FindClass(env,FQclassname);// find class
   if(tmpClass==NULL)
   {
 #ifdef _DEBUG

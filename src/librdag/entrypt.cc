@@ -7,8 +7,7 @@
 
 using namespace std;
 
-namespace parser
-{
+namespace parser {
 /*
  * forward definition of the Walker class, this class essentially encapsulates walking
  * an OGNumeric tree.
@@ -48,11 +47,12 @@ class PrintTreeVisitor: public librdag::Visitor
       //hmmm perhaps we should either store the args as a raw array, or insist on everything being a vector.
       // anyway, walk over given args
       std::vector<librdag::OGNumeric *>::iterator it;
-      for(it = tmp->begin();  it != tmp->end(); it++)
+      for (it = tmp->begin(); it != tmp->end(); it++)
       {
         _walker->talkandwalk(*(it));
       }
-    };
+    }
+    ;
     void visit(librdag::OGArray<real16> *thing)
     {
       cout << "Have OGArray<real16> " << thing << endl;
@@ -101,27 +101,25 @@ void Walker::talkandwalk(librdag::OGNumeric * numeric_expr_types)
 {
   level++;
   const char ch = ' ';
-  cout << std::string(level*2,ch);
+  cout << std::string(level * 2, ch);
   numeric_expr_types->accept(*visitor);
   level--;
 }
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-  c_OGNumeric * entrypt(c_OGNumeric * expr)
-  {
-    printf("Accessing DAG walker.\n");
-    Walker * walker = new Walker();
-    walker->walk((librdag::OGNumeric *) expr);
-    delete walker;
-    printf("Returning from DAG walker.\n");
-    return expr;
-  }
+c_OGNumeric * entrypt(c_OGNumeric * expr)
+{
+  printf("Accessing DAG walker.\n");
+  Walker * walker = new Walker();
+  walker->walk((librdag::OGNumeric *) expr);
+  delete walker;
+  printf("Returning from DAG walker.\n");
+  return expr;
+}
 #ifdef __cplusplus
 }
 #endif
-
 
 } //end parser namespace

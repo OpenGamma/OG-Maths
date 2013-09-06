@@ -7,8 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-namespace convert
-{
+namespace convert {
 using namespace librdag;
 
 /*
@@ -16,7 +15,7 @@ using namespace librdag;
  */
 class convertException: public exception
 {
-    virtual const char* what() const throw()
+    virtual const char* what() const throw ()
     {
       return "Exception occurred.";
     }
@@ -29,8 +28,8 @@ jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 {
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
+  jStatus = JVMcache->AttachCurrentThread((void **) &env, NULL); // NOP to get env ptr
+  if (jStatus)
   {
 #ifdef _DEBUG
     printf("Thread attach failed\n");
@@ -49,19 +48,21 @@ jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 /*
  * Binds some OGArray data in an OGArray object obj to a type T (T extends double)
  */
-template <typename T> T * bindOGArrayData(jobject obj);
+template<typename T> T * bindOGArrayData(jobject obj);
 /*
  * UnBinds some OGArray data of type "T" (T extends double) from an OGArray object "obj"
  */
-template <typename T> void unbindOGArrayData(T * nativeData, jobject obj);
+template<typename T> void unbindOGArrayData(T * nativeData, jobject obj);
 /*
  * Binds primitive array data of type "T" from an OGArray object "obj" accessed by getter method "method"
  */
-template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmethodID method);
+template<typename T, typename S> T * bindPrimitiveArrayData(jobject obj,
+    jmethodID method);
 /*
  * UnBinds primitive array data "nativeData" of type "T" from an OGArray object "obj" accessed by getter method "method"
  */
-template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, jobject obj, jmethodID method);
+template<typename T, typename S> void unbindPrimitiveArrayData(T * nativeData,
+    jobject obj, jmethodID method);
 
 /*
  * An OGRealMatrix backed by data pinned from a Java based OGRealMatrix
@@ -72,25 +73,30 @@ class JOGRealMatrix: public OGRealMatrix
     JOGRealMatrix(jobject * obj)
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
-    };
+      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj,
+          OGTerminalClazz_getData);
+      this->noCopy_ctor(_dataptr,
+          getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),
+          getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
+    }
+    ;
     ~JOGRealMatrix()
     {
       unbindOGArrayData<real16>(this->getData(), *_backingObject);
-    };
+    }
+    ;
     void debug_print()
     {
       printf("\nJava bound OGRealMatrix\n");
-      size_t ptr=0;
+      size_t ptr = 0;
       printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
+      for (int i = 0; i < this->getRows(); i++)
       {
-        for(int j = 0 ; j < this->getCols()-1; j++)
+        for (int j = 0; j < this->getCols() - 1; j++)
         {
-          printf("%6.4f, ",this->getData()[ptr++]);
+          printf("%6.4f, ", this->getData()[ptr++]);
         }
-        printf("%6.4f\n",this->getData()[ptr++]);
+        printf("%6.4f\n", this->getData()[ptr++]);
       }
     }
   private:
@@ -106,26 +112,33 @@ class JOGComplexMatrix: public OGComplexMatrix
     JOGComplexMatrix(jobject * obj)
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
-    };
+      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(
+          *obj, OGTerminalClazz_getData);
+      this->noCopy_ctor(_dataptr,
+          getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),
+          getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
+    }
+    ;
     ~JOGComplexMatrix()
     {
       unbindOGArrayData<complex16>(this->getData(), *_backingObject);
-    };
+    }
+    ;
     void debug_print()
     {
       printf("\nJava bound OGComplexMatrix\n");
-      size_t ptr=0;
+      size_t ptr = 0;
       printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
+      for (int i = 0; i < this->getRows(); i++)
       {
-        for(int j = 0 ; j < this->getCols()-1; j++)
+        for (int j = 0; j < this->getCols() - 1; j++)
         {
           ptr++;
-          printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
+          printf("%6.4f + %6.4fi, ", this->getData()[ptr].real(),
+              this->getData()[ptr].imag());
         }
-        printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
+        printf("%6.4f + %6.4fi\n", this->getData()[ptr].real(),
+            this->getData()[ptr].imag());
         ptr++;
       }
     }
@@ -142,29 +155,42 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
     JOGRealSparseMatrix(jobject * obj)
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr);
-      int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx);
-      this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
-    };
+      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj,
+          OGTerminalClazz_getData);
+      int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj,
+          OGSparseMatrixClazz_getColPtr);
+      int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj,
+          OGSparseMatrixClazz_getRowIdx);
+      this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,
+          getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),
+          getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
+    }
+    ;
     ~JOGRealSparseMatrix()
     {
-      unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(), *_backingObject, OGTerminalClazz_getData);
-      unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
-      unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, OGSparseMatrixClazz_getRowIdx);
-    };
+      unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(),
+          *_backingObject, OGTerminalClazz_getData);
+      unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(),
+          *_backingObject, OGSparseMatrixClazz_getColPtr);
+      unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(),
+          *_backingObject, OGSparseMatrixClazz_getRowIdx);
+    }
+    ;
     void debug_print()
     {
-      double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
+      double nnz = 100.e0 * this->getDatalen()
+          / (this->getRows() * this->getCols());
       printf("\nJava bound OGRealSparseMatrix\n");
-      printf("\ndata len = %d\n",this->getDatalen());
-      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("\ndata len = %d\n", this->getDatalen());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz,
+          this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
       for (int ir = 0; ir < this->getCols(); ir++)
       {
         for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
         {
-          printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
+          printf("(%d,%d) = %6.4f\n", this->getRowIdx()[i], ir,
+              this->getData()[i]);
         }
       }
     }
@@ -181,38 +207,50 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
     JOGComplexSparseMatrix(jobject * obj)
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr);
-      int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx);
-      this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
-    };
+      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(
+          *obj, OGTerminalClazz_getData);
+      int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj,
+          OGSparseMatrixClazz_getColPtr);
+      int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj,
+          OGSparseMatrixClazz_getRowIdx);
+      this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,
+          getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),
+          getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
+    }
+    ;
     ~JOGComplexSparseMatrix()
     {
-      unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(), *_backingObject, OGTerminalClazz_getData);
-      unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
-      unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, OGSparseMatrixClazz_getRowIdx);
-    };
+      unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(),
+          *_backingObject, OGTerminalClazz_getData);
+      unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(),
+          *_backingObject, OGSparseMatrixClazz_getColPtr);
+      unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(),
+          *_backingObject, OGSparseMatrixClazz_getRowIdx);
+    }
+    ;
     void debug_print()
     {
-      double nnz = 100.e0 * this->getDatalen()/ (this->getRows() * this->getCols());
+      double nnz = 100.e0 * this->getDatalen()
+          / (this->getRows() * this->getCols());
       printf("\nJava bound OGComplexSparseMatrix\n");
-      printf("datalen:%d\n",this->getDatalen());
-      printf("rows:%d\n",this->getRows());
-      printf("cols:%d\n",this->getCols());
-      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("datalen:%d\n", this->getDatalen());
+      printf("rows:%d\n", this->getRows());
+      printf("cols:%d\n", this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz,
+          this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
       for (int ir = 0; ir < this->getCols(); ir++)
       {
         for (int i = colPtr[ir]; i < colPtr[1]; i++)
         {
-          printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
+          printf("(%d,%d) = %6.4f + %6.4fi \n", this->getRowIdx()[i], ir,
+              this->getData()[i].real(), this->getData()[i].imag());
         }
       }
     }
   private:
     jobject * _backingObject = NULL;
 };
-
 
 /**
  * binds the data in an OGArray class to a T pointer
@@ -221,16 +259,17 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
  * @param obj the object from which the data shall be extracted
  * @param method the method to "get" the native data reference
  */
-template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmethodID method)
+template<typename T, typename S> T * bindPrimitiveArrayData(jobject obj,
+    jmethodID method)
 {
-  if(!obj)
+  if (!obj)
   {
 #ifdef _DEBUG
     printf("bindPrimitiveArrayData: null obj\n");
 #endif
     exit(1);
   }
-  if(!method)
+  if (!method)
   {
 #ifdef _DEBUG
     printf("bindPrimitiveArrayData: null method\n");
@@ -239,8 +278,8 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
   }
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
+  jStatus = JVMcache->AttachCurrentThread((void **) &env, NULL); // NOP to get env ptr
+  if (jStatus)
   {
 #ifdef _DEBUG
     printf("Thread attach failed\n");
@@ -249,7 +288,7 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
   }
   jobject dataobj = NULL;
   dataobj = env->CallObjectMethod(obj, method);
-  if(!dataobj)
+  if (!dataobj)
   {
 #ifdef _DEBUG
     printf("CallObjectMethod failed\n");
@@ -257,7 +296,7 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
     exit(1);
   }
   S * array = reinterpret_cast<S *>(&dataobj);
-  T * _dataptr = (T *) env->GetPrimitiveArrayCritical(*array,NULL);
+  T * _dataptr = (T *) env->GetPrimitiveArrayCritical(*array, NULL);
   return _dataptr;
 }
 
@@ -269,23 +308,24 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
  * @param obj the java object from which the native data is pinned
  * @param method the method that refers to the pinned data
  */
-template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, jobject obj, jmethodID method)
+template<typename T, typename S> void unbindPrimitiveArrayData(T * nativeData,
+    jobject obj, jmethodID method)
 {
-  if(!nativeData)
+  if (!nativeData)
   {
 #ifdef _DEBUG
     printf("unbindPrimitiveArrayData: null nativeData\n");
 #endif
     exit(1);
   }
-  if(!obj)
+  if (!obj)
   {
 #ifdef _DEBUG
     printf("unbindPrimitiveArrayData: null obj\n");
 #endif
     exit(1);
   }
-  if(!method)
+  if (!method)
   {
 #ifdef _DEBUG
     printf("unbindPrimitiveArrayData: null method\n");
@@ -294,8 +334,8 @@ template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, 
   }
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
+  jStatus = JVMcache->AttachCurrentThread((void **) &env, NULL); // NOP to get env ptr
+  if (jStatus)
   {
 #ifdef _DEBUG
     printf("Thread attach failed\n");
@@ -304,7 +344,7 @@ template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, 
   }
   jobject dataobj = env->CallObjectMethod(obj, method);
   S * array = reinterpret_cast<S *>(&dataobj);
-  env->ReleasePrimitiveArrayCritical(*array, (void *)nativeData, 0);
+  env->ReleasePrimitiveArrayCritical(*array, (void *) nativeData, 0);
 }
 
 /**
@@ -313,12 +353,12 @@ template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, 
  * @param nativeData the native data to unbind
  * @param obj the java object from which the native data is pinned
  */
-template <typename T> void unbindOGArrayData(T * nativeData, jobject obj)
+template<typename T> void unbindOGArrayData(T * nativeData, jobject obj)
 {
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
+  jStatus = JVMcache->AttachCurrentThread((void **) &env, NULL); // NOP to get env ptr
+  if (jStatus)
   {
 #ifdef _DEBUG
     printf("Thread attach failed\n");
@@ -327,7 +367,7 @@ template <typename T> void unbindOGArrayData(T * nativeData, jobject obj)
   }
   jobject dataobj = env->CallObjectMethod(obj, OGTerminalClazz_getData);
   jdoubleArray * array = reinterpret_cast<jdoubleArray *>(&dataobj);
-  env->ReleasePrimitiveArrayCritical(*array, (void *)nativeData, 0);
+  env->ReleasePrimitiveArrayCritical(*array, (void *) nativeData, 0);
 }
 
 /**
@@ -354,7 +394,6 @@ class JCOPY: public JOGExpr, public COPY
     ~JCOPY();
     void debug_print();
 };
-
 
 /**
  * PLUS node spec derived from a java PLUS node
@@ -410,24 +449,27 @@ class JSELECTRESULT: public JOGExpr, public SELECTRESULT
 class ExprFactory
 {
   public:
-    ExprFactory() {};
+    ExprFactory()
+    {
+    }
+    ;
     librdag::OGNumeric * getExpr(jobject obj)
     {
       printf("In exprfactory\n");
 #ifdef _DEBUG
       printf("vm ptr at 0x%llx\n",JVMcache);
 #endif
-      JNIEnv *env=NULL;
+      JNIEnv *env = NULL;
       jint jStatus = 0;
-      jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-      if(jStatus)
+      jStatus = JVMcache->AttachCurrentThread((void **) &env, NULL); // NOP to get env ptr
+      if (jStatus)
       {
 #ifdef _DEBUG
         printf("Thread attach failed\n");
 #endif
         exit(1);
       }
-      if(!OGNumericClazz_getType)
+      if (!OGNumericClazz_getType)
       {
 #ifdef _DEBUG
         printf("Clazz Type is null, 0x%llx\n",OGNumericClazz_getType);
@@ -435,83 +477,82 @@ class ExprFactory
         exit(1);
       }
       jobject typeobj = env->CallObjectMethod(obj, OGNumericClazz_getType);
-      jlong ID = env->GetLongField(typeobj,OGExprTypeEnumClazz__hashdefined);
+      jlong ID = env->GetLongField(typeobj, OGExprTypeEnumClazz__hashdefined);
 #ifdef __MINGW32__
       unsigned int high, low;
-      low =   (long long unsigned int)ID & 0x00000000FFFFFFFFULL;
+      low = (long long unsigned int)ID & 0x00000000FFFFFFFFULL;
       high = ((long long unsigned int)ID & 0xFFFFFFFF00000000ULL) >> 32;
       printf("Clazz Type is hashdefined as %x%x\n", high, low);
 #else
-      printf("Clazz Type is hashdefined as %lld\n",(long long int)ID);
+      printf("Clazz Type is hashdefined as %lld\n", (long long int) ID);
 #endif
-      switch(ID)
-      {
+      switch (ID) {
       case OGREALMATRIX_ENUM:
       {
         printf("Binding a JOGRealMatrix\n");
         _expr = new JOGRealMatrix(&obj);
         _expr->debug_print();
       }
-      break;
+        break;
       case OGCOMPLEXMATRIX_ENUM:
       {
         printf("Binding a JOGComplexMatrix\n");
         _expr = new JOGComplexMatrix(&obj);
         _expr->debug_print();
       }
-      break;
+        break;
       case OGREALSPARSEMATRIX_ENUM:
       {
         printf("Binding a JOGRealSparseMatrix\n");
         _expr = new JOGRealSparseMatrix(&obj);
         _expr->debug_print();
       }
-      break;
+        break;
       case OGCOMPLEXSPARSEMATRIX_ENUM:
       {
         printf("Binding a JOGComplexSparseMatrix\n");
         _expr = new JOGComplexSparseMatrix(&obj);
         _expr->debug_print();
       }
-      break;
+        break;
       case COPY_ENUM:
       {
         printf("COPY function\n");
         _expr = JCOPY::fromJObject(&obj);
       }
-      break;
+        break;
       case MINUS_ENUM:
       {
         printf("MINUS function\n");
         _expr = JMINUS::fromJObject(&obj);
       }
-      break;
+        break;
       case PLUS_ENUM:
       {
         printf("PLUS function\n");
         _expr = JPLUS::fromJObject(&obj);
       }
-      break;
+        break;
       case SVD_ENUM:
       {
         printf("SVD function\n");
         _expr = JSVD::fromJObject(&obj);
       }
-      break;
+        break;
       case SELECTRESULT_ENUM:
       {
         printf("Select Result function\n");
         _expr = JSELECTRESULT::fromJObject(&obj);
       }
-      break;
+        break;
       default:
       {
         throw convertExcept;
       }
-      break;
+        break;
       }
 
-      if(!_expr)
+      if (!_expr)
       {
         printf("_expr is NULL so hasn't been set by the factory, exiting\n");
         exit(1);
@@ -519,11 +560,11 @@ class ExprFactory
 
       printf("Returning from exprfactory\n");
       return _expr;
-    };
+    }
+    ;
   private:
     librdag::OGNumeric * _expr = NULL;
 };
-
 
 /**
  * OGExpr implementation details
@@ -531,7 +572,7 @@ class ExprFactory
  */
 JOGExpr::JOGExpr(jobject * obj)
 {
-  if(!obj)
+  if (!obj)
   {
 #ifdef _DEBUG
     printf("JOGExpr: null obj\n");
@@ -547,7 +588,7 @@ JOGExpr::generateArgs()
   jobject *obj = this->_backingObject;
   // get object array
   jmethodID method = OGExprClazz_getExprs;
-  if(!method)
+  if (!method)
   {
 #ifdef _DEBUG
     printf("JOGExpr: null method\n");
@@ -556,8 +597,8 @@ JOGExpr::generateArgs()
   }
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
+  jStatus = JVMcache->AttachCurrentThread((void **) &env, NULL); // NOP to get env ptr
+  if (jStatus)
   {
 #ifdef _DEBUG
     printf("Thread attach failed\n");
@@ -566,7 +607,7 @@ JOGExpr::generateArgs()
   }
   jobject dataobj = NULL;
   dataobj = env->CallObjectMethod(*obj, method);
-  if(!dataobj)
+  if (!dataobj)
   {
 #ifdef _DEBUG
     printf("CallObjectMethod failed\n");
@@ -574,13 +615,13 @@ JOGExpr::generateArgs()
     exit(1);
   }
   jobjectArray * args = reinterpret_cast<jobjectArray *>(&dataobj);
-  jsize len = env->GetArrayLength((jarray)*args);
+  jsize len = env->GetArrayLength((jarray) *args);
 #ifdef _DEBUG
   printf("JOGExpr arg size is %d\n",len);
 #endif
   std::vector<OGNumeric *> * local_args = new std::vector<librdag::OGNumeric *>;
   ExprFactory * factory = new ExprFactory();
-  for(int i=0; i<len; i++)
+  for (int i = 0; i < len; i++)
   {
 
     jobject tmp = (jobject) env->GetObjectArrayElement(*args, i);
@@ -589,14 +630,18 @@ JOGExpr::generateArgs()
   return local_args;
 }
 
-JOGExpr:: ~JOGExpr() {}
-
+JOGExpr::~JOGExpr()
+{
+}
 
 /**
  * JCOPY implementation details
  * COPY node derived from a java COPY node
  */
-JCOPY::JCOPY(jobject * obj): JOGExpr(obj) { }
+JCOPY::JCOPY(jobject * obj) :
+    JOGExpr(obj)
+{
+}
 void JCOPY::debug_print()
 {
   printf("JCOPY class\n");
@@ -610,13 +655,18 @@ JCOPY::fromJObject(jobject *obj)
   return _expr;
 }
 
-JCOPY::~JCOPY() {}
+JCOPY::~JCOPY()
+{
+}
 
 /**
  * JPLUS implementation details
  * PLUS node derived from a java PLUS node
  */
-JPLUS::JPLUS(jobject * obj): JOGExpr(obj) { }
+JPLUS::JPLUS(jobject * obj) :
+    JOGExpr(obj)
+{
+}
 
 JPLUS*
 JPLUS::fromJObject(jobject *obj)
@@ -630,13 +680,18 @@ void JPLUS::debug_print()
 {
   printf("JPLUS class\n");
 }
-JPLUS::~JPLUS() {}
+JPLUS::~JPLUS()
+{
+}
 
 /**
  * JMINUS implementation details
  * MINUS node derived from a java MINUS node
  */
-JMINUS::JMINUS(jobject * obj): JOGExpr(obj) { }
+JMINUS::JMINUS(jobject * obj) :
+    JOGExpr(obj)
+{
+}
 
 JMINUS*
 JMINUS::fromJObject(jobject *obj)
@@ -650,13 +705,18 @@ void JMINUS::debug_print()
 {
   printf("JMINUS class\n");
 }
-JMINUS::~JMINUS() {}
+JMINUS::~JMINUS()
+{
+}
 
 /**
  * JSVD implementation details
  * SVD node derived from a java SVD node
  */
-JSVD::JSVD(jobject * obj): JOGExpr(obj) { }
+JSVD::JSVD(jobject * obj) :
+    JOGExpr(obj)
+{
+}
 
 JSVD*
 JSVD::fromJObject(jobject *obj)
@@ -670,13 +730,18 @@ void JSVD::debug_print()
 {
   printf("JSVD class\n");
 }
-JSVD::~JSVD() {}
+JSVD::~JSVD()
+{
+}
 
 /**
  * JSELECTRESULT implementation details
  * SELECTRESULT node derived from a java SVD node
  */
-JSELECTRESULT::JSELECTRESULT(jobject * obj): JOGExpr(obj) { }
+JSELECTRESULT::JSELECTRESULT(jobject * obj) :
+    JOGExpr(obj)
+{
+}
 
 JSELECTRESULT*
 JSELECTRESULT::fromJObject(jobject *obj)
@@ -690,9 +755,9 @@ void JSELECTRESULT::debug_print()
 {
   printf("JSELECTRESULT class\n");
 }
-JSELECTRESULT::~JSELECTRESULT() {}
-
-
+JSELECTRESULT::~JSELECTRESULT()
+{
+}
 
 /**
  * C shim to instantiate java tree as c++ tree
@@ -707,46 +772,45 @@ void * instantiateJClassAsCXXClass(jobject obj)
   return factory->getExpr(obj);
 }
 
-
 } // namespace ends
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  /*
-   * javap generated signature class for the Materialisers.java class
-   *
-   * This code is the entry and exit point for java, it takes a the pointer to
-   * the root node of a tree and then converts the java tree to a C++ tree and passes it
-   * to the entry point code when then runs its walkers.
-   *
-   * Class:     com_opengamma_longdog_materialisers_Materialisers
-   * Method:    materialise
-   * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/OGNumeric;
-   */
-  JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialise
-  (JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
-  {
+/*
+ * javap generated signature class for the Materialisers.java class
+ *
+ * This code is the entry and exit point for java, it takes a the pointer to
+ * the root node of a tree and then converts the java tree to a C++ tree and passes it
+ * to the entry point code when then runs its walkers.
+ *
+ * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Method:    materialise
+ * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/OGNumeric;
+ */
+JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialise(
+    JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
+{
 
-    printf("Entering materialise function\n");
+  printf("Entering materialise function\n");
 
+  printf("Calling convert::instantiateJClassAsCXXClass\n");
+  // convert obj to OGNumeric objs
+  librdag::OGNumeric * chain =
+      (librdag::OGNumeric *) convert::instantiateJClassAsCXXClass(obj);
 
-    printf("Calling convert::instantiateJClassAsCXXClass\n");
-    // convert obj to OGNumeric objs
-    librdag::OGNumeric * chain = (librdag::OGNumeric *) convert::instantiateJClassAsCXXClass(obj);
+  printf("Calling entrypt function\n");
+  // pass to entrypt
+  //struct c_OGNumeric * answer = (should answer be used later?)
+  entrypt((struct c_OGNumeric *) chain);
 
-    printf("Calling entrypt function\n");
-    // pass to entrypt
-    //struct c_OGNumeric * answer = (should answer be used later?)
-    entrypt((struct c_OGNumeric *) chain);
-
-    printf("Calling delete\n");
+  printf("Calling delete\n");
 //     delete chain;
 
-    printf("Returning from materialise function\n\n\n");
-    // convert to a jObj
-    return (jobject) obj;
-  }
+  printf("Returning from materialise function\n\n\n");
+  // convert to a jObj
+  return (jobject) obj;
+}
 
 #ifdef __cplusplus
 }
