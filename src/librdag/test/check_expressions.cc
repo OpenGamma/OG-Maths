@@ -31,17 +31,34 @@ TEST(OGExprTest, ComplexValues) {
   // Copy constructor from object
   OGComplexScalar *complxCopy2 = new OGComplexScalar(*complx);
   EXPECT_EQ(complex16(1.0,2.0), complxCopy2->getValue());
+  // Cleanup
   delete complx;
   delete complxCopy1;
   delete complxCopy2;
 }
 
 TEST(OGExprTest, COPY){
-
+  // Constructor
+  OGRealScalar *real = new OGRealScalar(1.0);
+  OGExpr *copy = new COPY(real);
+  std::vector<OGNumeric *> * args = copy->getArgs();
+  ASSERT_EQ(1, copy->getNArgs());
+  EXPECT_EQ(real, dynamic_cast<OGRealScalar*>((*args)[0]));
+  // Copy constructor
+  //FIXME: CHeck arg assignment
+  // Cleanup
+  delete copy;
 }
 
 TEST(OGExprTest, PLUS){
-
+  // Constructor
+  OGRealScalar *real = new OGRealScalar(1.0);
+  OGComplexScalar *complx = new OGComplexScalar(complex16(2.0,3.0));
+  OGExpr *plus = new PLUS(real, complx);
+  std::vector<OGNumeric *> * args = plus->getArgs();
+  ASSERT_EQ(1, plus->getNArgs());
+  EXPECT_EQ(real, dynamic_cast<OGRealScalar*>((*args)[0]));
+  EXPECT_EQ(complx, dynamic_cast<OGComplexScalar*>((*args)[1]));
 }
 
 TEST(OGExprTest, MINUS){

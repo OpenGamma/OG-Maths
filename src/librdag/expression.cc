@@ -51,11 +51,11 @@ OGExpr::OGExpr(const librdag::OGNumeric * const args, const int nargs)
 
 OGExpr::~OGExpr()
 {
-	for (std::vector<OGNumeric *>::iterator it = this->_args->begin() ; it != this->_args->end(); it++)
-	{
-		delete &it;
-	}
-	delete this->_args;
+  for (std::vector<OGNumeric *>::iterator it = this->_args->begin() ; it != this->_args->end(); it++)
+  {
+    delete *it;
+  }
+  delete this->_args;
 }
 
 OGExpr&
@@ -111,6 +111,13 @@ OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
 }
 
 COPY::COPY() {}
+
+COPY::COPY(OGNumeric *arg)
+{
+  vector<OGNumeric*> *args = new vector<OGNumeric*>();
+  args->push_back(arg);
+  this->setArgs(args);
+}
 
 void
 COPY::debug_print()
