@@ -56,7 +56,7 @@ TEST(OGExprTest, COPY){
   OGRealScalar *newReal = new OGRealScalar(3.14);
   newArgs->push_back(newReal);
   OGExpr *copyWithArgs = new COPY(newArgs);
-  ASSERT_EQ(1, copy->getNArgs());
+  ASSERT_EQ(1, copyWithArgs->getNArgs());
   EXPECT_EQ(newReal, dynamic_cast<OGRealScalar*>((*newArgs)[0]));
 
   // Constructor with args of wrong length
@@ -76,6 +76,24 @@ TEST(OGExprTest, PLUS){
   ASSERT_EQ(2, plus->getNArgs());
   EXPECT_EQ(real, dynamic_cast<OGRealScalar*>((*args)[0]));
   EXPECT_EQ(complx, dynamic_cast<OGComplexScalar*>((*args)[1]));
+
+  // Constructor with args
+  std::vector<OGNumeric *> * newArgs = new std::vector<OGNumeric *>();
+  OGRealScalar *newReal = new OGRealScalar(3.14);
+  OGComplexScalar *newComplx = new OGComplexScalar(complex16(2.7182, 2.7182));
+  newArgs->push_back(newReal);
+  newArgs->push_back(newComplx);
+  OGExpr *plusWithArgs = new PLUS(newArgs);
+  ASSERT_EQ(2, plusWithArgs->getNArgs());
+  EXPECT_EQ(newReal, dynamic_cast<OGRealScalar*>((*newArgs)[0]));
+  EXPECT_EQ(newComplx, dynamic_cast<OGComplexScalar*>((*newArgs)[1]));
+
+  // Constructor with args of wrong length
+  // FIXME: Needs implementing once this throws an exception.
+
+  // Cleanup
+  delete plus;
+  delete plusWithArgs;
 }
 
 TEST(OGExprTest, MINUS){
