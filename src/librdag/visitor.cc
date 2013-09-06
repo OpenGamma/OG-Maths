@@ -8,8 +8,12 @@
 
 namespace librdag {
 
-Visitor::Visitor() {}
+Visitor::Visitor()
+{
+}
 
-Visitor::~Visitor() {}
+Visitor::~Visitor()
+{
+}
 
 }

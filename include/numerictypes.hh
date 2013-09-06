@@ -16,5 +16,4 @@ typedef complex<float> complex8;
 typedef double real16;
 typedef float real8;
 
-
 #endif /* NUMERICTYPES_HH_ */

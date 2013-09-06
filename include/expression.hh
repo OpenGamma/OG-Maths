@@ -19,12 +19,10 @@
 
 using namespace std;
 
-
 /*
  * The namespace for the DAG library
  */
-namespace librdag
-{
+namespace librdag {
 
 /*
  * Base class for absolutely everything!
@@ -66,35 +64,33 @@ class OGExpr: public OGNumeric
  * Things that extend OGExpr
  */
 
-class OGBinaryExpr : virtual public OGExpr
+class OGBinaryExpr: virtual public OGExpr
 {
   public:
-	  OGBinaryExpr();
-	  OGBinaryExpr(OGNumeric* left, OGNumeric* right);
+    OGBinaryExpr();
+    OGBinaryExpr(OGNumeric* left, OGNumeric* right);
 };
 
 class COPY: public OGExpr
 {
   public:
-	  COPY();
+    COPY();
     void debug_print();
 };
-
 
 class PLUS: public OGBinaryExpr
 {
   public:
-	  PLUS();
-	  PLUS(OGNumeric* left, OGNumeric* right);
+    PLUS();
+    PLUS(OGNumeric* left, OGNumeric* right);
     void debug_print();
 };
-
 
 class MINUS: public OGBinaryExpr
 {
   public:
     MINUS();
-	  MINUS(OGNumeric* left, OGNumeric* right);
+    MINUS(OGNumeric* left, OGNumeric* right);
     void debug_print();
 };
 
@@ -115,31 +111,35 @@ class SELECTRESULT: public OGExpr
 /**
  * Things that extend OGScalar
  */
-template <class T> class OGScalar: public OGNumeric
+template<class T> class OGScalar: public OGNumeric
 {
   private:
     T _value;
   public:
-    OGScalar() {};
+    OGScalar()
+    {
+    }
 
     OGScalar(const OGScalar * const copy)
     {
-    	this->_value = copy->_value;
+      this->_value = copy->_value;
     }
 
     OGScalar(const OGScalar& copy)
     {
-      this->_value= copy._value;
+      this->_value = copy._value;
     }
 
     OGScalar(T data)
     {
-      this->_value=data;
-    };
+      this->_value = data;
+    }
+    ;
     void accept(Visitor &v)
     {
       v.visit(this);
-    };
+    }
+    ;
     T getValue()
     {
       return this->_value;
@@ -149,18 +149,19 @@ template <class T> class OGScalar: public OGNumeric
 typedef OGScalar<real16> OGRealScalar;
 typedef OGScalar<complex16> OGComplexScalar;
 
-
-template <typename T> class OGArray: public OGNumeric
+template<typename T> class OGArray: public OGNumeric
 {
   public:
     virtual ~OGArray()
     {
       delete _data;
-    };
+    }
+    ;
     void accept(Visitor &v)
     {
       v.visit(this);
-    };
+    }
+    ;
     T * getData()
     {
       return _data;
@@ -195,15 +196,15 @@ template <typename T> class OGArray: public OGNumeric
     }
   private:
     T * _data = NULL;
-    int _rows  = 0;
-    int _cols  = 0;
+    int _rows = 0;
+    int _cols = 0;
     int _datalen = 0;
 };
 
 /**
  * Things what extend OGMatrix
  */
-template <typename T> class OGMatrix: public OGArray<T>
+template<typename T> class OGMatrix: public OGArray<T>
 {
   public:
     OGMatrix(const OGMatrix& copy)
@@ -211,25 +212,29 @@ template <typename T> class OGMatrix: public OGArray<T>
       this->setRows(copy->getRows());
       this->setCols(copy->getCols());
       this->setDatalen(copy->getDatalen());
-      T * tmpdata = new T [this->getDatalen()];
-      memcpy(tmpdata, copy._data, sizeof(T)*this->getDatalen());
+      T * tmpdata = new T[this->getDatalen()];
+      memcpy(tmpdata, copy._data, sizeof(T) * this->getDatalen());
       this->setData(tmpdata);
     }
-    OGMatrix() {};
+    OGMatrix()
+    {
+    }
+    ;
     OGMatrix(T * data, int rows, int cols)
     {
-      this->_datalen = rows*cols;
-      T * tmpdata =new T [this->getDatalen()];
-      memcpy(tmpdata, data, sizeof(T)*this->_datalen);
-      this->_data=tmpdata;
-      this->_rows=rows;
-      this->_cols=cols;
-    };
+      this->_datalen = rows * cols;
+      T * tmpdata = new T[this->getDatalen()];
+      memcpy(tmpdata, data, sizeof(T) * this->_datalen);
+      this->_data = tmpdata;
+      this->_rows = rows;
+      this->_cols = cols;
+    }
+    ;
     ~OGMatrix()
     {
-      if(this->getData())
+      if (this->getData())
       {
-        delete(this->getData());
+        delete (this->getData());
       }
     }
     void noCopy_ctor(T * data, int rows, int cols)
@@ -237,12 +242,14 @@ template <typename T> class OGMatrix: public OGArray<T>
       this->setData(data);
       this->setRows(rows);
       this->setCols(cols);
-      this->setDatalen(rows*cols);
-    };
+      this->setDatalen(rows * cols);
+    }
+    ;
     void accept(Visitor &v)
     {
       v.visit(this);
-    };
+    }
+    ;
   private:
 
 };
@@ -252,35 +259,36 @@ class OGRealMatrix: public OGMatrix<real16>
   public:
     void debug_print()
     {
-      size_t ptr=0;
+      size_t ptr = 0;
       printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
+      for (int i = 0; i < this->getRows(); i++)
       {
-        for(int j = 0 ; j < this->getCols()-1; j++)
+        for (int j = 0; j < this->getCols() - 1; j++)
         {
-          printf("%6.4f, ",this->getData()[ptr++]);
+          printf("%6.4f, ", this->getData()[ptr++]);
         }
-        printf("%6.4f\n",this->getData()[ptr++]);
+        printf("%6.4f\n", this->getData()[ptr++]);
       }
     }
 };
-
 
 class OGComplexMatrix: public OGMatrix<complex16>
 {
   public:
     void debug_print()
     {
-      size_t ptr=0;
+      size_t ptr = 0;
       printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
+      for (int i = 0; i < this->getRows(); i++)
       {
-        for(int j = 0 ; j < this->getCols()-1; j++)
+        for (int j = 0; j < this->getCols() - 1; j++)
         {
-          printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
+          printf("%6.4f + %6.4fi, ", this->getData()[ptr].real(),
+              this->getData()[ptr].imag());
           ptr++;
         }
-        printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
+        printf("%6.4f + %6.4fi\n", this->getData()[ptr].real(),
+            this->getData()[ptr].imag());
         ptr++;
       }
     }
@@ -291,11 +299,10 @@ class OGLogicalMatrix: public OGRealMatrix
 
 };
 
-
 /**
  * Things what extend OGDiagonalMatrix
  */
-template <typename T> class OGDiagonalMatrix: public OGArray<T>
+template<typename T> class OGDiagonalMatrix: public OGArray<T>
 {
   public:
     OGDiagonalMatrix(const OGDiagonalMatrix& copy)  // do we want deep copy?
@@ -303,36 +310,42 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
       // deep for now
       this->_rows = copy._rows;
       this->_cols = copy._cols;
-      this->_datalen = this->_rows>this->_cols?this->_cols:this->_rows;
-      T * tmpdata=new T [this->_datalen];
-      memcpy(tmpdata, copy._data, sizeof(T)*this->_datalen);
+      this->_datalen = this->_rows > this->_cols ? this->_cols : this->_rows;
+      T * tmpdata = new T[this->_datalen];
+      memcpy(tmpdata, copy._data, sizeof(T) * this->_datalen);
       this->setData(tmpdata);
     }
-    OGDiagonalMatrix() {};
+    OGDiagonalMatrix()
+    {
+    }
+    ;
     OGDiagonalMatrix(T * data, int rows, int cols)
     {
-      this->_datalen = rows>cols?cols:rows;
-      T * tmpdata = new T [this->_datalen];
-      memcpy(tmpdata, data, sizeof(T)*this->_datalen);
+      this->_datalen = rows > cols ? cols : rows;
+      T * tmpdata = new T[this->_datalen];
+      memcpy(tmpdata, data, sizeof(T) * this->_datalen);
       this->setData(tmpdata);
       this->_rows = rows;
       this->_cols = cols;
-    };
+    }
+    ;
     ~OGDiagonalMatrix()
     {
-      delete(this->_data);
+      delete (this->_data);
     }
     void noCopy_ctor(T * data, int rows, int cols)
     {
       this->setData(data);
       this->_rows = rows;
       this->_cols = cols;
-      this->_datalen = rows>cols?cols:rows;
-    };
+      this->_datalen = rows > cols ? cols : rows;
+    }
+    ;
     void accept(Visitor &v)
     {
       v.visit(this);
-    };
+    }
+    ;
   private:
 };
 
@@ -341,20 +354,20 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
   public:
     void debug_print()
     {
-      size_t ptr=0;
+      size_t ptr = 0;
       printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
+      for (int i = 0; i < this->getRows(); i++)
       {
-        for(int j = 0 ; j < this->getCols()-1; j++)
+        for (int j = 0; j < this->getCols() - 1; j++)
         {
-          if(i==j)
+          if (i == j)
           {
-            printf("%6.4f, ",this->getData()[ptr++]);
+            printf("%6.4f, ", this->getData()[ptr++]);
           }
         }
-        if(i==this->getCols())
+        if (i == this->getCols())
         {
-          printf("%6.4f\n",this->getData()[ptr++]);
+          printf("%6.4f\n", this->getData()[ptr++]);
         }
       }
     }
@@ -365,21 +378,23 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
   public:
     void debug_print()
     {
-      size_t ptr=0;
+      size_t ptr = 0;
       printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
+      for (int i = 0; i < this->getRows(); i++)
       {
-        for(int j = 0 ; j < this->getCols()-1; j++)
+        for (int j = 0; j < this->getCols() - 1; j++)
         {
-          if(i==j)
+          if (i == j)
           {
-            printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
+            printf("%6.4f + %6.4fi, ", this->getData()[ptr].real(),
+                this->getData()[ptr].imag());
             ptr++;
           }
         }
-        if(i==this->getCols())
+        if (i == this->getCols())
         {
-          printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
+          printf("%6.4f + %6.4fi\n", this->getData()[ptr].real(),
+              this->getData()[ptr].imag());
           ptr++;
         }
       }
@@ -389,36 +404,41 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 /**
  * Things what extend OGSparseMatrix
  */
-template <typename T> class OGSparseMatrix: public OGArray<T>
+template<typename T> class OGSparseMatrix: public OGArray<T>
 {
   public:
     OGSparseMatrix(const OGSparseMatrix& copy)
     {
-      OGSparseMatrix(copy._colPtr, copy._rowIdx, copy._data, copy._rows, copy._cols);
+      OGSparseMatrix(copy._colPtr, copy._rowIdx, copy._data, copy._rows,
+          copy._cols);
     }
-    OGSparseMatrix() {};
+    OGSparseMatrix()
+    {
+    }
+    ;
     OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols)
     {
-      this->_datalen = colPtr[cols+1];
+      this->_datalen = colPtr[cols + 1];
 
-      T * tmpdata = new T [this->_datalen];
-      memcpy(this->tmpdata, data, sizeof(T)*this->_datalen);
+      T * tmpdata = new T[this->_datalen];
+      memcpy(this->tmpdata, data, sizeof(T) * this->_datalen);
       this->setData(tmpdata);
 
-      this->_colPtr = new int [cols+1];
-      memcpy(this->_colPtr, colPtr, sizeof(int)*(this->cols+1));
+      this->_colPtr = new int[cols + 1];
+      memcpy(this->_colPtr, colPtr, sizeof(int) * (this->cols + 1));
 
-      this->_rowIdx = new int [this->_datalen];
-      memcpy(this->_rowIdx, rowIdx, sizeof(int)*this->_datalen);
+      this->_rowIdx = new int[this->_datalen];
+      memcpy(this->_rowIdx, rowIdx, sizeof(int) * this->_datalen);
 
       this->_rows = rows;
       this->_cols = cols;
-    };
+    }
+    ;
     ~OGSparseMatrix()
     {
-      delete(this->getData());
-      delete(this->_colPtr);
-      delete(this->_rowIdx);
+      delete (this->getData());
+      delete (this->_colPtr);
+      delete (this->_rowIdx);
     }
     void noCopy_ctor(int * colPtr, int * rowIdx, T * data, int rows, int cols)
     {
@@ -428,11 +448,13 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
       this->setDatalen(colPtr[cols]);
       this->setColPtr(colPtr);
       this->setRowIdx(rowIdx);
-    };
+    }
+    ;
     void accept(Visitor &v)
     {
       v.visit(this);
-    };
+    }
+    ;
     /**
      * gets the column pointers
      */
@@ -471,15 +493,18 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
   public:
     void debug_print()
     {
-      double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
+      double nnz = 100.e0 * this->getDatalen()
+          / (this->getRows() * this->getCols());
       printf("\nOGRealSparseMatrix\n");
-      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz,
+          this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
       for (int ir = 0; ir < this->getCols(); ir++)
       {
         for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
         {
-          printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
+          printf("(%d,%d) = %6.4f\n", this->getRowIdx()[i], ir,
+              this->getData()[i]);
         }
       }
     }
@@ -490,15 +515,18 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
   public:
     void debug_print()
     {
-      double nnz = 100.e0 * this->getDatalen() / (double)(this->getRows() * this->getCols());
+      double nnz = 100.e0 * this->getDatalen()
+          / (double) (this->getRows() * this->getCols());
       printf("\nOGComplexSparseMatrix\n");
-      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
+      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz,
+          this->getRows(), this->getCols());
       int * colPtr = this->getColPtr();
       for (int ir = 0; ir < this->getCols(); ir++)
       {
         for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
         {
-          printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
+          printf("(%d,%d) = %6.4f + %6.4fi \n", this->getRowIdx()[i], ir,
+              this->getData()[i].real(), this->getData()[i].imag());
         }
       }
     }
