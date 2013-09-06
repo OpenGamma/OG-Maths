@@ -44,8 +44,11 @@ TEST(OGExprTest, COPY){
   std::vector<OGNumeric *> * args = copy->getArgs();
   ASSERT_EQ(1, copy->getNArgs());
   EXPECT_EQ(real, dynamic_cast<OGRealScalar*>((*args)[0]));
-  // Copy constructor
-  //FIXME: CHeck arg assignment
+  // Check arg assignment
+  std::vector<OGNumeric *> * newArgs = new std::vector<OGNumeric *>();
+  OGRealScalar *newReal = new OGRealScalar(3.14);
+  newArgs->push_back(newReal);
+
   // Cleanup
   delete copy;
 }

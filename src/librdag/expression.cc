@@ -49,6 +49,11 @@ OGExpr::OGExpr(const librdag::OGNumeric * const args, const int nargs)
 	}
 }
 
+OGExpr::OGExpr(std::vector<OGNumeric *> *args)
+{
+  this->_args = args;
+}
+
 OGExpr::~OGExpr()
 {
   for (std::vector<OGNumeric *>::iterator it = this->_args->begin() ; it != this->_args->end(); it++)
@@ -58,12 +63,12 @@ OGExpr::~OGExpr()
   delete this->_args;
 }
 
-OGExpr&
-OGExpr::operator=(OGExpr& rhs)
-{
-  rhs.setArgs(this->getArgs());
-  return *this;
-}
+//OGExpr&
+//OGExpr::operator=(OGExpr& rhs)
+//{
+//  rhs.setArgs(this->getArgs());
+//  return *this;
+//}
 
 std::vector<OGNumeric *> *
 OGExpr::getArgs()
@@ -71,7 +76,6 @@ OGExpr::getArgs()
 	return this->_args;
 }
 
-// FIXME: Should replace this with construct from a vector
 void
 OGExpr::setArgs(std::vector<OGNumeric *> * args)
 {
@@ -102,6 +106,16 @@ OGExpr::accept(Visitor &v)
 
 OGBinaryExpr::OGBinaryExpr() {}
 
+OGBinaryExpr::OGBinaryExpr(std::vector<OGNumeric*>* args) : OGExpr() {
+  if (args->size() != 2)
+  {
+    //FIXME: Replace with exception when implemented.
+    // For now just die
+    exit(1);
+  }
+  this->_args = args;
+}
+
 OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
 {
 	vector<OGNumeric*> *args = new vector<OGNumeric*>();
@@ -119,6 +133,9 @@ COPY::COPY(OGNumeric *arg)
   this->setArgs(args);
 }
 
+COPY::COPY(std::vector<OGNumeric*>* args) {
+}
+
 void
 COPY::debug_print()
 {
@@ -128,6 +145,9 @@ COPY::debug_print()
 PLUS::PLUS() {}
 
 PLUS::PLUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
+
+PLUS::PLUS(std::vector<OGNumeric*>* args) {
+}
 
 void
 PLUS::debug_print()
@@ -139,6 +159,9 @@ MINUS::MINUS() {}
 
 MINUS::MINUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
+MINUS::MINUS(std::vector<OGNumeric*>* args) {
+}
+
 void
 MINUS::debug_print()
 {
@@ -147,6 +170,9 @@ MINUS::debug_print()
 
 SVD::SVD() {}
 
+SVD::SVD(std::vector<OGNumeric*>* args) {
+}
+
 void
 SVD::debug_print()
 {
@@ -154,6 +180,9 @@ SVD::debug_print()
 }
 
 SELECTRESULT::SELECTRESULT() {}
+
+SELECTRESULT::SELECTRESULT(std::vector<OGNumeric*>* args) {
+}
 
 void
 SELECTRESULT::debug_print()
