@@ -34,6 +34,7 @@ class Visitor
     virtual void visit(OGMatrix<complex16> *thing) = 0;
     virtual void visit(OGScalar<real16> *thing) = 0;
     virtual void visit(OGScalar<complex16> *thing) = 0;
+    virtual void visit(OGScalar<int> *thing) = 0;
 };
 
 }

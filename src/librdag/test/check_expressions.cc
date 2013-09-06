@@ -97,14 +97,87 @@ TEST(OGExprTest, PLUS){
 }
 
 TEST(OGExprTest, MINUS){
+  // Constructor
+  OGRealScalar *real = new OGRealScalar(1.0);
+  OGComplexScalar *complx = new OGComplexScalar(complex16(2.0,3.0));
+  OGExpr *minus = new MINUS(real, complx);
+  std::vector<OGNumeric *> * args = minus->getArgs();
+  ASSERT_EQ(2, minus->getNArgs());
+  EXPECT_EQ(real, dynamic_cast<OGRealScalar*>((*args)[0]));
+  EXPECT_EQ(complx, dynamic_cast<OGComplexScalar*>((*args)[1]));
 
+  // Constructor with args
+  std::vector<OGNumeric *> * newArgs = new std::vector<OGNumeric *>();
+  OGRealScalar *newReal = new OGRealScalar(3.14);
+  OGComplexScalar *newComplx = new OGComplexScalar(complex16(2.7182, 2.7182));
+  newArgs->push_back(newReal);
+  newArgs->push_back(newComplx);
+  OGExpr *minusWithArgs = new MINUS(newArgs);
+  ASSERT_EQ(2, minusWithArgs->getNArgs());
+  EXPECT_EQ(newReal, dynamic_cast<OGRealScalar*>((*newArgs)[0]));
+  EXPECT_EQ(newComplx, dynamic_cast<OGComplexScalar*>((*newArgs)[1]));
+
+  // Constructor with args of wrong length
+  // FIXME: Needs implementing once this throws an exception.
+
+  // Cleanup
+  delete minus;
+  delete minusWithArgs;
 }
 
 TEST(OGExprTest, SVD){
+  // Constructor
+  OGRealScalar *real = new OGRealScalar(1.0);
+  OGExpr *svd = new SVD(real);
+  std::vector<OGNumeric *> * args = svd->getArgs();
+  ASSERT_EQ(1, svd->getNArgs());
+  EXPECT_EQ(real, dynamic_cast<OGRealScalar*>((*args)[0]));
 
+  // Constructor with args
+  std::vector<OGNumeric *> * newArgs = new std::vector<OGNumeric *>();
+  OGRealScalar *newReal = new OGRealScalar(3.14);
+  newArgs->push_back(newReal);
+  OGExpr *svdWithArgs = new SVD(newArgs);
+  ASSERT_EQ(1, svdWithArgs->getNArgs());
+  EXPECT_EQ(newReal, dynamic_cast<OGRealScalar*>((*newArgs)[0]));
+
+  // Constructor with args of wrong length
+  // FIXME: Needs implementing once this throws an exception.
+
+  // Cleanup
+  delete svd;
+  delete svdWithArgs;
 }
 
 TEST(OGExprTest, SELECTRESULT){
+  // Constructor
+  OGRealScalar *real = new OGRealScalar(1.0);
+  OGIntegerScalar *index = new OGIntegerScalar(1);
+  OGExpr *select = new SELECTRESULT(real, index);
+  std::vector<OGNumeric *> * args = select->getArgs();
+  ASSERT_EQ(2, select->getNArgs());
+  EXPECT_EQ(real, dynamic_cast<OGRealScalar*>((*args)[0]));
+  EXPECT_EQ(index, dynamic_cast<OGIntegerScalar*>((*args)[1]));
 
+  // Constructor with args
+  std::vector<OGNumeric *> * newArgs = new std::vector<OGNumeric *>();
+  OGRealScalar *newReal = new OGRealScalar(3.14);
+  OGIntegerScalar *newIndex = new OGIntegerScalar(2);
+  newArgs->push_back(newReal);
+  newArgs->push_back(newIndex);
+  OGExpr *selectWithArgs = new SELECTRESULT(newArgs);
+  ASSERT_EQ(2, selectWithArgs->getNArgs());
+  EXPECT_EQ(newReal, dynamic_cast<OGRealScalar*>((*newArgs)[0]));
+  EXPECT_EQ(newIndex, dynamic_cast<OGIntegerScalar*>((*newArgs)[1]));
+
+  // Constructor with args of wrong length
+  // FIXME: Needs implementing once this throws an exception.
+
+  // Constructor with index argument of wrong type
+  // FIXME: Needs implementing once this throws an exception.
+
+  // Cleanup
+  delete select;
+  delete selectWithArgs;
 }
 

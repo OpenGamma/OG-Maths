@@ -57,14 +57,9 @@ class OGExpr: public OGNumeric
 {
   public:
     OGExpr();
-    OGExpr(const OGNumeric * const args, const int nargs);
     OGExpr(std::vector<OGNumeric *> *args);
     virtual ~OGExpr();
-
-
-
     std::vector<OGNumeric *> * getArgs();
-
     size_t getNArgs();
     virtual void debug_print();
     void accept(Visitor &v);
@@ -137,16 +132,18 @@ class SVD: public OGUnaryExpr
 {
   public:
     SVD();
+    SVD(OGNumeric * arg);
     SVD(std::vector<OGNumeric *> *args);
     void debug_print();
   private:
     explicit SVD(SVD& other);
 };
 
-class SELECTRESULT: public OGUnaryExpr
+class SELECTRESULT: public OGBinaryExpr
 {
   public:
     SELECTRESULT();
+    SELECTRESULT(OGNumeric *result, OGNumeric *index);
     SELECTRESULT(std::vector<OGNumeric *> *args);
     void debug_print();
   private:
@@ -230,6 +227,21 @@ class OGComplexScalar: public OGScalar<complex16>
     }
 };
 
+class OGIntegerScalar: public OGScalar<int>
+{
+  public:
+    OGIntegerScalar(const OGIntegerScalar * const copy): OGScalar<int>(copy){};
+    OGIntegerScalar(const OGIntegerScalar& copy): OGScalar<int>(copy){};
+    OGIntegerScalar(int data): OGScalar<int>(data){};
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      throw new librdagException();
+    }
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      throw new librdagException();
+    }
+};
 
 template <typename T> class OGArray: public OGTerminal
 {

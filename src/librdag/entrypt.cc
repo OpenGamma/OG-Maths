@@ -77,6 +77,10 @@ class PrintTreeVisitor: public librdag::Visitor
     {
       cout << "Have OGScalar<complex16> " << thing << endl;
     }
+    void visit(librdag::OGScalar<int> *thing)
+    {
+      cout << "Have OGScalar<int> " << thing << endl;
+    }
 };
 
 /*

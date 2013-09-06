@@ -42,15 +42,6 @@ OGExpr::OGExpr(OGExpr& copy)
   this->_args = new std::vector<OGNumeric *>(*copy.getArgs());
 }
 
-OGExpr::OGExpr(const librdag::OGNumeric * const args, const int nargs)
-{
-	this->_args = new std::vector<OGNumeric *>;
-	for(int i = 0; i < nargs; i++)
-	{
-		this->_args->push_back(const_cast<OGNumeric *> (&args[i]));
-	}
-}
-
 OGExpr::OGExpr(std::vector<OGNumeric *> *args)
 {
   this->_args = args;
@@ -64,13 +55,6 @@ OGExpr::~OGExpr()
   }
   delete this->_args;
 }
-
-//OGExpr&
-//OGExpr::operator=(OGExpr& rhs)
-//{
-//  rhs.setArgs(this->getArgs());
-//  return *this;
-//}
 
 std::vector<OGNumeric *> *
 OGExpr::getArgs()
@@ -197,6 +181,10 @@ SVD::SVD() {}
 SVD::SVD(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {
 }
 
+SVD::SVD(OGNumeric* arg): OGUnaryExpr(arg)
+{
+}
+
 void
 SVD::debug_print()
 {
@@ -205,7 +193,22 @@ SVD::debug_print()
 
 SELECTRESULT::SELECTRESULT() {}
 
-SELECTRESULT::SELECTRESULT(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {
+SELECTRESULT::SELECTRESULT(std::vector<OGNumeric*>* args): OGBinaryExpr(args) {
+  // Check that the second argument is an integer
+  if (dynamic_cast<OGIntegerScalar*>((*args)[1]) == NULL)
+  {
+    // FIXME: Throw exception when exceptions set up. die for now.
+    exit(1);
+  }
+}
+
+SELECTRESULT::SELECTRESULT(OGNumeric* result, OGNumeric* index): OGBinaryExpr(result, index)
+{
+  if (dynamic_cast<OGIntegerScalar*>((*(this->getArgs()))[1]) == NULL)
+  {
+    // FIXME: Throw exception when exceptions set up. die for now.
+    exit(1);
+  }
 }
 
 void
