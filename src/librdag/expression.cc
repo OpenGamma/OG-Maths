@@ -34,7 +34,7 @@ void OGNumeric::debug_print()
 
 OGExpr::OGExpr()
 {
-  this->_args = NULL;
+  this->_args = nullptr;
 }
 
 OGExpr::OGExpr(OGExpr& copy)
@@ -90,19 +90,17 @@ OGExpr::accept(Visitor &v)
  * Things that extend OGExpr
  */
 
-OGUnaryExpr::OGUnaryExpr(): OGExpr()
-{
-}
+OGUnaryExpr::OGUnaryExpr() : OGExpr() {}
 
 OGUnaryExpr::OGUnaryExpr(std::vector<OGNumeric*>* args)
 {
   if (args->size() != 1)
   {
-      //FIXME: Replace with exception when implemented.
-      // For now just die
-      exit(1);
-    }
-    this->setArgs(args);
+    //FIXME: Replace with exception when implemented.
+    // For now just die
+    exit(1);
+  }
+  this->setArgs(args);
 }
 
 OGUnaryExpr::OGUnaryExpr(OGNumeric* arg)
@@ -112,9 +110,9 @@ OGUnaryExpr::OGUnaryExpr(OGNumeric* arg)
   this->setArgs(args);
 }
 
-OGBinaryExpr::OGBinaryExpr() {}
+OGBinaryExpr::OGBinaryExpr() : OGExpr() {}
 
-OGBinaryExpr::OGBinaryExpr(std::vector<OGNumeric*>* args) : OGExpr() {
+OGBinaryExpr::OGBinaryExpr(std::vector<OGNumeric*>* args) {
   if (args->size() != 2)
   {
     //FIXME: Replace with exception when implemented.
@@ -132,18 +130,11 @@ OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
 	this->setArgs(args);
 }
 
-COPY::COPY() {}
+COPY::COPY() : OGUnaryExpr() {}
 
-COPY::COPY(OGNumeric *arg)
-{
-  vector<OGNumeric*> *args = new vector<OGNumeric*>();
-  args->push_back(arg);
-  this->setArgs(args);
-}
+COPY::COPY(OGNumeric *arg) : OGUnaryExpr(arg) {}
 
-COPY::COPY(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {
-
-}
+COPY::COPY(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {}
 
 void
 COPY::debug_print()
@@ -151,7 +142,7 @@ COPY::debug_print()
 	cout << "COPY base class" << endl;
 }
 
-PLUS::PLUS() {}
+PLUS::PLUS() : OGBinaryExpr() {}
 
 PLUS::PLUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
@@ -163,7 +154,7 @@ PLUS::debug_print()
 	cout << "PLUS base class" << endl;
 }
 
-MINUS::MINUS() {}
+MINUS::MINUS() : OGBinaryExpr() {}
 
 MINUS::MINUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
@@ -176,14 +167,11 @@ MINUS::debug_print()
 	cout << "MINUS base class" << endl;
 }
 
-SVD::SVD() {}
+SVD::SVD() : OGUnaryExpr() {}
 
-SVD::SVD(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {
-}
+SVD::SVD(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {}
 
-SVD::SVD(OGNumeric* arg): OGUnaryExpr(arg)
-{
-}
+SVD::SVD(OGNumeric* arg): OGUnaryExpr(arg) {}
 
 void
 SVD::debug_print()
@@ -191,7 +179,7 @@ SVD::debug_print()
 	cout << "SVD base class" << endl;
 }
 
-SELECTRESULT::SELECTRESULT() {}
+SELECTRESULT::SELECTRESULT() : OGBinaryExpr() {}
 
 SELECTRESULT::SELECTRESULT(std::vector<OGNumeric*>* args): OGBinaryExpr(args) {
   // Check that the second argument is an integer
@@ -217,4 +205,4 @@ SELECTRESULT::debug_print()
 	printf("SELECTRESULT base class\n");
 }
 
-}
+} // namespace librdag
