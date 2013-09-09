@@ -57,7 +57,6 @@ class OGTerminal: public OGNumeric
 class OGExpr: public OGNumeric
 {
   public:
-    OGExpr(std::vector<OGNumeric *> *args);
     virtual ~OGExpr();
     std::vector<OGNumeric *> * getArgs();
     size_t getNArgs();
@@ -69,6 +68,7 @@ class OGExpr: public OGNumeric
     OGExpr& operator=(OGExpr& rhs);
   protected:
     OGExpr();
+    OGExpr(std::vector<OGNumeric *> *args);
     void setArgs(std::vector<OGNumeric *> * args);
 };
 
@@ -78,20 +78,18 @@ class OGExpr: public OGNumeric
 
 class OGUnaryExpr: public OGExpr
 {
-  public:
-    OGUnaryExpr(std::vector<OGNumeric *> * args);
-    OGUnaryExpr(OGNumeric * args);
   protected:
     OGUnaryExpr();
+    OGUnaryExpr(std::vector<OGNumeric *> * args);
+    OGUnaryExpr(OGNumeric * args);
 };
 
 class OGBinaryExpr : public OGExpr
 {
-  public:
-    OGBinaryExpr(std::vector<OGNumeric *> *args);
-    OGBinaryExpr(OGNumeric* left, OGNumeric* right);
   protected:
     OGBinaryExpr();
+    OGBinaryExpr(std::vector<OGNumeric *> *args);
+    OGBinaryExpr(OGNumeric* left, OGNumeric* right);
   private:
     explicit OGBinaryExpr(OGBinaryExpr& other);
 };
