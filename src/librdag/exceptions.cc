@@ -1,6 +1,7 @@
+#include "exceptions.hh"
 #include <iostream>
-using namespace std;
 
+using namespace std;
 
 /*
  * The namespace for the DAG library
@@ -9,15 +10,13 @@ namespace librdag
 {
   
 /*
- * General execption thing
+ * librdagException
  */
-class librdagException: public exception
-{
-    public:
-    virtual const char* what() const throw()
-    {
-      return "Exception occurred.";
-    }
-};
 
+const char*
+librdagException::what() const throw()
+{
+  return "Exception occurred.";
 }
+
+} // namespace librdag
