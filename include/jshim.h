@@ -14,6 +14,9 @@ extern "C" {
   extern jclass OGTerminalClazz;
   extern jclass OGScalarClazz;
   extern jclass OGSparseMatrixClazz;
+  extern jclass BigDDoubleArrayClazz;
+  extern jclass ComplexArrayContainerClazz;
+  extern jclass OGExprTypeEnumClazz;
   extern jmethodID OGTerminalClazz_getData;
   extern jmethodID OGNumericClazz_getType;
   extern jmethodID OGExprClazz_getExprs;
@@ -22,8 +25,9 @@ extern "C" {
   extern jmethodID OGArrayClazz_getCols;
   extern jmethodID OGSparseMatrixClazz_getColPtr;
   extern jmethodID OGSparseMatrixClazz_getRowIdx;
-  extern jclass OGExprTypeEnumClazz;
+  extern jmethodID ComplexArrayContainerClazz_ctor_DAoA_DAoA;
   extern jfieldID  OGExprTypeEnumClazz__hashdefined;
+  
 #ifdef __cplusplus
 }
 #endif

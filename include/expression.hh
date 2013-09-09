@@ -25,6 +25,17 @@ using namespace std;
  */
 namespace librdag
 {
+  
+/*
+ * General execption thing
+ */
+class librdagException: public exception
+{
+    virtual const char* what() const throw()
+    {
+      return "Exception occurred.";
+    }
+};
 
 /*
  * Base class for absolutely everything!
@@ -37,6 +48,18 @@ class OGNumeric
     virtual void debug_print();
     virtual void accept(Visitor &v)=0;
 };
+
+/* 
+ * Base class for terminal nodes in the AST
+ */
+class OGTerminal: public OGNumeric
+{
+  public:
+    virtual real16 ** toReal16ArrayOfArrays() = 0;
+    virtual complex16 ** toComplex16ArrayOfArrays() = 0;
+};
+
+
 
 /**
  *  Expr type
@@ -115,7 +138,7 @@ class SELECTRESULT: public OGExpr
 /**
  * Things that extend OGScalar
  */
-template <class T> class OGScalar: public OGNumeric
+template <class T> class OGScalar: public OGTerminal
 {
   private:
     T _value;
@@ -140,17 +163,17 @@ template <class T> class OGScalar: public OGNumeric
     {
       v.visit(this);
     };
-    T getValue()
+    T * getData()
     {
       return this->_value;
-    }
+    }    
 };
 
 typedef OGScalar<real16> OGRealScalar;
 typedef OGScalar<complex16> OGComplexScalar;
 
 
-template <typename T> class OGArray: public OGNumeric
+template <typename T> class OGArray: public OGTerminal
 {
   public:
     virtual ~OGArray()
@@ -243,7 +266,22 @@ template <typename T> class OGMatrix: public OGArray<T>
     {
       v.visit(this);
     };
-  private:
+    T ** toArrayOfArrays()
+    {
+      int const rows = this->getRows();
+      int const cols = this->getCols();
+      T * const data = this->getData();
+      T ** tmp = new T * [rows];
+      for(int i=0; i < rows; i++)
+      {
+        tmp[i] = new T [cols];
+        for(int j = 0; j < cols; j++) {
+          tmp[i][j] = data[j*rows+i];
+        }
+      }
+      return tmp;
+    }
+private:
 
 };
 
@@ -263,6 +301,14 @@ class OGRealMatrix: public OGMatrix<real16>
         printf("%6.4f\n",this->getData()[ptr++]);
       }
     }
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      return this->toArrayOfArrays();
+    };
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+          throw new librdagException;
+    };
 };
 
 
@@ -284,6 +330,16 @@ class OGComplexMatrix: public OGMatrix<complex16>
         ptr++;
       }
     }
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      printf("throwing exception\n");
+      throw new librdagException;
+    };
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      printf("returning toArrayOfArrays\n");
+      return this->toArrayOfArrays();
+    };    
 };
 
 class OGLogicalMatrix: public OGRealMatrix

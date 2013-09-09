@@ -7,12 +7,36 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  /*
-   * Class:     com_opengamma_longdog_materialisers_Materialisers
-   * Method:    materialise
-   * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/OGNumeric;
-   */
-  JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialise
+/*
+ * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Method:    materialiseToJOGNumeric
+ * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/OGNumeric;
+ */
+JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJOGNumeric
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Method:    materialiseToJDoubleArrayOfArrays
+ * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)[[D
+ */
+JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJDoubleArrayOfArrays
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Method:    materialiseToJComplexArrayContainer
+ * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/other/ComplexArrayContainer;
+ */
+JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJComplexArrayContainer
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Method:    materialiseToJBoolean
+ * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJBoolean
   (JNIEnv *, jclass, jobject);
 
 #ifdef __cplusplus

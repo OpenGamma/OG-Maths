@@ -4,6 +4,7 @@
 #include "expression.hh"
 #include "exprtypeenum.h"
 #include "warningmacros.h"
+#include <complex.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -21,6 +22,7 @@ class convertException: public exception
       return "Exception occurred.";
     }
 } convertExcept;
+
 
 /**
  * helper function to get ints from int getFOO() in java
@@ -128,7 +130,7 @@ class JOGComplexMatrix: public OGComplexMatrix
         printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
         ptr++;
       }
-    }
+    }      
   private:
     jobject * _backingObject = NULL;
 };
@@ -168,6 +170,16 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
         }
       }
     }
+    real16 ** toReal16ArrayOfArrays() override {
+      double ** foo = NULL;
+      printf("returning null as no impl yet!!!!\n");
+      return foo;
+    }   
+    complex16 ** toComplex16ArrayOfArrays() override {
+      complex16 ** foo = NULL;
+      printf("returning null as no impl yet!!!!\n");
+      return foo;
+    }        
   private:
     jobject * _backingObject = NULL;
 };
@@ -209,6 +221,16 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
         }
       }
     }
+    real16 ** toReal16ArrayOfArrays() override {
+      double ** foo = NULL;
+      printf("returning null as no impl yet!!!!\n");
+      return foo;
+    }  
+    complex16 ** toComplex16ArrayOfArrays() override {
+      complex16 ** foo = NULL;
+      printf("returning null as no impl yet!!!!\n");
+      return foo;
+    }        
   private:
     jobject * _backingObject = NULL;
 };
@@ -693,7 +715,6 @@ void JSELECTRESULT::debug_print()
 JSELECTRESULT::~JSELECTRESULT() {}
 
 
-
 /**
  * C shim to instantiate java tree as c++ tree
  */
@@ -707,46 +728,364 @@ void * instantiateJClassAsCXXClass(jobject obj)
   return factory->getExpr(obj);
 }
 
+class DispatchToReal16ArrayOfArrays: public librdag::Visitor
+{
+  public:
+    
+    DispatchToReal16ArrayOfArrays(){}
+    ~DispatchToReal16ArrayOfArrays()
+    {
+      real16 ** arr = this->getData();
+      if(arr)
+      {
+
+        for(int i=0;i<this->getRows();i++)
+        {
+          delete arr[i];
+        }
+        delete arr;         
+      }
+    }
+    void visit(librdag::OGExpr SUPPRESS_UNUSED *thing)
+    {
+        throw convertExcept;
+    };
+    void visit(librdag::OGArray<real16> *thing)
+    {
+      this->setData(thing->toReal16ArrayOfArrays());
+      this->setRows(thing->getRows());
+      this->setCols(thing->getCols());      
+    }
+    void visit(librdag::OGArray<complex16> SUPPRESS_UNUSED *thing)
+    {
+        throw convertExcept;
+    }
+    void visit(librdag::OGMatrix<real16> *thing)
+    {
+      this->setData(thing->toReal16ArrayOfArrays());
+      this->setRows(thing->getRows());
+      this->setCols(thing->getCols());    
+    }
+    void visit(librdag::OGMatrix<complex16> SUPPRESS_UNUSED *thing)
+    {
+        throw convertExcept;
+    }    
+    void visit(librdag::OGScalar<real16> *thing)
+    {
+      real16 * const data = thing->getData();
+      real16 ** tmp = new real16 * [1];
+      tmp[0] = new real16[1];
+      tmp[0][0] = *data;
+      this->setData(tmp);
+      this->setRows(1);
+      this->setCols(1);    
+    }
+    void visit(librdag::OGScalar<complex16> SUPPRESS_UNUSED *thing)
+    {
+        throw convertExcept;
+    }
+    void setData(real16 ** data)
+    {
+      this->_data = data;
+    }
+    void setRows(int rows)
+    {
+     this->rows = rows; 
+    }
+    void setCols(int cols)
+    {
+     this->cols = cols;
+    }        
+    real16 ** getData()
+    {
+      return this->_data;
+    }
+    int getRows()
+    {
+     return this->rows; 
+    }
+    int getCols()
+    {
+     return this->cols; 
+    }    
+  private:
+    real16 ** _data = NULL;
+    int rows;
+    int cols;
+};
+
+class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
+{
+  public:
+    
+    DispatchToComplex16ArrayOfArrays(){}
+    ~DispatchToComplex16ArrayOfArrays()
+    {
+      complex16 ** arr = this->getData();
+      if(arr)
+      {
+
+        for(int i=0;i<this->getRows();i++)
+        {
+          delete arr[i];
+        }
+        delete arr;         
+      }
+    }
+    void visit(librdag::OGExpr SUPPRESS_UNUSED *thing)
+    {
+        throw convertExcept;
+    };
+    void visit(librdag::OGArray<complex16> *thing)
+    {
+      this->setData(thing->toComplex16ArrayOfArrays());
+      this->setRows(thing->getRows());
+      this->setCols(thing->getCols());      
+    }
+    void visit(librdag::OGArray<real16> SUPPRESS_UNUSED *thing)
+    {
+        throw convertExcept;
+    }
+    void visit(librdag::OGMatrix<complex16> *thing)
+    {
+      this->setData(thing->toComplex16ArrayOfArrays());
+      this->setRows(thing->getRows());
+      this->setCols(thing->getCols());    
+    }
+    void visit(librdag::OGMatrix<real16> SUPPRESS_UNUSED *thing)
+    {
+        throw convertExcept;
+    }    
+    void visit(librdag::OGScalar<complex16> *thing)
+    {
+      complex16 * const data = thing->getData();
+      complex16 ** tmp = new complex16 * [1];
+      tmp[0] = new complex16[1];
+      tmp[0][0] = *data;
+      this->setData(tmp);
+      this->setRows(1);
+      this->setCols(1);    
+    }
+    void visit(librdag::OGScalar<real16> SUPPRESS_UNUSED *thing)
+    {
+        throw convertExcept;
+    }
+    void setData(complex16 ** data)
+    {
+      this->_data = data;
+    }
+    void setRows(int rows)
+    {
+     this->rows = rows; 
+    }
+    void setCols(int cols)
+    {
+     this->cols = cols;
+    }        
+    complex16 ** getData()
+    {
+      return this->_data;
+    }
+    int getRows()
+    {
+     return this->rows; 
+    }
+    int getCols()
+    {
+     return this->cols; 
+    }    
+  private:
+    complex16 ** _data = NULL;
+    int rows;
+    int cols;
+};
+
+
+  /**
+   * deletes an array of arrays of type T
+   */
+  template <typename T> void deleteArrOfArr(T ** buf, int lda)
+  {
+    for(int i=0;i<lda;i++)
+    {
+      delete buf[i];
+    }
+    delete buf;    
+  }
 
 } // namespace ends
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+ 
+//  
+//
+// JNI methods and helpers
+//
+//  
+  
   /*
-   * javap generated signature class for the Materialisers.java class
-   *
-   * This code is the entry and exit point for java, it takes a the pointer to
-   * the root node of a tree and then converts the java tree to a C++ tree and passes it
-   * to the entry point code when then runs its walkers.
-   *
-   * Class:     com_opengamma_longdog_materialisers_Materialisers
-   * Method:    materialise
-   * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/OGNumeric;
+   * Converts a real16 ** to a java double[][]
+   * @param env, the JNI environment pointer
+   * @param inputData, the real16 array of arrays to convert
+   * @param rows the number of rows in the array
+   * @param cols the number of columns in the array
+   * @return a jobjectArray which is a double[][] equivalent of {@code inputData}
    */
-  JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialise
-  (JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
+  jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inputData, int rows, int cols)
   {
+    jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
+    if(!returnVal)
+    {
+#ifdef _DEBUG
+      printf("Allocation of jobjectArray failed.\n");
+#endif
+      exit(1);
+    }
+    for(int i = 0; i < rows; i++)
+    {
+      jdoubleArray tmp = env->NewDoubleArray(cols);
+      env->SetDoubleArrayRegion(tmp, 0, cols, inputData[i]);
+      env->SetObjectArrayElement(returnVal, i, tmp);
+    }
+    return returnVal;
+  }
 
+
+
+  /**
+   * 
+   */
+  jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols) {
+    jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
+    if(!returnVal)
+    {
+#ifdef _DEBUG
+      printf("Allocation of jobjectArray failed.\n");
+#endif
+      exit(1);
+    }
+    real16 * aRow = new real16[cols];
+    for(int i = 0; i < rows; i++)
+    {
+      jdoubleArray tmp = env->NewDoubleArray(cols);
+      for(int j = 0; j < cols; j++)
+      {
+        aRow[i]=std::real(inputData[i][j]);
+      }
+      env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
+      env->SetObjectArrayElement(returnVal, i, tmp);
+    }
+    delete aRow;
+    return returnVal;
+  }
+ 
+   /**
+   * 
+   */
+  jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols) {
+    jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
+    if(!returnVal)
+    {
+#ifdef _DEBUG
+      printf("Allocation of jobjectArray failed.\n");
+#endif
+      exit(1);
+    }
+    real16 * aRow = new real16[cols];
+    for(int i = 0; i < rows; i++)
+    {
+      jdoubleArray tmp = env->NewDoubleArray(cols);
+      for(int j = 0; j < cols; j++)
+      {
+        aRow[i]=std::imag(inputData[i][j]);
+      }
+      env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
+      env->SetObjectArrayElement(returnVal, i, tmp);
+    }
+    delete aRow;
+    return returnVal;
+  }
+ 
+  /*
+   * Class:     com_opengamma_longdog_materialisers_Materialisers
+   * Method:    materialiseToJDoubleArrayOfArrays
+   * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)[[D
+   */
+  JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJDoubleArrayOfArrays
+  (JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject SUPPRESS_UNUSED obj)
+  {
     printf("Entering materialise function\n");
-
 
     printf("Calling convert::instantiateJClassAsCXXClass\n");
     // convert obj to OGNumeric objs
     librdag::OGNumeric * chain = (librdag::OGNumeric *) convert::instantiateJClassAsCXXClass(obj);
 
     printf("Calling entrypt function\n");
-    // pass to entrypt
-    //struct c_OGNumeric * answer = (should answer be used later?)
-    entrypt((struct c_OGNumeric *) chain);
+    librdag::OGTerminal * answer =  (librdag::OGTerminal *) entrypt((struct c_OGNumeric *) chain);
+    
+    convert::DispatchToReal16ArrayOfArrays * visitor = new convert::DispatchToReal16ArrayOfArrays();
+    answer->accept(*visitor);
+    real16 ** buf = visitor->getData();
+    int rows = visitor->getRows();;
+    int cols = visitor->getCols();
+   
+    jobjectArray returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, buf, rows, cols);
 
-    printf("Calling delete\n");
-//     delete chain;
-
-    printf("Returning from materialise function\n\n\n");
-    // convert to a jObj
-    return (jobject) obj;
+    delete visitor;
+    
+    printf("Returning\n");    
+    return returnVal;
   }
+
+  /*
+   * Class:     com_opengamma_longdog_materialisers_Materialisers
+   * Method:    materialiseToJComplexArrayContainer
+   * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/other/ComplexArrayContainer;
+   */
+  JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJComplexArrayContainer
+  (JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject SUPPRESS_UNUSED obj)
+  {
+    printf("materialiseToJComplexArrayContainer\n");
+    printf("Entering materialise function\n");
+
+    printf("Calling convert::instantiateJClassAsCXXClass\n");
+    // convert obj to OGNumeric objs
+    librdag::OGNumeric * chain = (librdag::OGNumeric *) convert::instantiateJClassAsCXXClass(obj);
+
+    printf("Calling entrypt function\n");
+    librdag::OGTerminal * answer =  (librdag::OGTerminal *) entrypt((struct c_OGNumeric *) chain);
+    
+    convert::DispatchToComplex16ArrayOfArrays * visitor = new convert::DispatchToComplex16ArrayOfArrays();
+    answer->accept(*visitor);
+    complex16 ** buf = visitor->getData();
+    int rows = visitor->getRows();;
+    int cols = visitor->getCols();    
+   
+    jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, buf, rows, cols);
+    jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, buf, rows, cols);
+
+    jobject returnVal = env->NewObject(ComplexArrayContainerClazz,ComplexArrayContainerClazz_ctor_DAoA_DAoA, realPart, complexPart);
+    
+    delete visitor;
+    
+    printf("Returning\n");    
+    return returnVal;
+  }
+
+  /*
+   * Class:     com_opengamma_longdog_materialisers_Materialisers
+   * Method:    materialiseToJBoolean
+   * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Z
+   */
+  JNIEXPORT jboolean JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJBoolean
+  (JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject SUPPRESS_UNUSED obj)
+  {
+    jboolean returnVal = 0;
+    return returnVal;
+  }
+
 
 #ifdef __cplusplus
 }

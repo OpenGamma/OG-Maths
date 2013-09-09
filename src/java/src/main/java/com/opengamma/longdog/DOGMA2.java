@@ -41,7 +41,7 @@ public class DOGMA2 {
   }
 
   public static double[][] toDoubleArray(OGNumeric arg0) {
-    return Materialisers.toJDoubleArray(arg0);
+    return Materialisers.toDoubleArrayOfArrays(arg0);
   }
 
 }
