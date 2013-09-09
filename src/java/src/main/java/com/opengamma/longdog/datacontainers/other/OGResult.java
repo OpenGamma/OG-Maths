@@ -12,7 +12,7 @@ import com.opengamma.longdog.helpers.Catchers;
 import com.opengamma.longdog.nodes.SELECTRESULT;
 
 /**
- * Holds the result of a computation
+ * Holds the result of a computation.
  */
 public class OGResult {
 

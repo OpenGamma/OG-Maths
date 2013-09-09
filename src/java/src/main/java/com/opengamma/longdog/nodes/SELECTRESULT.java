@@ -11,7 +11,7 @@ import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 
 /**
- * Select result class
+ * Select result class.
  */
 public class SELECTRESULT extends OGExpr {
 

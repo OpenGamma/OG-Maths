@@ -10,7 +10,7 @@ import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.helpers.Catchers;
 
 /**
- * Holds a late evaluated Expr that is used for a node which has a variadic return
+ * Holds a late evaluated Expr that is used for a node which has a variadic return.
  */
 public abstract class OGExprVariadicReturn extends OGExpr {
 

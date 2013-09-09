@@ -31,6 +31,7 @@ class Visitor
     virtual void visit(OGArray<real16> *thing) = 0;
     virtual void visit(OGArray<complex16> *thing) = 0;
     virtual void visit(OGMatrix<real16> *thing) = 0;
+    virtual void visit(OGMatrix<complex16> *thing) = 0;
     virtual void visit(OGScalar<real16> *thing) = 0;
     virtual void visit(OGScalar<complex16> *thing) = 0;
 };

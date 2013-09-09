@@ -16,16 +16,16 @@
 
 #include "numerictypes.hh"
 #include "visitor.hh"
+#include "exceptions.hh"
 
 using namespace std;
-
 
 /*
  * The namespace for the DAG library
  */
 namespace librdag
 {
-
+  
 /*
  * Base class for absolutely everything!
  */
@@ -37,6 +37,18 @@ class OGNumeric
     virtual void debug_print();
     virtual void accept(Visitor &v)=0;
 };
+
+/* 
+ * Base class for terminal nodes in the AST
+ */
+class OGTerminal: public OGNumeric
+{
+  public:
+    virtual real16 ** toReal16ArrayOfArrays() = 0;
+    virtual complex16 ** toComplex16ArrayOfArrays() = 0;
+};
+
+
 
 /**
  *  Expr type
@@ -115,7 +127,7 @@ class SELECTRESULT: public OGExpr
 /**
  * Things that extend OGScalar
  */
-template <class T> class OGScalar: public OGNumeric
+template <class T> class OGScalar: public OGTerminal
 {
   private:
     T _value;
@@ -131,26 +143,66 @@ template <class T> class OGScalar: public OGNumeric
     {
       this->_value= copy._value;
     }
-
+    
     OGScalar(T data)
     {
       this->_value=data;
     };
+    
     void accept(Visitor &v)
     {
       v.visit(this);
     };
+    
     T getValue()
     {
       return this->_value;
+    };
+    
+    T ** toArrayOfArrays()
+    {
+      T ** tmp = new T * [1];
+      tmp[0] = new T[1];
+      tmp[0][0] = this->getValue();
+      return tmp;
+    };
+};
+
+
+class OGRealScalar: public OGScalar<real16>
+{ 
+  public:
+    OGRealScalar(const OGRealScalar * const copy): OGScalar<real16>(copy){};
+    OGRealScalar(const OGRealScalar& copy): OGScalar<real16>(copy){};
+    OGRealScalar(real16 data): OGScalar<real16>(data){};
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      return this->toArrayOfArrays();
+    }
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      throw new librdagException();
     }
 };
 
-typedef OGScalar<real16> OGRealScalar;
-typedef OGScalar<complex16> OGComplexScalar;
+class OGComplexScalar: public OGScalar<complex16>
+{
+  public:
+    OGComplexScalar(const OGComplexScalar * const copy): OGScalar<complex16>(copy){};
+    OGComplexScalar(const OGComplexScalar& copy): OGScalar<complex16>(copy){};
+    OGComplexScalar(complex16 data): OGScalar<complex16>(data){};    
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      throw new librdagException();
+    }
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      return this->toArrayOfArrays();
+    }
+};
 
 
-template <typename T> class OGArray: public OGNumeric
+template <typename T> class OGArray: public OGTerminal
 {
   public:
     virtual ~OGArray()
@@ -243,8 +295,21 @@ template <typename T> class OGMatrix: public OGArray<T>
     {
       v.visit(this);
     };
-  private:
-
+    T ** toArrayOfArrays()
+    {
+      int const rows = this->getRows();
+      int const cols = this->getCols();
+      T * const data = this->getData();
+      T ** tmp = new T * [rows];
+      for(int i=0; i < rows; i++)
+      {
+        tmp[i] = new T [cols];
+        for(int j = 0; j < cols; j++) {
+          tmp[i][j] = data[j*rows+i];
+        }
+      }
+      return tmp;
+    }
 };
 
 class OGRealMatrix: public OGMatrix<real16>
@@ -263,6 +328,14 @@ class OGRealMatrix: public OGMatrix<real16>
         printf("%6.4f\n",this->getData()[ptr++]);
       }
     }
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      return this->toArrayOfArrays();
+    };
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+          throw new librdagException;
+    };
 };
 
 
@@ -284,6 +357,16 @@ class OGComplexMatrix: public OGMatrix<complex16>
         ptr++;
       }
     }
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      printf("throwing exception\n");
+      throw new librdagException;
+    };
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      printf("returning toArrayOfArrays\n");
+      return this->toArrayOfArrays();
+    };    
 };
 
 class OGLogicalMatrix: public OGRealMatrix

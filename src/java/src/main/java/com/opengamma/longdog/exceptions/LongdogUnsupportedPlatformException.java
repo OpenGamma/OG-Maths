@@ -11,6 +11,9 @@ package com.opengamma.longdog.exceptions;
  */
 public class LongdogUnsupportedPlatformException extends RuntimeException {
 
+  /**
+   * SID
+   */
   private static final long serialVersionUID = 1L;
 
   public LongdogUnsupportedPlatformException() {

@@ -13,8 +13,8 @@ import org.testng.annotations.Test;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
 import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
-import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
-import com.opengamma.longdog.helpers.MathsExceptionNullPointer;
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
+import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
 
 /**
  * Tests the real scalar class

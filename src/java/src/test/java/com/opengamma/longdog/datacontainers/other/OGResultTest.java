@@ -12,8 +12,8 @@ import org.testng.annotations.Test;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
 import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
-import com.opengamma.longdog.helpers.MathsException;
-import com.opengamma.longdog.helpers.MathsExceptionNullPointer;
+import com.opengamma.longdog.exceptions.MathsException;
+import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
 import com.opengamma.longdog.nodes.SELECTRESULT;
 import com.opengamma.longdog.nodes.SVD;
 

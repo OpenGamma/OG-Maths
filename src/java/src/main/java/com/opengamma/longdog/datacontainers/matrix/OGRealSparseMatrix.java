@@ -8,8 +8,8 @@ package com.opengamma.longdog.datacontainers.matrix;
 import java.util.Arrays;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.Catchers;
-import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
 
 /**
