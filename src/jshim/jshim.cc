@@ -6,6 +6,7 @@
 #include "warningmacros.h"
 #include <complex.h>
 #include <stdio.h>
+#include <stdexcept>
 #include <stdlib.h>
 
 namespace convert
@@ -748,7 +749,7 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
     }
     void visit(librdag::OGExpr SUPPRESS_UNUSED *thing)
     {
-        throw convertExcept;
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
     };
     void visit(librdag::OGArray<real16> *thing)
     {
@@ -758,7 +759,7 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
     }
     void visit(librdag::OGArray<complex16> SUPPRESS_UNUSED *thing)
     {
-        throw convertExcept;
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGArray<complex16>)");
     }
     void visit(librdag::OGMatrix<real16> *thing)
     {
@@ -768,21 +769,17 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
     }
     void visit(librdag::OGMatrix<complex16> SUPPRESS_UNUSED *thing)
     {
-        throw convertExcept;
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16>)");
     }    
     void visit(librdag::OGScalar<real16> *thing)
     {
-      real16 * const data = thing->getData();
-      real16 ** tmp = new real16 * [1];
-      tmp[0] = new real16[1];
-      tmp[0][0] = *data;
-      this->setData(tmp);
+      this->setData(thing->toReal16ArrayOfArrays());
       this->setRows(1);
       this->setCols(1);    
     }
     void visit(librdag::OGScalar<complex16> SUPPRESS_UNUSED *thing)
     {
-        throw convertExcept;
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16>)");
     }
     void setData(real16 ** data)
     {
@@ -834,7 +831,7 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     }
     void visit(librdag::OGExpr SUPPRESS_UNUSED *thing)
     {
-        throw convertExcept;
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
     };
     void visit(librdag::OGArray<complex16> *thing)
     {
@@ -844,7 +841,7 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     }
     void visit(librdag::OGArray<real16> SUPPRESS_UNUSED *thing)
     {
-        throw convertExcept;
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGArray<real16>)");
     }
     void visit(librdag::OGMatrix<complex16> *thing)
     {
@@ -854,21 +851,17 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     }
     void visit(librdag::OGMatrix<real16> SUPPRESS_UNUSED *thing)
     {
-        throw convertExcept;
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<real16>)");
     }    
     void visit(librdag::OGScalar<complex16> *thing)
     {
-      complex16 * const data = thing->getData();
-      complex16 ** tmp = new complex16 * [1];
-      tmp[0] = new complex16[1];
-      tmp[0][0] = *data;
-      this->setData(tmp);
+      this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(1);
       this->setCols(1);    
     }
     void visit(librdag::OGScalar<real16> SUPPRESS_UNUSED *thing)
     {
-        throw convertExcept;
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<real16>)");
     }
     void setData(complex16 ** data)
     {

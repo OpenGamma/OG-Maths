@@ -31,6 +31,7 @@ namespace librdag
  */
 class librdagException: public exception
 {
+    public:
     virtual const char* what() const throw()
     {
       return "Exception occurred.";
@@ -154,23 +155,63 @@ template <class T> class OGScalar: public OGTerminal
     {
       this->_value= copy._value;
     }
-
+    
     OGScalar(T data)
     {
       this->_value=data;
     };
+    
     void accept(Visitor &v)
     {
       v.visit(this);
     };
-    T * getData()
+    
+    T getValue()
     {
       return this->_value;
-    }    
+    };
+    
+    T ** toArrayOfArrays()
+    {
+      T ** tmp = new T * [1];
+      tmp[0] = new T[1];
+      tmp[0][0] = this->getValue();
+      return tmp;
+    };
 };
 
-typedef OGScalar<real16> OGRealScalar;
-typedef OGScalar<complex16> OGComplexScalar;
+
+class OGRealScalar: public OGScalar<real16>
+{ 
+  public:
+    OGRealScalar(const OGRealScalar * const copy): OGScalar<real16>(copy){};
+    OGRealScalar(const OGRealScalar& copy): OGScalar<real16>(copy){};
+    OGRealScalar(real16 data): OGScalar<real16>(data){};
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      return this->toArrayOfArrays();
+    }
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      throw new librdagException();
+    }
+};
+
+class OGComplexScalar: public OGScalar<complex16>
+{
+  public:
+    OGComplexScalar(const OGComplexScalar * const copy): OGScalar<complex16>(copy){};
+    OGComplexScalar(const OGComplexScalar& copy): OGScalar<complex16>(copy){};
+    OGComplexScalar(complex16 data): OGScalar<complex16>(data){};    
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      throw new librdagException();
+    }
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      return this->toArrayOfArrays();
+    }
+};
 
 
 template <typename T> class OGArray: public OGTerminal

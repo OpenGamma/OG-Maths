@@ -31,7 +31,7 @@ public class TestLongdog {
    */
   Materialisers materialiser = new Materialisers();
 
-  @Test
+  @Test(enabled = false)
   public void test1() {
     OGNumeric A = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } });
     OGNumeric B = new OGComplexSparseMatrix(new double[][] { { 1, 0, 3 }, { 0, 5, 6 }, { 7, 8, 0 }, { 10, 0, 0 } }, new double[][] { { 0, 2, 3 }, { 3, 0, 6 }, { 0, 8, 0 }, { 10, 0, 12 } });
@@ -47,7 +47,7 @@ public class TestLongdog {
     System.out.println("Back in java land");
   }
 
-  @Test
+  @Test(enabled = false)
   public void Test2() {
     OGLogicalMatrix baz = new OGLogicalMatrix(new double[] { 1, 0, 1, 0 }, 2, 2);
     System.out.println(baz.getType());
@@ -64,7 +64,7 @@ public class TestLongdog {
     System.out.println("Back in java land");
   }
 
-  @Test
+  @Test(enabled = false)
   public void test3() {
     OGNumeric A = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } });
     OGNumeric B = new OGComplexSparseMatrix(new double[][] { { 1, 0, 3 }, { 0, 5, 6 }, { 7, 8, 0 }, { 10, 0, 0 } }, new double[][] { { 0, 2, 3 }, { 3, 0, 6 }, { 0, 8, 0 }, { 10, 0, 12 } });
