@@ -3,7 +3,7 @@
  * 
  * Please see distribution for license.
  */
-package com.opengamma.longdog.helpers;
+package com.opengamma.longdog.exceptions;
 
 /**
  * Provides a manner in which maths exceptions relating illegal arguments can be thrown

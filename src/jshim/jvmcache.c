@@ -15,6 +15,8 @@ extern "C" {
   jclass OGTerminalClazz = NULL;
   jclass OGScalarClazz = NULL;
   jclass OGSparseMatrixClazz = NULL;
+  jclass BigDDoubleArrayClazz = NULL;
+  jclass ComplexArrayContainerClazz = NULL;
   jmethodID OGTerminalClazz_getData = NULL;
   jmethodID OGNumericClazz_getType = NULL;
   jmethodID OGExprClazz_getExprs = NULL;
@@ -23,6 +25,7 @@ extern "C" {
   jmethodID OGArrayClazz_getCols = NULL;
   jmethodID OGSparseMatrixClazz_getColPtr = NULL;
   jmethodID OGSparseMatrixClazz_getRowIdx = NULL;
+  jmethodID ComplexArrayContainerClazz_ctor_DAoA_DAoA = NULL;
   jclass OGExprTypeEnumClazz = NULL;
   jfieldID  OGExprTypeEnumClazz__hashdefined = NULL;
 #ifdef __cplusplus
@@ -114,6 +117,25 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
 #endif
     exit(1);
   }
+    
+    
+  jstatus = registerGlobalClassReference(env, "[D", &BigDDoubleArrayClazz);
+  if(jstatus)
+  {
+#ifdef _DEBUG
+    printf("ERROR: could not get class pointer. Hard exiting.\n");
+#endif
+    exit(1);
+  }
+  
+    jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/other/ComplexArrayContainer", &ComplexArrayContainerClazz);
+  if(jstatus)
+  {
+#ifdef _DEBUG
+    printf("ERROR: could not get class pointer. Hard exiting.\n");
+#endif
+    exit(1);
+  }
 
   //
   // REGISTER METHOD REFERENCES
@@ -184,8 +206,17 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
 #endif
     exit(1);
   }
+  
+  jstatus = registerGlobalMethodReference(env, &ComplexArrayContainerClazz, &ComplexArrayContainerClazz_ctor_DAoA_DAoA, "<init>","([[D[[D)V");
+  if(jstatus)
+  {
+#ifdef _DEBUG
+    printf("ERROR: could not get method pointer. Hard exiting.\n");
+#endif
+    exit(1);
+  }  
 
-
+  
   OGExprTypeEnumClazz__hashdefined = NULL;
   OGExprTypeEnumClazz__hashdefined = (*env)->GetFieldID(env, OGExprTypeEnumClazz, "_hashDefined", "J");
   if (OGExprTypeEnumClazz__hashdefined == 0)

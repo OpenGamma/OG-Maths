@@ -7,8 +7,8 @@
 package com.opengamma.longdog.datacontainers.scalar;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.Catchers;
-import com.opengamma.longdog.helpers.MathsExceptionIllegalArgument;
 
 /**
  * Real Scalar Numeric class.

@@ -5,6 +5,9 @@
  */
 package com.opengamma.longdog.helpers;
 
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
+import com.opengamma.longdog.exceptions.MathsExceptionNotImplemented;
+
 /**
  *
  */

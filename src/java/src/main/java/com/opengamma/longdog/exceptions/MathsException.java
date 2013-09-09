@@ -3,10 +3,10 @@
  * 
  * Please see distribution for license.
  */
-package com.opengamma.longdog.helpers;
+package com.opengamma.longdog.exceptions;
 
 /**
- * Provides a manner in which maths exceptions relating to null pointer access can be thrown
+ * Provides a manner in which maths exceptions relating to null pointer access can be thrown.
  */
 public class MathsException extends RuntimeException {
   private static final long serialVersionUID = 1L;

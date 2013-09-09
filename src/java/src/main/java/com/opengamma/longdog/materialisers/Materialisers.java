@@ -9,42 +9,76 @@ package com.opengamma.longdog.materialisers;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.matrix.OGArray;
+import com.opengamma.longdog.datacontainers.other.ComplexArrayContainer;
+import com.opengamma.longdog.helpers.Catchers;
 import com.opengamma.longdog.nativeloader.NativeLibraries;
 import com.opengamma.longdog.nodes.SELECTRESULT;
 
 /**
- * 
+ * Contains functions that materialise DOGMA ASTs.
  */
 public class Materialisers {
 
+  /**
+   * Load the native libraries
+   */
   static {
     NativeLibraries.initialize();
   }
 
-  private static native OGNumeric materialise(OGNumeric arg0);
+  /* native library bindings */
+  private static native double[][] materialiseToJDoubleArrayOfArrays(OGNumeric arg0);
 
-  public static double[][] toJDoubleArray(OGNumeric arg0) {
+  private static native ComplexArrayContainer materialiseToJComplexArrayContainer(OGNumeric arg0);
+
+  private static native boolean materialiseToJBoolean(OGNumeric arg0);
+
+  /**
+   * Materialise the tree at arg0 to a complex array stored in a ComplexArrayContainer.
+   * @param arg0 the root of the tree to materialise.
+   * @return a ComplexArrayContainer of the materialised tree.
+   */
+  public static double[][] toDoubleArrayOfArrays(OGNumeric arg0) {
+    Catchers.catchNullFromArgList(arg0, 1);
     System.out.println("tree walking");
     StringBuffer buf = new StringBuffer();
     printTree(arg0, buf, 0);
     System.out.println(buf.toString());
     System.out.println("tree walking done");
-    materialise(arg0);
-    return new double[1][1];
+    return materialiseToJDoubleArrayOfArrays(arg0);
   }
 
-  public static double[][] toJComplexArray(OGNumeric arg0) {
-    OGNumeric tmp = materialise(arg0);
-    return null;
+  /**
+   * Materialise the tree at arg0 to a complex array stored in a ComplexArrayContainer.
+   * @param arg0 the root of the tree to materialise.
+   * @return a ComplexArrayContainer of the materialised tree.
+   */
+  public static ComplexArrayContainer toComplexArrayContainer(OGNumeric arg0) {
+    Catchers.catchNullFromArgList(arg0, 1);
+    return materialiseToJComplexArrayContainer(arg0);
   }
 
-  public static boolean toJBoolean(OGNumeric arg0) {
-    OGNumeric tmp = materialise(arg0);
-    return false;
+  /**
+   * Materialise the tree at arg0 to a complex array stored in a ComplexArrayContainer.
+   * @param arg0 the root of the tree to materialise.
+   * @return a ComplexArrayContainer of the materialised tree.
+   */
+  public static boolean toBoolean(OGNumeric arg0) {
+    Catchers.catchNullFromArgList(arg0, 1);
+    return materialiseToJBoolean(arg0);
   }
 
+  /**
+   * Naïvely print the tree associated with arg
+   * @param arg the root of the tree
+   * @param buf a buffer in which to hold the printed tree
+   * @param level the level at which to start indents (usually 0) 
+   */
   public static void printTree(OGNumeric arg, StringBuffer buf, int level) {
-    String tab = "   ";
+    Catchers.catchNullFromArgList(arg, 1);
+    Catchers.catchNullFromArgList(buf, 2);
+    Catchers.catchCondition(level < 0, "Level must be >= 0");
+    final String tab = "   ";
     level++;
     while (!(OGArray.class.isAssignableFrom(arg.getClass()))) {
       OGExpr expr = (OGExpr) arg;

@@ -61,6 +61,10 @@ class PrintTreeVisitor: public librdag::Visitor
     {
       cout << "Have OGMatrix<real16> " << thing << endl;
     }
+    void visit(librdag::OGMatrix<complex16> *thing)
+    {
+      cout << "Have OGMatrix<complex16> " << thing << endl;
+    }    
     void visit(librdag::OGArray<complex16> *thing)
     {
       cout << "Have OGArray<complex16> " << thing << endl;

@@ -10,6 +10,9 @@ package com.opengamma.longdog.exceptions;
  */
 public class LongdogInitializationException extends RuntimeException {
 
+  /**
+   * SID
+   */
   private static final long serialVersionUID = 1L;
 
   public LongdogInitializationException() {
