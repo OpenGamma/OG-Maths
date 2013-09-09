@@ -32,10 +32,11 @@ namespace librdag
 class OGNumeric
 {
   public:
-    OGNumeric();
     virtual ~OGNumeric();
     virtual void debug_print();
     virtual void accept(Visitor &v)=0;
+  protected:
+    OGNumeric();
 };
 
 /* 
@@ -56,21 +57,18 @@ class OGTerminal: public OGNumeric
 class OGExpr: public OGNumeric
 {
   public:
-    OGExpr();
-    explicit OGExpr(OGExpr& copy);
-    OGExpr(const OGNumeric * const args, const int nargs);
     virtual ~OGExpr();
-
-    OGExpr& operator=(OGExpr& rhs);
-
     std::vector<OGNumeric *> * getArgs();
-
     size_t getNArgs();
     virtual void debug_print();
     void accept(Visitor &v);
   private:
-    std::vector<OGNumeric *> * _args = NULL;
+    std::vector<OGNumeric *> * _args;
+    explicit OGExpr(OGExpr& other);
+    OGExpr& operator=(OGExpr& rhs);
   protected:
+    OGExpr();
+    OGExpr(std::vector<OGNumeric *> *args);
     void setArgs(std::vector<OGNumeric *> * args);
 };
 
@@ -78,50 +76,84 @@ class OGExpr: public OGNumeric
  * Things that extend OGExpr
  */
 
-class OGBinaryExpr : virtual public OGExpr
+class OGUnaryExpr: public OGExpr
 {
-  public:
-	  OGBinaryExpr();
-	  OGBinaryExpr(OGNumeric* left, OGNumeric* right);
+  protected:
+    OGUnaryExpr();
+    OGUnaryExpr(std::vector<OGNumeric *> * args);
+    OGUnaryExpr(OGNumeric * args);
 };
 
-class COPY: public OGExpr
+class OGBinaryExpr : public OGExpr
+{
+  protected:
+    OGBinaryExpr();
+    OGBinaryExpr(std::vector<OGNumeric *> *args);
+    OGBinaryExpr(OGNumeric* left, OGNumeric* right);
+  private:
+    explicit OGBinaryExpr(OGBinaryExpr& other);
+};
+
+class COPY: public OGUnaryExpr
 {
   public:
-	  COPY();
+    COPY(OGNumeric *arg);
+    COPY(std::vector<OGNumeric *> *args);
     void debug_print();
+  protected:
+    COPY();
+  private:
+    explicit COPY(COPY& other);
 };
 
 
 class PLUS: public OGBinaryExpr
 {
   public:
-	  PLUS();
-	  PLUS(OGNumeric* left, OGNumeric* right);
+    PLUS(OGNumeric* left, OGNumeric* right);
+    PLUS(std::vector<OGNumeric *> *args);
     void debug_print();
+  protected:
+    PLUS();
+  private:
+    explicit PLUS(PLUS& other);
 };
 
 
 class MINUS: public OGBinaryExpr
 {
   public:
+    MINUS(OGNumeric* left, OGNumeric* right);
+    MINUS(std::vector<OGNumeric *> *args);
+    void debug_print();
+  protected:
     MINUS();
-	  MINUS(OGNumeric* left, OGNumeric* right);
-    void debug_print();
+  private:
+    explicit MINUS(MINUS& other);
 };
 
-class SVD: public OGExpr
+class SVD: public OGUnaryExpr
 {
   public:
+    SVD(OGNumeric * arg);
+    SVD(std::vector<OGNumeric *> *args);
+    void debug_print();
+  protected:
     SVD();
-    void debug_print();
+  private:
+    explicit SVD(SVD& other);
 };
 
-class SELECTRESULT: public OGExpr
+class SELECTRESULT: public OGBinaryExpr
 {
   public:
-    SELECTRESULT();
+    SELECTRESULT(OGNumeric *result, OGNumeric *index);
+    SELECTRESULT(std::vector<OGNumeric *> *args);
     void debug_print();
+  protected:
+    SELECTRESULT();
+  private:
+    explicit SELECTRESULT(SELECTRESULT& other);
 };
 
 /**
@@ -201,6 +233,21 @@ class OGComplexScalar: public OGScalar<complex16>
     }
 };
 
+class OGIntegerScalar: public OGScalar<int>
+{
+  public:
+    OGIntegerScalar(const OGIntegerScalar * const copy): OGScalar<int>(copy){};
+    OGIntegerScalar(const OGIntegerScalar& copy): OGScalar<int>(copy){};
+    OGIntegerScalar(int data): OGScalar<int>(data){};
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      throw new librdagException();
+    }
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      throw new librdagException();
+    }
+};
 
 template <typename T> class OGArray: public OGTerminal
 {
@@ -258,6 +305,7 @@ template <typename T> class OGArray: public OGTerminal
 template <typename T> class OGMatrix: public OGArray<T>
 {
   public:
+    OGMatrix() {}
     OGMatrix(const OGMatrix& copy)
     {
       this->setRows(copy->getRows());
@@ -267,7 +315,6 @@ template <typename T> class OGMatrix: public OGArray<T>
       memcpy(tmpdata, copy._data, sizeof(T)*this->getDatalen());
       this->setData(tmpdata);
     }
-    OGMatrix() {};
     OGMatrix(T * data, int rows, int cols)
     {
       this->_datalen = rows*cols;
@@ -391,7 +438,6 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
       memcpy(tmpdata, copy._data, sizeof(T)*this->_datalen);
       this->setData(tmpdata);
     }
-    OGDiagonalMatrix() {};
     OGDiagonalMatrix(T * data, int rows, int cols)
     {
       this->_datalen = rows>cols?cols:rows;
@@ -475,11 +521,11 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 template <typename T> class OGSparseMatrix: public OGArray<T>
 {
   public:
+    OGSparseMatrix() {}
     OGSparseMatrix(const OGSparseMatrix& copy)
     {
       OGSparseMatrix(copy._colPtr, copy._rowIdx, copy._data, copy._rows, copy._cols);
     }
-    OGSparseMatrix() {};
     OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols)
     {
       this->_datalen = colPtr[cols+1];
