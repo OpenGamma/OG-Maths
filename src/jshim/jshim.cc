@@ -781,6 +781,10 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
     {
         throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16>)");
     }
+    void visit(librdag::OGScalar<int> SUPPRESS_UNUSED *thing)
+    {
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
+    }
     void setData(real16 ** data)
     {
       this->_data = data;
@@ -862,6 +866,10 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     void visit(librdag::OGScalar<real16> SUPPRESS_UNUSED *thing)
     {
         throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<real16>)");
+    }
+    void visit(librdag::OGScalar<int> SUPPRESS_UNUSED *thing)
+    {
+        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
     }
     void setData(complex16 ** data)
     {
