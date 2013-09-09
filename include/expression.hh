@@ -322,8 +322,6 @@ template <typename T> class OGMatrix: public OGArray<T>
       }
       return tmp;
     }
-private:
-
 };
 
 class OGRealMatrix: public OGMatrix<real16>
