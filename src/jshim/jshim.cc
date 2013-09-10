@@ -354,80 +354,6 @@ template <typename T> void unbindOGArrayData(T * nativeData, jobject obj)
 }
 
 /**
- * Spec for an OGExpr node derived from a java object
- */
-class JOGExpr
-{
-  public:
-    JOGExpr(jobject * obj);
-    virtual ~JOGExpr();
-  private:
-    jobject * _backingObject = NULL;
-  protected:
-    ArgContainer* generateArgs();
-};
-/**
- * COPY node spec derived from a java COPY node
- */
-class JCOPY: public JOGExpr, public COPY
-{
-  public:
-    static JCOPY* fromJObject(jobject *obj);
-    JCOPY(jobject * obj);
-    ~JCOPY();
-    void debug_print();
-};
-
-
-/**
- * PLUS node spec derived from a java PLUS node
- */
-class JPLUS: public JOGExpr, public PLUS
-{
-  public:
-    static JPLUS* fromJObject(jobject *obj);
-    JPLUS(jobject * obj);
-    ~JPLUS();
-    void debug_print();
-};
-
-/**
- * MINUS node spec derived from a java MINUS node
- */
-class JMINUS: public JOGExpr, public MINUS
-{
-  public:
-    static JMINUS* fromJObject(jobject *obj);
-    JMINUS(jobject * obj);
-    ~JMINUS();
-    void debug_print();
-};
-
-/**
- * SVD node spec derived from a java SVD node
- */
-class JSVD: public JOGExpr, public SVD
-{
-  public:
-    static JSVD* fromJObject(jobject *obj);
-    JSVD(jobject * obj);
-    ~JSVD();
-    void debug_print();
-};
-
-/**
- * SELECTRESULT node spec derived from a java SVD node
- */
-class JSELECTRESULT: public JOGExpr, public SELECTRESULT
-{
-  public:
-    static JSELECTRESULT* fromJObject(jobject *obj);
-    JSELECTRESULT(jobject * obj);
-    ~JSELECTRESULT();
-    void debug_print();
-};
-
-/**
  * Generates expression nodes from a java object
  */
 class ExprFactory
@@ -467,6 +393,9 @@ class ExprFactory
 #else
       printf("Clazz Type is hashdefined as %lld\n",(long long int)ID);
 #endif
+
+      librdag::OGNumeric * _expr = nullptr;
+
       switch(ID)
       {
       case OGREALMATRIX_ENUM:
@@ -500,31 +429,31 @@ class ExprFactory
       case COPY_ENUM:
       {
         printf("COPY function\n");
-        _expr = JCOPY::fromJObject(&obj);
+        _expr = new COPY(generateArgs(&obj));
       }
       break;
       case MINUS_ENUM:
       {
         printf("MINUS function\n");
-        _expr = JMINUS::fromJObject(&obj);
+        _expr = new MINUS(generateArgs(&obj));
       }
       break;
       case PLUS_ENUM:
       {
         printf("PLUS function\n");
-        _expr = JPLUS::fromJObject(&obj);
+        _expr = new PLUS(generateArgs(&obj));
       }
       break;
       case SVD_ENUM:
       {
         printf("SVD function\n");
-        _expr = JSVD::fromJObject(&obj);
+        _expr = new SVD(generateArgs(&obj));
       }
       break;
       case SELECTRESULT_ENUM:
       {
         printf("Select Result function\n");
-        _expr = JSELECTRESULT::fromJObject(&obj);
+        _expr = new SELECTRESULT(generateArgs(&obj));
       }
       break;
       default:
@@ -534,7 +463,7 @@ class ExprFactory
       break;
       }
 
-      if(!_expr)
+      if(_expr == nullptr)
       {
         printf("_expr is NULL so hasn't been set by the factory, exiting\n");
         exit(1);
@@ -544,30 +473,13 @@ class ExprFactory
       return _expr;
     };
   private:
-    librdag::OGNumeric * _expr = NULL;
+    ArgContainer* generateArgs(jobject *obj);
 };
 
 
-/**
- * OGExpr implementation details
- * Create an expression node from a java expression node
- */
-JOGExpr::JOGExpr(jobject * obj)
-{
-  if(!obj)
-  {
-#ifdef _DEBUG
-    printf("JOGExpr: null obj\n");
-#endif
-    exit(1);
-  }
-  this->_backingObject = obj;
-}
-
 ArgContainer*
-JOGExpr::generateArgs()
+ExprFactory::generateArgs(jobject *obj)
 {
-  jobject *obj = this->_backingObject;
   // get object array
   jmethodID method = OGExprClazz_getExprs;
   if(!method)
@@ -602,119 +514,14 @@ JOGExpr::generateArgs()
   printf("JOGExpr arg size is %d\n",len);
 #endif
   ArgContainer* local_args = new ArgContainer();
-  ExprFactory * factory = new ExprFactory();
   for(int i=0; i<len; i++)
   {
 
     jobject tmp = (jobject) env->GetObjectArrayElement(*args, i);
-    local_args->push_back(factory->getExpr(tmp));
+    local_args->push_back(getExpr(tmp));
   }
   return local_args;
 }
-
-JOGExpr:: ~JOGExpr() {}
-
-
-/**
- * JCOPY implementation details
- * COPY node derived from a java COPY node
- */
-JCOPY::JCOPY(jobject * obj): JOGExpr(obj) { }
-void JCOPY::debug_print()
-{
-  printf("JCOPY class\n");
-}
-
-JCOPY*
-JCOPY::fromJObject(jobject *obj)
-{
-  JCOPY *_expr = new JCOPY(obj);
-  _expr->setArgs(_expr->generateArgs());
-  return _expr;
-}
-
-JCOPY::~JCOPY() {}
-
-/**
- * JPLUS implementation details
- * PLUS node derived from a java PLUS node
- */
-JPLUS::JPLUS(jobject * obj): JOGExpr(obj) { }
-
-JPLUS*
-JPLUS::fromJObject(jobject *obj)
-{
-  JPLUS *_expr = new JPLUS(obj);
-  _expr->setArgs(_expr->generateArgs());
-  return _expr;
-}
-
-void JPLUS::debug_print()
-{
-  printf("JPLUS class\n");
-}
-JPLUS::~JPLUS() {}
-
-/**
- * JMINUS implementation details
- * MINUS node derived from a java MINUS node
- */
-JMINUS::JMINUS(jobject * obj): JOGExpr(obj) { }
-
-JMINUS*
-JMINUS::fromJObject(jobject *obj)
-{
-  JMINUS *_expr = new JMINUS(obj);
-  _expr->setArgs(_expr->generateArgs());
-  return _expr;
-}
-
-void JMINUS::debug_print()
-{
-  printf("JMINUS class\n");
-}
-JMINUS::~JMINUS() {}
-
-/**
- * JSVD implementation details
- * SVD node derived from a java SVD node
- */
-JSVD::JSVD(jobject * obj): JOGExpr(obj) { }
-
-JSVD*
-JSVD::fromJObject(jobject *obj)
-{
-  JSVD *_expr = new JSVD(obj);
-  _expr->setArgs(_expr->generateArgs());
-  return _expr;
-}
-
-void JSVD::debug_print()
-{
-  printf("JSVD class\n");
-}
-JSVD::~JSVD() {}
-
-/**
- * JSELECTRESULT implementation details
- * SELECTRESULT node derived from a java SVD node
- */
-JSELECTRESULT::JSELECTRESULT(jobject * obj): JOGExpr(obj) { }
-
-JSELECTRESULT*
-JSELECTRESULT::fromJObject(jobject *obj)
-{
-  JSELECTRESULT *_expr = new JSELECTRESULT(obj);
-  _expr->setArgs(_expr->generateArgs());
-  return _expr;
-}
-
-void JSELECTRESULT::debug_print()
-{
-  printf("JSELECTRESULT class\n");
-}
-JSELECTRESULT::~JSELECTRESULT() {}
-
 
 /**
  * C shim to instantiate java tree as c++ tree
