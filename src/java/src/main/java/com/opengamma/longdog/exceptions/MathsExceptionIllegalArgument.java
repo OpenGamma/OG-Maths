@@ -16,11 +16,11 @@ public class MathsExceptionIllegalArgument extends MathsException {
   }
 
   public MathsExceptionIllegalArgument(final String s) {
-    super(s + " points to null.");
+    super(s);
   }
 
   public MathsExceptionIllegalArgument(final String s, final Throwable cause) {
-    super(s + " points to null.", cause);
+    super(s, cause);
   }
 
   public MathsExceptionIllegalArgument(final Throwable cause) {

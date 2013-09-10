@@ -181,11 +181,11 @@ public class OGComplexDiagonalMatrixTest {
   // sending in ok double[], int, int constructor
   @Test
   public void testDoublePtrIntIntConstructorInternalDataTest() {
-    OGComplexDiagonalMatrix D = new OGComplexDiagonalMatrix(data4x3diagdreal, 16, 32);
+    OGComplexDiagonalMatrix D = new OGComplexDiagonalMatrix(data4x3diagdreal, 6, 7);
     assertTrue(D.getClass() == OGComplexDiagonalMatrix.class);
-    assertTrue(Arrays.equals(D.getData(), interleavedreal4x3));
-    assertTrue(D.getRows() == 16);
-    assertTrue(D.getCols() == 32);
+    assertTrue(Arrays.equals(D.getData(), new double[] { 1, 0, 2, 0, 3, 0, 0, 0, 0, 0, 0, 0 }));
+    assertTrue(D.getRows() == 6);
+    assertTrue(D.getCols() == 7);
   }
 
   // sending in ok double, int, int  constructor

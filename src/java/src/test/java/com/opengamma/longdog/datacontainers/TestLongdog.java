@@ -12,9 +12,11 @@ import org.testng.annotations.Test;
 
 import com.opengamma.longdog.DOGMA2;
 import com.opengamma.longdog.datacontainers.matrix.OGComplexDenseMatrix;
+import com.opengamma.longdog.datacontainers.matrix.OGComplexDiagonalMatrix;
 import com.opengamma.longdog.datacontainers.matrix.OGComplexSparseMatrix;
 import com.opengamma.longdog.datacontainers.matrix.OGLogicalMatrix;
 import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
+import com.opengamma.longdog.datacontainers.matrix.OGRealDiagonalMatrix;
 import com.opengamma.longdog.datacontainers.matrix.OGRealSparseMatrix;
 import com.opengamma.longdog.datacontainers.other.ComplexArrayContainer;
 import com.opengamma.longdog.datacontainers.other.OGResult;
@@ -86,19 +88,71 @@ public class TestLongdog {
     }
     System.out.println("Back in java land");
   }
-  
+
   @Test
   public void test5() {
-    OGNumeric  A= new OGComplexDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 } }, new double[][] { { 10, 20, 30 }, { 40, 50, 60 } });
+    OGNumeric A = new OGComplexDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 } }, new double[][] { { 10, 20, 30 }, { 40, 50, 60 } });
     ComplexArrayContainer result = Materialisers.toComplexArrayContainer(A);
     System.out.println("Real array of dimension [" + result.getReal().length + "],[" + result.getReal()[0].length + "]");
     for (int i = 0; i < result.getReal().length; i++) {
       System.out.println(Arrays.toString(result.getReal()[i]));
     }
-    System.out.println("Imag array of dimension [" + result.getImag().length + "],[" + result.getImag()[0].length + "]");    
+    System.out.println("Imag array of dimension [" + result.getImag().length + "],[" + result.getImag()[0].length + "]");
     for (int i = 0; i < result.getImag().length; i++) {
       System.out.println(Arrays.toString(result.getImag()[i]));
-    }    
+    }
+    System.out.println("Back in java land");
+  }
+
+  @Test
+  public void test6() {
+    OGNumeric A = new OGRealDiagonalMatrix(new double[] { 1, 2, 3, 4 });
+    double[][] result = Materialisers.toDoubleArrayOfArrays(A);
+    System.out.println("Array of dimension [" + result.length + "],[" + result[0].length + "]");
+    for (int i = 0; i < result.length; i++) {
+      System.out.println(Arrays.toString(result[i]));
+    }
+    System.out.println("Back in java land");
+  }
+
+  @Test
+  public void test7() {
+    OGNumeric A = new OGRealDiagonalMatrix(new double[] { 1, 2, 3, 4 }, 6, 7);
+    double[][] result = Materialisers.toDoubleArrayOfArrays(A);
+    System.out.println("Array of dimension [" + result.length + "],[" + result[0].length + "]");
+    for (int i = 0; i < result.length; i++) {
+      System.out.println(Arrays.toString(result[i]));
+    }
+    System.out.println("Back in java land");
+  }
+
+  @Test
+  public void test8() {
+    OGNumeric A = new OGComplexDiagonalMatrix(new double[] { 1, 2, 3, 4 }, new double[] { 10, 20, 30, 40 }, 6, 7);
+    ComplexArrayContainer result = Materialisers.toComplexArrayContainer(A);
+    System.out.println("Real array of dimension [" + result.getReal().length + "],[" + result.getReal()[0].length + "]");
+    for (int i = 0; i < result.getReal().length; i++) {
+      System.out.println(Arrays.toString(result.getReal()[i]));
+    }
+    System.out.println("Imag array of dimension [" + result.getImag().length + "],[" + result.getImag()[0].length + "]");
+    for (int i = 0; i < result.getImag().length; i++) {
+      System.out.println(Arrays.toString(result.getImag()[i]));
+    }
+    System.out.println("Back in java land");
+  }
+
+  @Test(enabled = false)
+  public void test9() {
+    OGNumeric A = new OGComplexDiagonalMatrix(new double[] { 1, 2, 3, 4 }, new double[] { 10, 20, 30, 40 });
+    ComplexArrayContainer result = Materialisers.toComplexArrayContainer(A);
+    System.out.println("Real array of dimension [" + result.getReal().length + "],[" + result.getReal()[0].length + "]");
+    for (int i = 0; i < result.getReal().length; i++) {
+      System.out.println(Arrays.toString(result.getReal()[i]));
+    }
+    System.out.println("Imag array of dimension [" + result.getImag().length + "],[" + result.getImag()[0].length + "]");
+    for (int i = 0; i < result.getImag().length; i++) {
+      System.out.println(Arrays.toString(result.getImag()[i]));
+    }
     System.out.println("Back in java land");
   }
 
