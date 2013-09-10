@@ -93,7 +93,7 @@ public class OGComplexDiagonalMatrix extends OGDiagonalMatrix {
     }
     _rows = rows;
     _cols = columns;
-    int len = Math.min(diag.length, Math.min(rows, columns));
+    int len = Math.max(diag.length, Math.min(rows, columns)); // max as zero fill on short diag
     _data = new double[len * 2];
     double[] tmp = DenseMemoryManipulation.convertSinglePointerToZeroInterleavedSinglePointer(diag);
     System.arraycopy(tmp, 0, _data, 0, len * 2);
@@ -120,10 +120,10 @@ public class OGComplexDiagonalMatrix extends OGDiagonalMatrix {
     }
     _rows = rows;
     _cols = columns;
-    int len = Math.min(real.length, Math.min(rows, columns));
+    int len = Math.max(real.length, Math.min(rows, columns)); // max as zero fill on short diag   
     _data = new double[len * 2];
     double[] tmp = DenseMemoryManipulation.convertTwoSinglePointersToInterleavedSinglePointer(real, imag);
-    System.arraycopy(tmp, 0, _data, 0, len * 2);
+    System.arraycopy(tmp, 0, _data, 0, real.length * 2);
   }
 
   /**

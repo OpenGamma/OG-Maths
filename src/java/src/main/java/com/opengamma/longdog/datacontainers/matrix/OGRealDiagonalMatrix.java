@@ -52,9 +52,9 @@ public class OGRealDiagonalMatrix extends OGDiagonalMatrix {
     Catchers.catchNullFromArgList(diag, 1);
     _rows = rows;
     _cols = columns;
-    int len = Math.min(diag.length, Math.min(rows, columns));
+    int len = Math.max(diag.length, Math.min(rows, columns)); // max as zero fill on short diag
     _data = new double[len];
-    System.arraycopy(diag, 0, _data, 0, len);
+    System.arraycopy(diag, 0, _data, 0, diag.length);
   }
 
   /**
