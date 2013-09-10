@@ -456,39 +456,61 @@ class OGLogicalMatrix: public OGRealMatrix
 template <typename T> class OGDiagonalMatrix: public OGArray<T>
 {
   public:
-    OGDiagonalMatrix(const OGDiagonalMatrix& copy)  // do we want deep copy?
+    OGDiagonalMatrix(){};
+    OGDiagonalMatrix(const OGDiagonalMatrix& copy)
     {
-      // deep for now
-      this->_rows = copy._rows;
-      this->_cols = copy._cols;
-      this->_datalen = this->_rows>this->_cols?this->_cols:this->_rows;
-      T * tmpdata=new T [this->_datalen];
-      memcpy(tmpdata, copy._data, sizeof(T)*this->_datalen);
+      this->setRows(copy->getRows());
+      this->setCols(copy->getCols());
+      this->setDatalen(copy->getDatalen());
+      T * tmpdata=new T [this->getDatalen()];
+      memcpy(tmpdata, copy._data, sizeof(T)*this->getDatalen());
       this->setData(tmpdata);
     }
     OGDiagonalMatrix(T * data, int rows, int cols)
     {
-      this->_datalen = rows>cols?cols:rows;
-      T * tmpdata = new T [this->_datalen];
-      memcpy(tmpdata, data, sizeof(T)*this->_datalen);
+      int datalen = rows>cols?cols:rows;
+      T * tmpdata = new T [datalen];
+      memcpy(tmpdata, data, sizeof(T)*datalen);
       this->setData(tmpdata);
-      this->_rows = rows;
-      this->_cols = cols;
+      this->setRows(rows);
+      this->setCols(cols);
+      this->setDatalen(datalen);
     };
     ~OGDiagonalMatrix()
     {
-      delete(this->_data);
+      delete(this->getData());
     }
     void noCopy_ctor(T * data, int rows, int cols)
     {
       this->setData(data);
-      this->_rows = rows;
-      this->_cols = cols;
-      this->_datalen = rows>cols?cols:rows;
+      this->setRows(rows);
+      this->setCols(cols);
+      this->setDatalen(rows>cols?cols:rows);
     };
     void accept(Visitor &v)
     {
       v.visit(this);
+    };
+    T ** toArrayOfArrays()
+    {
+      int const rows = this->getRows();
+      int const cols = this->getCols();
+      T * const data = this->getData();
+      int const datalen = this->getDatalen();
+      T ** tmp = new T * [rows];
+      for(int i=0; i < rows; i++)
+      {
+        tmp[i] = new T [cols];
+        for(int j=0; j < cols; j++) {
+          if(i == j && i < datalen)
+          {
+            tmp[i][j] = data[i];
+          }else{
+            tmp[i][j] = 0.e0;
+          }
+        }
+      }
+      return tmp;
     };
   private:
 };
@@ -504,17 +526,33 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
       {
         for(int j = 0 ; j < this->getCols()-1; j++)
         {
-          if(i==j)
+          if(j==i && i < this->getDatalen())
           {
             printf("%6.4f, ",this->getData()[ptr++]);
           }
+          else
+          {
+            printf("%6.4f, ",0.e0);
+          }
         }
-        if(i==this->getCols())
+        if(i==this->getCols()-1 && i < this->getDatalen())
         {
           printf("%6.4f\n",this->getData()[ptr++]);
+        } else {
+          printf("%6.4f\n",0.e0);
         }
       }
     }
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      printf("returning toArrayOfArrays\n");
+      return this->toArrayOfArrays();
+    };
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      printf("throwing exception\n");
+      throw new librdagException;
+    };     
 };
 
 class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
@@ -528,19 +566,34 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
       {
         for(int j = 0 ; j < this->getCols()-1; j++)
         {
-          if(i==j)
+          if(j==i && i < this->getDatalen())
           {
             printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
             ptr++;
           }
+          else
+          {
+            printf("%6.4f + %6.4fi, ",0.e0,0.e0);
+          }
         }
-        if(i==this->getCols())
+        if(i==this->getCols()-1 && i < this->getDatalen())
         {
           printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
           ptr++;
+        } else {
+          printf("%6.4f + %6.4fi\n",0.e0,0.e0);
         }
       }
     }
+    real16 ** toReal16ArrayOfArrays() override
+    {
+      printf("throwing exception\n");
+      throw new librdagException;
+    };
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
+      return this->toArrayOfArrays();
+    };     
 };
 
 /**

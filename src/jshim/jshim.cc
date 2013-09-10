@@ -125,8 +125,8 @@ class JOGComplexMatrix: public OGComplexMatrix
       {
         for(int j = 0 ; j < this->getCols()-1; j++)
         {
-          ptr++;
           printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
+          ptr++;          
         }
         printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
         ptr++;
@@ -236,6 +236,56 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
     jobject * _backingObject = NULL;
 };
 
+
+/*
+ * An OGRealDiagonalMatrix backed by data pinned from a Java based OGRealDiagonalMatrix
+ */
+class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
+{
+  public:
+    JOGRealDiagonalMatrix(jobject * obj)
+    {
+      this->_backingObject = obj;
+      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
+      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
+    };
+    ~JOGRealDiagonalMatrix()
+    {
+      unbindOGArrayData<real16>(this->getData(), *_backingObject);
+    };
+    void debug_print()
+    {
+      printf("\nJava bound JOGRealDiagonalMatrix\n");
+      OGRealDiagonalMatrix::debug_print();
+    }
+  private:
+    jobject * _backingObject = NULL;
+};
+
+/*
+ * An OGComplexDiagonalMatrix backed by data pinned from a Java based OGComplexDiagonalMatrix
+ */
+class JOGComplexDiagonalMatrix: public OGComplexDiagonalMatrix
+{
+  public:
+    JOGComplexDiagonalMatrix(jobject * obj)
+    {
+      this->_backingObject = obj;
+      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData);
+      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
+    };
+    ~JOGComplexDiagonalMatrix()
+    {
+      unbindOGArrayData<complex16>(this->getData(), *_backingObject);
+    };
+    void debug_print()
+    {
+      printf("\nJava bound JOGComplexDiagonalMatrix\n");
+      OGComplexDiagonalMatrix::debug_print();
+    }      
+  private:
+    jobject * _backingObject = NULL;
+};
 
 /**
  * binds the data in an OGArray class to a T pointer
@@ -400,59 +450,89 @@ class ExprFactory
       {
       case OGREALMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGRealMatrix\n");
+#endif        
         _expr = new JOGRealMatrix(&obj);
-        _expr->debug_print();
       }
       break;
       case OGCOMPLEXMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGComplexMatrix\n");
+#endif                
         _expr = new JOGComplexMatrix(&obj);
-        _expr->debug_print();
       }
       break;
       case OGREALSPARSEMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGRealSparseMatrix\n");
+#endif                
         _expr = new JOGRealSparseMatrix(&obj);
-        _expr->debug_print();
       }
       break;
       case OGCOMPLEXSPARSEMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGComplexSparseMatrix\n");
+#endif                
         _expr = new JOGComplexSparseMatrix(&obj);
-        _expr->debug_print();
       }
       break;
+      case OGREALDIAGONALMATRIX_ENUM:
+      {
+#ifdef _DEBUG        
+        printf("Binding a JOGRealDiagonalMatrix\n");
+#endif                
+        _expr = new JOGRealDiagonalMatrix(&obj);
+      }
+      break;
+      case OGCOMPLEXDIAGONALMATRIX_ENUM:
+      {
+#ifdef _DEBUG        
+        printf("Binding a JOGComplexDiagonalMatrix\n");
+#endif                
+        _expr = new JOGComplexDiagonalMatrix(&obj);
+      }
+      break;      
       case COPY_ENUM:
       {
+#ifdef _DEBUG        
         printf("COPY function\n");
+#endif                
         _expr = new COPY(generateArgs(&obj));
       }
       break;
       case MINUS_ENUM:
       {
+#ifdef _DEBUG          
         printf("MINUS function\n");
+#endif                
         _expr = new MINUS(generateArgs(&obj));
       }
       break;
       case PLUS_ENUM:
       {
+#ifdef _DEBUG          
         printf("PLUS function\n");
+#endif                
         _expr = new PLUS(generateArgs(&obj));
       }
       break;
       case SVD_ENUM:
       {
+#ifdef _DEBUG          
         printf("SVD function\n");
+#endif                
         _expr = new SVD(generateArgs(&obj));
       }
       break;
       case SELECTRESULT_ENUM:
       {
+#ifdef _DEBUG          
         printf("Select Result function\n");
+#endif                
         _expr = new SELECTRESULT(generateArgs(&obj));
       }
       break;
@@ -646,6 +726,7 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     };
     void visit(librdag::OGArray<complex16> *thing)
     {
+      printf("Visitor: librdag::OGArray<complex16> branch\n");
       this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(thing->getRows());
       this->setCols(thing->getCols());      
@@ -656,6 +737,7 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     }
     void visit(librdag::OGMatrix<complex16> *thing)
     {
+      printf("Visitor: librdag::OGMatrix<complex16> branch\n");      
       this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(thing->getRows());
       this->setCols(thing->getCols());    
@@ -753,7 +835,15 @@ extern "C" {
     }
     for(int i = 0; i < rows; i++)
     {
-      jdoubleArray tmp = env->NewDoubleArray(cols);
+      jdoubleArray tmp = NULL;
+      tmp = env->NewDoubleArray(cols);
+      if(!tmp)
+      {
+#ifdef _DEBUG
+        printf("Allocation of jobjectArray failed.\n");
+#endif
+        exit(1);
+      }
       env->SetDoubleArrayRegion(tmp, 0, cols, inputData[i]);
       env->SetObjectArrayElement(returnVal, i, tmp);
     }
@@ -765,7 +855,7 @@ extern "C" {
   /**
    * 
    */
-  jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols) {
+  jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, SUPPRESS_UNUSED complex16 ** inputData, int rows, int cols) {
     jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
     if(!returnVal)
     {
@@ -777,10 +867,18 @@ extern "C" {
     real16 * aRow = new real16[cols];
     for(int i = 0; i < rows; i++)
     {
-      jdoubleArray tmp = env->NewDoubleArray(cols);
-      for(int j = 0; j < cols; j++)
+      jdoubleArray tmp = NULL;
+      tmp = env->NewDoubleArray(cols);
+      if(!tmp)
       {
-        aRow[i]=std::real(inputData[i][j]);
+#ifdef _DEBUG
+        printf("Allocation of jobjectArray failed.\n");
+#endif
+        exit(1);
+      }
+      for(int j = 0; j < cols; j++)
+      {        
+        aRow[j]=std::real(inputData[i][j]);
       }
       env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
       env->SetObjectArrayElement(returnVal, i, tmp);
@@ -792,7 +890,7 @@ extern "C" {
    /**
    * 
    */
-  jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols) {
+  jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, SUPPRESS_UNUSED complex16 ** inputData, int rows, int cols) {
     jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
     if(!returnVal)
     {
@@ -804,10 +902,18 @@ extern "C" {
     real16 * aRow = new real16[cols];
     for(int i = 0; i < rows; i++)
     {
-      jdoubleArray tmp = env->NewDoubleArray(cols);
+      jdoubleArray tmp = NULL;
+      tmp = env->NewDoubleArray(cols);
+      if(!tmp)
+      {
+#ifdef _DEBUG
+        printf("Allocation of jobjectArray failed.\n");
+#endif
+        exit(1);
+      }
       for(int j = 0; j < cols; j++)
       {
-        aRow[i]=std::imag(inputData[i][j]);
+        aRow[j]=std::imag(inputData[i][j]);
       }
       env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
       env->SetObjectArrayElement(returnVal, i, tmp);
@@ -868,9 +974,9 @@ extern "C" {
     convert::DispatchToComplex16ArrayOfArrays * visitor = new convert::DispatchToComplex16ArrayOfArrays();
     answer->accept(*visitor);
     complex16 ** buf = visitor->getData();
-    int rows = visitor->getRows();;
-    int cols = visitor->getCols();    
-   
+    int rows = visitor->getRows();
+    int cols = visitor->getCols(); 
+       
     jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, buf, rows, cols);
     jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, buf, rows, cols);
 

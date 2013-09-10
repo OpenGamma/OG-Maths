@@ -54,11 +54,11 @@ public class OGRealDiagonalMatrixTest {
   // sending in ok double[], int, int constructor
   @Test
   public void testDoublePtrIntIntConstructorInternalDataTest() {
-    OGRealDiagonalMatrix D = new OGRealDiagonalMatrix(data4x3diagd, 16, 32);
+    OGRealDiagonalMatrix D = new OGRealDiagonalMatrix(data4x3diagd, 6, 7);
     assertTrue(D.getClass() == OGRealDiagonalMatrix.class);
-    assertTrue(Arrays.equals(D.getData(), data4x3diagd));
-    assertTrue(D.getRows() == 16);
-    assertTrue(D.getCols() == 32);
+    assertTrue(Arrays.equals(D.getData(), new double[] { 1, 2, 3, 0, 0, 0 }));
+    assertTrue(D.getRows() == 6);
+    assertTrue(D.getCols() == 7);
   }
 
   // sending in bad rows double, int, int constructor
@@ -128,5 +128,5 @@ public class OGRealDiagonalMatrixTest {
     OGRealDiagonalMatrix D = new OGRealDiagonalMatrix(data4x3diagd, 4, 3);
     D.toString();
   }
-  
+
 }
