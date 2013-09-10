@@ -393,6 +393,9 @@ class ExprFactory
 #else
       printf("Clazz Type is hashdefined as %lld\n",(long long int)ID);
 #endif
+
+      librdag::OGNumeric * _expr = nullptr;
+
       switch(ID)
       {
       case OGREALMATRIX_ENUM:
@@ -460,7 +463,7 @@ class ExprFactory
       break;
       }
 
-      if(!_expr)
+      if(_expr == nullptr)
       {
         printf("_expr is NULL so hasn't been set by the factory, exiting\n");
         exit(1);
@@ -471,7 +474,6 @@ class ExprFactory
     };
   private:
     ArgContainer* generateArgs(jobject *obj);
-    librdag::OGNumeric * _expr = NULL;
 };
 
 
@@ -512,12 +514,11 @@ ExprFactory::generateArgs(jobject *obj)
   printf("JOGExpr arg size is %d\n",len);
 #endif
   ArgContainer* local_args = new ArgContainer();
-  ExprFactory * factory = new ExprFactory();
   for(int i=0; i<len; i++)
   {
 
     jobject tmp = (jobject) env->GetObjectArrayElement(*args, i);
-    local_args->push_back(factory->getExpr(tmp));
+    local_args->push_back(getExpr(tmp));
   }
   return local_args;
 }
