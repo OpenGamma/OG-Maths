@@ -96,7 +96,7 @@ public class OGComplexDiagonalMatrix extends OGDiagonalMatrix {
     int len = Math.max(diag.length, Math.min(rows, columns)); // max as zero fill on short diag
     _data = new double[len * 2];
     double[] tmp = DenseMemoryManipulation.convertSinglePointerToZeroInterleavedSinglePointer(diag);
-    System.arraycopy(tmp, 0, _data, 0, len * 2);
+    System.arraycopy(tmp, 0, _data, 0, tmp.length);
   }
 
   /**

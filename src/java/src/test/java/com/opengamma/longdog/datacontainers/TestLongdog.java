@@ -140,8 +140,8 @@ public class TestLongdog {
     }
     System.out.println("Back in java land");
   }
-  
-  @Test(enabled=false)
+
+  @Test(enabled = false)
   public void test9() {
     OGNumeric A = new OGComplexDiagonalMatrix(new double[] { 1, 2, 3, 4 }, new double[] { 10, 20, 30, 40 });
     ComplexArrayContainer result = Materialisers.toComplexArrayContainer(A);
@@ -155,5 +155,5 @@ public class TestLongdog {
     }
     System.out.println("Back in java land");
   }
-  
+
 }
