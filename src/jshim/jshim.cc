@@ -450,67 +450,89 @@ class ExprFactory
       {
       case OGREALMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGRealMatrix\n");
+#endif        
         _expr = new JOGRealMatrix(&obj);
       }
       break;
       case OGCOMPLEXMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGComplexMatrix\n");
+#endif                
         _expr = new JOGComplexMatrix(&obj);
       }
       break;
       case OGREALSPARSEMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGRealSparseMatrix\n");
+#endif                
         _expr = new JOGRealSparseMatrix(&obj);
       }
       break;
       case OGCOMPLEXSPARSEMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGComplexSparseMatrix\n");
+#endif                
         _expr = new JOGComplexSparseMatrix(&obj);
       }
       break;
       case OGREALDIAGONALMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGRealDiagonalMatrix\n");
+#endif                
         _expr = new JOGRealDiagonalMatrix(&obj);
       }
       break;
       case OGCOMPLEXDIAGONALMATRIX_ENUM:
       {
+#ifdef _DEBUG        
         printf("Binding a JOGComplexDiagonalMatrix\n");
+#endif                
         _expr = new JOGComplexDiagonalMatrix(&obj);
       }
       break;      
       case COPY_ENUM:
       {
+#ifdef _DEBUG        
         printf("COPY function\n");
+#endif                
         _expr = new COPY(generateArgs(&obj));
       }
       break;
       case MINUS_ENUM:
       {
+#ifdef _DEBUG          
         printf("MINUS function\n");
+#endif                
         _expr = new MINUS(generateArgs(&obj));
       }
       break;
       case PLUS_ENUM:
       {
+#ifdef _DEBUG          
         printf("PLUS function\n");
+#endif                
         _expr = new PLUS(generateArgs(&obj));
       }
       break;
       case SVD_ENUM:
       {
+#ifdef _DEBUG          
         printf("SVD function\n");
+#endif                
         _expr = new SVD(generateArgs(&obj));
       }
       break;
       case SELECTRESULT_ENUM:
       {
+#ifdef _DEBUG          
         printf("Select Result function\n");
+#endif                
         _expr = new SELECTRESULT(generateArgs(&obj));
       }
       break;
