@@ -364,7 +364,7 @@ class JOGExpr
   private:
     jobject * _backingObject = NULL;
   protected:
-    std::vector<OGNumeric *> *generateArgs();
+    ArgContainer* generateArgs();
 };
 /**
  * COPY node spec derived from a java COPY node
@@ -564,7 +564,7 @@ JOGExpr::JOGExpr(jobject * obj)
   this->_backingObject = obj;
 }
 
-std::vector<OGNumeric *> *
+ArgContainer*
 JOGExpr::generateArgs()
 {
   jobject *obj = this->_backingObject;
@@ -601,7 +601,7 @@ JOGExpr::generateArgs()
 #ifdef _DEBUG
   printf("JOGExpr arg size is %d\n",len);
 #endif
-  std::vector<OGNumeric *> * local_args = new std::vector<librdag::OGNumeric *>;
+  ArgContainer* local_args = new ArgContainer();
   ExprFactory * factory = new ExprFactory();
   for(int i=0; i<len; i++)
   {
