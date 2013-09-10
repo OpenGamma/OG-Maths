@@ -47,6 +47,10 @@ const OGIntegerScalar* OGNumeric::asOGIntegerScalar() const
  * OGExpr
  */
 
+/*
+ * If you use the default constructor, you must call setArgs so that arguments
+ * are non-null before you finish construction.
+ */
 OGExpr::OGExpr()
 {
   this->_args = nullptr;
@@ -59,6 +63,10 @@ OGExpr::OGExpr(OGExpr& copy)
 
 OGExpr::OGExpr(ArgContainer *args)
 {
+  if (args == nullptr)
+  {
+    throw new librdagException();
+  }
   this->_args = args;
 }
 
@@ -76,7 +84,11 @@ OGExpr::getArgs()
 void
 OGExpr::setArgs(ArgContainer * args)
 {
-	this->_args = args;
+  if (args == nullptr)
+  {
+    throw new librdagException();
+  }
+  this->_args = args;
 }
 
 size_t
@@ -107,9 +119,7 @@ OGUnaryExpr::OGUnaryExpr(ArgContainer* args)
 {
   if (args->size() != 1)
   {
-    //FIXME: Replace with exception when implemented.
-    // For now just die
-    exit(1);
+    throw new librdagException();
   }
   this->setArgs(args);
 }
@@ -123,12 +133,11 @@ OGUnaryExpr::OGUnaryExpr(OGNumeric* arg)
 
 OGBinaryExpr::OGBinaryExpr() : OGExpr() {}
 
-OGBinaryExpr::OGBinaryExpr(ArgContainer* args) {
+OGBinaryExpr::OGBinaryExpr(ArgContainer* args)
+{
   if (args->size() != 2)
   {
-    //FIXME: Replace with exception when implemented.
-    // For now just die
-    exit(1);
+    throw new librdagException();
   }
   this->setArgs(args);
 }
