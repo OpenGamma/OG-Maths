@@ -452,42 +452,36 @@ class ExprFactory
       {
         printf("Binding a JOGRealMatrix\n");
         _expr = new JOGRealMatrix(&obj);
-        _expr->debug_print();
       }
       break;
       case OGCOMPLEXMATRIX_ENUM:
       {
         printf("Binding a JOGComplexMatrix\n");
         _expr = new JOGComplexMatrix(&obj);
-        _expr->debug_print();
       }
       break;
       case OGREALSPARSEMATRIX_ENUM:
       {
         printf("Binding a JOGRealSparseMatrix\n");
         _expr = new JOGRealSparseMatrix(&obj);
-        _expr->debug_print();
       }
       break;
       case OGCOMPLEXSPARSEMATRIX_ENUM:
       {
         printf("Binding a JOGComplexSparseMatrix\n");
         _expr = new JOGComplexSparseMatrix(&obj);
-        _expr->debug_print();
       }
       break;
       case OGREALDIAGONALMATRIX_ENUM:
       {
         printf("Binding a JOGRealDiagonalMatrix\n");
         _expr = new JOGRealDiagonalMatrix(&obj);
-        _expr->debug_print();
       }
       break;
       case OGCOMPLEXDIAGONALMATRIX_ENUM:
       {
         printf("Binding a JOGComplexDiagonalMatrix\n");
         _expr = new JOGComplexDiagonalMatrix(&obj);
-        _expr->debug_print();
       }
       break;      
       case COPY_ENUM:
