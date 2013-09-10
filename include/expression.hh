@@ -17,15 +17,25 @@
 #include "numerictypes.hh"
 #include "visitor.hh"
 #include "exceptions.hh"
+#include "containers.hh"
 
 using namespace std;
+
 
 /*
  * The namespace for the DAG library
  */
 namespace librdag
 {
-  
+
+/*
+ * Forward declaration of class types for pidgin RTTI in OGNumeric
+ */
+
+class OGRealScalar;
+class OGComplexScalar;
+class OGIntegerScalar;
+
 /*
  * Base class for absolutely everything!
  */
@@ -35,6 +45,9 @@ class OGNumeric
     virtual ~OGNumeric();
     virtual void debug_print();
     virtual void accept(Visitor &v)=0;
+    virtual const OGRealScalar* asOGRealScalar() const;
+    virtual const OGComplexScalar* asOGComplexScalar() const;
+    virtual const OGIntegerScalar* asOGIntegerScalar() const;
   protected:
     OGNumeric();
 };
@@ -49,7 +62,10 @@ class OGTerminal: public OGNumeric
     virtual complex16 ** toComplex16ArrayOfArrays() = 0;
 };
 
-
+/*
+ * Container for expression arguments
+ */
+typedef PtrVector<OGNumeric> ArgContainer;
 
 /**
  *  Expr type
@@ -58,18 +74,18 @@ class OGExpr: public OGNumeric
 {
   public:
     virtual ~OGExpr();
-    std::vector<OGNumeric *> * getArgs();
+    ArgContainer* getArgs();
     size_t getNArgs();
     virtual void debug_print();
     void accept(Visitor &v);
-  private:
-    std::vector<OGNumeric *> * _args;
-    explicit OGExpr(OGExpr& other);
-    OGExpr& operator=(OGExpr& rhs);
   protected:
     OGExpr();
-    OGExpr(std::vector<OGNumeric *> *args);
-    void setArgs(std::vector<OGNumeric *> * args);
+    OGExpr(ArgContainer* args);
+    void setArgs(ArgContainer* args);
+  private:
+    ArgContainer* _args;
+    explicit OGExpr(OGExpr& other);
+    OGExpr& operator=(OGExpr& rhs);
 };
 
 /**
@@ -80,7 +96,7 @@ class OGUnaryExpr: public OGExpr
 {
   protected:
     OGUnaryExpr();
-    OGUnaryExpr(std::vector<OGNumeric *> * args);
+    OGUnaryExpr(ArgContainer* args);
     OGUnaryExpr(OGNumeric * args);
 };
 
@@ -88,7 +104,7 @@ class OGBinaryExpr : public OGExpr
 {
   protected:
     OGBinaryExpr();
-    OGBinaryExpr(std::vector<OGNumeric *> *args);
+    OGBinaryExpr(ArgContainer* args);
     OGBinaryExpr(OGNumeric* left, OGNumeric* right);
   private:
     explicit OGBinaryExpr(OGBinaryExpr& other);
@@ -98,7 +114,7 @@ class COPY: public OGUnaryExpr
 {
   public:
     COPY(OGNumeric *arg);
-    COPY(std::vector<OGNumeric *> *args);
+    COPY(ArgContainer *args);
     void debug_print();
   protected:
     COPY();
@@ -111,7 +127,7 @@ class PLUS: public OGBinaryExpr
 {
   public:
     PLUS(OGNumeric* left, OGNumeric* right);
-    PLUS(std::vector<OGNumeric *> *args);
+    PLUS(ArgContainer *args);
     void debug_print();
   protected:
     PLUS();
@@ -124,7 +140,7 @@ class MINUS: public OGBinaryExpr
 {
   public:
     MINUS(OGNumeric* left, OGNumeric* right);
-    MINUS(std::vector<OGNumeric *> *args);
+    MINUS(ArgContainer *args);
     void debug_print();
   protected:
     MINUS();
@@ -136,7 +152,7 @@ class SVD: public OGUnaryExpr
 {
   public:
     SVD(OGNumeric * arg);
-    SVD(std::vector<OGNumeric *> *args);
+    SVD(ArgContainer *args);
     void debug_print();
   protected:
     SVD();
@@ -148,7 +164,7 @@ class SELECTRESULT: public OGBinaryExpr
 {
   public:
     SELECTRESULT(OGNumeric *result, OGNumeric *index);
-    SELECTRESULT(std::vector<OGNumeric *> *args);
+    SELECTRESULT(ArgContainer *args);
     void debug_print();
   protected:
     SELECTRESULT();
@@ -215,6 +231,10 @@ class OGRealScalar: public OGScalar<real16>
     {
       throw new librdagException();
     }
+    virtual const OGRealScalar* asOGRealScalar() const
+    {
+      return this;
+    }
 };
 
 class OGComplexScalar: public OGScalar<complex16>
@@ -231,6 +251,10 @@ class OGComplexScalar: public OGScalar<complex16>
     {
       return this->toArrayOfArrays();
     }
+    virtual const OGComplexScalar* asOGComplexScalar() const
+    {
+      return this;
+    }
 };
 
 class OGIntegerScalar: public OGScalar<int>
@@ -246,6 +270,10 @@ class OGIntegerScalar: public OGScalar<int>
     complex16 ** toComplex16ArrayOfArrays() override
     {
       throw new librdagException();
+    }
+    virtual const OGIntegerScalar* asOGIntegerScalar() const
+    {
+      return this;
     }
 };
 
@@ -633,6 +661,6 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     }
 };
 
-}
+} // namespace librdag
 
 #endif
