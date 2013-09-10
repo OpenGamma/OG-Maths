@@ -28,6 +28,21 @@ void OGNumeric::debug_print()
   cout << "Abstract OGNumeric type" << endl;
 }
 
+const OGRealScalar* OGNumeric::asOGRealScalar() const
+{
+  return nullptr;
+}
+
+const OGComplexScalar* OGNumeric::asOGComplexScalar() const
+{
+  return nullptr;
+}
+
+const OGIntegerScalar* OGNumeric::asOGIntegerScalar() const
+{
+  return nullptr;
+}
+
 /*
  * OGExpr
  */
@@ -39,31 +54,27 @@ OGExpr::OGExpr()
 
 OGExpr::OGExpr(OGExpr& copy)
 {
-  this->_args = new std::vector<OGNumeric *>(*copy.getArgs());
+  this->_args = new ArgContainer(*copy.getArgs());
 }
 
-OGExpr::OGExpr(std::vector<OGNumeric *> *args)
+OGExpr::OGExpr(ArgContainer *args)
 {
   this->_args = args;
 }
 
 OGExpr::~OGExpr()
 {
-  for (std::vector<OGNumeric *>::iterator it = this->_args->begin() ; it != this->_args->end(); it++)
-  {
-    delete *it;
-  }
   delete this->_args;
 }
 
-std::vector<OGNumeric *> *
+ArgContainer *
 OGExpr::getArgs()
 {
 	return this->_args;
 }
 
 void
-OGExpr::setArgs(std::vector<OGNumeric *> * args)
+OGExpr::setArgs(ArgContainer * args)
 {
 	this->_args = args;
 }
@@ -92,7 +103,7 @@ OGExpr::accept(Visitor &v)
 
 OGUnaryExpr::OGUnaryExpr() : OGExpr() {}
 
-OGUnaryExpr::OGUnaryExpr(std::vector<OGNumeric*>* args)
+OGUnaryExpr::OGUnaryExpr(ArgContainer* args)
 {
   if (args->size() != 1)
   {
@@ -105,14 +116,14 @@ OGUnaryExpr::OGUnaryExpr(std::vector<OGNumeric*>* args)
 
 OGUnaryExpr::OGUnaryExpr(OGNumeric* arg)
 {
-  vector<OGNumeric*> *args = new vector<OGNumeric*>();
+  ArgContainer* args = new ArgContainer();
   args->push_back(arg);
   this->setArgs(args);
 }
 
 OGBinaryExpr::OGBinaryExpr() : OGExpr() {}
 
-OGBinaryExpr::OGBinaryExpr(std::vector<OGNumeric*>* args) {
+OGBinaryExpr::OGBinaryExpr(ArgContainer* args) {
   if (args->size() != 2)
   {
     //FIXME: Replace with exception when implemented.
@@ -124,17 +135,17 @@ OGBinaryExpr::OGBinaryExpr(std::vector<OGNumeric*>* args) {
 
 OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
 {
-	vector<OGNumeric*> *args = new vector<OGNumeric*>();
-	args->push_back(left);
-	args->push_back(right);
-	this->setArgs(args);
+    ArgContainer* args = new ArgContainer();
+    args->push_back(left);
+    args->push_back(right);
+    this->setArgs(args);
 }
 
 COPY::COPY() : OGUnaryExpr() {}
 
 COPY::COPY(OGNumeric *arg) : OGUnaryExpr(arg) {}
 
-COPY::COPY(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {}
+COPY::COPY(ArgContainer* args): OGUnaryExpr(args) {}
 
 void
 COPY::debug_print()
@@ -146,7 +157,7 @@ PLUS::PLUS() : OGBinaryExpr() {}
 
 PLUS::PLUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
-PLUS::PLUS(std::vector<OGNumeric*>* args): OGBinaryExpr(args) {}
+PLUS::PLUS(ArgContainer* args): OGBinaryExpr(args) {}
 
 void
 PLUS::debug_print()
@@ -158,7 +169,7 @@ MINUS::MINUS() : OGBinaryExpr() {}
 
 MINUS::MINUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
-MINUS::MINUS(std::vector<OGNumeric*>* args): OGBinaryExpr(args) {
+MINUS::MINUS(ArgContainer* args): OGBinaryExpr(args) {
 }
 
 void
@@ -169,7 +180,7 @@ MINUS::debug_print()
 
 SVD::SVD() : OGUnaryExpr() {}
 
-SVD::SVD(std::vector<OGNumeric*>* args): OGUnaryExpr(args) {}
+SVD::SVD(ArgContainer* args): OGUnaryExpr(args) {}
 
 SVD::SVD(OGNumeric* arg): OGUnaryExpr(arg) {}
 
@@ -181,9 +192,10 @@ SVD::debug_print()
 
 SELECTRESULT::SELECTRESULT() : OGBinaryExpr() {}
 
-SELECTRESULT::SELECTRESULT(std::vector<OGNumeric*>* args): OGBinaryExpr(args) {
+SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {
   // Check that the second argument is an integer
-  if (dynamic_cast<OGIntegerScalar*>((*args)[1]) == NULL)
+  const OGIntegerScalar* i = (*args)[1]->asOGIntegerScalar();
+  if (i == nullptr)
   {
     // FIXME: Throw exception when exceptions set up. die for now.
     exit(1);
@@ -192,7 +204,8 @@ SELECTRESULT::SELECTRESULT(std::vector<OGNumeric*>* args): OGBinaryExpr(args) {
 
 SELECTRESULT::SELECTRESULT(OGNumeric* result, OGNumeric* index): OGBinaryExpr(result, index)
 {
-  if (dynamic_cast<OGIntegerScalar*>((*(this->getArgs()))[1]) == NULL)
+  const OGIntegerScalar* i = (*(this->getArgs()))[1]->asOGIntegerScalar();
+  if (i == nullptr)
   {
     // FIXME: Throw exception when exceptions set up. die for now.
     exit(1);
