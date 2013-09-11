@@ -18,6 +18,7 @@
 #include "visitor.hh"
 #include "exceptions.hh"
 #include "containers.hh"
+#include "uncopyable.hh"
 
 using namespace std;
 
@@ -70,7 +71,7 @@ typedef PtrVector<OGNumeric> ArgContainer;
 /**
  *  Expr type
  */
-class OGExpr: public OGNumeric
+class OGExpr: public OGNumeric, private Uncopyable
 {
   public:
     virtual ~OGExpr();
@@ -83,8 +84,6 @@ class OGExpr: public OGNumeric
     void setArgs(ArgContainer* args);
   private:
     ArgContainer* _args;
-    explicit OGExpr(OGExpr& other);
-    OGExpr& operator=(OGExpr& rhs);
 };
 
 /**
@@ -101,8 +100,6 @@ class OGBinaryExpr : public OGExpr
 {
   protected:
     OGBinaryExpr(ArgContainer* args);
-  private:
-    explicit OGBinaryExpr(OGBinaryExpr& other);
 };
 
 class COPY: public OGUnaryExpr
@@ -110,8 +107,6 @@ class COPY: public OGUnaryExpr
   public:
     COPY(ArgContainer *args);
     void debug_print();
-  private:
-    explicit COPY(COPY& other);
 };
 
 
@@ -120,8 +115,6 @@ class PLUS: public OGBinaryExpr
   public:
     PLUS(ArgContainer *args);
     void debug_print();
-  private:
-    explicit PLUS(PLUS& other);
 };
 
 
@@ -130,8 +123,6 @@ class MINUS: public OGBinaryExpr
   public:
     MINUS(ArgContainer *args);
     void debug_print();
-  private:
-    explicit MINUS(MINUS& other);
 };
 
 class SVD: public OGUnaryExpr
@@ -139,8 +130,6 @@ class SVD: public OGUnaryExpr
   public:
     SVD(ArgContainer *args);
     void debug_print();
-  private:
-    explicit SVD(SVD& other);
 };
 
 class SELECTRESULT: public OGBinaryExpr
@@ -148,8 +137,6 @@ class SELECTRESULT: public OGBinaryExpr
   public:
     SELECTRESULT(ArgContainer *args);
     void debug_print();
-  private:
-    explicit SELECTRESULT(SELECTRESULT& other);
 };
 
 /**

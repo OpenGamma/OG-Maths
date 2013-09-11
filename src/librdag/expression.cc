@@ -47,11 +47,6 @@ const OGIntegerScalar* OGNumeric::asOGIntegerScalar() const
  * OGExpr
  */
 
-OGExpr::OGExpr(OGExpr& copy)
-{
-  this->_args = new ArgContainer(*copy.getArgs());
-}
-
 OGExpr::OGExpr(ArgContainer *args)
 {
   if (args == nullptr)
