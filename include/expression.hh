@@ -79,7 +79,6 @@ class OGExpr: public OGNumeric
     virtual void debug_print();
     void accept(Visitor &v);
   protected:
-    OGExpr();
     OGExpr(ArgContainer* args);
     void setArgs(ArgContainer* args);
   private:
@@ -95,17 +94,13 @@ class OGExpr: public OGNumeric
 class OGUnaryExpr: public OGExpr
 {
   protected:
-    OGUnaryExpr();
     OGUnaryExpr(ArgContainer* args);
-    OGUnaryExpr(OGNumeric * args);
 };
 
 class OGBinaryExpr : public OGExpr
 {
   protected:
-    OGBinaryExpr();
     OGBinaryExpr(ArgContainer* args);
-    OGBinaryExpr(OGNumeric* left, OGNumeric* right);
   private:
     explicit OGBinaryExpr(OGBinaryExpr& other);
 };
@@ -113,11 +108,8 @@ class OGBinaryExpr : public OGExpr
 class COPY: public OGUnaryExpr
 {
   public:
-    COPY(OGNumeric *arg);
     COPY(ArgContainer *args);
     void debug_print();
-  protected:
-    COPY();
   private:
     explicit COPY(COPY& other);
 };
@@ -126,11 +118,8 @@ class COPY: public OGUnaryExpr
 class PLUS: public OGBinaryExpr
 {
   public:
-    PLUS(OGNumeric* left, OGNumeric* right);
     PLUS(ArgContainer *args);
     void debug_print();
-  protected:
-    PLUS();
   private:
     explicit PLUS(PLUS& other);
 };
@@ -139,11 +128,8 @@ class PLUS: public OGBinaryExpr
 class MINUS: public OGBinaryExpr
 {
   public:
-    MINUS(OGNumeric* left, OGNumeric* right);
     MINUS(ArgContainer *args);
     void debug_print();
-  protected:
-    MINUS();
   private:
     explicit MINUS(MINUS& other);
 };
@@ -151,11 +137,8 @@ class MINUS: public OGBinaryExpr
 class SVD: public OGUnaryExpr
 {
   public:
-    SVD(OGNumeric * arg);
     SVD(ArgContainer *args);
     void debug_print();
-  protected:
-    SVD();
   private:
     explicit SVD(SVD& other);
 };
@@ -163,11 +146,8 @@ class SVD: public OGUnaryExpr
 class SELECTRESULT: public OGBinaryExpr
 {
   public:
-    SELECTRESULT(OGNumeric *result, OGNumeric *index);
     SELECTRESULT(ArgContainer *args);
     void debug_print();
-  protected:
-    SELECTRESULT();
   private:
     explicit SELECTRESULT(SELECTRESULT& other);
 };
