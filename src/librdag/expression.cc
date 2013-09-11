@@ -47,11 +47,6 @@ const OGIntegerScalar* OGNumeric::asOGIntegerScalar() const
  * OGExpr
  */
 
-OGExpr::OGExpr()
-{
-  this->_args = new ArgContainer();
-}
-
 OGExpr::OGExpr(OGExpr& copy)
 {
   this->_args = new ArgContainer(*copy.getArgs());
@@ -77,18 +72,6 @@ OGExpr::getArgs()
   return this->_args;
 }
 
-void
-OGExpr::setArgs(ArgContainer * args)
-{
-  if (args == nullptr)
-  {
-    throw new librdagException();
-  }
-  // Old args are no longer required.
-  delete this->_args;
-  this->_args = args;
-}
-
 size_t
 OGExpr::getNArgs()
 {
@@ -111,40 +94,21 @@ OGExpr::accept(Visitor &v)
  * Things that extend OGExpr
  */
 
-OGUnaryExpr::OGUnaryExpr(ArgContainer* args)
+OGUnaryExpr::OGUnaryExpr(ArgContainer* args): OGExpr(args)
 {
   if (args->size() != 1)
   {
     throw new librdagException();
   }
-  this->setArgs(args);
 }
 
-OGUnaryExpr::OGUnaryExpr(OGNumeric* arg)
-{
-  ArgContainer* args = new ArgContainer();
-  args->push_back(arg);
-  this->setArgs(args);
-}
-
-OGBinaryExpr::OGBinaryExpr(ArgContainer* args)
+OGBinaryExpr::OGBinaryExpr(ArgContainer* args): OGExpr(args)
 {
   if (args->size() != 2)
   {
     throw new librdagException();
   }
-  this->setArgs(args);
 }
-
-OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
-{
-    ArgContainer* args = new ArgContainer();
-    args->push_back(left);
-    args->push_back(right);
-    this->setArgs(args);
-}
-
-COPY::COPY(OGNumeric *arg) : OGUnaryExpr(arg) {}
 
 COPY::COPY(ArgContainer* args): OGUnaryExpr(args) {}
 
@@ -154,8 +118,6 @@ COPY::debug_print()
 	cout << "COPY base class" << endl;
 }
 
-PLUS::PLUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
-
 PLUS::PLUS(ArgContainer* args): OGBinaryExpr(args) {}
 
 void
@@ -163,8 +125,6 @@ PLUS::debug_print()
 {
 	cout << "PLUS base class" << endl;
 }
-
-MINUS::MINUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
 MINUS::MINUS(ArgContainer* args): OGBinaryExpr(args) {
 }
@@ -177,8 +137,6 @@ MINUS::debug_print()
 
 SVD::SVD(ArgContainer* args): OGUnaryExpr(args) {}
 
-SVD::SVD(OGNumeric* arg): OGUnaryExpr(arg) {}
-
 void
 SVD::debug_print()
 {
@@ -188,16 +146,6 @@ SVD::debug_print()
 SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {
   // Check that the second argument is an integer
   const OGIntegerScalar* i = (*args)[1]->asOGIntegerScalar();
-  if (i == nullptr)
-  {
-    // FIXME: Throw exception when exceptions set up. die for now.
-    exit(1);
-  }
-}
-
-SELECTRESULT::SELECTRESULT(OGNumeric* result, OGNumeric* index): OGBinaryExpr(result, index)
-{
-  const OGIntegerScalar* i = (*(this->getArgs()))[1]->asOGIntegerScalar();
   if (i == nullptr)
   {
     // FIXME: Throw exception when exceptions set up. die for now.
