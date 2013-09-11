@@ -47,13 +47,9 @@ const OGIntegerScalar* OGNumeric::asOGIntegerScalar() const
  * OGExpr
  */
 
-/*
- * If you use the default constructor, you must call setArgs so that arguments
- * are non-null before you finish construction.
- */
 OGExpr::OGExpr()
 {
-  this->_args = nullptr;
+  this->_args = new ArgContainer();
 }
 
 OGExpr::OGExpr(OGExpr& copy)
@@ -75,10 +71,10 @@ OGExpr::~OGExpr()
   delete this->_args;
 }
 
-ArgContainer *
+ArgContainer*
 OGExpr::getArgs()
 {
-	return this->_args;
+  return this->_args;
 }
 
 void
@@ -88,6 +84,8 @@ OGExpr::setArgs(ArgContainer * args)
   {
     throw new librdagException();
   }
+  // Old args are no longer required.
+  delete this->_args;
   this->_args = args;
 }
 
@@ -113,8 +111,6 @@ OGExpr::accept(Visitor &v)
  * Things that extend OGExpr
  */
 
-OGUnaryExpr::OGUnaryExpr() : OGExpr() {}
-
 OGUnaryExpr::OGUnaryExpr(ArgContainer* args)
 {
   if (args->size() != 1)
@@ -130,8 +126,6 @@ OGUnaryExpr::OGUnaryExpr(OGNumeric* arg)
   args->push_back(arg);
   this->setArgs(args);
 }
-
-OGBinaryExpr::OGBinaryExpr() : OGExpr() {}
 
 OGBinaryExpr::OGBinaryExpr(ArgContainer* args)
 {
@@ -150,8 +144,6 @@ OGBinaryExpr::OGBinaryExpr(OGNumeric* left, OGNumeric* right)
     this->setArgs(args);
 }
 
-COPY::COPY() : OGUnaryExpr() {}
-
 COPY::COPY(OGNumeric *arg) : OGUnaryExpr(arg) {}
 
 COPY::COPY(ArgContainer* args): OGUnaryExpr(args) {}
@@ -162,8 +154,6 @@ COPY::debug_print()
 	cout << "COPY base class" << endl;
 }
 
-PLUS::PLUS() : OGBinaryExpr() {}
-
 PLUS::PLUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
 PLUS::PLUS(ArgContainer* args): OGBinaryExpr(args) {}
@@ -173,8 +163,6 @@ PLUS::debug_print()
 {
 	cout << "PLUS base class" << endl;
 }
-
-MINUS::MINUS() : OGBinaryExpr() {}
 
 MINUS::MINUS(OGNumeric* left, OGNumeric* right) : OGBinaryExpr(left, right) {}
 
@@ -187,8 +175,6 @@ MINUS::debug_print()
 	cout << "MINUS base class" << endl;
 }
 
-SVD::SVD() : OGUnaryExpr() {}
-
 SVD::SVD(ArgContainer* args): OGUnaryExpr(args) {}
 
 SVD::SVD(OGNumeric* arg): OGUnaryExpr(arg) {}
@@ -198,8 +184,6 @@ SVD::debug_print()
 {
 	cout << "SVD base class" << endl;
 }
-
-SELECTRESULT::SELECTRESULT() : OGBinaryExpr() {}
 
 SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {
   // Check that the second argument is an integer

@@ -95,7 +95,6 @@ class OGExpr: public OGNumeric
 class OGUnaryExpr: public OGExpr
 {
   protected:
-    OGUnaryExpr();
     OGUnaryExpr(ArgContainer* args);
     OGUnaryExpr(OGNumeric * args);
 };
@@ -103,7 +102,6 @@ class OGUnaryExpr: public OGExpr
 class OGBinaryExpr : public OGExpr
 {
   protected:
-    OGBinaryExpr();
     OGBinaryExpr(ArgContainer* args);
     OGBinaryExpr(OGNumeric* left, OGNumeric* right);
   private:
@@ -116,8 +114,6 @@ class COPY: public OGUnaryExpr
     COPY(OGNumeric *arg);
     COPY(ArgContainer *args);
     void debug_print();
-  protected:
-    COPY();
   private:
     explicit COPY(COPY& other);
 };
@@ -129,8 +125,6 @@ class PLUS: public OGBinaryExpr
     PLUS(OGNumeric* left, OGNumeric* right);
     PLUS(ArgContainer *args);
     void debug_print();
-  protected:
-    PLUS();
   private:
     explicit PLUS(PLUS& other);
 };
@@ -142,8 +136,6 @@ class MINUS: public OGBinaryExpr
     MINUS(OGNumeric* left, OGNumeric* right);
     MINUS(ArgContainer *args);
     void debug_print();
-  protected:
-    MINUS();
   private:
     explicit MINUS(MINUS& other);
 };
@@ -154,8 +146,6 @@ class SVD: public OGUnaryExpr
     SVD(OGNumeric * arg);
     SVD(ArgContainer *args);
     void debug_print();
-  protected:
-    SVD();
   private:
     explicit SVD(SVD& other);
 };
@@ -166,8 +156,6 @@ class SELECTRESULT: public OGBinaryExpr
     SELECTRESULT(OGNumeric *result, OGNumeric *index);
     SELECTRESULT(ArgContainer *args);
     void debug_print();
-  protected:
-    SELECTRESULT();
   private:
     explicit SELECTRESULT(SELECTRESULT& other);
 };
