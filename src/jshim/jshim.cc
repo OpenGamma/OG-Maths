@@ -85,16 +85,7 @@ class JOGRealMatrix: public OGRealMatrix
     void debug_print()
     {
       printf("\nJava bound OGRealMatrix\n");
-      size_t ptr=0;
-      printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
-      {
-        for(int j = 0 ; j < this->getCols()-1; j++)
-        {
-          printf("%6.4f, ",this->getData()[ptr++]);
-        }
-        printf("%6.4f\n",this->getData()[ptr++]);
-      }
+      OGRealMatrix::debug_print();
     }
   private:
     jobject * _backingObject = NULL;
@@ -119,18 +110,7 @@ class JOGComplexMatrix: public OGComplexMatrix
     void debug_print()
     {
       printf("\nJava bound OGComplexMatrix\n");
-      size_t ptr=0;
-      printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
-      {
-        for(int j = 0 ; j < this->getCols()-1; j++)
-        {
-          printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
-          ptr++;          
-        }
-        printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
-        ptr++;
-      }
+      OGComplexMatrix::debug_print();
     }      
   private:
     jobject * _backingObject = NULL;
@@ -158,18 +138,8 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
     };
     void debug_print()
     {
-      double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
       printf("\nJava bound OGRealSparseMatrix\n");
-      printf("\ndata len = %d\n",this->getDatalen());
-      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
-      int * colPtr = this->getColPtr();
-      for (int ir = 0; ir < this->getCols(); ir++)
-      {
-        for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
-        {
-          printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
-        }
-      }
+      OGRealSparseMatrix::debug_print();      
     }
     real16 ** toReal16ArrayOfArrays() override {
       double ** foo = NULL;
@@ -207,20 +177,8 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
     };
     void debug_print()
     {
-      double nnz = 100.e0 * this->getDatalen()/ (this->getRows() * this->getCols());
       printf("\nJava bound OGComplexSparseMatrix\n");
-      printf("datalen:%d\n",this->getDatalen());
-      printf("rows:%d\n",this->getRows());
-      printf("cols:%d\n",this->getCols());
-      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
-      int * colPtr = this->getColPtr();
-      for (int ir = 0; ir < this->getCols(); ir++)
-      {
-        for (int i = colPtr[ir]; i < colPtr[1]; i++)
-        {
-          printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
-        }
-      }
+      OGComplexSparseMatrix::debug_print();
     }
     real16 ** toReal16ArrayOfArrays() override {
       double ** foo = NULL;
