@@ -45,13 +45,6 @@ TEST(OGExprTest, ComplexValues) {
 
 TEST(OGExprTest, COPY){
   // Constructor
-  OGRealScalar *real = new OGRealScalar(1.0);
-  OGExpr *copy = new COPY(real);
-  ArgContainer* args = copy->getArgs();
-  ASSERT_EQ(1, copy->getNArgs());
-  EXPECT_EQ(real, ((*args)[0])->asOGRealScalar());
-
-  // Constructor with args
   ArgContainer* newArgs = new ArgContainer();
   OGRealScalar *newReal = new OGRealScalar(3.14);
   newArgs->push_back(newReal);
@@ -63,21 +56,11 @@ TEST(OGExprTest, COPY){
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete copy;
   delete copyWithArgs;
 }
 
 TEST(OGExprTest, PLUS){
   // Constructor
-  OGRealScalar *real = new OGRealScalar(1.0);
-  OGComplexScalar *complx = new OGComplexScalar(complex16(2.0,3.0));
-  OGExpr *plus = new PLUS(real, complx);
-  ArgContainer* args = plus->getArgs();
-  ASSERT_EQ(2, plus->getNArgs());
-  EXPECT_EQ(real, ((*args)[0])->asOGRealScalar());
-  EXPECT_EQ(complx, ((*args)[1])->asOGComplexScalar());
-
-  // Constructor with args
   ArgContainer* newArgs = new ArgContainer();
   OGRealScalar *newReal = new OGRealScalar(3.14);
   OGComplexScalar *newComplx = new OGComplexScalar(complex16(2.7182, 2.7182));
@@ -92,21 +75,11 @@ TEST(OGExprTest, PLUS){
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete plus;
   delete plusWithArgs;
 }
 
 TEST(OGExprTest, MINUS){
   // Constructor
-  OGRealScalar *real = new OGRealScalar(1.0);
-  OGComplexScalar *complx = new OGComplexScalar(complex16(2.0,3.0));
-  OGExpr *minus = new MINUS(real, complx);
-  ArgContainer* args = minus->getArgs();
-  ASSERT_EQ(2, minus->getNArgs());
-  EXPECT_EQ(real, ((*args)[0])->asOGRealScalar());
-  EXPECT_EQ(complx, ((*args)[1])->asOGComplexScalar());
-
-  // Constructor with args
   ArgContainer* newArgs = new ArgContainer();
   OGRealScalar *newReal = new OGRealScalar(3.14);
   OGComplexScalar *newComplx = new OGComplexScalar(complex16(2.7182, 2.7182));
@@ -121,19 +94,11 @@ TEST(OGExprTest, MINUS){
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete minus;
   delete minusWithArgs;
 }
 
 TEST(OGExprTest, SVD){
   // Constructor
-  OGRealScalar *real = new OGRealScalar(1.0);
-  OGExpr *svd = new SVD(real);
-  ArgContainer* args = svd->getArgs();
-  ASSERT_EQ(1, svd->getNArgs());
-  EXPECT_EQ(real, ((*args)[0])->asOGRealScalar());
-
-  // Constructor with args
   ArgContainer* newArgs = new ArgContainer();
   OGRealScalar *newReal = new OGRealScalar(3.14);
   newArgs->push_back(newReal);
@@ -145,21 +110,11 @@ TEST(OGExprTest, SVD){
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete svd;
   delete svdWithArgs;
 }
 
 TEST(OGExprTest, SELECTRESULT){
   // Constructor
-  OGRealScalar *real = new OGRealScalar(1.0);
-  OGIntegerScalar *index = new OGIntegerScalar(1);
-  OGExpr *select = new SELECTRESULT(real, index);
-  ArgContainer* args = select->getArgs();
-  ASSERT_EQ(2, select->getNArgs());
-  EXPECT_EQ(real, ((*args)[0])->asOGRealScalar());
-  EXPECT_EQ(index, ((*args)[1])->asOGIntegerScalar());
-
-  // Constructor with args
   ArgContainer* newArgs = new ArgContainer();
   OGRealScalar *newReal = new OGRealScalar(3.14);
   OGIntegerScalar *newIndex = new OGIntegerScalar(2);
@@ -177,7 +132,6 @@ TEST(OGExprTest, SELECTRESULT){
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete select;
   delete selectWithArgs;
 }
 
