@@ -14,7 +14,7 @@ set(TESTS check_expressions check_containers)
 # Compile and link each test and add to the list of tests
 foreach(TEST ${TESTS})
   add_executable(${TEST} ${TEST}.cc)
-  target_link_libraries(${TEST} rdag ${GTEST_BOTH_LIBRARIES} pthread)
+  target_link_libraries(${TEST} rdag gtest gtest_main pthread)
   get_target_property(TEST_LOC ${TEST} LOCATION)
   GTEST_ADD_TESTS(${TEST_LOC} "" ${TEST}.cc)
   if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
