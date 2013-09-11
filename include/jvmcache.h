@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
 #ifndef jvmcache_h
 #define jvmcache_h
 #ifdef __cplusplus

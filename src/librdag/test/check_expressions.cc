@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
 #include "entrypt.h"
 #include "expression.hh"
 #include "gtest/gtest.h"
