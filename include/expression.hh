@@ -147,8 +147,6 @@ template <class T> class OGScalar: public OGTerminal
   private:
     T _value;
   public:
-    OGScalar() {};
-
     OGScalar(const OGScalar * const copy)
     {
     	this->_value = copy->_value;
@@ -300,7 +298,6 @@ template <typename T> class OGArray: public OGTerminal
 template <typename T> class OGMatrix: public OGArray<T>
 {
   public:
-    OGMatrix() {}
     OGMatrix(const OGMatrix& copy)
     {
       this->setRows(copy->getRows());
@@ -312,12 +309,10 @@ template <typename T> class OGMatrix: public OGArray<T>
     }
     OGMatrix(T * data, int rows, int cols)
     {
-      this->_datalen = rows*cols;
-      T * tmpdata =new T [this->getDatalen()];
-      memcpy(tmpdata, data, sizeof(T)*this->_datalen);
-      this->_data=tmpdata;
-      this->_rows=rows;
-      this->_cols=cols;
+      this->setData(data);
+      this->setRows(rows);
+      this->setCols(cols);
+      this->setDatalen(rows*cols);
     };
     ~OGMatrix()
     {
@@ -326,13 +321,6 @@ template <typename T> class OGMatrix: public OGArray<T>
         delete(this->getData());
       }
     }
-    void noCopy_ctor(T * data, int rows, int cols)
-    {
-      this->setData(data);
-      this->setRows(rows);
-      this->setCols(cols);
-      this->setDatalen(rows*cols);
-    };
     void accept(Visitor &v)
     {
       v.visit(this);
@@ -352,11 +340,14 @@ template <typename T> class OGMatrix: public OGArray<T>
       }
       return tmp;
     }
+  private:
+    OGMatrix() = delete;
 };
 
 class OGRealMatrix: public OGMatrix<real16>
 {
-  public:
+  public: 
+    using OGMatrix::OGMatrix;
     void debug_print()
     {
       size_t ptr=0;
@@ -384,6 +375,7 @@ class OGRealMatrix: public OGMatrix<real16>
 class OGComplexMatrix: public OGMatrix<complex16>
 {
   public:
+    using OGMatrix::OGMatrix;
     void debug_print()
     {
       size_t ptr=0;
@@ -423,7 +415,6 @@ class OGLogicalMatrix: public OGRealMatrix
 template <typename T> class OGDiagonalMatrix: public OGArray<T>
 {
   public:
-    OGDiagonalMatrix(){};
     OGDiagonalMatrix(const OGDiagonalMatrix& copy)
     {
       this->setRows(copy->getRows());
@@ -435,25 +426,15 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
     }
     OGDiagonalMatrix(T * data, int rows, int cols)
     {
-      int datalen = rows>cols?cols:rows;
-      T * tmpdata = new T [datalen];
-      memcpy(tmpdata, data, sizeof(T)*datalen);
-      this->setData(tmpdata);
-      this->setRows(rows);
-      this->setCols(cols);
-      this->setDatalen(datalen);
-    };
-    ~OGDiagonalMatrix()
-    {
-      delete(this->getData());
-    }
-    void noCopy_ctor(T * data, int rows, int cols)
-    {
       this->setData(data);
       this->setRows(rows);
       this->setCols(cols);
       this->setDatalen(rows>cols?cols:rows);
     };
+    ~OGDiagonalMatrix()
+    {
+      delete(this->getData());
+    }
     void accept(Visitor &v)
     {
       v.visit(this);
@@ -480,11 +461,13 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
       return tmp;
     };
   private:
+    OGDiagonalMatrix() = delete;
 };
 
 class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
 {
   public:
+    using OGDiagonalMatrix::OGDiagonalMatrix;
     void debug_print()
     {
       size_t ptr=0;
@@ -525,6 +508,7 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
 class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 {
   public:
+    using OGDiagonalMatrix::OGDiagonalMatrix;
     void debug_print()
     {
       size_t ptr=0;
@@ -569,35 +553,11 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 template <typename T> class OGSparseMatrix: public OGArray<T>
 {
   public:
-    OGSparseMatrix() {}
     OGSparseMatrix(const OGSparseMatrix& copy)
     {
       OGSparseMatrix(copy._colPtr, copy._rowIdx, copy._data, copy._rows, copy._cols);
     }
     OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols)
-    {
-      this->_datalen = colPtr[cols+1];
-
-      T * tmpdata = new T [this->_datalen];
-      memcpy(this->tmpdata, data, sizeof(T)*this->_datalen);
-      this->setData(tmpdata);
-
-      this->_colPtr = new int [cols+1];
-      memcpy(this->_colPtr, colPtr, sizeof(int)*(this->cols+1));
-
-      this->_rowIdx = new int [this->_datalen];
-      memcpy(this->_rowIdx, rowIdx, sizeof(int)*this->_datalen);
-
-      this->_rows = rows;
-      this->_cols = cols;
-    };
-    ~OGSparseMatrix()
-    {
-      delete(this->getData());
-      delete(this->_colPtr);
-      delete(this->_rowIdx);
-    }
-    void noCopy_ctor(int * colPtr, int * rowIdx, T * data, int rows, int cols)
     {
       this->setData(data);
       this->setRows(rows);
@@ -606,6 +566,12 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
       this->setColPtr(colPtr);
       this->setRowIdx(rowIdx);
     };
+    ~OGSparseMatrix()
+    {
+      delete(this->getData());
+      delete(this->_colPtr);
+      delete(this->_rowIdx);
+    }
     void accept(Visitor &v)
     {
       v.visit(this);
@@ -641,11 +607,13 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
   private:
     int * _colPtr; // the column pointer index
     int * _rowIdx; // the row index
+    OGSparseMatrix()=delete;
 };
 
 class OGRealSparseMatrix: public OGSparseMatrix<real16>
 {
   public:
+    using OGSparseMatrix::OGSparseMatrix;
     void debug_print()
     {
       double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
@@ -665,6 +633,7 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
 class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
 {
   public:
+    using OGSparseMatrix::OGSparseMatrix;
     void debug_print()
     {
       double nnz = 100.e0 * this->getDatalen() / (double)(this->getRows() * this->getCols());

@@ -72,17 +72,28 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
  */
 template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, jobject obj, jmethodID method);
 
+/**
+ * Holds references to data needed to construct a terminal type
+ */
+template <typename T> struct OGTerminalPtrContainer_t
+{
+  T * data;
+  int rows;
+  int cols;
+  int * colPtr;
+  int * rowIdx;
+};
+
 /*
  * An OGRealMatrix backed by data pinned from a Java based OGRealMatrix
  */
 class JOGRealMatrix: public OGRealMatrix
 {
   public:
-    JOGRealMatrix(jobject * obj)
+    using OGRealMatrix::OGRealMatrix;
+    JOGRealMatrix(jobject * obj): OGRealMatrix(static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj)))
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGRealMatrix()
     {
@@ -103,12 +114,11 @@ class JOGRealMatrix: public OGRealMatrix
 class JOGComplexMatrix: public OGComplexMatrix
 {
   public:
-    JOGComplexMatrix(jobject * obj)
+    JOGComplexMatrix(jobject * obj): OGComplexMatrix(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData), getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
+    
     ~JOGComplexMatrix()
     {
       unbindOGArrayData<complex16>(this->getData(), *_backingObject);
@@ -128,13 +138,9 @@ class JOGComplexMatrix: public OGComplexMatrix
 class JOGRealSparseMatrix: public OGRealSparseMatrix
 {
   public:
-    JOGRealSparseMatrix(jobject * obj)
+    JOGRealSparseMatrix(jobject * obj):OGRealSparseMatrix(static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr)),static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx)),static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj)))
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr);
-      int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx);
-      this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGRealSparseMatrix()
     {
@@ -167,13 +173,9 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
 class JOGComplexSparseMatrix: public OGComplexSparseMatrix
 {
   public:
-    JOGComplexSparseMatrix(jobject * obj)
+    JOGComplexSparseMatrix(jobject * obj):OGComplexSparseMatrix(static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr)),static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx)),static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj)))
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr);
-      int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx);
-      this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGComplexSparseMatrix()
     {
@@ -207,11 +209,9 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
 class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 {
   public:
-    JOGRealDiagonalMatrix(jobject * obj)
+    JOGRealDiagonalMatrix(jobject * obj):OGRealDiagonalMatrix(static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj)))
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGRealDiagonalMatrix()
     {
@@ -232,11 +232,9 @@ class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 class JOGComplexDiagonalMatrix: public OGComplexDiagonalMatrix
 {
   public:
-    JOGComplexDiagonalMatrix(jobject * obj)
+    JOGComplexDiagonalMatrix(jobject * obj):OGComplexDiagonalMatrix(static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj)))
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGComplexDiagonalMatrix()
     {
