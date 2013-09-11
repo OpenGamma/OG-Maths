@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
 #include "com_opengamma_longdog_materialisers_Materialisers.h"
 #include "entrypt.h"
 #include "jshim.h"

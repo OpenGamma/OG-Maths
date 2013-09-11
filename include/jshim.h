@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
 #ifndef jshim_h
 #define jshim_h
 
