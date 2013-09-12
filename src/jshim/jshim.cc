@@ -84,6 +84,75 @@ template <typename T> struct OGTerminalPtrContainer_t
   int * rowIdx;
 };
 
+
+/*
+ * An OGRealScalar backed by data pinned from a Java based OGRealScalar.
+ * Note that _dataref is assigned on construction of the OGRealScalar base class,
+ * this is to keep JNI calls to a minimum by holding reference to the data pointer needed
+ * to free via the ReleasePrimitiveArrayCritical() function.
+ */
+class JOGRealScalar: public OGRealScalar
+{
+  public:
+    using OGRealScalar::OGRealScalar;
+    JOGRealScalar(jobject * obj): OGRealScalar
+      (
+        static_cast<real16 *>(_dataRef = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData))[0]
+      )
+    {
+      this->_backingObject = obj;
+    };
+    ~JOGRealScalar()
+    {
+      unbindOGArrayData<real16>(this->_dataRef, *_backingObject);      
+      this->_backingObject = nullptr;
+      this->_dataRef = nullptr;
+    };
+    void debug_print()
+    {
+      printf("\nJava bound OGRealScalar\n");
+      OGRealScalar::debug_print();
+    }
+  private:
+    jobject * _backingObject = nullptr;
+    real16 * _dataRef = nullptr;
+};
+
+/*
+ * An OGComplexScalar backed by data pinned from a Java based OGRealScalar.
+ * Note that _dataref is assigned on construction of the OGComplexScalar base class,
+ * this is to keep JNI calls to a minimum by holding reference to the data pointer needed
+ * to free via the ReleasePrimitiveArrayCritical() function.
+ */
+class JOGComplexScalar: public OGComplexScalar
+{
+  public:
+    using OGComplexScalar::OGComplexScalar;
+    JOGComplexScalar(jobject * obj): OGComplexScalar
+      (
+        static_cast<complex16 *>(_dataRef = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData))[0]
+      )
+    {
+      this->_backingObject = obj;
+    };
+    ~JOGComplexScalar()
+    {
+      unbindOGArrayData<complex16>(this->_dataRef, *_backingObject);      
+      this->_backingObject = nullptr;
+      this->_dataRef = nullptr;
+    };
+    void debug_print()
+    {
+      printf("\nJava bound JOGComplexScalar\n");
+      OGComplexScalar::debug_print();
+    }
+  private:
+    jobject * _backingObject = nullptr;
+    complex16 * _dataRef = nullptr;
+};
+
+
+
 /*
  * An OGRealMatrix backed by data pinned from a Java based OGRealMatrix
  */
@@ -454,6 +523,22 @@ class ExprFactory
 
       switch(ID)
       {
+      case OGREALSCALAR_ENUM:
+      {
+#ifdef _DEBUG
+        printf("Binding a JOGRealScalar\n");
+#endif
+        _expr = new JOGRealScalar(&obj);
+      } 
+      break;
+      case OGCOMPLEXSCALAR_ENUM:
+      {
+#ifdef _DEBUG
+        printf("Binding a JOGComplexScalar\n");
+#endif
+        _expr = new JOGComplexScalar(&obj);
+      } 
+      break;
       case OGREALMATRIX_ENUM:
       {
 #ifdef _DEBUG

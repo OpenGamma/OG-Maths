@@ -10,6 +10,7 @@ import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.matrix.OGArray;
 import com.opengamma.longdog.datacontainers.other.ComplexArrayContainer;
+import com.opengamma.longdog.datacontainers.scalar.OGScalar;
 import com.opengamma.longdog.helpers.Catchers;
 import com.opengamma.longdog.nativeloader.NativeLibraries;
 import com.opengamma.longdog.nodes.SELECTRESULT;
@@ -80,7 +81,7 @@ public class Materialisers {
     Catchers.catchCondition(level < 0, "Level must be >= 0");
     final String tab = "   ";
     level++;
-    while (!(OGArray.class.isAssignableFrom(arg.getClass()))) {
+    while (!(OGArray.class.isAssignableFrom(arg.getClass()) || OGScalar.class.isAssignableFrom(arg.getClass()))) {
       OGExpr expr = (OGExpr) arg;
       buf.append(new String(new char[level]).replace("\0", tab) + arg.getClass());
       if (expr instanceof SELECTRESULT) {
