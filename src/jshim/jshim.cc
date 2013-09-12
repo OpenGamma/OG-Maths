@@ -86,7 +86,10 @@ template <typename T> struct OGTerminalPtrContainer_t
 
 
 /*
- * An OGRealScalar backed by data pinned from a Java based OGRealScalar
+ * An OGRealScalar backed by data pinned from a Java based OGRealScalar.
+ * Note that _dataref is assigned on construction of the OGRealScalar base class,
+ * this is to keep JNI calls to a minimum by holding reference to the data pointer needed
+ * to free via the ReleasePrimitiveArrayCritical() function.
  */
 class JOGRealScalar: public OGRealScalar
 {
@@ -103,6 +106,7 @@ class JOGRealScalar: public OGRealScalar
     {
       unbindOGArrayData<real16>(this->_dataRef, *_backingObject);      
       this->_backingObject = nullptr;
+      this->_dataRef = nullptr;
     };
     void debug_print()
     {
@@ -115,7 +119,10 @@ class JOGRealScalar: public OGRealScalar
 };
 
 /*
- * An OGComplexScalar backed by data pinned from a Java based OGRealScalar
+ * An OGComplexScalar backed by data pinned from a Java based OGRealScalar.
+ * Note that _dataref is assigned on construction of the OGComplexScalar base class,
+ * this is to keep JNI calls to a minimum by holding reference to the data pointer needed
+ * to free via the ReleasePrimitiveArrayCritical() function.
  */
 class JOGComplexScalar: public OGComplexScalar
 {
@@ -132,6 +139,7 @@ class JOGComplexScalar: public OGComplexScalar
     {
       unbindOGArrayData<complex16>(this->_dataRef, *_backingObject);      
       this->_backingObject = nullptr;
+      this->_dataRef = nullptr;
     };
     void debug_print()
     {
