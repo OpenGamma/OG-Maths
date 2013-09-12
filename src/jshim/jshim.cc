@@ -72,21 +72,38 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
  */
 template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, jobject obj, jmethodID method);
 
+/**
+ * Holds references to data needed to construct a terminal type
+ */
+template <typename T> struct OGTerminalPtrContainer_t
+{
+  T * data;
+  int rows;
+  int cols;
+  int * colPtr;
+  int * rowIdx;
+};
+
 /*
  * An OGRealMatrix backed by data pinned from a Java based OGRealMatrix
  */
 class JOGRealMatrix: public OGRealMatrix
 {
   public:
-    JOGRealMatrix(jobject * obj)
+    using OGRealMatrix::OGRealMatrix;
+    JOGRealMatrix(jobject * obj): OGRealMatrix
+      (
+        static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+      )
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGRealMatrix()
     {
       unbindOGArrayData<real16>(this->getData(), *_backingObject);
+      this->_backingObject = nullptr;
     };
     void debug_print()
     {
@@ -94,7 +111,7 @@ class JOGRealMatrix: public OGRealMatrix
       OGRealMatrix::debug_print();
     }
   private:
-    jobject * _backingObject = NULL;
+    jobject * _backingObject = nullptr;
 };
 
 /*
@@ -103,23 +120,28 @@ class JOGRealMatrix: public OGRealMatrix
 class JOGComplexMatrix: public OGComplexMatrix
 {
   public:
-    JOGComplexMatrix(jobject * obj)
+    JOGComplexMatrix(jobject * obj): OGComplexMatrix
+      (
+        static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+      )
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
+
     ~JOGComplexMatrix()
     {
       unbindOGArrayData<complex16>(this->getData(), *_backingObject);
+      this->_backingObject = nullptr;
     };
     void debug_print()
     {
       printf("\nJava bound OGComplexMatrix\n");
       OGComplexMatrix::debug_print();
-    }      
+    }
   private:
-    jobject * _backingObject = NULL;
+    jobject * _backingObject = nullptr;
 };
 
 /*
@@ -128,37 +150,43 @@ class JOGComplexMatrix: public OGComplexMatrix
 class JOGRealSparseMatrix: public OGRealSparseMatrix
 {
   public:
-    JOGRealSparseMatrix(jobject * obj)
+    JOGRealSparseMatrix(jobject * obj):OGRealSparseMatrix
+      (
+        static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr)),
+        static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx)),
+        static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+      )
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr);
-      int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx);
-      this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGRealSparseMatrix()
     {
       unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(), *_backingObject, OGTerminalClazz_getData);
-      unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
       unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, OGSparseMatrixClazz_getRowIdx);
+      unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
+      this->_backingObject = nullptr;
     };
     void debug_print()
     {
       printf("\nJava bound OGRealSparseMatrix\n");
-      OGRealSparseMatrix::debug_print();      
+      OGRealSparseMatrix::debug_print();
     }
-    real16 ** toReal16ArrayOfArrays() override {
+    real16 ** toReal16ArrayOfArrays() override
+    {
       double ** foo = NULL;
       printf("returning null as no impl yet!!!!\n");
       return foo;
-    }   
-    complex16 ** toComplex16ArrayOfArrays() override {
+    }
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
       complex16 ** foo = NULL;
       printf("returning null as no impl yet!!!!\n");
       return foo;
-    }        
+    }
   private:
-    jobject * _backingObject = NULL;
+    jobject * _backingObject = nullptr;
 };
 
 /*
@@ -167,37 +195,43 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
 class JOGComplexSparseMatrix: public OGComplexSparseMatrix
 {
   public:
-    JOGComplexSparseMatrix(jobject * obj)
+    JOGComplexSparseMatrix(jobject * obj):OGComplexSparseMatrix
+      (
+        static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr)),
+        static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx)),
+        static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+
+      )
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      int * _colPtr = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr);
-      int * _rowIdx = bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx);
-      this->noCopy_ctor(_colPtr, _rowIdx, _dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGComplexSparseMatrix()
     {
       unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(), *_backingObject, OGTerminalClazz_getData);
-      unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
       unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, OGSparseMatrixClazz_getRowIdx);
+      unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
+      this->_backingObject = nullptr;
     };
     void debug_print()
     {
       printf("\nJava bound OGComplexSparseMatrix\n");
       OGComplexSparseMatrix::debug_print();
     }
-    real16 ** toReal16ArrayOfArrays() override {
+    real16 ** toReal16ArrayOfArrays() override
+    {
       double ** foo = NULL;
       printf("returning null as no impl yet!!!!\n");
       return foo;
-    }  
-    complex16 ** toComplex16ArrayOfArrays() override {
+    }
+    complex16 ** toComplex16ArrayOfArrays() override
+    {
       complex16 ** foo = NULL;
       printf("returning null as no impl yet!!!!\n");
       return foo;
-    }        
+    }
   private:
-    jobject * _backingObject = NULL;
+    jobject * _backingObject = nullptr;
 };
 
 
@@ -207,15 +241,19 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
 class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 {
   public:
-    JOGRealDiagonalMatrix(jobject * obj)
+    JOGRealDiagonalMatrix(jobject * obj):OGRealDiagonalMatrix
+      (
+        static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+      )
     {
       this->_backingObject = obj;
-      real16 * _dataptr = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGRealDiagonalMatrix()
     {
       unbindOGArrayData<real16>(this->getData(), *_backingObject);
+      this->_backingObject = nullptr;
     };
     void debug_print()
     {
@@ -223,7 +261,7 @@ class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
       OGRealDiagonalMatrix::debug_print();
     }
   private:
-    jobject * _backingObject = NULL;
+    jobject * _backingObject = nullptr;
 };
 
 /*
@@ -232,23 +270,27 @@ class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 class JOGComplexDiagonalMatrix: public OGComplexDiagonalMatrix
 {
   public:
-    JOGComplexDiagonalMatrix(jobject * obj)
+    JOGComplexDiagonalMatrix(jobject * obj):OGComplexDiagonalMatrix
+      (
+        static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
+        static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+      )
     {
       this->_backingObject = obj;
-      complex16 * _dataptr = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData);
-      this->noCopy_ctor(_dataptr,getIntFromVoidJMethod(OGArrayClazz_getRows, *obj),getIntFromVoidJMethod(OGArrayClazz_getCols, *obj));
     };
     ~JOGComplexDiagonalMatrix()
     {
       unbindOGArrayData<complex16>(this->getData(), *_backingObject);
+      this->_backingObject = nullptr;
     };
     void debug_print()
     {
       printf("\nJava bound JOGComplexDiagonalMatrix\n");
       OGComplexDiagonalMatrix::debug_print();
-    }      
+    }
   private:
-    jobject * _backingObject = NULL;
+    jobject * _backingObject = nullptr;
 };
 
 /**
@@ -414,89 +456,89 @@ class ExprFactory
       {
       case OGREALMATRIX_ENUM:
       {
-#ifdef _DEBUG        
+#ifdef _DEBUG
         printf("Binding a JOGRealMatrix\n");
-#endif        
+#endif
         _expr = new JOGRealMatrix(&obj);
       }
       break;
       case OGCOMPLEXMATRIX_ENUM:
       {
-#ifdef _DEBUG        
+#ifdef _DEBUG
         printf("Binding a JOGComplexMatrix\n");
-#endif                
+#endif
         _expr = new JOGComplexMatrix(&obj);
       }
       break;
       case OGREALSPARSEMATRIX_ENUM:
       {
-#ifdef _DEBUG        
+#ifdef _DEBUG
         printf("Binding a JOGRealSparseMatrix\n");
-#endif                
+#endif
         _expr = new JOGRealSparseMatrix(&obj);
       }
       break;
       case OGCOMPLEXSPARSEMATRIX_ENUM:
       {
-#ifdef _DEBUG        
+#ifdef _DEBUG
         printf("Binding a JOGComplexSparseMatrix\n");
-#endif                
+#endif
         _expr = new JOGComplexSparseMatrix(&obj);
       }
       break;
       case OGREALDIAGONALMATRIX_ENUM:
       {
-#ifdef _DEBUG        
+#ifdef _DEBUG
         printf("Binding a JOGRealDiagonalMatrix\n");
-#endif                
+#endif
         _expr = new JOGRealDiagonalMatrix(&obj);
       }
       break;
       case OGCOMPLEXDIAGONALMATRIX_ENUM:
       {
-#ifdef _DEBUG        
+#ifdef _DEBUG
         printf("Binding a JOGComplexDiagonalMatrix\n");
-#endif                
+#endif
         _expr = new JOGComplexDiagonalMatrix(&obj);
       }
-      break;      
+      break;
       case COPY_ENUM:
       {
-#ifdef _DEBUG        
+#ifdef _DEBUG
         printf("COPY function\n");
-#endif                
+#endif
         _expr = new COPY(generateArgs(&obj));
       }
       break;
       case MINUS_ENUM:
       {
-#ifdef _DEBUG          
+#ifdef _DEBUG
         printf("MINUS function\n");
-#endif                
+#endif
         _expr = new MINUS(generateArgs(&obj));
       }
       break;
       case PLUS_ENUM:
       {
-#ifdef _DEBUG          
+#ifdef _DEBUG
         printf("PLUS function\n");
-#endif                
+#endif
         _expr = new PLUS(generateArgs(&obj));
       }
       break;
       case SVD_ENUM:
       {
-#ifdef _DEBUG          
+#ifdef _DEBUG
         printf("SVD function\n");
-#endif                
+#endif
         _expr = new SVD(generateArgs(&obj));
       }
       break;
       case SELECTRESULT_ENUM:
       {
-#ifdef _DEBUG          
+#ifdef _DEBUG
         printf("Select Result function\n");
-#endif                
+#endif
         _expr = new SELECTRESULT(generateArgs(&obj));
       }
       break;
@@ -583,58 +625,58 @@ void * instantiateJClassAsCXXClass(jobject obj)
 class DispatchToReal16ArrayOfArrays: public librdag::Visitor
 {
   public:
-    
-    DispatchToReal16ArrayOfArrays(){}
+
+    DispatchToReal16ArrayOfArrays() {}
     ~DispatchToReal16ArrayOfArrays()
     {
       real16 ** arr = this->getData();
       if(arr)
       {
 
-        for(int i=0;i<this->getRows();i++)
+        for(int i=0; i<this->getRows(); i++)
         {
           delete arr[i];
         }
-        delete arr;         
+        delete arr;
       }
     }
     void visit(librdag::OGExpr SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
     };
     void visit(librdag::OGArray<real16> *thing)
     {
       this->setData(thing->toReal16ArrayOfArrays());
       this->setRows(thing->getRows());
-      this->setCols(thing->getCols());      
+      this->setCols(thing->getCols());
     }
     void visit(librdag::OGArray<complex16> SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGArray<complex16>)");
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGArray<complex16>)");
     }
     void visit(librdag::OGMatrix<real16> *thing)
     {
       this->setData(thing->toReal16ArrayOfArrays());
       this->setRows(thing->getRows());
-      this->setCols(thing->getCols());    
+      this->setCols(thing->getCols());
     }
     void visit(librdag::OGMatrix<complex16> SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16>)");
-    }    
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16>)");
+    }
     void visit(librdag::OGScalar<real16> *thing)
     {
       this->setData(thing->toReal16ArrayOfArrays());
       this->setRows(1);
-      this->setCols(1);    
+      this->setCols(1);
     }
     void visit(librdag::OGScalar<complex16> SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16>)");
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16>)");
     }
     void visit(librdag::OGScalar<int> SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
     }
     void setData(real16 ** data)
     {
@@ -642,24 +684,24 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
     }
     void setRows(int rows)
     {
-     this->rows = rows; 
+      this->rows = rows;
     }
     void setCols(int cols)
     {
-     this->cols = cols;
-    }        
+      this->cols = cols;
+    }
     real16 ** getData()
     {
       return this->_data;
     }
     int getRows()
     {
-     return this->rows; 
+      return this->rows;
     }
     int getCols()
     {
-     return this->cols; 
-    }    
+      return this->cols;
+    }
   private:
     real16 ** _data = NULL;
     int rows;
@@ -669,60 +711,60 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
 class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
 {
   public:
-    
-    DispatchToComplex16ArrayOfArrays(){}
+
+    DispatchToComplex16ArrayOfArrays() {}
     ~DispatchToComplex16ArrayOfArrays()
     {
       complex16 ** arr = this->getData();
       if(arr)
       {
 
-        for(int i=0;i<this->getRows();i++)
+        for(int i=0; i<this->getRows(); i++)
         {
           delete arr[i];
         }
-        delete arr;         
+        delete arr;
       }
     }
     void visit(librdag::OGExpr SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
     };
     void visit(librdag::OGArray<complex16> *thing)
     {
       printf("Visitor: librdag::OGArray<complex16> branch\n");
       this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(thing->getRows());
-      this->setCols(thing->getCols());      
+      this->setCols(thing->getCols());
     }
     void visit(librdag::OGArray<real16> SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGArray<real16>)");
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGArray<real16>)");
     }
     void visit(librdag::OGMatrix<complex16> *thing)
     {
-      printf("Visitor: librdag::OGMatrix<complex16> branch\n");      
+      printf("Visitor: librdag::OGMatrix<complex16> branch\n");
       this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(thing->getRows());
-      this->setCols(thing->getCols());    
+      this->setCols(thing->getCols());
     }
     void visit(librdag::OGMatrix<real16> SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<real16>)");
-    }    
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<real16>)");
+    }
     void visit(librdag::OGScalar<complex16> *thing)
     {
       this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(1);
-      this->setCols(1);    
+      this->setCols(1);
     }
     void visit(librdag::OGScalar<real16> SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<real16>)");
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<real16>)");
     }
     void visit(librdag::OGScalar<int> SUPPRESS_UNUSED *thing)
     {
-        throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
+      throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
     }
     void setData(complex16 ** data)
     {
@@ -730,24 +772,24 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     }
     void setRows(int rows)
     {
-     this->rows = rows; 
+      this->rows = rows;
     }
     void setCols(int cols)
     {
-     this->cols = cols;
-    }        
+      this->cols = cols;
+    }
     complex16 ** getData()
     {
       return this->_data;
     }
     int getRows()
     {
-     return this->rows; 
+      return this->rows;
     }
     int getCols()
     {
-     return this->cols; 
-    }    
+      return this->cols;
+    }
   private:
     complex16 ** _data = NULL;
     int rows;
@@ -755,30 +797,30 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
 };
 
 
-  /**
-   * deletes an array of arrays of type T
-   */
-  template <typename T> void deleteArrOfArr(T ** buf, int lda)
+/**
+ * deletes an array of arrays of type T
+ */
+template <typename T> void deleteArrOfArr(T ** buf, int lda)
+{
+  for(int i=0; i<lda; i++)
   {
-    for(int i=0;i<lda;i++)
-    {
-      delete buf[i];
-    }
-    delete buf;    
+    delete buf[i];
   }
+  delete buf;
+}
 
 } // namespace ends
 
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
-//  
+
+//
 //
 // JNI methods and helpers
 //
-//  
-  
+//
+
   /*
    * Converts a real16 ** to a java double[][]
    * @param env, the JNI environment pointer
@@ -817,9 +859,10 @@ extern "C" {
 
 
   /**
-   * 
+   *
    */
-  jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, SUPPRESS_UNUSED complex16 ** inputData, int rows, int cols) {
+  jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, SUPPRESS_UNUSED complex16 ** inputData, int rows, int cols)
+  {
     jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
     if(!returnVal)
     {
@@ -841,7 +884,7 @@ extern "C" {
         exit(1);
       }
       for(int j = 0; j < cols; j++)
-      {        
+      {
         aRow[j]=std::real(inputData[i][j]);
       }
       env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
@@ -850,11 +893,12 @@ extern "C" {
     delete aRow;
     return returnVal;
   }
- 
-   /**
-   * 
-   */
-  jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, SUPPRESS_UNUSED complex16 ** inputData, int rows, int cols) {
+
+  /**
+  *
+  */
+  jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, SUPPRESS_UNUSED complex16 ** inputData, int rows, int cols)
+  {
     jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
     if(!returnVal)
     {
@@ -885,7 +929,7 @@ extern "C" {
     delete aRow;
     return returnVal;
   }
- 
+
   /*
    * Class:     com_opengamma_longdog_materialisers_Materialisers
    * Method:    materialiseToJDoubleArrayOfArrays
@@ -902,18 +946,18 @@ extern "C" {
 
     printf("Calling entrypt function\n");
     librdag::OGTerminal * answer =  (librdag::OGTerminal *) entrypt((struct c_OGNumeric *) chain);
-    
+
     convert::DispatchToReal16ArrayOfArrays * visitor = new convert::DispatchToReal16ArrayOfArrays();
     answer->accept(*visitor);
     real16 ** buf = visitor->getData();
     int rows = visitor->getRows();;
     int cols = visitor->getCols();
-   
+
     jobjectArray returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, buf, rows, cols);
 
     delete visitor;
-    
-    printf("Returning\n");    
+
+    printf("Returning\n");
     return returnVal;
   }
 
@@ -934,21 +978,21 @@ extern "C" {
 
     printf("Calling entrypt function\n");
     librdag::OGTerminal * answer =  (librdag::OGTerminal *) entrypt((struct c_OGNumeric *) chain);
-    
+
     convert::DispatchToComplex16ArrayOfArrays * visitor = new convert::DispatchToComplex16ArrayOfArrays();
     answer->accept(*visitor);
     complex16 ** buf = visitor->getData();
     int rows = visitor->getRows();
-    int cols = visitor->getCols(); 
-       
+    int cols = visitor->getCols();
+
     jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, buf, rows, cols);
     jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, buf, rows, cols);
 
     jobject returnVal = env->NewObject(ComplexArrayContainerClazz,ComplexArrayContainerClazz_ctor_DAoA_DAoA, realPart, complexPart);
-    
+
     delete visitor;
-    
-    printf("Returning\n");    
+
+    printf("Returning\n");
     return returnVal;
   }
 
