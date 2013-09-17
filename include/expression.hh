@@ -38,6 +38,7 @@ class PLUS;
 class MINUS;
 class SVD;
 class SELECTRESULT;
+class OGTerminal;
 class OGRealScalar;
 class OGComplexScalar;
 class OGIntegerScalar;
@@ -63,6 +64,7 @@ class OGNumeric: private Uncopyable
     virtual const MINUS* asMINUS() const;
     virtual const SVD* asSVD() const;
     virtual const SELECTRESULT* asSELECTRESULT() const;
+    virtual const OGTerminal* asOGTerminal() const;
     virtual const OGRealScalar* asOGRealScalar() const;
     virtual const OGComplexScalar* asOGComplexScalar() const;
     virtual const OGIntegerScalar* asOGIntegerScalar() const;
@@ -80,8 +82,9 @@ class OGNumeric: private Uncopyable
 class OGTerminal: public OGNumeric
 {
   public:
-    virtual real16 ** toReal16ArrayOfArrays() const = 0;
-    virtual complex16 ** toComplex16ArrayOfArrays() const = 0;
+    virtual real16 ** toReal16ArrayOfArrays() const;
+    virtual complex16 ** toComplex16ArrayOfArrays() const;
+    virtual const OGTerminal* asOGTerminal() const override;
 };
 
 /*
@@ -102,7 +105,6 @@ class OGExpr: public OGNumeric
     virtual void accept(Visitor &v) const override;
   protected:
     OGExpr(ArgContainer* args);
-    void setArgs(ArgContainer* args);
   private:
     ArgContainer* _args;
 };
@@ -127,8 +129,8 @@ class COPY: public OGUnaryExpr
 {
   public:
     COPY(ArgContainer *args);
-    virtual OGNumeric* copy() const;
-    virtual const COPY* asCOPY() const;
+    virtual OGNumeric* copy() const override;
+    virtual const COPY* asCOPY() const override;
     virtual void debug_print() const override;
 };
 
@@ -137,8 +139,8 @@ class PLUS: public OGBinaryExpr
 {
   public:
     PLUS(ArgContainer *args);
-    virtual OGNumeric* copy() const;
-    virtual const PLUS* asPLUS() const;
+    virtual OGNumeric* copy() const override;
+    virtual const PLUS* asPLUS() const override;
     virtual void debug_print() const override;
 };
 
@@ -147,8 +149,8 @@ class MINUS: public OGBinaryExpr
 {
   public:
     MINUS(ArgContainer *args);
-    virtual OGNumeric* copy() const;
-    virtual const MINUS* asMINUS() const;
+    virtual OGNumeric* copy() const override;
+    virtual const MINUS* asMINUS() const override;
     virtual void debug_print() const override;
 };
 
@@ -156,8 +158,8 @@ class SVD: public OGUnaryExpr
 {
   public:
     SVD(ArgContainer *args);
-    virtual OGNumeric* copy() const;
-    virtual const SVD* asSVD() const;
+    virtual OGNumeric* copy() const override;
+    virtual const SVD* asSVD() const override;
     virtual void debug_print() const override;
 };
 
@@ -165,163 +167,74 @@ class SELECTRESULT: public OGBinaryExpr
 {
   public:
     SELECTRESULT(ArgContainer *args);
-    virtual OGNumeric* copy() const;
-    virtual const SELECTRESULT* asSELECTRESULT() const;
+    virtual OGNumeric* copy() const override;
+    virtual const SELECTRESULT* asSELECTRESULT() const override;
     virtual void debug_print() const override;
 };
 
 /**
  * Things that extend OGScalar
  */
-template <class T> class OGScalar: public OGTerminal
+
+template <typename T>
+class OGScalar: public OGTerminal
 {
+  public:
+    OGScalar(T data);
+    virtual void accept(Visitor &v) const override;
+    T getValue() const;
+  protected:
+    T ** toArrayOfArrays() const;
   private:
     T _value;
-  public:
-    OGScalar(T data)
-    {
-      this->_value=data;
-    };
-
-    virtual void accept(Visitor &v) const
-    {
-      v.visit(this);
-    };
-
-    T getValue() const
-    {
-      return this->_value;
-    };
-
-    T ** toArrayOfArrays() const
-    {
-      T ** tmp = new T * [1];
-      tmp[0] = new T[1];
-      tmp[0][0] = this->getValue();
-      return tmp;
-    };
 };
 
+extern template class OGScalar<real16>;
+extern template class OGScalar<complex16>;
+extern template class OGScalar<int>;
 
 class OGRealScalar: public OGScalar<real16>
 {
   public:
-    OGRealScalar(real16 data): OGScalar<real16>(data) {};
-    real16 ** toReal16ArrayOfArrays() const override
-    {
-      return this->toArrayOfArrays();
-    }
-    complex16 ** toComplex16ArrayOfArrays() const override
-    {
-      throw new librdagException();
-    }
-    virtual OGNumeric* copy() const
-    {
-      return new OGRealScalar(this->getValue());
-    }
-    virtual const OGRealScalar* asOGRealScalar() const
-    {
-      return this;
-    }
-    virtual void debug_print() const
-    {
-      printf("OGRealScalar(%f)\n", this->getValue());
-    }
+    OGRealScalar(real16 data);
+    virtual real16 ** toReal16ArrayOfArrays() const override;
+    virtual OGNumeric* copy() const override;
+    virtual const OGRealScalar* asOGRealScalar() const override;
+    virtual void debug_print() const override;
 };
 
 class OGComplexScalar: public OGScalar<complex16>
 {
   public:
-    OGComplexScalar(complex16 data): OGScalar<complex16>(data) {};
-    real16 ** toReal16ArrayOfArrays() const override
-    {
-      throw new librdagException();
-    }
-    complex16 ** toComplex16ArrayOfArrays() const override
-    {
-      return this->toArrayOfArrays();
-    }
-    virtual OGNumeric* copy() const
-    {
-      return new OGComplexScalar(this->getValue());
-    }
-    virtual const OGComplexScalar* asOGComplexScalar() const
-    {
-      return this;
-    }
-    virtual void debug_print() const
-    {
-      printf("OGComplexScalar(%f+%fi)\n", this->getValue().real(), this->getValue().imag());
-    }
+    OGComplexScalar(complex16 data);
+    virtual complex16 ** toComplex16ArrayOfArrays() const override;
+    virtual OGNumeric* copy() const override;
+    virtual const OGComplexScalar* asOGComplexScalar() const override;
+    virtual void debug_print() const override;
 };
 
 class OGIntegerScalar: public OGScalar<int>
 {
   public:
-    OGIntegerScalar(int data): OGScalar<int>(data) {};
-    real16 ** toReal16ArrayOfArrays() const override
-    {
-      throw new librdagException();
-    }
-    complex16 ** toComplex16ArrayOfArrays() const override
-    {
-      throw new librdagException();
-    }
-    virtual OGNumeric* copy() const
-    {
-      return new OGIntegerScalar(this->getValue());
-    }
-    virtual const OGIntegerScalar* asOGIntegerScalar() const
-    {
-      return this;
-    }
-    virtual void debug_print() const
-    {
-      printf("OGComplexScalar(%d)\n", this->getValue());
-    }
+    OGIntegerScalar(int data);
+    virtual OGNumeric* copy() const override;
+    virtual const OGIntegerScalar* asOGIntegerScalar() const override;
+    virtual void debug_print() const override;
 };
 
 template <typename T> class OGArray: public OGTerminal
 {
   public:
-    virtual ~OGArray() {};
-    void accept(Visitor &v)
-    {
-      v.visit(this);
-    };
-    T * getData() const
-    {
-      return _data;
-    }
-    int getRows() const
-    {
-      return _rows;
-    }
-    int getCols() const
-    {
-      return _cols;
-    }
-    int getDatalen() const
-    {
-      return _datalen;
-    }
+    virtual void accept(Visitor &v) const override;
+    T * getData() const;
+    int getRows() const;
+    int getCols() const;
+    int getDatalen() const;
   protected:
-    void setData(T * data)
-    {
-      _data = data;
-    }
-    void setRows(int rows)
-    {
-      _rows = rows;
-    }
-    void setCols(int cols)
-    {
-      _cols = cols;
-    }
-    void setDatalen(int datalen)
-    {
-      _datalen = datalen;
-    }
+    void setData(T * data);
+    void setRows(int rows);
+    void setCols(int cols);
+    void setDatalen(int datalen);
   private:
     T * _data = nullptr;
     int _rows  = 0;
@@ -330,114 +243,38 @@ template <typename T> class OGArray: public OGTerminal
 };
 
 /**
- * Things what extend OGMatrix
+ * Things that extend OGMatrix
  */
+
 template <typename T> class OGMatrix: public OGArray<T>
 {
   public:
-    OGMatrix(T * data, int rows, int cols)
-    {
-      this->setData(data);
-      this->setRows(rows);
-      this->setCols(cols);
-      this->setDatalen(rows*cols);
-    };
-    ~OGMatrix() {};
-    void accept(Visitor &v) const
-    {
-      v.visit(this);
-    };
-    T ** toArrayOfArrays() const
-    {
-      int const rows = this->getRows();
-      int const cols = this->getCols();
-      T * const data = this->getData();
-      T ** tmp = new T * [rows];
-      for(int i=0; i < rows; i++)
-      {
-        tmp[i] = new T [cols];
-        for(int j = 0; j < cols; j++)
-        {
-          tmp[i][j] = data[j*rows+i];
-        }
-      }
-      return tmp;
-    }
+    OGMatrix(T * data, int rows, int cols);
+    virtual void accept(Visitor &v) const override;
+    T** toArrayOfArrays() const;
 };
+
+extern template class OGMatrix<real16>;
+extern template class OGMatrix<complex16>;
 
 class OGRealMatrix: public OGMatrix<real16>
 {
   public:
     using OGMatrix::OGMatrix;
-    virtual void debug_print() const
-    {
-      size_t ptr=0;
-      printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
-      {
-        for(int j = 0 ; j < this->getCols()-1; j++)
-        {
-          printf("%6.4f, ",this->getData()[ptr++]);
-        }
-        printf("%6.4f\n",this->getData()[ptr++]);
-      }
-    }
-    real16 ** toReal16ArrayOfArrays() const override
-    {
-      return this->toArrayOfArrays();
-    };
-    complex16 ** toComplex16ArrayOfArrays() const override
-    {
-      throw new librdagException;
-    };
-    virtual OGNumeric* copy() const
-    {
-      return new OGRealMatrix(this->getData(), this->getRows(), this->getCols());
-    }
-    virtual const OGRealMatrix* asOGRealMatrix() const
-    {
-      return this;
-    }
+    virtual void debug_print() const override;
+    virtual real16 ** toReal16ArrayOfArrays() const override;
+    virtual OGNumeric* copy() const override;
+    virtual const OGRealMatrix* asOGRealMatrix() const override;
 };
-
 
 class OGComplexMatrix: public OGMatrix<complex16>
 {
   public:
     using OGMatrix::OGMatrix;
-    virtual void debug_print() const
-    {
-      size_t ptr=0;
-      printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
-      {
-        for(int j = 0 ; j < this->getCols()-1; j++)
-        {
-          printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
-          ptr++;
-        }
-        printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
-        ptr++;
-      }
-    }
-    real16 ** toReal16ArrayOfArrays() const override
-    {
-      printf("throwing exception\n");
-      throw new librdagException;
-    };
-    complex16 ** toComplex16ArrayOfArrays() const override
-    {
-      printf("returning toArrayOfArrays\n");
-      return this->toArrayOfArrays();
-    };
-    virtual OGNumeric* copy() const
-    {
-      return new OGComplexMatrix(this->getData(), this->getRows(), this->getCols());
-    }
-    virtual const OGComplexMatrix* asOGComplexMatrix() const
-    {
-      return this;
-    }
+    virtual void debug_print() const override;
+    virtual complex16 ** toComplex16ArrayOfArrays() const override;
+    virtual OGNumeric* copy() const override;
+    virtual const OGComplexMatrix* asOGComplexMatrix() const override;
 };
 
 class OGLogicalMatrix: public OGRealMatrix
@@ -445,278 +282,79 @@ class OGLogicalMatrix: public OGRealMatrix
 
 };
 
-
 /**
- * Things what extend OGDiagonalMatrix
+ * Things that extend OGDiagonalMatrix
  */
+
 template <typename T> class OGDiagonalMatrix: public OGArray<T>
 {
   public:
-    OGDiagonalMatrix(T * data, int rows, int cols)
-    {
-      this->setData(data);
-      this->setRows(rows);
-      this->setCols(cols);
-      this->setDatalen(rows>cols?cols:rows);
-    };
-    ~OGDiagonalMatrix() {};
-    virtual void accept(Visitor &v) const
-    {
-      v.visit(this);
-    };
-    T ** toArrayOfArrays() const
-    {
-      int const rows = this->getRows();
-      int const cols = this->getCols();
-      T * const data = this->getData();
-      int const datalen = this->getDatalen();
-      T ** tmp = new T * [rows];
-      for(int i=0; i < rows; i++)
-      {
-        tmp[i] = new T [cols];
-        for(int j=0; j < cols; j++)
-        {
-          if(i == j && i < datalen)
-          {
-            tmp[i][j] = data[i];
-          }
-          else
-          {
-            tmp[i][j] = 0.e0;
-          }
-        }
-      }
-      return tmp;
-    };
-  private:
-    OGDiagonalMatrix() = delete;
+    OGDiagonalMatrix(T * data, int rows, int cols);
+    virtual void accept(Visitor &v) const override;
+    T** toArrayOfArrays() const;
 };
+
+extern template class OGDiagonalMatrix<real16>;
+extern template class OGDiagonalMatrix<complex16>;
 
 class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
 {
   public:
     using OGDiagonalMatrix::OGDiagonalMatrix;
-    virtual void debug_print() const
-    {
-      size_t ptr=0;
-      printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
-      {
-        for(int j = 0 ; j < this->getCols()-1; j++)
-        {
-          if(j==i && i < this->getDatalen())
-          {
-            printf("%6.4f, ",this->getData()[ptr++]);
-          }
-          else
-          {
-            printf("%6.4f, ",0.e0);
-          }
-        }
-        if(i==this->getCols()-1 && i < this->getDatalen())
-        {
-          printf("%6.4f\n",this->getData()[ptr++]);
-        }
-        else
-        {
-          printf("%6.4f\n",0.e0);
-        }
-      }
-    }
-    real16 ** toReal16ArrayOfArrays() const override
-    {
-      printf("returning toArrayOfArrays\n");
-      return this->toArrayOfArrays();
-    };
-    complex16 ** toComplex16ArrayOfArrays() const override
-    {
-      printf("throwing exception\n");
-      throw new librdagException;
-    };
-    virtual OGNumeric* copy() const
-    {
-      return new OGRealDiagonalMatrix(this->getData(), this->getRows(), this->getCols());
-    }
-    virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const
-    {
-      return this;
-    }
+    virtual void debug_print() const override;
+    virtual real16** toReal16ArrayOfArrays() const override;
+    virtual OGNumeric* copy() const override;
+    virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const override;
 };
 
 class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 {
   public:
     using OGDiagonalMatrix::OGDiagonalMatrix;
-    virtual void debug_print() const
-    {
-      size_t ptr=0;
-      printf("\n");
-      for(int i = 0 ; i < this->getRows(); i++)
-      {
-        for(int j = 0 ; j < this->getCols()-1; j++)
-        {
-          if(j==i && i < this->getDatalen())
-          {
-            printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
-            ptr++;
-          }
-          else
-          {
-            printf("%6.4f + %6.4fi, ",0.e0,0.e0);
-          }
-        }
-        if(i==this->getCols()-1 && i < this->getDatalen())
-        {
-          printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
-          ptr++;
-        }
-        else
-        {
-          printf("%6.4f + %6.4fi\n",0.e0,0.e0);
-        }
-      }
-    }
-    real16 ** toReal16ArrayOfArrays() const override
-    {
-      printf("throwing exception\n");
-      throw new librdagException;
-    };
-    complex16 ** toComplex16ArrayOfArrays() const override
-    {
-      return this->toArrayOfArrays();
-    };
-    virtual OGNumeric* copy() const
-    {
-      return new OGComplexDiagonalMatrix(this->getData(), this->getRows(), this->getCols());
-    }
-    virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const
-    {
-      return this;
-    }
+    virtual void debug_print() const override;
+    virtual complex16** toComplex16ArrayOfArrays() const override;
+    virtual OGNumeric* copy() const override;
+    virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const override;
 };
 
 /**
- * Things what extend OGSparseMatrix
+ * Things that extend OGSparseMatrix
  */
+
 template <typename T> class OGSparseMatrix: public OGArray<T>
 {
   public:
-    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols)
-    {
-      this->setData(data);
-      this->setRows(rows);
-      this->setCols(cols);
-      this->setDatalen(colPtr[cols]);
-      this->setColPtr(colPtr);
-      this->setRowIdx(rowIdx);
-    };
-    ~OGSparseMatrix() {};
-    void accept(Visitor &v) const
-    {
-      v.visit(this);
-    };
-    /**
-     * gets the column pointers
-     */
-    int * getColPtr() const
-    {
-      return _colPtr;
-    }
-    /**
-     * gets the row indexes
-     */
-    int * getRowIdx() const
-    {
-      return _rowIdx;
-    }
-    /**
-     * FIXME: Not yet implemented.
-     */
-    virtual real16** toReal16ArrayOfArrays() const
-    {
-      throw new librdagException();
-    }
-    virtual complex16** toComplex16ArrayOfArrays() const
-    {
-      throw new librdagException();
-    }
+    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols);
+    virtual void accept(Visitor &v) const override;
+    int* getColPtr() const;
+    int* getRowIdx() const;
   protected:
-    /**
-     * sets the column pointers
-     */
-    void setColPtr(int * colPtr)
-    {
-      _colPtr = colPtr;
-    }
-    /**
-     * sets the row indexes
-     */
-    void setRowIdx(int * rowIdx)
-    {
-      _rowIdx = rowIdx;
-    }
+    void setColPtr(int * colPtr);
+    void setRowIdx(int * rowIdx);
   private:
-    int * _colPtr = nullptr; // the column pointer index
-    int * _rowIdx = nullptr; // the row index
-    OGSparseMatrix()=delete;
+    int* _colPtr = nullptr; // the column pointer index
+    int* _rowIdx = nullptr; // the row index
 };
+
+extern template class OGSparseMatrix<real16>;
+extern template class OGSparseMatrix<complex16>;
 
 class OGRealSparseMatrix: public OGSparseMatrix<real16>
 {
   public:
     using OGSparseMatrix::OGSparseMatrix;
-    virtual void debug_print() const
-    {
-      double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
-      printf("\nOGRealSparseMatrix\n");
-      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
-      int * colPtr = this->getColPtr();
-      for (int ir = 0; ir < this->getCols(); ir++)
-      {
-        for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
-        {
-          printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
-        }
-      }
-    }
-    virtual OGNumeric* copy() const
-    {
-      return new OGRealSparseMatrix(this->getColPtr(), this->getRowIdx(), this->getData(),
-                                    this->getRows(), this->getCols());
-    }
-    virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const
-    {
-      return this;
-    }
+    virtual void debug_print() const override;
+    virtual OGNumeric* copy() const override;
+    virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const override;
 };
 
 class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
 {
   public:
     using OGSparseMatrix::OGSparseMatrix;
-    virtual void debug_print() const
-    {
-      double nnz = 100.e0 * this->getDatalen() / (double)(this->getRows() * this->getCols());
-      printf("\nOGComplexSparseMatrix\n");
-      printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
-      int * colPtr = this->getColPtr();
-      for (int ir = 0; ir < this->getCols(); ir++)
-      {
-        for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
-        {
-          printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
-        }
-      }
-    }
-    virtual OGNumeric* copy() const
-    {
-      return new OGComplexSparseMatrix(this->getColPtr(), this->getRowIdx(), this->getData(),
-                                       this->getRows(), this->getCols());
-    }
-    virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const
-    {
-      return this;
-    }
+    virtual void debug_print() const override;
+    virtual OGNumeric* copy() const override;
+    virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;
 };
 
 } // namespace librdag

@@ -5,7 +5,7 @@
  */
 
 #include "com_opengamma_longdog_materialisers_Materialisers.h"
-#include "entrypt.h"
+#include "entrypt.hh"
 #include "jshim.h"
 #include "expression.hh"
 #include "exprtypeenum.h"
@@ -1027,7 +1027,7 @@ extern "C" {
     librdag::OGNumeric * chain = (librdag::OGNumeric *) convert::instantiateJClassAsCXXClass(obj);
 
     printf("Calling entrypt function\n");
-    librdag::OGTerminal * answer =  (librdag::OGTerminal *) entrypt((struct c_OGNumeric *) chain);
+    const librdag::OGTerminal* answer = entrypt(chain);
 
     convert::DispatchToReal16ArrayOfArrays * visitor = new convert::DispatchToReal16ArrayOfArrays();
     answer->accept(*visitor);
@@ -1059,7 +1059,7 @@ extern "C" {
     librdag::OGNumeric * chain = (librdag::OGNumeric *) convert::instantiateJClassAsCXXClass(obj);
 
     printf("Calling entrypt function\n");
-    librdag::OGTerminal * answer =  (librdag::OGTerminal *) entrypt((struct c_OGNumeric *) chain);
+    const librdag::OGTerminal* answer = entrypt(chain);
 
     convert::DispatchToComplex16ArrayOfArrays * visitor = new convert::DispatchToComplex16ArrayOfArrays();
     answer->accept(*visitor);

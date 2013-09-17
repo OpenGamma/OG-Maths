@@ -4,7 +4,6 @@
  * Please see distribution for license.
  */
 
-#include "entrypt.h"
 #include "expression.hh"
 #include "gtest/gtest.h"
 
