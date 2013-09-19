@@ -24,4 +24,16 @@ class librdagException: public exception
 
 } // namespace librdag
 
+namespace convert {
+
+/*
+ * General exception thing
+ */
+class convertException: public exception
+{
+    virtual const char* what() const throw();
+};
+
+} // namespace convert
+
 #endif

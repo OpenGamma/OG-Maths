@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include "jvmcache.h"
 #include "winprint64.h"
-#define _DEBUG
+#include "debug.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,19 +43,15 @@ extern "C"
 #endif
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *reserved)
 {
-#ifdef _DEBUG
-  printf("OnLoad called, caching VM ptr\n");
-#endif
+  DEBUG_PRINT("OnLoad called, caching VM ptr\n");
 
   JVMcache=jvm; // set the lib level JVM to the on-load JVM ptr
-#ifdef _DEBUG
 #ifdef __MINGW32__
-  unsigned int high, low;
+  unsigned int high SUPPRESS_UNUSED, low SUPPRESS_UNUSED;
   INT64HIGHLOW(JVMcache, high, low);
-  printf("vm ptr at 0x%x%x\n", high, low);
+  DEBUG_PRINT("vm ptr at 0x%x%x\n", high, low);
 #else
-  printf("vm ptr at 0x%llx\n", (long long unsigned int)JVMcache);
-#endif
+  DEBUG_PRINT("vm ptr at 0x%llx\n", (long long unsigned int)JVMcache);
 #endif
   JNIEnv *env=NULL;
   if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2))
@@ -73,73 +69,56 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
   jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/OGNumeric", &OGNumericClazz);
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get class pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get class pointer. Hard exiting.\n");
     exit(1);
   }
 
   jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/OGTerminal", &OGTerminalClazz);
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get class pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get class pointer. Hard exiting.\n");
     exit(1);
   }  
   
   jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/matrix/OGArray", &OGArrayClazz);
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get class pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get class pointer. Hard exiting.\n");
     exit(1);
   }
 
   jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/ExprTypeEnum", &OGExprTypeEnumClazz);
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get class pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get class pointer. Hard exiting.\n");
     exit(1);
   }
 
   jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/matrix/OGSparseMatrix", &OGSparseMatrixClazz);
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get class pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get class pointer. Hard exiting.\n");
     exit(1);
   }
 
   jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/lazy/OGExpr", &OGExprClazz);
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get class pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get class pointer. Hard exiting.\n");
     exit(1);
   }
-    
     
   jstatus = registerGlobalClassReference(env, "[D", &BigDDoubleArrayClazz);
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get class pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get class pointer. Hard exiting.\n");
     exit(1);
   }
   
-    jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/other/ComplexArrayContainer", &ComplexArrayContainerClazz);
+  jstatus = registerGlobalClassReference(env, "com/opengamma/longdog/datacontainers/other/ComplexArrayContainer", &ComplexArrayContainerClazz);
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get class pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get class pointer. Hard exiting.\n");
     exit(1);
   }
 
@@ -150,98 +129,71 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
   jstatus = registerGlobalMethodReference(env, &OGNumericClazz, &OGNumericClazz_getType, "getType", "()Lcom/opengamma/longdog/datacontainers/ExprTypeEnum;");
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get method pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get method pointer. Hard exiting.\n");
     exit(1);
   }
 
   jstatus = registerGlobalMethodReference(env, &OGTerminalClazz, &OGTerminalClazz_getData, "getData",  "()[D");
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get method pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get method pointer. Hard exiting.\n");
     exit(1);
   }
-
 
   jstatus = registerGlobalMethodReference(env, &OGArrayClazz, &OGArrayClazz_getRows, "getRows",  "()I");
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get method pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get method pointer. Hard exiting.\n");
     exit(1);
   }
 
   jstatus = registerGlobalMethodReference(env, &OGArrayClazz, &OGArrayClazz_getCols, "getCols",  "()I");
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get method pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get method pointer. Hard exiting.\n");
     exit(1);
   }
-
 
   jstatus = registerGlobalMethodReference(env, &OGSparseMatrixClazz, &OGSparseMatrixClazz_getColPtr, "getColPtr",  "()[I");
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get method pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get method pointer. Hard exiting.\n");
     exit(1);
   }
-
 
   jstatus = registerGlobalMethodReference(env, &OGSparseMatrixClazz, &OGSparseMatrixClazz_getRowIdx, "getRowIdx",  "()[I");
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get method pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get method pointer. Hard exiting.\n");
     exit(1);
   }
 
   jstatus = registerGlobalMethodReference(env, &OGExprClazz, &OGExprClazz_getExprs, "getExprs",  "()[Lcom/opengamma/longdog/datacontainers/OGNumeric;");
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get method pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get method pointer. Hard exiting.\n");
     exit(1);
   }
   
   jstatus = registerGlobalMethodReference(env, &ComplexArrayContainerClazz, &ComplexArrayContainerClazz_ctor_DAoA_DAoA, "<init>","([[D[[D)V");
   if(jstatus)
   {
-#ifdef _DEBUG
-    printf("ERROR: could not get method pointer. Hard exiting.\n");
-#endif
+    fprintf(stderr, "ERROR: could not get method pointer. Hard exiting.\n");
     exit(1);
   }  
 
-  
   OGExprTypeEnumClazz__hashdefined = NULL;
   OGExprTypeEnumClazz__hashdefined = (*env)->GetFieldID(env, OGExprTypeEnumClazz, "_hashDefined", "J");
   if (OGExprTypeEnumClazz__hashdefined == 0)
   {
-#ifdef _DEBUG
-    printf("ERROR: fieldID not found _hashDefined\n");
-#endif
+    fprintf(stderr, "ERROR: fieldID not found _hashDefined\n");
     exit(1);
   }
 
-#ifdef _DEBUG
-  printf("Successful JNI Load\n");
-#endif
+  DEBUG_PRINT("Successful JNI Load\n");
 
   return JNI_VERSION_1_2;
 }
-
-
-
 
 #ifdef __cplusplus
 extern "C"
@@ -253,27 +205,22 @@ jint registerGlobalMethodReference(JNIEnv * env, jclass * globalRef, jmethodID *
   *methodToSet = tmp;
   if (methodToSet == 0)
   {
-#ifdef _DEBUG
-    printf("ERROR: method not found %s()\n",methodName);
-#endif
+    fprintf(stderr, "ERROR: method not found %s()\n",methodName);
     return 1;
   }
   else
   {
-#ifdef _DEBUG
 #ifdef __MINGW32__
-  unsigned int high, low;
+  unsigned int high SUPPRESS_UNUSED, low SUPPRESS_UNUSED;
   INT64HIGHLOW(methodToSet, high, low);
-  printf("Method found %s() 0x%x%x\n", methodName, high, low);
+  DEBUG_PRINT("Method found %s() 0x%x%x\n", methodName, high, low);
 #else
-    printf("Method found %s() 0x%llx\n",methodName,(long long unsigned int)methodToSet);
-#endif
+  DEBUG_PRINT("Method found %s() 0x%llx\n", methodName, (long long unsigned int)methodToSet);
 #endif
   }
 
   return 0;
 }
-
 
 #ifdef __cplusplus
 extern "C"
@@ -287,9 +234,7 @@ jint registerGlobalClassReference(JNIEnv * env, const char * FQclassname, jclass
   tmpClass = (*env)->FindClass(env,FQclassname); // find class
   if(tmpClass==NULL)
   {
-#ifdef _DEBUG
-    printf("Cannot find class %s in JNI_OnLoad.\n", FQclassname);
-#endif
+    fprintf(stderr, "Cannot find class %s in JNI_OnLoad.\n", FQclassname);
     return 1;
   }
 
@@ -297,9 +242,7 @@ jint registerGlobalClassReference(JNIEnv * env, const char * FQclassname, jclass
   *globalRef = (jclass) ((*env)->NewGlobalRef(env,tmpClass));
   if(*globalRef==NULL)
   {
-#ifdef _DEBUG
-    printf("Cannot create Global reference for %s in JNI_OnLoad.\n",FQclassname);
-#endif
+    fprintf(stderr, "Cannot create Global reference for %s in JNI_OnLoad.\n",FQclassname);
     return 1;
   }
   return jstatus;
