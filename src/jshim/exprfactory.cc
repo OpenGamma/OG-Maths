@@ -7,7 +7,7 @@
 #include "expression.hh"
 #include "exprtypeenum.h"
 #include "exprfactory.hh"
-#include "jshim.h"
+#include "jvmmanager.hh"
 #include "jterminals.hh"
 #include "debug.h"
 
@@ -23,7 +23,7 @@ using namespace librdag;
 ArgContainer* generateArgs(jobject *obj)
 {
   // get object array
-  jmethodID method = OGExprClazz_getExprs;
+  jmethodID method = JVMManager::getOGExprClazz_getExprs();
   if(!method)
   {
     printf("JOGExpr: null method\n");
@@ -31,7 +31,7 @@ ArgContainer* generateArgs(jobject *obj)
   }
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
     printf("Thread attach failed\n");
@@ -64,22 +64,17 @@ ArgContainer* generateArgs(jobject *obj)
 OGNumeric* createExpression(jobject obj)
 {
   DEBUG_PRINT("In createExpression\n");
-  DEBUG_PRINT("vm ptr at 0x%llx\n",(long long unsigned int)JVMcache);
+  DEBUG_PRINT("vm ptr at 0x%llx\n",(long long unsigned int)JVMManager::getJVM());
   JNIEnv *env=NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
     fprintf(stderr, "Thread attach failed\n");
     exit(1);
   }
-  if(!OGNumericClazz_getType)
-  {
-    fprintf(stderr, "Clazz Type is null\n");
-    exit(1);
-  }
-  jobject typeobj = env->CallObjectMethod(obj, OGNumericClazz_getType);
-  jlong ID = env->GetLongField(typeobj,OGExprTypeEnumClazz__hashdefined);
+  jobject typeobj = env->CallObjectMethod(obj, JVMManager::getOGNumericClazz_getType());
+  jlong ID = env->GetLongField(typeobj, JVMManager::getOGExprTypeEnumClazz__hashdefined());
   // FIXME: What is the point of printing out the pointer to the class type?
 #ifdef __MINGW32__
   unsigned int high, low;
@@ -174,7 +169,7 @@ OGNumeric* createExpression(jobject obj)
   break;
   default:
   {
-    throw new convertException();
+    throw convertException("Unknown node type");
   }
   break;
   }

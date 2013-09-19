@@ -6,7 +6,7 @@
 
 #include "com_opengamma_longdog_materialisers_Materialisers.h"
 #include "entrypt.hh"
-#include "jshim.h"
+#include "jvmmanager.hh"
 #include "expression.hh"
 #include "exprtypeenum.h"
 #include "exprfactory.hh"
@@ -14,6 +14,8 @@
 #include "dispatch.hh"
 #include "debug.h"
 #include <stdio.h>
+
+using namespace convert;
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,7 +37,7 @@ extern "C" {
  */
 jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inputData, int rows, int cols)
 {
-  jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
+  jobjectArray returnVal = env->NewObjectArray(rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
   if(!returnVal)
   {
     fprintf(stderr, "Allocation of jobjectArray failed.\n");
@@ -63,7 +65,7 @@ jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inpu
  */
 jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
 {
-  jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
+  jobjectArray returnVal = env->NewObjectArray(rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
   if(!returnVal)
   {
     fprintf(stderr, "Allocation of jobjectArray failed.\n");
@@ -95,7 +97,7 @@ jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, c
 */
 jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
 {
-  jobjectArray returnVal = env->NewObjectArray(rows, BigDDoubleArrayClazz, NULL);
+  jobjectArray returnVal = env->NewObjectArray(rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
   if(!returnVal)
   {
     fprintf(stderr, "Allocation of jobjectArray failed.\n");
@@ -132,7 +134,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Material
 {
   DEBUG_PRINT("Entering materialise function\n");
 
-  DEBUG_PRINT("Calling convert::instantiateJClassAsCXXClass\n");
+  DEBUG_PRINT("Calling convert::createExpression\n");
   // convert obj to OGNumeric objs
   librdag::OGNumeric * chain = convert::createExpression(obj);
 
@@ -156,7 +158,7 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
   DEBUG_PRINT("materialiseToJComplexArrayContainer\n");
   DEBUG_PRINT("Entering materialise function\n");
 
-  DEBUG_PRINT("Calling convert::instantiateJClassAsCXXClass\n");
+  DEBUG_PRINT("Calling convert::createExpression\n");
   // convert obj to OGNumeric objs
   librdag::OGNumeric * chain = convert::createExpression(obj);
 
@@ -166,7 +168,9 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
 
   jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, res->data, res->rows, res->cols);
   jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, res->data, res->rows, res->cols);
-  jobject returnVal = env->NewObject(ComplexArrayContainerClazz,ComplexArrayContainerClazz_ctor_DAoA_DAoA, realPart, complexPart);
+  jobject returnVal = env->NewObject(JVMManager::getComplexArrayContainerClazz(),
+                                     JVMManager::getComplexArrayContainerClazz_ctor_DAoA_DAoA(),
+                                     realPart, complexPart);
 
   DEBUG_PRINT("Returning\n");
   return returnVal;

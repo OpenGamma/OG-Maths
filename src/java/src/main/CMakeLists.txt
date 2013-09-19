@@ -10,8 +10,11 @@ file(GLOB_RECURSE JAR_SOURCES *.java)
 add_jar(${JARNAME} ${JAR_SOURCES} 
         RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/config
         INCLUDE_NATIVE TRUE
-        DEPENDS ${jar_native_libraries} 
+        DEPENDS ${jar_native_libraries}
+        ENTRY_POINT com/opengamma/longdog/nativeloader/NativeLibrariesSelfTest
         OUTPUT_DIR ${JARDIR})
+
+add_test(NativeLibrariesSelfTest ${Java_JAVA_EXECUTABLE} -jar ${JARDIR}/${JARNAME}.jar)
 
 # Build source JAR
 add_custom_target(sources ALL
@@ -33,7 +36,6 @@ set(JAVAH_CLASSES OGComplexDiagonalMatrix)
 foreach(JHCLASS ${JAVAH_CLASSES})
   jni_header_target(${JPACKAGEFQN} ${JHCLASS} ${JARNAME} ${JARDIR} ${JNIDIR})
 endforeach()
-
                  
 # create_javadoc_jar(${JARNAME}
 #                PACKAGES com.opengamma.maths
