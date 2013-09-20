@@ -99,8 +99,7 @@ JVMManager::registerReferences()
   _OGExprTypeEnumClazz__hashdefined = _env->GetFieldID(_OGExprTypeEnumClazz, "_hashDefined", "J");
   if (_OGExprTypeEnumClazz__hashdefined == 0)
   {
-    fprintf(stderr, "ERROR: fieldID not found _hashDefined\n");
-    exit(1);
+    throw convertException("ERROR: fieldID _hashDefined not found.");
   }
 }
 
@@ -118,8 +117,8 @@ JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * method
   *methodToSet = tmp;
   if (methodToSet == 0)
   {
-    fprintf(stderr, "ERROR: method not found %s()\n",methodName);
-    exit(1);
+    DEBUG_PRINT("ERROR: method %s() not found.\n",methodName);
+    throw convertException("Method not found");
   }
   else
   {
@@ -142,16 +141,16 @@ JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * glob
   tmpClass = _env->FindClass(FQclassname); // find class
   if(tmpClass==NULL)
   {
-    fprintf(stderr, "Cannot find class %s in JNI_OnLoad.\n", FQclassname);
-    exit(1);
+    DEBUG_PRINT("Cannot find class %s in JNI_OnLoad.\n", FQclassname);
+    throw convertException("Class not found.");
   }
 
   *globalRef = NULL;
   *globalRef = (jclass) (_env->NewGlobalRef(tmpClass));
   if(*globalRef==NULL)
   {
-    fprintf(stderr, "Cannot create Global reference for %s in JNI_OnLoad.\n",FQclassname);
-    exit(1);
+    DEBUG_PRINT("Cannot create Global reference for %s.\n",FQclassname);
+    throw convertException("Cannot create global reference.");
   }
 }
 

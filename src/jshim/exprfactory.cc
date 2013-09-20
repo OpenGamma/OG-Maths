@@ -176,8 +176,7 @@ OGNumeric* createExpression(jobject obj)
 
   if(_expr == nullptr)
   {
-    printf("_expr is NULL so hasn't been set by the factory, exiting\n");
-    exit(1);
+    throw convertException("_expr is NULL, and probably hasn't been set by the factory");
   }
 
   DEBUG_PRINT("Returning from exprfactory\n");
