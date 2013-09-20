@@ -42,7 +42,7 @@ class JVMManager {
     // Wrappers for JNIEnv and JavaVM methods
     static jobjectArray newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init);
     static jdoubleArray newDoubleArray(JNIEnv *env, jsize len);
-    static void attachCurrentThread(void **penv, void *args);
+    static void getEnv(void **penv);
     static jobject callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...);
   private:
     static void registerReferences();

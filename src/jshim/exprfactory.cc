@@ -25,7 +25,7 @@ ArgContainer* generateArgs(jobject *obj)
   // get object array
   jmethodID method = JVMManager::getOGExprClazz_getExprs();
   JNIEnv *env = nullptr;
-  JVMManager::attachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  JVMManager::getEnv((void **)&env);
   jobject dataobj = JVMManager::callObjectMethod(env, *obj, method);
   jobjectArray * args = reinterpret_cast<jobjectArray *>(&dataobj);
   jsize len = env->GetArrayLength((jarray)*args);
@@ -49,7 +49,7 @@ OGNumeric* createExpression(jobject obj)
   DEBUG_PRINT("In createExpression\n");
   DEBUG_PRINT("vm ptr at 0x%llx\n",(long long unsigned int)JVMManager::getJVM());
   JNIEnv *env=nullptr;
-  JVMManager::attachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  JVMManager::getEnv((void **)&env);
   jobject typeobj = env->CallObjectMethod(obj, JVMManager::getOGNumericClazz_getType());
   jlong ID = env->GetLongField(typeobj, JVMManager::getOGExprTypeEnumClazz__hashdefined());
   // FIXME: What is the point of printing out the pointer to the class type?

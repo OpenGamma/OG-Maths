@@ -248,9 +248,9 @@ JVMManager::newDoubleArray(JNIEnv *env, jsize len)
 }
 
 void
-JVMManager::attachCurrentThread(void **penv, void *args)
+JVMManager::getEnv(void **penv)
 {
-  jint status = _jvm->AttachCurrentThread(penv, args);
+  jint status = _jvm->AttachCurrentThread(penv, nullptr);
   if (status)
   {
     throw convertException("Error attaching current thread.");

@@ -16,7 +16,7 @@ namespace convert {
 jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 {
   JNIEnv *env = NULL;
-  JVMManager::attachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  JVMManager::getEnv((void **)&env);
   jint data = 0x7ff00000;
   data = env->CallIntMethod(obj, id);
   return data;
