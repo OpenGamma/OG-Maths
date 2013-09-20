@@ -24,26 +24,9 @@ ArgContainer* generateArgs(jobject *obj)
 {
   // get object array
   jmethodID method = JVMManager::getOGExprClazz_getExprs();
-  if(!method)
-  {
-    printf("JOGExpr: null method\n");
-    exit(1);
-  }
-  JNIEnv *env = NULL;
-  jint jStatus = 0;
-  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
-  {
-    printf("Thread attach failed\n");
-    exit(1);
-  }
-  jobject dataobj = NULL;
-  dataobj = env->CallObjectMethod(*obj, method);
-  if(!dataobj)
-  {
-    printf("CallObjectMethod failed\n");
-    exit(1);
-  }
+  JNIEnv *env = nullptr;
+  JVMManager::attachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  jobject dataobj = JVMManager::callObjectMethod(env, *obj, method);
   jobjectArray * args = reinterpret_cast<jobjectArray *>(&dataobj);
   jsize len = env->GetArrayLength((jarray)*args);
   DEBUG_PRINT("JOGExpr arg size is %d\n",(int)len);
@@ -65,14 +48,8 @@ OGNumeric* createExpression(jobject obj)
 {
   DEBUG_PRINT("In createExpression\n");
   DEBUG_PRINT("vm ptr at 0x%llx\n",(long long unsigned int)JVMManager::getJVM());
-  JNIEnv *env=NULL;
-  jint jStatus = 0;
-  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
-  {
-    fprintf(stderr, "Thread attach failed\n");
-    exit(1);
-  }
+  JNIEnv *env=nullptr;
+  JVMManager::attachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   jobject typeobj = env->CallObjectMethod(obj, JVMManager::getOGNumericClazz_getType());
   jlong ID = env->GetLongField(typeobj, JVMManager::getOGExprTypeEnumClazz__hashdefined());
   // FIXME: What is the point of printing out the pointer to the class type?

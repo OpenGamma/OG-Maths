@@ -222,5 +222,53 @@ jmethodID JVMManager::_OGSparseMatrixClazz_getRowIdx;
 jmethodID JVMManager::_ComplexArrayContainerClazz_ctor_DAoA_DAoA;
 jfieldID  JVMManager::_OGExprTypeEnumClazz__hashdefined;
 
+// Wrappers to JavaVM and JNIEnv methods
+
+
+jobjectArray
+JVMManager::newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init)
+{
+  jobjectArray ret = env->NewObjectArray(len, clazz, init);
+  if (!ret)
+  {
+    throw convertException("NewObjectArray call failed.");
+  }
+  return ret;
+}
+
+jdoubleArray
+JVMManager::newDoubleArray(JNIEnv *env, jsize len)
+{
+  jdoubleArray ret = env->NewDoubleArray(len);
+  if (!ret)
+  {
+    throw convertException("NewDoubleArray call failed.");
+  }
+  return ret;
+}
+
+void
+JVMManager::attachCurrentThread(void **penv, void *args)
+{
+  jint status = _jvm->AttachCurrentThread(penv, args);
+  if (status)
+  {
+    throw convertException("Error attaching current thread.");
+  }
+}
+
+jobject
+JVMManager::callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...)
+{
+  va_list args;
+  va_start(args, methodID);
+  jobject dataobj = env->CallObjectMethod(obj, methodID, args);
+  va_end(args);
+  if (!dataobj)
+  {
+    throw convertException("CallObjectMethod failed.");
+  }
+  return dataobj;
+}
 
 } // namespace convert

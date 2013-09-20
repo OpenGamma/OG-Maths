@@ -39,6 +39,11 @@ class JVMManager {
     static jmethodID getOGSparseMatrixClazz_getRowIdx();
     static jmethodID getComplexArrayContainerClazz_ctor_DAoA_DAoA();
     static jfieldID  getOGExprTypeEnumClazz__hashdefined();
+    // Wrappers for JNIEnv and JavaVM methods
+    static jobjectArray newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init);
+    static jdoubleArray newDoubleArray(JNIEnv *env, jsize len);
+    static void attachCurrentThread(void **penv, void *args);
+    static jobject callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...);
   private:
     static void registerReferences();
     static void registerGlobalMethodReference(jclass *globalRef, jmethodID* methodToSet, const char* methodName, const char* methodSignature);
