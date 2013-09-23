@@ -47,24 +47,34 @@ class PtrVector
       _vector->push_back(arg);
     }
 
-    size_t size()
+    size_t size() const
     {
       return _vector->size();
     }
 
-    citerator begin()
+    citerator begin() const
     {
       return _vector->begin();
     }
 
-    citerator end()
+    citerator end() const
     {
       return _vector->end();
     }
 
-    const T* operator[](size_t n)
+    const T* operator[](size_t n) const
     {
       return (*_vector)[n];
+    }
+
+    PtrVector* copy() const
+    {
+      PtrVector* c = new PtrVector();
+      for (auto it = this->begin(); it != this->end(); ++it)
+      {
+        c->push_back((*it)->copy());
+      }
+      return c;
     }
 
   private:
