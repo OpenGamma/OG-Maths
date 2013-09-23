@@ -23,22 +23,92 @@ OGNumeric::~OGNumeric()
 {
 }
 
-void OGNumeric::debug_print()
+void
+OGNumeric::debug_print()
 {
   cout << "Abstract OGNumeric type" << endl;
 }
 
-const OGRealScalar* OGNumeric::asOGRealScalar() const
+const COPY*
+OGNumeric::asCOPY() const
 {
   return nullptr;
 }
 
-const OGComplexScalar* OGNumeric::asOGComplexScalar() const
+const PLUS*
+OGNumeric::asPLUS() const
 {
   return nullptr;
 }
 
-const OGIntegerScalar* OGNumeric::asOGIntegerScalar() const
+const MINUS*
+OGNumeric::asMINUS() const
+{
+  return nullptr;
+}
+
+const SVD*
+OGNumeric::asSVD() const
+{
+  return nullptr;
+}
+
+const SELECTRESULT*
+OGNumeric::asSELECTRESULT() const
+{
+  return nullptr;
+}
+
+const OGRealScalar*
+OGNumeric::asOGRealScalar() const
+{
+  return nullptr;
+}
+
+const OGComplexScalar*
+OGNumeric::asOGComplexScalar() const
+{
+  return nullptr;
+}
+
+const OGIntegerScalar*
+OGNumeric::asOGIntegerScalar() const
+{
+  return nullptr;
+}
+
+const OGRealMatrix*
+OGNumeric::asOGRealMatrix() const
+{
+  return nullptr;
+}
+
+const OGComplexMatrix*
+OGNumeric::asOGComplexMatrix() const
+{
+  return nullptr;
+}
+
+const OGRealDiagonalMatrix*
+OGNumeric::asOGRealDiagonalMatrix() const
+{
+  return nullptr;
+}
+
+const OGComplexDiagonalMatrix*
+OGNumeric::asOGComplexDiagonalMatrix() const
+{
+  return nullptr;
+}
+
+const OGRealSparseMatrix*
+OGNumeric::asOGRealSparseMatrix() const
+{
+  return nullptr;
+}
+
+const OGComplexSparseMatrix*
+OGNumeric::asOGComplexSparseMatrix() const
 {
   return nullptr;
 }
@@ -61,8 +131,8 @@ OGExpr::~OGExpr()
   delete this->_args;
 }
 
-ArgContainer*
-OGExpr::getArgs()
+const ArgContainer*
+OGExpr::getArgs() const
 {
   return this->_args;
 }
@@ -107,6 +177,18 @@ OGBinaryExpr::OGBinaryExpr(ArgContainer* args): OGExpr(args)
 
 COPY::COPY(ArgContainer* args): OGUnaryExpr(args) {}
 
+OGNumeric*
+COPY::copy()
+{
+  return new COPY(this->getArgs()->copy());
+}
+
+const COPY*
+COPY::asCOPY() const
+{
+  return this;
+}
+
 void
 COPY::debug_print()
 {
@@ -114,6 +196,18 @@ COPY::debug_print()
 }
 
 PLUS::PLUS(ArgContainer* args): OGBinaryExpr(args) {}
+
+OGNumeric*
+PLUS::copy()
+{
+  return new PLUS(this->getArgs()->copy());
+}
+
+const PLUS*
+PLUS::asPLUS() const
+{
+  return this;
+}
 
 void
 PLUS::debug_print()
@@ -124,6 +218,18 @@ PLUS::debug_print()
 MINUS::MINUS(ArgContainer* args): OGBinaryExpr(args) {
 }
 
+OGNumeric*
+MINUS::copy()
+{
+  return new MINUS(this->getArgs()->copy());
+}
+
+const MINUS*
+MINUS::asMINUS() const
+{
+  return this;
+}
+
 void
 MINUS::debug_print()
 {
@@ -131,6 +237,18 @@ MINUS::debug_print()
 }
 
 SVD::SVD(ArgContainer* args): OGUnaryExpr(args) {}
+
+OGNumeric*
+SVD::copy()
+{
+  return new SVD(this->getArgs()->copy());
+}
+
+const SVD*
+SVD::asSVD() const
+{
+  return this;
+}
 
 void
 SVD::debug_print()
@@ -143,9 +261,20 @@ SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {
   const OGIntegerScalar* i = (*args)[1]->asOGIntegerScalar();
   if (i == nullptr)
   {
-    // FIXME: Throw exception when exceptions set up. die for now.
-    exit(1);
+    throw new librdagException();
   }
+}
+
+OGNumeric*
+SELECTRESULT::copy()
+{
+  return new SELECTRESULT(this->getArgs()->copy());
+}
+
+const SELECTRESULT*
+SELECTRESULT::asSELECTRESULT() const
+{
+  return this;
 }
 
 void
