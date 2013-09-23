@@ -5,7 +5,7 @@
  */
 
 #include <stdio.h>
-#include "entrypt.h"
+#include "entrypt.hh"
 #include "expression.hh"
 #include "exprtypeenum.h"
 #include <typeinfo>
@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace parser
+namespace librdag
 {
 /*
  * forward definition of the Walker class, this class essentially encapsulates walking
@@ -119,22 +119,15 @@ void Walker::talkandwalk(librdag::OGNumeric const * numeric_expr_types)
   level--;
 }
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-  c_OGNumeric * entrypt(c_OGNumeric * expr)
-  {
-    printf("Accessing DAG walker.\n");
-    Walker * walker = new Walker();
-    walker->walk((librdag::OGNumeric *) expr);
-    delete walker;
-    printf("Returning from DAG walker.\n");
-    return expr;
-  }
-#ifdef __cplusplus
+const OGTerminal*
+entrypt(OGNumeric* expr)
+{
+  printf("Accessing DAG walker.\n");
+  Walker * walker = new Walker();
+  walker->walk((librdag::OGNumeric *) expr);
+  delete walker;
+  printf("Returning from DAG walker.\n");
+  return expr->asOGTerminal();
 }
-#endif
 
-
-} //end parser namespace
+} // namespace librdag

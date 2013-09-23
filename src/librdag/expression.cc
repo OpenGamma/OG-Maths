@@ -57,6 +57,12 @@ OGNumeric::asSELECTRESULT() const
   return nullptr;
 }
 
+const OGTerminal*
+OGNumeric::asOGTerminal() const
+{
+  return nullptr;
+}
+
 const OGRealScalar*
 OGNumeric::asOGRealScalar() const
 {
@@ -109,6 +115,16 @@ const OGComplexSparseMatrix*
 OGNumeric::asOGComplexSparseMatrix() const
 {
   return nullptr;
+}
+
+/*
+ * OGTerminal
+ */
+
+const OGTerminal*
+OGTerminal::asOGTerminal() const
+{
+  return this;
 }
 
 /*
