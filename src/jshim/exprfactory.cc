@@ -47,20 +47,11 @@ ArgContainer* generateArgs(jobject *obj)
 OGNumeric* createExpression(jobject obj)
 {
   DEBUG_PRINT("In createExpression\n");
-  DEBUG_PRINT("vm ptr at 0x%llx\n",(long long unsigned int)JVMManager::getJVM());
   JNIEnv *env=nullptr;
   JVMManager::getEnv((void **)&env);
   jobject typeobj = env->CallObjectMethod(obj, JVMManager::getOGNumericClazz_getType());
   jlong ID = env->GetLongField(typeobj, JVMManager::getOGExprTypeEnumClazz__hashdefined());
-  // FIXME: What is the point of printing out the pointer to the class type?
-#ifdef __MINGW32__
-  unsigned int high, low;
-  low =   (long long unsigned int)ID & 0x00000000FFFFFFFFULL;
-  high = ((long long unsigned int)ID & 0xFFFFFFFF00000000ULL) >> 32;
-  printf("Clazz Type is hashdefined as %x%x\n", high, low);
-#else
-  printf("Clazz Type is hashdefined as %lld\n",(long long int)ID);
-#endif
+  VAL64BIT_PRINT("Class type", ID);
 
   librdag::OGNumeric * _expr = nullptr;
 
