@@ -5,10 +5,8 @@
  */
 
 #include "jbindings.hh"
-#include "jni.h"
-#include "jvmcache.h"
+#include "jvmmanager.hh"
 #include "exceptions.hh"
-#include "jshim.h"
 
 namespace convert {
 
@@ -20,28 +18,24 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
 {
   if(!obj)
   {
-    fprintf(stderr, "bindPrimitiveArrayData: null obj\n");
-    throw new convertException();
+    throw convertException("bindPrimitiveArrayData: null obj");
   }
   if(!method)
   {
-    fprintf(stderr, "bindPrimitiveArrayData: null method\n");
-    throw new convertException();
+    throw convertException("bindPrimitiveArrayData: null method");
   }
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
-    fprintf(stderr, "Thread attach failed\n");
-    throw new convertException();
+    throw convertException("Thread attach failed");
   }
   jobject dataobj = NULL;
   dataobj = env->CallObjectMethod(obj, method);
   if(!dataobj)
   {
-    fprintf(stderr, "CallObjectMethod failed\n");
-    throw new convertException();
+    throw convertException("CallObjectMethod failed");
   }
   S * array = reinterpret_cast<S *>(&dataobj);
   T * _dataptr = (T *) env->GetPrimitiveArrayCritical(*array,NULL);
@@ -65,26 +59,22 @@ template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, 
 {
   if(!nativeData)
   {
-    fprintf(stderr, "unbindPrimitiveArrayData: null nativeData\n");
-    throw new convertException();
+    throw convertException("unbindPrimitiveArrayData: null nativeData");
   }
   if(!obj)
   {
-    fprintf(stderr, "unbindPrimitiveArrayData: null obj\n");
-    throw new convertException();
+    throw convertException("unbindPrimitiveArrayData: null obj");
   }
   if(!method)
   {
-    fprintf(stderr, "unbindPrimitiveArrayData: null method\n");
-    throw new convertException();
+    throw convertException("unbindPrimitiveArrayData: null method");
   }
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
-    fprintf(stderr, "Thread attach failed\n");
-    throw new convertException();
+    throw convertException("Thread attach failed");
   }
   jobject dataobj = env->CallObjectMethod(obj, method);
   S * array = reinterpret_cast<S *>(&dataobj);
@@ -108,13 +98,12 @@ template <typename T> void unbindOGArrayData(T * nativeData, jobject obj)
 {
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
-    fprintf(stderr, "Thread attach failed\n");
-    throw new convertException();
+    throw convertException("Thread attach failed");
   }
-  jobject dataobj = env->CallObjectMethod(obj, OGTerminalClazz_getData);
+  jobject dataobj = env->CallObjectMethod(obj, JVMManager::getOGTerminalClazz_getData());
   jdoubleArray * array = reinterpret_cast<jdoubleArray *>(&dataobj);
   env->ReleasePrimitiveArrayCritical(*array, (void *)nativeData, 0);
 }

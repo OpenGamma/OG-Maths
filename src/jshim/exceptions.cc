@@ -8,10 +8,4 @@
 
 namespace convert {
 
-const char*
-convertException::what() const throw()
-{
-  return "Exception occurred.";
-}
-
 } // namespace convert
