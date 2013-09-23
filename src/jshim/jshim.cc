@@ -37,21 +37,10 @@ extern "C" {
  */
 jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inputData, int rows, int cols)
 {
-  jobjectArray returnVal = env->NewObjectArray(rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  if(!returnVal)
-  {
-    fprintf(stderr, "Allocation of jobjectArray failed.\n");
-    exit(1);
-  }
+  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
   for(int i = 0; i < rows; i++)
   {
-    jdoubleArray tmp = NULL;
-    tmp = env->NewDoubleArray(cols);
-    if(!tmp)
-    {
-      fprintf(stderr, "Allocation of jobjectArray failed.\n");
-      exit(1);
-    }
+    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
     env->SetDoubleArrayRegion(tmp, 0, cols, inputData[i]);
     env->SetObjectArrayElement(returnVal, i, tmp);
   }
@@ -65,22 +54,11 @@ jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inpu
  */
 jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
 {
-  jobjectArray returnVal = env->NewObjectArray(rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  if(!returnVal)
-  {
-    fprintf(stderr, "Allocation of jobjectArray failed.\n");
-    exit(1);
-  }
+  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
   real16 * aRow = new real16[cols];
   for(int i = 0; i < rows; i++)
   {
-    jdoubleArray tmp = NULL;
-    tmp = env->NewDoubleArray(cols);
-    if(!tmp)
-    {
-      fprintf(stderr, "Allocation of jobjectArray failed.\n");
-      exit(1);
-    }
+    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
     for(int j = 0; j < cols; j++)
     {
       aRow[j]=std::real(inputData[i][j]);
@@ -97,22 +75,11 @@ jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, c
 */
 jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
 {
-  jobjectArray returnVal = env->NewObjectArray(rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  if(!returnVal)
-  {
-    fprintf(stderr, "Allocation of jobjectArray failed.\n");
-    exit(1);
-  }
+  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
   real16 * aRow = new real16[cols];
   for(int i = 0; i < rows; i++)
   {
-    jdoubleArray tmp = NULL;
-    tmp = env->NewDoubleArray(cols);
-    if(!tmp)
-    {
-      fprintf(stderr, "Allocation of jobjectArray failed.\n");
-      exit(1);
-    }
+    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
     for(int j = 0; j < cols; j++)
     {
       aRow[j]=std::imag(inputData[i][j]);

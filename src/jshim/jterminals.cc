@@ -16,13 +16,7 @@ namespace convert {
 jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 {
   JNIEnv *env = NULL;
-  jint jStatus = 0;
-  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
-  {
-    fprintf(stderr, "Thread attach failed\n");
-    exit(1);
-  }
+  JVMManager::getEnv((void **)&env);
   jint data = 0x7ff00000;
   data = env->CallIntMethod(obj, id);
   return data;

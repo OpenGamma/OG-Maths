@@ -141,7 +141,7 @@ struct ptrvector_copy_impl<T, true>
     PtrVector<T>* c = new PtrVector<T>();
     for (auto it = src->begin(); it != src->end(); ++it)
     {
-      T* n = (T*)malloc(sizeof(T));
+      T* n = new T;
       *n = **it;
       c->push_back(n);
     }

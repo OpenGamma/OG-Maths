@@ -99,8 +99,7 @@ JVMManager::registerReferences()
   _OGExprTypeEnumClazz__hashdefined = _env->GetFieldID(_OGExprTypeEnumClazz, "_hashDefined", "J");
   if (_OGExprTypeEnumClazz__hashdefined == 0)
   {
-    fprintf(stderr, "ERROR: fieldID not found _hashDefined\n");
-    exit(1);
+    throw convertException("ERROR: fieldID _hashDefined not found.");
   }
 }
 
@@ -118,8 +117,8 @@ JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * method
   *methodToSet = tmp;
   if (methodToSet == 0)
   {
-    fprintf(stderr, "ERROR: method not found %s()\n",methodName);
-    exit(1);
+    DEBUG_PRINT("ERROR: method %s() not found.\n",methodName);
+    throw convertException("Method not found");
   }
   else
   {
@@ -142,16 +141,16 @@ JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * glob
   tmpClass = _env->FindClass(FQclassname); // find class
   if(tmpClass==NULL)
   {
-    fprintf(stderr, "Cannot find class %s in JNI_OnLoad.\n", FQclassname);
-    exit(1);
+    DEBUG_PRINT("Cannot find class %s in JNI_OnLoad.\n", FQclassname);
+    throw convertException("Class not found.");
   }
 
   *globalRef = NULL;
   *globalRef = (jclass) (_env->NewGlobalRef(tmpClass));
   if(*globalRef==NULL)
   {
-    fprintf(stderr, "Cannot create Global reference for %s in JNI_OnLoad.\n",FQclassname);
-    exit(1);
+    DEBUG_PRINT("Cannot create Global reference for %s.\n",FQclassname);
+    throw convertException("Cannot create global reference.");
   }
 }
 
@@ -223,5 +222,53 @@ jmethodID JVMManager::_OGSparseMatrixClazz_getRowIdx;
 jmethodID JVMManager::_ComplexArrayContainerClazz_ctor_DAoA_DAoA;
 jfieldID  JVMManager::_OGExprTypeEnumClazz__hashdefined;
 
+// Wrappers to JavaVM and JNIEnv methods
+
+
+jobjectArray
+JVMManager::newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init)
+{
+  jobjectArray ret = env->NewObjectArray(len, clazz, init);
+  if (!ret)
+  {
+    throw convertException("NewObjectArray call failed.");
+  }
+  return ret;
+}
+
+jdoubleArray
+JVMManager::newDoubleArray(JNIEnv *env, jsize len)
+{
+  jdoubleArray ret = env->NewDoubleArray(len);
+  if (!ret)
+  {
+    throw convertException("NewDoubleArray call failed.");
+  }
+  return ret;
+}
+
+void
+JVMManager::getEnv(void **penv)
+{
+  jint status = _jvm->AttachCurrentThread(penv, nullptr);
+  if (status)
+  {
+    throw convertException("Error attaching current thread.");
+  }
+}
+
+jobject
+JVMManager::callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...)
+{
+  va_list args;
+  va_start(args, methodID);
+  jobject dataobj = env->CallObjectMethod(obj, methodID, args);
+  va_end(args);
+  if (!dataobj)
+  {
+    throw convertException("CallObjectMethod failed.");
+  }
+  return dataobj;
+}
 
 } // namespace convert
