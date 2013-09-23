@@ -4,10 +4,9 @@
  * Please see distribution for license.
  */
 
-#include "jshim.h"
+#include "jvmmanager.hh"
 #include "jterminals.hh"
 #include "jbindings.hh"
-#include "jvmcache.h"
 
 namespace convert {
 
@@ -18,7 +17,7 @@ jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 {
   JNIEnv *env = NULL;
   jint jStatus = 0;
-  jStatus=JVMcache->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
     fprintf(stderr, "Thread attach failed\n");
@@ -35,7 +34,7 @@ jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 
 JOGRealScalar::JOGRealScalar(jobject * obj): OGRealScalar
   (
-    static_cast<real16 *>(_dataRef = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData))[0]
+    static_cast<real16 *>(_dataRef = bindPrimitiveArrayData<real16, jdoubleArray>(*obj, JVMManager::getOGTerminalClazz_getData()))[0]
   )
 {
   this->_backingObject = obj;
@@ -61,7 +60,7 @@ JOGRealScalar::debug_print() const
 
 JOGComplexScalar::JOGComplexScalar(jobject * obj): OGComplexScalar
   (
-    static_cast<complex16 *>(_dataRef = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData))[0]
+    static_cast<complex16 *>(_dataRef = bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, JVMManager::getOGTerminalClazz_getData()))[0]
   )
 {
   this->_backingObject = obj;
@@ -87,9 +86,9 @@ JOGComplexScalar::debug_print() const
 
 JOGRealMatrix::JOGRealMatrix(jobject * obj): OGRealMatrix
   (
-    static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+    static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, JVMManager::getOGTerminalClazz_getData())),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), *obj)),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), *obj))
   )
 {
   this->_backingObject = obj;
@@ -114,9 +113,9 @@ JOGRealMatrix::debug_print() const
 
 JOGComplexMatrix::JOGComplexMatrix(jobject * obj): OGComplexMatrix
   (
-    static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,OGTerminalClazz_getData)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+    static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj,JVMManager::getOGTerminalClazz_getData())),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), *obj)),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), *obj))
   )
 {
   this->_backingObject = obj;
@@ -140,11 +139,11 @@ JOGComplexMatrix::debug_print() const
 
 JOGRealSparseMatrix::JOGRealSparseMatrix(jobject * obj): OGRealSparseMatrix
   (
-    static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr)),
-    static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx)),
-    static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+    static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, JVMManager::getOGSparseMatrixClazz_getColPtr())),
+    static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, JVMManager::getOGSparseMatrixClazz_getRowIdx())),
+    static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, JVMManager::getOGTerminalClazz_getData())),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), *obj)),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), *obj))
   )
 {
   this->_backingObject = obj;
@@ -152,9 +151,9 @@ JOGRealSparseMatrix::JOGRealSparseMatrix(jobject * obj): OGRealSparseMatrix
 
 JOGRealSparseMatrix::~JOGRealSparseMatrix()
 {
-  unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(), *_backingObject, OGTerminalClazz_getData);
-  unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, OGSparseMatrixClazz_getRowIdx);
-  unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
+  unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(), *_backingObject, JVMManager::getOGTerminalClazz_getData());
+  unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, JVMManager::getOGSparseMatrixClazz_getRowIdx());
+  unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, JVMManager::getOGSparseMatrixClazz_getColPtr());
   this->_backingObject = nullptr;
 }
 
@@ -187,10 +186,10 @@ JOGRealSparseMatrix::toComplex16ArrayOfArrays() const
 
 JOGComplexSparseMatrix::JOGComplexSparseMatrix(jobject * obj): OGComplexSparseMatrix
   (
-    static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getColPtr)),
-    static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, OGSparseMatrixClazz_getRowIdx)),
-    static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)), static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+    static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, JVMManager::getOGSparseMatrixClazz_getColPtr())),
+    static_cast<int*>(bindPrimitiveArrayData<int, jintArray>(*obj, JVMManager::getOGSparseMatrixClazz_getRowIdx())),
+    static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, JVMManager::getOGTerminalClazz_getData())),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), *obj)), static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), *obj))
   )
 {
   this->_backingObject = obj;
@@ -198,9 +197,9 @@ JOGComplexSparseMatrix::JOGComplexSparseMatrix(jobject * obj): OGComplexSparseMa
 
 JOGComplexSparseMatrix::~JOGComplexSparseMatrix()
 {
-  unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(), *_backingObject, OGTerminalClazz_getData);
-  unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, OGSparseMatrixClazz_getRowIdx);
-  unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, OGSparseMatrixClazz_getColPtr);
+  unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(), *_backingObject, JVMManager::getOGTerminalClazz_getData());
+  unbindPrimitiveArrayData<int, jintArray>(this->getRowIdx(), *_backingObject, JVMManager::getOGSparseMatrixClazz_getRowIdx());
+  unbindPrimitiveArrayData<int, jintArray>(this->getColPtr(), *_backingObject, JVMManager::getOGSparseMatrixClazz_getColPtr());
   this->_backingObject = nullptr;
 }
 
@@ -233,9 +232,9 @@ JOGComplexSparseMatrix::toComplex16ArrayOfArrays() const
 
 JOGRealDiagonalMatrix::JOGRealDiagonalMatrix(jobject * obj):OGRealDiagonalMatrix
   (
-    static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+    static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(*obj, JVMManager::getOGTerminalClazz_getData())),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), *obj)),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), *obj))
   )
 {
   this->_backingObject = obj;
@@ -260,9 +259,9 @@ JOGRealDiagonalMatrix::debug_print() const
 
 JOGComplexDiagonalMatrix::JOGComplexDiagonalMatrix(jobject * obj):OGComplexDiagonalMatrix
   (
-    static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, OGTerminalClazz_getData)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getRows, *obj)),
-    static_cast<int>(getIntFromVoidJMethod(OGArrayClazz_getCols, *obj))
+    static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(*obj, JVMManager::getOGTerminalClazz_getData())),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), *obj)),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), *obj))
   )
 {
   this->_backingObject = obj;

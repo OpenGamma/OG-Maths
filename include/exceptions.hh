@@ -8,6 +8,7 @@
 #define _EXCEPTIONS_HH
 
 #include <exception>
+#include <stdexcept>
 
 using namespace std;
 
@@ -29,9 +30,9 @@ namespace convert {
 /*
  * General exception thing
  */
-class convertException: public exception
+class convertException: public runtime_error
 {
-    virtual const char* what() const throw();
+  using runtime_error::runtime_error;
 };
 
 } // namespace convert
