@@ -19,7 +19,7 @@ class Lineariser: public Visitor
       return _execlist;
     }
 
-    virtual void visit(OGExpr *tree)
+    virtual void visit(OGExpr const *tree) override
     {
       const ArgContainer* args = tree->getArgs();
       for (auto it = args->begin(); it != args->end(); ++it)
@@ -29,43 +29,43 @@ class Lineariser: public Visitor
       _execlist->push_back(tree);
     }
 
-    virtual void visit(OGArray<real16> *thing)
+    virtual void visit(OGArray<real16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGArray<complex16> *thing)
+    virtual void visit(OGArray<complex16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGMatrix<real16> *thing)
+    virtual void visit(OGMatrix<real16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGMatrix<complex16> *thing)
+    virtual void visit(OGMatrix<complex16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGScalar<real16> *thing)
+    virtual void visit(OGScalar<real16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGScalar<complex16> *thing)
+    virtual void visit(OGScalar<complex16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGScalar<int> *thing)
+    virtual void visit(OGScalar<int> const *thing)
     {
       visit_terminal(thing);
     }
 
   private:
-    void visit_terminal(OGTerminal *tree)
+    void visit_terminal(OGTerminal const *tree)
     {
       _execlist->push_back(tree);
     }

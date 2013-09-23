@@ -242,13 +242,13 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
       printf("\nJava bound OGRealSparseMatrix\n");
       OGRealSparseMatrix::debug_print();
     }
-    real16 ** toReal16ArrayOfArrays() override
+    real16 ** toReal16ArrayOfArrays() const override
     {
       double ** foo = NULL;
       printf("returning null as no impl yet!!!!\n");
       return foo;
     }
-    complex16 ** toComplex16ArrayOfArrays() override
+    complex16 ** toComplex16ArrayOfArrays() const override
     {
       complex16 ** foo = NULL;
       printf("returning null as no impl yet!!!!\n");
@@ -287,13 +287,13 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
       printf("\nJava bound OGComplexSparseMatrix\n");
       OGComplexSparseMatrix::debug_print();
     }
-    real16 ** toReal16ArrayOfArrays() override
+    real16 ** toReal16ArrayOfArrays() const override
     {
       double ** foo = NULL;
       printf("returning null as no impl yet!!!!\n");
       return foo;
     }
-    complex16 ** toComplex16ArrayOfArrays() override
+    complex16 ** toComplex16ArrayOfArrays() const override
     {
       complex16 ** foo = NULL;
       printf("returning null as no impl yet!!!!\n");
@@ -711,8 +711,7 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
 {
   public:
 
-    DispatchToReal16ArrayOfArrays() {}
-    ~DispatchToReal16ArrayOfArrays()
+    virtual ~DispatchToReal16ArrayOfArrays() override
     {
       real16 ** arr = this->getData();
       if(arr)
@@ -725,41 +724,41 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
         delete arr;
       }
     }
-    void visit(librdag::OGExpr SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGExpr const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
     };
-    void visit(librdag::OGArray<real16> *thing)
+    virtual void visit(librdag::OGArray<real16> const *thing) override
     {
       this->setData(thing->toReal16ArrayOfArrays());
       this->setRows(thing->getRows());
       this->setCols(thing->getCols());
     }
-    void visit(librdag::OGArray<complex16> SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGArray<complex16> const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGArray<complex16>)");
     }
-    void visit(librdag::OGMatrix<real16> *thing)
+    virtual void visit(librdag::OGMatrix<real16> const *thing) override
     {
       this->setData(thing->toReal16ArrayOfArrays());
       this->setRows(thing->getRows());
       this->setCols(thing->getCols());
     }
-    void visit(librdag::OGMatrix<complex16> SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGMatrix<complex16> const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16>)");
     }
-    void visit(librdag::OGScalar<real16> *thing)
+    virtual void visit(librdag::OGScalar<real16> const *thing) override
     {
       this->setData(thing->toReal16ArrayOfArrays());
       this->setRows(1);
       this->setCols(1);
     }
-    void visit(librdag::OGScalar<complex16> SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGScalar<complex16> const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16>)");
     }
-    void visit(librdag::OGScalar<int> SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGScalar<int> const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
     }
@@ -796,9 +795,7 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
 class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
 {
   public:
-
-    DispatchToComplex16ArrayOfArrays() {}
-    ~DispatchToComplex16ArrayOfArrays()
+    virtual ~DispatchToComplex16ArrayOfArrays() override
     {
       complex16 ** arr = this->getData();
       if(arr)
@@ -811,43 +808,43 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
         delete arr;
       }
     }
-    void visit(librdag::OGExpr SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGExpr const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
     };
-    void visit(librdag::OGArray<complex16> *thing)
+    virtual void visit(librdag::OGArray<complex16> const *thing) override
     {
       printf("Visitor: librdag::OGArray<complex16> branch\n");
       this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(thing->getRows());
       this->setCols(thing->getCols());
     }
-    void visit(librdag::OGArray<real16> SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGArray<real16> const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGArray<real16>)");
     }
-    void visit(librdag::OGMatrix<complex16> *thing)
+    virtual void visit(librdag::OGMatrix<complex16> const *thing) override
     {
       printf("Visitor: librdag::OGMatrix<complex16> branch\n");
       this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(thing->getRows());
       this->setCols(thing->getCols());
     }
-    void visit(librdag::OGMatrix<real16> SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGMatrix<real16> const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<real16>)");
     }
-    void visit(librdag::OGScalar<complex16> *thing)
+    virtual void visit(librdag::OGScalar<complex16> const *thing) override
     {
       this->setData(thing->toComplex16ArrayOfArrays());
       this->setRows(1);
       this->setCols(1);
     }
-    void visit(librdag::OGScalar<real16> SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGScalar<real16> const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<real16>)");
     }
-    void visit(librdag::OGScalar<int> SUPPRESS_UNUSED *thing)
+    virtual void visit(librdag::OGScalar<int> const SUPPRESS_UNUSED *thing) override
     {
       throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
     }
