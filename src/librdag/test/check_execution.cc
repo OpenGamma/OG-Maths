@@ -67,7 +67,7 @@ TEST(LinearisationTest, BinaryTreeLinearisation)
   EXPECT_EQ(3, el1->size());
   // Check ordering. We iterate over the list and get
   // its contents first.
-  OGNumeric* nodes[3];
+  const OGNumeric* nodes[3];
   int i = 0;
   for (auto it = el1->begin(); it != el1->end(); ++it)
   {
@@ -113,7 +113,7 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
   ExecutionList *el1 = new ExecutionList(plus);
   // Check ordering. We iterate over the list and get
   // its contents first.
-  OGNumeric* nodes[4];
+  const OGNumeric* nodes[4];
   int i = 0;
   for (auto it = el1->begin(); it != el1->end(); ++it)
   {

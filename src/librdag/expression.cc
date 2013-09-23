@@ -17,14 +17,12 @@ namespace librdag
  * OGNumeric
  */
 
-OGNumeric::OGNumeric() {}
-
 OGNumeric::~OGNumeric()
 {
 }
 
 void
-OGNumeric::debug_print()
+OGNumeric::debug_print() const
 {
   cout << "Abstract OGNumeric type" << endl;
 }
@@ -138,19 +136,19 @@ OGExpr::getArgs() const
 }
 
 size_t
-OGExpr::getNArgs()
+OGExpr::getNArgs() const
 {
   return this->_args->size();
 }
 
 void
-OGExpr::debug_print()
+OGExpr::debug_print() const
 {
 	cout << "OGExpr base class" << endl;
 }
 
 void
-OGExpr::accept(Visitor &v)
+OGExpr::accept(Visitor &v) const
 {
   v.visit(this);
 }
@@ -178,7 +176,7 @@ OGBinaryExpr::OGBinaryExpr(ArgContainer* args): OGExpr(args)
 COPY::COPY(ArgContainer* args): OGUnaryExpr(args) {}
 
 OGNumeric*
-COPY::copy()
+COPY::copy() const
 {
   return new COPY(this->getArgs()->copy());
 }
@@ -190,7 +188,7 @@ COPY::asCOPY() const
 }
 
 void
-COPY::debug_print()
+COPY::debug_print() const
 {
 	cout << "COPY base class" << endl;
 }
@@ -198,7 +196,7 @@ COPY::debug_print()
 PLUS::PLUS(ArgContainer* args): OGBinaryExpr(args) {}
 
 OGNumeric*
-PLUS::copy()
+PLUS::copy() const
 {
   return new PLUS(this->getArgs()->copy());
 }
@@ -210,7 +208,7 @@ PLUS::asPLUS() const
 }
 
 void
-PLUS::debug_print()
+PLUS::debug_print() const
 {
 	cout << "PLUS base class" << endl;
 }
@@ -219,7 +217,7 @@ MINUS::MINUS(ArgContainer* args): OGBinaryExpr(args) {
 }
 
 OGNumeric*
-MINUS::copy()
+MINUS::copy() const
 {
   return new MINUS(this->getArgs()->copy());
 }
@@ -231,7 +229,7 @@ MINUS::asMINUS() const
 }
 
 void
-MINUS::debug_print()
+MINUS::debug_print() const
 {
 	cout << "MINUS base class" << endl;
 }
@@ -239,7 +237,7 @@ MINUS::debug_print()
 SVD::SVD(ArgContainer* args): OGUnaryExpr(args) {}
 
 OGNumeric*
-SVD::copy()
+SVD::copy() const
 {
   return new SVD(this->getArgs()->copy());
 }
@@ -251,7 +249,7 @@ SVD::asSVD() const
 }
 
 void
-SVD::debug_print()
+SVD::debug_print() const
 {
 	cout << "SVD base class" << endl;
 }
@@ -266,7 +264,7 @@ SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {
 }
 
 OGNumeric*
-SELECTRESULT::copy()
+SELECTRESULT::copy() const
 {
   return new SELECTRESULT(this->getArgs()->copy());
 }
@@ -278,7 +276,7 @@ SELECTRESULT::asSELECTRESULT() const
 }
 
 void
-SELECTRESULT::debug_print()
+SELECTRESULT::debug_print() const
 {
 	printf("SELECTRESULT base class\n");
 }

@@ -26,8 +26,8 @@ class Walker
   public:
     Walker();
     ~Walker();
-    librdag::OGNumeric * walk(librdag::OGNumeric * numeric_expr_types);
-    void talkandwalk(librdag::OGNumeric * numeric_expr_types);
+    librdag::OGNumeric * walk(librdag::OGNumeric* numeric_expr_types);
+    void talkandwalk(librdag::OGNumeric const * numeric_expr_types);
 };
 
 /**
@@ -45,7 +45,7 @@ class PrintTreeVisitor: public librdag::Visitor
     {
       _walker = NULL;
     }
-    void visit(librdag::OGExpr *thing)
+    virtual void visit(librdag::OGExpr const *thing) override
     {
       cout << "Have OGExpr type ";
       thing->debug_print();
@@ -58,31 +58,31 @@ class PrintTreeVisitor: public librdag::Visitor
         _walker->talkandwalk(*(it));
       }
     };
-    void visit(librdag::OGArray<real16> *thing)
+    void visit(librdag::OGArray<real16> const *thing) override
     {
       cout << "Have OGArray<real16> " << thing << endl;
     }
-    void visit(librdag::OGMatrix<real16> *thing)
+    void visit(librdag::OGMatrix<real16> const *thing) override
     {
       cout << "Have OGMatrix<real16> " << thing << endl;
     }
-    void visit(librdag::OGMatrix<complex16> *thing)
+    void visit(librdag::OGMatrix<complex16> const *thing) override
     {
       cout << "Have OGMatrix<complex16> " << thing << endl;
     }    
-    void visit(librdag::OGArray<complex16> *thing)
+    void visit(librdag::OGArray<complex16> const *thing) override
     {
       cout << "Have OGArray<complex16> " << thing << endl;
     }
-    void visit(librdag::OGScalar<real16> *thing)
+    void visit(librdag::OGScalar<real16> const *thing) override
     {
       cout << "Have OGScalar<real16> " << thing << endl;
     }
-    void visit(librdag::OGScalar<complex16> *thing)
+    void visit(librdag::OGScalar<complex16> const *thing) override
     {
       cout << "Have OGScalar<complex16> " << thing << endl;
     }
-    void visit(librdag::OGScalar<int> *thing)
+    void visit(librdag::OGScalar<int> const *thing) override
     {
       cout << "Have OGScalar<int> " << thing << endl;
     }
@@ -110,7 +110,7 @@ librdag::OGNumeric * Walker::walk(librdag::OGNumeric * numeric_expr_types)
   printf("Finished Walking DAG.\n");
   return numeric_expr_types;
 }
-void Walker::talkandwalk(librdag::OGNumeric * numeric_expr_types)
+void Walker::talkandwalk(librdag::OGNumeric const * numeric_expr_types)
 {
   level++;
   const char ch = ' ';

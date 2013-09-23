@@ -27,7 +27,7 @@ class NonOwningPtrVector
   public:
     NonOwningPtrVector()
     {
-      _vector = new vector<T*>();
+      _vector = new vector<T const *>();
     }
 
     ~NonOwningPtrVector()
@@ -35,9 +35,9 @@ class NonOwningPtrVector
       delete _vector;
     }
 
-    typedef typename vector<T*>::const_iterator citerator;
+    typedef typename vector<T const *>::const_iterator citerator;
 
-    void push_back(T* arg)
+    void push_back(T const * arg)
     {
       _check_arg(arg);
       _vector->push_back(arg);
@@ -83,8 +83,8 @@ class NonOwningPtrVector
     }
 
   private:
-    vector<T*>* _vector;
-    void _check_arg(T* arg)
+    vector<T const *>* _vector;
+    void _check_arg(T const * arg)
     {
       if (arg == nullptr)
       {

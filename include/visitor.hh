@@ -27,14 +27,14 @@ class Visitor
   public:
     Visitor() = default;
     virtual ~Visitor() = default;
-    virtual void visit(OGExpr *thing) = 0;
-    virtual void visit(OGArray<real16> *thing) = 0;
-    virtual void visit(OGArray<complex16> *thing) = 0;
-    virtual void visit(OGMatrix<real16> *thing) = 0;
-    virtual void visit(OGMatrix<complex16> *thing) = 0;
-    virtual void visit(OGScalar<real16> *thing) = 0;
-    virtual void visit(OGScalar<complex16> *thing) = 0;
-    virtual void visit(OGScalar<int> *thing) = 0;
+    virtual void visit(OGExpr const *thing) = 0;
+    virtual void visit(OGArray<real16> const *thing) = 0;
+    virtual void visit(OGArray<complex16> const *thing) = 0;
+    virtual void visit(OGMatrix<real16> const *thing) = 0;
+    virtual void visit(OGMatrix<complex16> const *thing) = 0;
+    virtual void visit(OGScalar<real16> const *thing) = 0;
+    virtual void visit(OGScalar<complex16> const *thing) = 0;
+    virtual void visit(OGScalar<int> const *thing) = 0;
 };
 
 }
