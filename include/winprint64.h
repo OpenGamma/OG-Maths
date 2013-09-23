@@ -4,6 +4,8 @@
  * Please see distribution for license.
  */
 
+#include "warningmacros.h"
+
 #ifndef _WINPRINT64_H
 #define _WINPRINT64_H
 
