@@ -50,8 +50,20 @@ TEST(ContainerTest, PtrVectorTest) {
   }
   EXPECT_EQ(5, i);
 
+  // Copy the PtrVector
+  PtrVector<int> *pv2 = pv1->copy();
+
+  // Test the copy is the same as the original
+  PtrVector<int>::citerator it1, it2;
+  for (it1 = pv1->begin(), it2 = pv2->begin(); it1 != pv1->end(), it2 != pv2->end(); ++it1, ++it2)
+  {
+    EXPECT_EQ(**it1, **it2);
+  }
+  EXPECT_TRUE( (it1 == pv1->end()) && (it2 == pv2->end()) );
+
   // Delete - no leaks should occur. pv1 owns the pointers to individual ints.
   delete pv1;
+  delete pv2;
   // However, the list of pointers is not owned by it.
   free(i_ptr_list);
 }
