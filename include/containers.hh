@@ -22,20 +22,16 @@ namespace librdag {
  * Data that a PtrVector points to is owned by it.
  */
 template<typename T>
-class PtrVector
+class NonOwningPtrVector
 {
   public:
-    PtrVector()
+    NonOwningPtrVector()
     {
       _vector = new vector<T*>();
     }
 
-    ~PtrVector()
+    ~NonOwningPtrVector()
     {
-      for (auto it = _vector->begin(); it != _vector->end(); ++it)
-      {
-        delete *it;
-      }
       delete _vector;
     }
 
@@ -67,14 +63,23 @@ class PtrVector
       return (*_vector)[n];
     }
 
-    PtrVector* copy() const
+    NonOwningPtrVector* copy() const
     {
-      PtrVector* c = new PtrVector();
+      NonOwningPtrVector* c = new NonOwningPtrVector();
       for (auto it = this->begin(); it != this->end(); ++it)
       {
         c->push_back((*it)->copy());
       }
       return c;
+    }
+
+  protected:
+    void emptyVector()
+    {
+      for (auto it = _vector->begin(); it != _vector->end(); ++it)
+      {
+        delete *it;
+      }
     }
 
   private:
@@ -85,6 +90,26 @@ class PtrVector
       {
         throw new librdagException();
       }
+    }
+};
+
+template<typename T>
+class PtrVector: public NonOwningPtrVector<T>
+{
+  public:
+    ~PtrVector()
+    {
+      NonOwningPtrVector<T>::emptyVector();
+    }
+
+    PtrVector* copy() const
+    {
+      PtrVector* c = new PtrVector();
+      for (auto it = this->begin(); it != this->end(); ++it)
+      {
+        c->push_back((*it)->copy());
+      }
+      return c;
     }
 };
 
