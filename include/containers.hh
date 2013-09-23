@@ -19,99 +19,48 @@ namespace librdag {
 /*
  * A vector that holds pointers. Null pointers are not allowed.
  *
- * Data that a PtrVector points to is owned by it.
+ * Data that a NonOwningPtrVector points to is not owned by it.
  */
 template<typename T>
 class NonOwningPtrVector
 {
   public:
-    NonOwningPtrVector()
-    {
-      _vector = new vector<T const *>();
-    }
-
-    ~NonOwningPtrVector()
-    {
-      delete _vector;
-    }
-
+    NonOwningPtrVector();
+    ~NonOwningPtrVector();
     typedef typename vector<T const *>::const_iterator citerator;
-
-    void push_back(T const * arg)
-    {
-      _check_arg(arg);
-      _vector->push_back(arg);
-    }
-
-    size_t size() const
-    {
-      return _vector->size();
-    }
-
-    citerator begin() const
-    {
-      return _vector->begin();
-    }
-
-    citerator end() const
-    {
-      return _vector->end();
-    }
-
-    const T* operator[](size_t n) const
-    {
-      return (*_vector)[n];
-    }
-
-    NonOwningPtrVector* copy() const
-    {
-      NonOwningPtrVector* c = new NonOwningPtrVector();
-      for (auto it = this->begin(); it != this->end(); ++it)
-      {
-        c->push_back((*it)->copy());
-      }
-      return c;
-    }
-
+    void push_back(T const * arg);
+    size_t size() const;
+    citerator begin() const;
+    citerator end() const;
+    const T* operator[](size_t n) const;
+    NonOwningPtrVector* copy() const;
   protected:
-    void emptyVector()
-    {
-      for (auto it = _vector->begin(); it != _vector->end(); ++it)
-      {
-        delete *it;
-      }
-    }
-
+    void emptyVector();
   private:
     vector<T const *>* _vector;
-    void _check_arg(T const * arg)
-    {
-      if (arg == nullptr)
-      {
-        throw new librdagException();
-      }
-    }
+    void _check_arg(T const * arg);
 };
 
+/*
+ * A vector that holds pointers. Null pointers are not allowed.
+ *
+ * Data that a PtrVector points to is owned by it. Classes held in a PtrVector
+ * must define a method copy() that returns a pointer to a copy of itself.
+ */
 template<typename T>
 class PtrVector: public NonOwningPtrVector<T>
 {
   public:
-    ~PtrVector()
-    {
-      NonOwningPtrVector<T>::emptyVector();
-    }
-
-    PtrVector* copy() const
-    {
-      PtrVector* c = new PtrVector();
-      for (auto it = this->begin(); it != this->end(); ++it)
-      {
-        c->push_back((*it)->copy());
-      }
-      return c;
-    }
+    ~PtrVector();
+    PtrVector* copy() const;
 };
+
+class OGNumeric;
+
+extern template class NonOwningPtrVector<int>;
+extern template class NonOwningPtrVector<OGNumeric>;
+extern template class PtrVector<int>;
+extern template class PtrVector<OGNumeric>;
 
 } // namespace librdag
 

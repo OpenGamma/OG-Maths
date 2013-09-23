@@ -4,7 +4,7 @@
  * Please see distribution for license.
  */
 
-#include "entrypt.h"
+#include "entrypt.hh"
 #include "expression.hh"
 
 using namespace std;

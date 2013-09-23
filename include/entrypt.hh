@@ -7,16 +7,13 @@
 #ifndef _ENTRYPT_H
 #define _ENTRYPT_H
 
-struct c_OGNumeric;
+namespace librdag {
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-  struct c_OGNumeric * entrypt(struct c_OGNumeric * expr);
-#ifdef __cplusplus
-}
-#endif
+class OGNumeric;
+class OGTerminal;
 
+const OGTerminal* entrypt(OGNumeric* expr);
 
+} // namespace librdag
 
 #endif
