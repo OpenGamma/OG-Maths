@@ -9,7 +9,7 @@ SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,--no-undefined")
 SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
  
 
-add_library(jshim SHARED jvmcache.c jshim.cc)
+add_library(jshim SHARED jvmcache.c jshim.cc jterminals.cc jbindings.cc exceptions.cc exprfactory.cc dispatch.cc)
 add_dependencies(jshim rdag)
 target_link_libraries(jshim rdag)
 set_target_properties(jshim PROPERTIES SOVERSION ${longdog_VERSION_MAJOR} VERSION ${longdog_VERSION})

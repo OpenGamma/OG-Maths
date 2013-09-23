@@ -7,6 +7,8 @@
 #ifndef jshim_h
 #define jshim_h
 
+#include "jni.h"
+
 /*
  * Cached static classes methods, fields and the JVM pointer.
  */
