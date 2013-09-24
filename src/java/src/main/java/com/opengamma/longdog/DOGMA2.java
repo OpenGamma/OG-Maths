@@ -11,7 +11,7 @@ import com.opengamma.longdog.datacontainers.other.OGResult;
 import com.opengamma.longdog.materialisers.Materialisers;
 import com.opengamma.longdog.nativeloader.NativeLibraries;
 import com.opengamma.longdog.nodes.COPY;
-import com.opengamma.longdog.nodes.MINUS;
+import com.opengamma.longdog.nodes.NEGATE;
 import com.opengamma.longdog.nodes.PLUS;
 import com.opengamma.longdog.nodes.SVD;
 
@@ -33,7 +33,7 @@ public class DOGMA2 {
   }
 
   public static OGNumeric minus(OGNumeric arg0, OGNumeric arg1) {
-    return new MINUS(arg0, arg1);
+    return new PLUS(arg0, new NEGATE(arg1));
   }
 
   public static OGResult svd(OGNumeric arg0) {

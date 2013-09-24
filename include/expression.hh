@@ -35,7 +35,7 @@ namespace librdag
 
 class COPY;
 class PLUS;
-class MINUS;
+class NEGATE;
 class SVD;
 class SELECTRESULT;
 class OGTerminal;
@@ -61,7 +61,7 @@ class OGNumeric: private Uncopyable
     virtual OGNumeric* copy() const = 0;
     virtual const COPY* asCOPY() const;
     virtual const PLUS* asPLUS() const;
-    virtual const MINUS* asMINUS() const;
+    virtual const NEGATE* asNEGATE() const;
     virtual const SVD* asSVD() const;
     virtual const SELECTRESULT* asSELECTRESULT() const;
     virtual const OGTerminal* asOGTerminal() const;
@@ -145,12 +145,12 @@ class PLUS: public OGBinaryExpr
 };
 
 
-class MINUS: public OGBinaryExpr
+class NEGATE: public OGUnaryExpr
 {
   public:
-    MINUS(ArgContainer *args);
+    NEGATE(ArgContainer *args);
     virtual OGNumeric* copy() const override;
-    virtual const MINUS* asMINUS() const override;
+    virtual const NEGATE* asNEGATE() const override;
     virtual void debug_print() const override;
 };
 

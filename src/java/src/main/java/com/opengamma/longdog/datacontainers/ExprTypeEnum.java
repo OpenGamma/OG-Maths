@@ -34,7 +34,7 @@ public enum ExprTypeEnum {
    */  
   
   PLUS         (0x0100L),
-  MINUS        (0x0200L),
+  NEGATE       (0x0200L),
   TIMES        (0x0300L),
   LDIVIDE      (0x0400L),
   MTIMES       (0x0500L),
