@@ -6,6 +6,9 @@
 
 package com.opengamma.longdog.datacontainers.other;
 
+import com.opengamma.longdog.helpers.Catchers;
+import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
+
 /**
  * Holds a complex array.
  */
@@ -13,6 +16,7 @@ public class ComplexArrayContainer {
 
   private double[][] _real;
   private double[][] _imag;
+  private boolean _anyImag;
 
   /**
    * Construct a new complex array container.
@@ -20,6 +24,25 @@ public class ComplexArrayContainer {
    * @param imag the imaginary part.
    */
   public ComplexArrayContainer(double[][] real, double[][] imag) {
+    Catchers.catchNullFromArgList(real, 1);
+    Catchers.catchNullFromArgList(imag, 2);
+    Catchers.catchCondition(MatrixPrimitiveUtils.isRagged(real), "Array data cannot be ragged.");
+    Catchers.catchCondition(MatrixPrimitiveUtils.isRagged(imag), "Array data cannot be ragged.");
+    int rows = real.length;
+    int cols = real[0].length;
+    Catchers.catchCondition(rows != imag.length, "Real and Imag parts have different numbers of rows");
+    Catchers.catchCondition(cols != imag[0].length, "Real and Imag parts have different numbers of columns");
+
+    OUTER:
+    //CSIGNORE
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        if ((Double.doubleToRawLongBits(imag[i][j]) & 0x7ffffffffffffffL) != 0L) {
+          _anyImag = true;
+          break OUTER;
+        }
+      }
+    }
     _real = real;
     _imag = imag;
   }
@@ -38,6 +61,14 @@ public class ComplexArrayContainer {
    */
   public double[][] getImag() {
     return _imag;
+  }
+
+  /**
+   * Returns true if any part of the imaginary data is nonzero
+   * @return
+   */
+  public boolean anyImaginary() {
+    return _anyImag;
   }
 
 }
