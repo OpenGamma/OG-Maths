@@ -14,9 +14,9 @@ using namespace librdag;
  * Test rationale: check the functionality that we wrapped in the derived class
  * only. Otherwise we're just testing the C++ compiler/STL implementation.
  */
-TEST(ContainerTest, PtrVectorTest) {
+TEST(ContainerTest, OwningPtrVectorTest) {
   // Default constructor
-  PtrVector<int> *pv1 = new PtrVector<int>();
+  OwningPtrVector<int> *pv1 = new OwningPtrVector<int>();
   EXPECT_EQ(0, pv1->size());
 
   // Add elements
@@ -50,11 +50,11 @@ TEST(ContainerTest, PtrVectorTest) {
   }
   EXPECT_EQ(5, i);
 
-  // Copy the PtrVector
-  PtrVector<int> *pv2 = pv1->copy();
+  // Copy the OwningPtrVector
+  OwningPtrVector<int> *pv2 = pv1->copy();
 
   // Test the copy is the same as the original
-  PtrVector<int>::citerator it1, it2;
+  OwningPtrVector<int>::citerator it1, it2;
   for (it1 = pv1->begin(), it2 = pv2->begin(); it1 != pv1->end(), it2 != pv2->end(); ++it1, ++it2)
   {
     EXPECT_EQ(**it1, **it2);

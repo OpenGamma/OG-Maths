@@ -90,7 +90,7 @@ class OGTerminal: public OGNumeric
 /*
  * Container for expression arguments
  */
-typedef PtrVector<OGNumeric> ArgContainer;
+typedef OwningPtrVector<OGNumeric> ArgContainer;
 
 /**
  *  Expr type
