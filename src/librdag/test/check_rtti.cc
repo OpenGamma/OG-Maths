@@ -4,6 +4,7 @@
  * Please see distribution for license.
  */
 
+#include "terminal.hh"
 #include "expression.hh"
 #include "gtest/gtest.h"
 #include <string>

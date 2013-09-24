@@ -4,7 +4,7 @@
  * Please see distribution for license.
  */
 
-#include "expression.hh"
+#include "terminal.hh"
 
 namespace librdag {
 
@@ -15,13 +15,13 @@ namespace librdag {
 real16**
 OGTerminal::toReal16ArrayOfArrays() const
 {
-  throw new librdagException();
+  throw librdagException();
 }
 
 complex16**
 OGTerminal::toComplex16ArrayOfArrays() const
 {
-  throw new librdagException();
+  throw librdagException();
 }
 
 /**
@@ -189,6 +189,10 @@ template<typename T>
 void
 OGArray<T>::setData(T * data)
 {
+  if(data==nullptr)
+  {
+    throw librdagException();
+  }
   _data = data;
 }
 
@@ -196,6 +200,10 @@ template<typename T>
 void
 OGArray<T>::setRows(int rows)
 {
+  if(rows<0)
+  {
+    throw librdagException();
+  }  
   _rows = rows;
 }
 
@@ -203,6 +211,10 @@ template<typename T>
 void
 OGArray<T>::setCols(int cols)
 {
+  if(cols<0)
+  {
+    throw librdagException();
+  }
   _cols = cols;
 }
 
@@ -210,6 +222,10 @@ template<typename T>
 void
 OGArray<T>::setDatalen(int datalen)
 {
+  if(datalen<0)
+  {
+    throw librdagException();
+  }
   _datalen = datalen;
 }
 
@@ -528,6 +544,10 @@ template<typename T>
 void
 OGSparseMatrix<T>::setColPtr(int* colPtr)
 {
+  if(colPtr==nullptr)
+  {
+    throw librdagException();
+  }
   _colPtr = colPtr;
 }
 
@@ -535,6 +555,10 @@ template<typename T>
 void
 OGSparseMatrix<T>::setRowIdx(int* rowIdx)
 {
+  if(rowIdx==nullptr)
+  {
+    throw librdagException();
+  }  
   _rowIdx = rowIdx;
 }
 

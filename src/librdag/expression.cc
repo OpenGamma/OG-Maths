@@ -5,7 +5,7 @@
  */
 
 #include <iostream>
-#include "expression.hh"
+#include "terminal.hh"
 #include "visitor.hh"
 
 using namespace std;
