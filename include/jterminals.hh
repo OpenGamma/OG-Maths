@@ -7,7 +7,7 @@
 #ifndef _JTERMINALS_HH
 #define _JTERMINALS_HH
 
-#include "expression.hh"
+#include "terminal.hh"
 #include "jni.h"
 
 namespace convert {

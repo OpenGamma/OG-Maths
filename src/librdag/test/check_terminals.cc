@@ -4,7 +4,9 @@
  * Please see distribution for license.
  */
 
-#include "expression.hh"
+#include "terminal.hh"
+#include "visitor.hh"
+#include "exceptions.hh"
 #include "gtest/gtest.h"
 #include "warningmacros.h"
 
