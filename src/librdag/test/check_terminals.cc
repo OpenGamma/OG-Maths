@@ -267,7 +267,8 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   // check getCols
   ASSERT_EQ(tmp->getCols(), cols);
   
-  tmp->debug_print();
+  // check getDatalen
+  ASSERT_EQ(tmp->getDatalen(), rows*cols);
   
   // wire up array for ArrOfArr test
   real16 expectedtmp[12] = {1,4,7,10,2,5,8,11,3,6,9,12};
@@ -304,7 +305,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   
   // check copy and asOGRealMatrix
   OGNumeric * copy = tmp->copy();
-  ASSERT_TRUE(ArrayEquals<real16>(tmp->getData(),copy->asOGRealMatrix()->getData(),rows*cols));
+  ASSERT_TRUE(ArrayEquals<real16>(tmp->getData(),copy->asOGRealMatrix()->getData(),tmp->getDatalen()));
   ASSERT_EQ(tmp->getRows(),copy->asOGRealMatrix()->getRows());
   ASSERT_EQ(tmp->getCols(),copy->asOGRealMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGRealMatrix());
@@ -349,7 +350,8 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   // check getCols
   ASSERT_EQ(tmp->getCols(), cols);
   
-  tmp->debug_print();
+  // check getDatalen
+  ASSERT_EQ(tmp->getDatalen(), rows*cols);
   
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1,10},{4,40},{7,70},{10,100},{2,20},{5,50},{8,80},{11,110},{3,30},{6,60},{9,90},{12,120}};
@@ -386,7 +388,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   
   // check copy and asOGComplexMatrix
   OGNumeric * copy = tmp->copy();
-  ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexMatrix()->getData(),rows*cols));
+  ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexMatrix()->getData(),tmp->getDatalen()));
   ASSERT_EQ(tmp->getRows(),copy->asOGComplexMatrix()->getRows());
   ASSERT_EQ(tmp->getCols(),copy->asOGComplexMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGComplexMatrix());
@@ -397,4 +399,168 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 }
 
 
+/*
+ * Test OGRealDiagonalMatrix
+ */
+TEST(TerminalsTest, OGRealDiagonalMatrix) {
+  // data
+  real16 data [3] = {1,2,3};
+  int rows = 3;
+  int cols = 4;
 
+  // attempt construct from nullptr, should throw
+  real16 * null = nullptr;
+  OGRealDiagonalMatrix * tmp;
+  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(null,rows,cols));
+  
+  // attempt construct from bad rows
+  tmp = nullptr;
+  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(data,-1,cols));
+  
+  // attempt construct from bad cols
+  tmp = nullptr;
+  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(data,rows,-1));
+  
+  // attempt construct from ok data
+  tmp = nullptr;
+  tmp = new OGRealDiagonalMatrix(data,rows,cols);
+  // check ctor worked
+  ASSERT_NE(tmp, nullptr);
+  
+  // check getRows
+  ASSERT_EQ(tmp->getRows(), rows);
+  
+  // check getCols
+  ASSERT_EQ(tmp->getCols(), cols);
+  
+  // check getDatalen
+  ASSERT_EQ(tmp->getDatalen(), rows>cols?cols:rows);
+  
+  // wire up array for ArrOfArr test
+  real16 expectedtmp[12] = {1,0,0,0,0,2,0,0,0,0,3,0};
+  real16 ** expected = new real16  * [rows];
+  for(int i = 0; i < rows; i++){
+    expected[i] = &(expectedtmp[i*cols]);
+  }
+  
+  // check toArrayOfArrays()
+  real16 ** computed = tmp->toArrayOfArrays();
+  ASSERT_TRUE(ArrayOfArraysEquals<real16>(expected,computed,rows,cols));
+  for(int i = 0; i < rows; i++){
+    delete [] computed[i];
+  }
+  delete [] computed;
+  
+  // check toReal16ArrayOfArrays()
+  computed = tmp->toReal16ArrayOfArrays();
+  ASSERT_TRUE(ArrayOfArraysEquals<real16>(expected,computed,rows,cols));
+  for(int i = 0; i < rows; i++){
+    delete [] computed[i];
+  }
+  delete [] computed;
+  delete [] expected;  
+   
+  // check toComplex16ArrayOfArrays, expect throw
+  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+
+  // check visitor
+  FakeVisitor * v = new FakeVisitor();
+  tmp->accept(*v);
+  ASSERT_TRUE(v->hasBeenVisited());
+  delete v;  
+  
+  // check copy and asOGRealMatrix
+  OGNumeric * copy = tmp->copy();
+  ASSERT_TRUE(ArrayEquals<real16>(tmp->getData(),copy->asOGRealDiagonalMatrix()->getData(),tmp->getDatalen()));
+  ASSERT_EQ(tmp->getRows(),copy->asOGRealDiagonalMatrix()->getRows());
+  ASSERT_EQ(tmp->getCols(),copy->asOGRealDiagonalMatrix()->getCols());
+  ASSERT_EQ(copy,copy->asOGRealDiagonalMatrix());
+  
+  // clean up
+  delete copy;
+  delete tmp;
+}
+
+
+
+/*
+ * Test OGComplexDiagonalMatrix
+ */
+TEST(TerminalsTest, OGComplexDiagonalMatrix) {
+  // data
+  complex16 data [3] = {{1,10},{2,20},{3,30}};
+  int rows = 3;
+  int cols = 4;
+
+  // attempt construct from nullptr, should throw
+  complex16 * null = nullptr;
+  OGComplexDiagonalMatrix * tmp;
+  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(null,rows,cols));
+  
+  // attempt construct from bad rows
+  tmp = nullptr;
+  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(data,-1,cols));
+  
+  // attempt construct from bad cols
+  tmp = nullptr;
+  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(data,rows,-1));
+  
+  // attempt construct from ok data
+  tmp = nullptr;
+  tmp = new OGComplexDiagonalMatrix(data,rows,cols);
+  // check ctor worked
+  ASSERT_NE(tmp, nullptr);
+  
+  // check getRows
+  ASSERT_EQ(tmp->getRows(), rows);
+  
+  // check getCols
+  ASSERT_EQ(tmp->getCols(), cols);
+  
+  // check getDatalen
+  ASSERT_EQ(tmp->getDatalen(), rows>cols?cols:rows);
+  
+  // wire up array for ArrOfArr test
+  complex16 expectedtmp[12] = {{1,10},{0,0},{0,0},{0,0},{0,0},{2,20},{0,0},{0,0},{0,0},{0,0},{3,30},{0,0}};
+  complex16 ** expected = new complex16  * [rows];
+  for(int i = 0; i < rows; i++){
+    expected[i] = &(expectedtmp[i*cols]);
+  }
+  
+  // check toArrayOfArrays()
+  complex16 ** computed = tmp->toArrayOfArrays();
+  ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
+  for(int i = 0; i < rows; i++){
+    delete [] computed[i];
+  }
+  delete [] computed;
+  
+  // check toComplex16ArrayOfArrays()
+  computed = tmp->toComplex16ArrayOfArrays();
+  ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
+  for(int i = 0; i < rows; i++){
+    delete [] computed[i];
+  }
+  delete [] computed;
+  delete [] expected;  
+   
+  // check toReal16ArrayOfArrays, expect throw
+  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+
+  // check visitor
+  FakeVisitor * v = new FakeVisitor();
+  tmp->accept(*v);
+  ASSERT_TRUE(v->hasBeenVisited());
+  delete v;  
+  
+  // check copy and asOGRealMatrix
+  OGNumeric * copy = tmp->copy();
+  ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexDiagonalMatrix()->getData(),tmp->getDatalen()));
+  ASSERT_EQ(tmp->getRows(),copy->asOGComplexDiagonalMatrix()->getRows());
+  ASSERT_EQ(tmp->getCols(),copy->asOGComplexDiagonalMatrix()->getCols());
+  ASSERT_EQ(copy,copy->asOGComplexDiagonalMatrix());
+  
+  // clean up
+  delete copy;
+  delete tmp;
+}
