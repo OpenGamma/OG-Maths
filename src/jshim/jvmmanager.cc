@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "jvmmanager.hh"
-#include "winprint64.h"
 #include "exceptions.hh"
 #include "debug.h"
 
@@ -42,14 +41,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
 void
 JVMManager::initialize(JavaVM *jvm)
 {
-  // FIXME: Is this necessary? What does seeing the VM pointer tell you?
-#ifdef __MINGW32__
-  unsigned int high SUPPRESS_UNUSED, low SUPPRESS_UNUSED;
-  INT64HIGHLOW(jvm, high, low);
-  DEBUG_PRINT("vm ptr at 0x%x%x\n", high, low);
-#else
-  DEBUG_PRINT("vm ptr at 0x%llx\n", (long long unsigned int)jvm);
-#endif
+  VAL64BIT_PRINT("VM pointer", jvm);
 
   // Attempt to get env for JNI version 1.2
   int ret = jvm->GetEnv((void **)&_env, JNI_VERSION_1_2);
@@ -122,13 +114,8 @@ JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * method
   }
   else
   {
-#ifdef __MINGW32__
-  unsigned int high SUPPRESS_UNUSED, low SUPPRESS_UNUSED;
-  INT64HIGHLOW(methodToSet, high, low);
-  DEBUG_PRINT("Method found %s() 0x%x%x\n", methodName, high, low);
-#else
-  DEBUG_PRINT("Method found %s() 0x%llx\n", methodName, (long long unsigned int)methodToSet);
-#endif
+    DEBUG_PRINT("Method found: %s()\n\t", methodName);
+    VAL64BIT_PRINT("method pointer", methodToSet);
   }
 }
 
