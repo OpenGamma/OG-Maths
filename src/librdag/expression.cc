@@ -39,8 +39,8 @@ OGNumeric::asPLUS() const
   return nullptr;
 }
 
-const MINUS*
-OGNumeric::asMINUS() const
+const NEGATE*
+OGNumeric::asNEGATE() const
 {
   return nullptr;
 }
@@ -229,25 +229,25 @@ PLUS::debug_print() const
 	cout << "PLUS base class" << endl;
 }
 
-MINUS::MINUS(ArgContainer* args): OGBinaryExpr(args) {
+NEGATE::NEGATE(ArgContainer* args): OGUnaryExpr(args) {
 }
 
 OGNumeric*
-MINUS::copy() const
+NEGATE::copy() const
 {
-  return new MINUS(this->getArgs()->copy());
+  return new NEGATE(this->getArgs()->copy());
 }
 
-const MINUS*
-MINUS::asMINUS() const
+const NEGATE*
+NEGATE::asNEGATE() const
 {
   return this;
 }
 
 void
-MINUS::debug_print() const
+NEGATE::debug_print() const
 {
-	cout << "MINUS base class" << endl;
+  cout << "NEGATE base class" << endl;
 }
 
 SVD::SVD(ArgContainer* args): OGUnaryExpr(args) {}
