@@ -14,7 +14,7 @@
 #include <vector>
 #include <memory>
 
-#include "terminal.hh"
+#include "numeric.hh"
 #include "visitor.hh"
 #include "exceptions.hh"
 #include "containers.hh"

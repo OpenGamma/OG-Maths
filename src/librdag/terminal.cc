@@ -5,6 +5,8 @@
  */
 
 #include "terminal.hh"
+#include "exceptions.hh"
+#include "visitor.hh"
 
 namespace librdag {
 
