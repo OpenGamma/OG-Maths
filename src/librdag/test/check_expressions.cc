@@ -66,23 +66,20 @@ TEST(OGExprTest, PLUS){
   delete plusWithArgs;
 }
 
-TEST(OGExprTest, MINUS){
+TEST(OGExprTest, NEGATE){
   // Constructor
   ArgContainer* newArgs = new ArgContainer();
   OGRealScalar *newReal = new OGRealScalar(3.14);
-  OGComplexScalar *newComplx = new OGComplexScalar(complex16(2.7182, 2.7182));
   newArgs->push_back(newReal);
-  newArgs->push_back(newComplx);
-  OGExpr *minusWithArgs = new MINUS(newArgs);
-  ASSERT_EQ(2, minusWithArgs->getNArgs());
+  OGExpr *negateWithArgs = new NEGATE(newArgs);
+  ASSERT_EQ(1, negateWithArgs->getNArgs());
   EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-  EXPECT_EQ(newComplx, ((*newArgs)[1])->asOGComplexScalar());
 
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete minusWithArgs;
+  delete negateWithArgs;
 }
 
 TEST(OGExprTest, SVD){
@@ -291,37 +288,27 @@ TEST(VirtualCopyTest, PLUS) {
   delete plus2;
 }
 
-TEST(VirtualCopyTest, MINUS) {
+TEST(VirtualCopyTest, NEGATE) {
   OGRealScalar *real1 = new OGRealScalar(1.0);
-  OGRealScalar *real2 = new OGRealScalar(2.0);
   ArgContainer *a = new ArgContainer();
   a->push_back(real1);
-  a->push_back(real2);
-  MINUS *minus1 = new MINUS(a);
-  const MINUS *minus2 = minus1->copy()->asMINUS();
-  ASSERT_NE(nullptr, minus2);
-  const ArgContainer* a1 = minus1->getArgs();
-  const ArgContainer* a2 = minus2->getArgs();
+  NEGATE *negate1 = new NEGATE(a);
+  const NEGATE *negate2 = negate1->copy()->asNEGATE();
+  ASSERT_NE(nullptr, negate2);
+  const ArgContainer* a1 = negate1->getArgs();
+  const ArgContainer* a2 = negate2->getArgs();
   EXPECT_NE(a1, a2);
   EXPECT_EQ(a1->size(), a2->size());
-  const OGNumeric* m1arg1 = (*a1)[0];
-  const OGNumeric* m2arg1 = (*a2)[0];
-  EXPECT_NE(m1arg1, m2arg1);
-  const OGNumeric* m1arg2 = (*a1)[1];
-  const OGNumeric* m2arg2 = (*a2)[1];
-  EXPECT_NE(m1arg2, m2arg2);
-  const OGRealScalar* m1s1 = m1arg1->asOGRealScalar();
-  const OGRealScalar* m2s1 = m2arg1->asOGRealScalar();
-  ASSERT_NE(nullptr, m1s1);
-  ASSERT_NE(nullptr, m2s1);
-  EXPECT_EQ(m1s1->getValue(), m2s1->getValue());
-  const OGRealScalar* m1s2 = m1arg2->asOGRealScalar();
-  const OGRealScalar* m2s2 = m2arg2->asOGRealScalar();
-  ASSERT_NE(nullptr, m1s2);
-  ASSERT_NE(nullptr, m2s2);
-  EXPECT_EQ(m1s2->getValue(), m1s2->getValue());
-  delete minus1;
-  delete minus2;
+  const OGNumeric* n1arg1 = (*a1)[0];
+  const OGNumeric* n2arg1 = (*a2)[0];
+  EXPECT_NE(n1arg1, n2arg1);
+  const OGRealScalar* n1s1 = n1arg1->asOGRealScalar();
+  const OGRealScalar* n2s1 = n2arg1->asOGRealScalar();
+  ASSERT_NE(nullptr, n1s1);
+  ASSERT_NE(nullptr, n2s1);
+  EXPECT_EQ(n1s1->getValue(), n2s1->getValue());
+  delete negate1;
+  delete negate2;
 }
 
 TEST(VirtualCopyTest, SVD) {

@@ -120,10 +120,10 @@ OGNumeric* createExpression(jobject obj)
     _expr = new COPY(generateArgs(&obj));
   }
   break;
-  case MINUS_ENUM:
+  case NEGATE_ENUM:
   {
-    DEBUG_PRINT("MINUS function\n");
-    _expr = new MINUS(generateArgs(&obj));
+    DEBUG_PRINT("NEGATE function\n");
+    _expr = new NEGATE(generateArgs(&obj));
   }
   break;
   case PLUS_ENUM:

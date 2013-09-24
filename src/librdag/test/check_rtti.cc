@@ -20,7 +20,7 @@ void check_rtti(OGNumeric* node, string name)
 {
   CHECK_CAST(COPY);
   CHECK_CAST(PLUS);
-  CHECK_CAST(MINUS);
+  CHECK_CAST(NEGATE);
   CHECK_CAST(SVD);
   CHECK_CAST(SELECTRESULT);
   CHECK_CAST(OGRealScalar);
@@ -100,9 +100,9 @@ TEST_F(RTTIBinaryTest, TestPLUS) {
   check_rtti(node, "PLUS");
 }
 
-TEST_F(RTTIBinaryTest, TestMINUS) {
-  node = new MINUS(_args);
-  check_rtti(node, "MINUS");
+TEST_F(RTTIUnaryTest, TestNEGATE) {
+  node = new NEGATE(_args);
+  check_rtti(node, "NEGATE");
 }
 
 // Not using the fixture because SELECTRESULT requires specific arg types

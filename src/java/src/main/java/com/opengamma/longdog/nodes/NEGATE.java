@@ -11,17 +11,17 @@ import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 
 /**
- * Plus class
+ * Negate class
  */
-public class MINUS extends OGExpr {
+public class NEGATE extends OGExpr {
 
   @Override
   public ExprTypeEnum getType() {
-    return ExprTypeEnum.MINUS;
+    return ExprTypeEnum.NEGATE;
   }
 
-  public MINUS(OGNumeric arg0, OGNumeric arg1) {
-    super(arg0, arg1);
+  public NEGATE(OGNumeric arg) {
+    super(arg);
   }
 
 
