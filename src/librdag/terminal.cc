@@ -4,6 +4,7 @@
  * Please see distribution for license.
  */
 
+#include <string.h>
 #include "terminal.hh"
 #include "exceptions.hh"
 #include "visitor.hh"
@@ -24,6 +25,12 @@ complex16**
 OGTerminal::toComplex16ArrayOfArrays() const
 {
   throw librdagException();
+}
+
+const OGTerminal*
+OGTerminal::asOGTerminal() const
+{
+  return this;
 }
 
 /**
@@ -516,9 +523,9 @@ OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows,
   this->setData(data);
   this->setRows(rows);
   this->setCols(cols);
-  this->setDatalen(colPtr[cols]);
   this->setColPtr(colPtr);
   this->setRowIdx(rowIdx);
+  this->setDatalen(colPtr[cols]); // must go last to catch null on colptr happens  
 }
 
 template<typename T>
@@ -564,6 +571,30 @@ OGSparseMatrix<T>::setRowIdx(int* rowIdx)
   _rowIdx = rowIdx;
 }
 
+template<typename T>
+T** 
+OGSparseMatrix<T>::toArrayOfArrays() const{
+  int const rows = this->getRows();
+  int const cols = this->getCols();
+  int * const colPtr = this->getColPtr();
+  int * const rowIdx = this->getRowIdx();
+  T * const data = this->getData();
+  T ** tmp = new T * [rows];
+  for(int i=0; i < rows; i++)
+  {
+    tmp[i] = new T [cols];
+    memset(tmp[i],0,(size_t)sizeof(T)*cols);
+  }
+  for (int ir = 0; ir < cols; ir++)
+  {
+      for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+      {
+        tmp[rowIdx[i]][ir] = data[i];
+      }
+  }
+  return tmp;
+}
+
 template class OGSparseMatrix<real16>;
 template class OGSparseMatrix<complex16>;
 
@@ -585,6 +616,12 @@ OGRealSparseMatrix::debug_print() const
       printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
     }
   }
+}
+
+real16**
+OGRealSparseMatrix::toReal16ArrayOfArrays() const
+{
+  return this->toArrayOfArrays();
 }
 
 OGNumeric*
@@ -618,6 +655,12 @@ OGComplexSparseMatrix::debug_print() const
       printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
     }
   }
+}
+
+complex16**
+OGComplexSparseMatrix::toComplex16ArrayOfArrays() const
+{
+  return this->toArrayOfArrays();
 }
 
 OGNumeric*

@@ -13,15 +13,6 @@ using namespace std;
 
 namespace librdag
 {
-/*
- * OGTerminal
- */
-
-const OGTerminal*
-OGTerminal::asOGTerminal() const
-{
-  return this;
-}
 
 /*
  * OGExpr

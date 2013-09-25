@@ -178,6 +178,7 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
     virtual void accept(Visitor &v) const override;
     int* getColPtr() const;
     int* getRowIdx() const;
+    T** toArrayOfArrays() const;
   protected:
     void setColPtr(int * colPtr);
     void setRowIdx(int * rowIdx);
@@ -194,6 +195,7 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
   public:
     using OGSparseMatrix::OGSparseMatrix;
     virtual void debug_print() const override;
+    virtual real16** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const override;
 };
@@ -203,6 +205,7 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
   public:
     using OGSparseMatrix::OGSparseMatrix;
     virtual void debug_print() const override;
+    virtual complex16** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;
 };
