@@ -5,6 +5,7 @@
  */
 
 #include "expression.hh"
+#include "terminal.hh"
 #include "execution.hh"
 
 namespace librdag {

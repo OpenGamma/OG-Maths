@@ -5,6 +5,7 @@
  */
 
 #include "expression.hh"
+#include "terminal.hh"
 #include "gtest/gtest.h"
 
 using namespace std;
@@ -201,7 +202,7 @@ TEST(VirtualCopyTest, ComplexDiagonalMatrix){
 }
 
 TEST(VirtualCopyTest, RealSparseMatrix){
-  int colPtr[2] = { 0, 1 };
+  int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
   double rsparseData[2] = { 1.0, 2.0 };
   OGRealSparseMatrix *rsm1 = new OGRealSparseMatrix(colPtr, rowIdx, rsparseData, 2, 2);
@@ -217,7 +218,7 @@ TEST(VirtualCopyTest, RealSparseMatrix){
 }
 
 TEST(VirtualCopyTest, ComplexSparseMatrix){
-  int colPtr[2] = { 0, 1 };
+  int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
   complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };
   OGComplexSparseMatrix *csm1 = new OGComplexSparseMatrix(colPtr, rowIdx, csparseData, 2, 2);
