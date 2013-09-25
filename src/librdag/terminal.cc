@@ -4,7 +4,10 @@
  * Please see distribution for license.
  */
 
-#include "expression.hh"
+#include <string.h>
+#include "terminal.hh"
+#include "exceptions.hh"
+#include "visitor.hh"
 
 namespace librdag {
 
@@ -15,13 +18,19 @@ namespace librdag {
 real16**
 OGTerminal::toReal16ArrayOfArrays() const
 {
-  throw new librdagException();
+  throw librdagException();
 }
 
 complex16**
 OGTerminal::toComplex16ArrayOfArrays() const
 {
-  throw new librdagException();
+  throw librdagException();
+}
+
+const OGTerminal*
+OGTerminal::asOGTerminal() const
+{
+  return this;
 }
 
 /**
@@ -189,6 +198,10 @@ template<typename T>
 void
 OGArray<T>::setData(T * data)
 {
+  if(data==nullptr)
+  {
+    throw librdagException();
+  }
   _data = data;
 }
 
@@ -196,6 +209,10 @@ template<typename T>
 void
 OGArray<T>::setRows(int rows)
 {
+  if(rows<0)
+  {
+    throw librdagException();
+  }  
   _rows = rows;
 }
 
@@ -203,6 +220,10 @@ template<typename T>
 void
 OGArray<T>::setCols(int cols)
 {
+  if(cols<0)
+  {
+    throw librdagException();
+  }
   _cols = cols;
 }
 
@@ -210,6 +231,10 @@ template<typename T>
 void
 OGArray<T>::setDatalen(int datalen)
 {
+  if(datalen<0)
+  {
+    throw librdagException();
+  }
   _datalen = datalen;
 }
 
@@ -498,9 +523,9 @@ OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows,
   this->setData(data);
   this->setRows(rows);
   this->setCols(cols);
-  this->setDatalen(colPtr[cols]);
   this->setColPtr(colPtr);
   this->setRowIdx(rowIdx);
+  this->setDatalen(colPtr[cols]); // must go last to catch null on colptr happens  
 }
 
 template<typename T>
@@ -528,6 +553,10 @@ template<typename T>
 void
 OGSparseMatrix<T>::setColPtr(int* colPtr)
 {
+  if(colPtr==nullptr)
+  {
+    throw librdagException();
+  }
   _colPtr = colPtr;
 }
 
@@ -535,7 +564,35 @@ template<typename T>
 void
 OGSparseMatrix<T>::setRowIdx(int* rowIdx)
 {
+  if(rowIdx==nullptr)
+  {
+    throw librdagException();
+  }  
   _rowIdx = rowIdx;
+}
+
+template<typename T>
+T** 
+OGSparseMatrix<T>::toArrayOfArrays() const{
+  int const rows = this->getRows();
+  int const cols = this->getCols();
+  int * const colPtr = this->getColPtr();
+  int * const rowIdx = this->getRowIdx();
+  T * const data = this->getData();
+  T ** tmp = new T * [rows];
+  for(int i=0; i < rows; i++)
+  {
+    tmp[i] = new T [cols];
+    memset(tmp[i],0,(size_t)sizeof(T)*cols);
+  }
+  for (int ir = 0; ir < cols; ir++)
+  {
+      for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+      {
+        tmp[rowIdx[i]][ir] = data[i];
+      }
+  }
+  return tmp;
 }
 
 template class OGSparseMatrix<real16>;
@@ -559,6 +616,12 @@ OGRealSparseMatrix::debug_print() const
       printf("(%d,%d) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
     }
   }
+}
+
+real16**
+OGRealSparseMatrix::toReal16ArrayOfArrays() const
+{
+  return this->toArrayOfArrays();
 }
 
 OGNumeric*
@@ -592,6 +655,12 @@ OGComplexSparseMatrix::debug_print() const
       printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
     }
   }
+}
+
+complex16**
+OGComplexSparseMatrix::toComplex16ArrayOfArrays() const
+{
+  return this->toArrayOfArrays();
 }
 
 OGNumeric*

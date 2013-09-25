@@ -6,6 +6,7 @@
 
 #include "execution.hh"
 #include "expression.hh"
+#include "terminal.hh"
 #include "gtest/gtest.h"
 
 using namespace std;

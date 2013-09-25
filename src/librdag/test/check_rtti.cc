@@ -4,6 +4,7 @@
  * Please see distribution for license.
  */
 
+#include "terminal.hh"
 #include "expression.hh"
 #include "gtest/gtest.h"
 #include <string>
@@ -158,7 +159,7 @@ TEST_F(RTTITerminalTest, TestOGComplexDiagonalMatrix) {
 }
 
 TEST_F(RTTITerminalTest, TestOGRealSparseMatrix) {
-  int colPtr[2] = { 0, 1 };
+  int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
   double rsparseData[2] = { 1.0, 2.0 };
   node = new OGRealSparseMatrix(colPtr, rowIdx, rsparseData, 2, 2);
@@ -166,7 +167,7 @@ TEST_F(RTTITerminalTest, TestOGRealSparseMatrix) {
 }
 
 TEST_F(RTTITerminalTest, TestOGComplexSparseMatrix) {
-  int colPtr[2] = { 0, 1 };
+  int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
   complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };
   node = new OGComplexSparseMatrix(colPtr, rowIdx, csparseData, 2, 2);
