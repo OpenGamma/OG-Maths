@@ -112,4 +112,10 @@ OGNumeric::asOGComplexSparseMatrix() const
   return nullptr;
 }
 
+ExprType_t OGNumeric::getType() const
+{
+  return UNKNOWN_EXPR_ENUM;
+}
+
+
 } // namespace librdag

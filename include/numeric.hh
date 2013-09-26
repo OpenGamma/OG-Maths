@@ -8,6 +8,7 @@
 #define _NUMERIC_HH
 
 #include "uncopyable.hh"
+#include "exprtypeenum.h"
 
 namespace librdag {
   
@@ -54,6 +55,7 @@ class OGNumeric: private Uncopyable
     virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const;
     virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const;
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const;
+    virtual ExprType_t getType() const;
 };
 
 } 

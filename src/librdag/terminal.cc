@@ -113,6 +113,12 @@ OGRealScalar::debug_print() const
   printf("OGRealScalar(%f)\n", this->getValue());
 }
 
+ExprType_t
+OGRealScalar::getType() const
+{
+  return REAL_SCALAR_ENUM;
+}
+
 /**
  * OGComplexScalar
  */
@@ -143,6 +149,12 @@ OGComplexScalar::debug_print() const
   printf("OGComplexScalar(%f+%fi)\n", this->getValue().real(), this->getValue().imag());
 }
 
+ExprType_t
+OGComplexScalar::getType() const
+{
+  return COMPLEX_SCALAR_ENUM;
+}
+
 /**
  * OGIntegerScalar
  */
@@ -165,6 +177,12 @@ void
 OGIntegerScalar::debug_print() const
 {
   printf("OGIntegerScalar(%d)\n", this->getValue());
+}
+
+ExprType_t
+OGIntegerScalar::getType() const
+{
+  return INTEGER_SCALAR_ENUM;
 }
 
 /**
@@ -333,6 +351,13 @@ OGRealMatrix::asOGRealMatrix() const
   return this;
 }
 
+ExprType_t
+OGRealMatrix::getType() const
+{
+  return REAL_MATRIX_ENUM;
+}
+
+
 /**
  * OGComplexMatrix
  */
@@ -370,6 +395,12 @@ const OGComplexMatrix*
 OGComplexMatrix::asOGComplexMatrix() const
 {
   return this;
+}
+
+ExprType_t
+OGComplexMatrix::getType() const
+{
+  return COMPLEX_MATRIX_ENUM;
 }
 
 /**
@@ -505,6 +536,12 @@ OGRealDiagonalMatrix::asOGRealDiagonalMatrix() const
   return this;
 }
 
+ExprType_t
+OGRealDiagonalMatrix::getType() const
+{
+  return REAL_DIAGONAL_MATRIX_ENUM;
+}
+
 /**
  * OGComplexDiagonalMatrix
  */
@@ -562,6 +599,13 @@ const OGComplexDiagonalMatrix*
 OGComplexDiagonalMatrix::asOGComplexDiagonalMatrix() const
 {
   return this;
+}
+
+
+ExprType_t
+OGComplexDiagonalMatrix::getType() const
+{
+  return COMPLEX_DIAGONAL_MATRIX_ENUM;
 }
 
 /**
@@ -692,6 +736,13 @@ OGRealSparseMatrix::asOGRealSparseMatrix() const
   return this;
 }
 
+ExprType_t
+OGRealSparseMatrix::getType() const
+{
+  return REAL_SPARSE_MATRIX_ENUM;
+}
+
+
 /**
  * OGComplexSparseMatrix
  */
@@ -729,6 +780,12 @@ const OGComplexSparseMatrix*
 OGComplexSparseMatrix::asOGComplexSparseMatrix() const
 {
   return this;
+}
+
+ExprType_t
+OGComplexSparseMatrix::getType() const
+{
+  return COMPLEX_SPARSE_MATRIX_ENUM;
 }
 
 } // namespace librdag
