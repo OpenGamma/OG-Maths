@@ -57,49 +57,49 @@ OGNumeric* createExpression(jobject obj)
 
   switch(ID)
   {
-  case OGREALSCALAR_ENUM:
+  case REAL_SCALAR_ENUM:
   {
     DEBUG_PRINT("Binding a JOGRealScalar\n");
     _expr = new JOGRealScalar(obj);
   }
   break;
-  case OGCOMPLEXSCALAR_ENUM:
+  case COMPLEX_SCALAR_ENUM:
   {
     DEBUG_PRINT("Binding a JOGComplexScalar\n");
     _expr = new JOGComplexScalar(obj);
   }
   break;
-  case OGREALMATRIX_ENUM:
+  case REAL_MATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGRealMatrix\n");
     _expr = new JOGRealMatrix(obj);
   }
   break;
-  case OGCOMPLEXMATRIX_ENUM:
+  case COMPLEX_MATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGComplexMatrix\n");
     _expr = new JOGComplexMatrix(obj);
   }
   break;
-  case OGREALSPARSEMATRIX_ENUM:
+  case REAL_SPARSE_MATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGRealSparseMatrix\n");
     _expr = new JOGRealSparseMatrix(obj);
   }
   break;
-  case OGCOMPLEXSPARSEMATRIX_ENUM:
+  case COMPLEX_SPARSE_MATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGComplexSparseMatrix\n");
     _expr = new JOGComplexSparseMatrix(obj);
   }
   break;
-  case OGREALDIAGONALMATRIX_ENUM:
+  case REAL_DIAGONAL_MATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGRealDiagonalMatrix\n");
     _expr = new JOGRealDiagonalMatrix(obj);
   }
   break;
-  case OGCOMPLEXDIAGONALMATRIX_ENUM:
+  case COMPLEX_DIAGONAL_MATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGComplexDiagonalMatrix\n");
     _expr = new JOGComplexDiagonalMatrix(obj);
