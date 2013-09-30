@@ -578,8 +578,10 @@ template class DispatchBinaryOp<void>;
 typedef DispatchBinaryOp<void> DispatchVoidBinaryOp;
 
 
-class PlusRunner: public DispatchVoidBinaryOp, Uncopyable
+class PlusRunner: public DispatchVoidBinaryOp, private Uncopyable
 {
+public:
+  using DispatchBinaryOp<void>::run;
   virtual void run(Register const SUPPRESS_UNUSED * reg0, OGComplexMatrix const SUPPRESS_UNUSED * arg0, OGComplexMatrix const SUPPRESS_UNUSED * arg1) const override;
   virtual void run(Register const SUPPRESS_UNUSED * reg0, OGRealMatrix const SUPPRESS_UNUSED * arg0, OGRealMatrix const SUPPRESS_UNUSED * arg1) const override;
 };
@@ -674,3 +676,4 @@ class DispatchToOGTerminal: public librdag::Visitor
 } // namespace convert
 
 #endif // _DISPATCH_HH
+
