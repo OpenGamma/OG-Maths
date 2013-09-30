@@ -198,10 +198,6 @@ template<typename T>
 void
 OGArray<T>::setData(T * data)
 {
-  if(data==nullptr)
-  {
-    throw librdagException();
-  }
   _data = data;
 }
 
@@ -246,8 +242,20 @@ template class OGArray<complex16>;
  */
 
 template<typename T>
+OGMatrix<T>::OGMatrix(int rows, int cols)
+{
+  this->setRows(rows);
+  this->setCols(cols);
+  this->setDatalen(rows*cols);
+}
+
+template<typename T>
 OGMatrix<T>::OGMatrix(T* data, int rows, int cols)
 {
+  if (data == nullptr)
+  {
+    throw librdagException();
+  }
   this->setData(data);
   this->setRows(rows);
   this->setCols(cols);
@@ -364,8 +372,20 @@ OGComplexMatrix::asOGComplexMatrix() const
  */
 
 template<typename T>
+OGDiagonalMatrix<T>::OGDiagonalMatrix(int rows, int cols)
+{
+  this->setRows(rows);
+  this->setCols(cols);
+  this->setDatalen(rows>cols?cols:rows);
+}
+
+template<typename T>
 OGDiagonalMatrix<T>::OGDiagonalMatrix(T* data, int rows, int cols)
 {
+  if (data == nullptr)
+  {
+    throw librdagException();
+  }
   this->setData(data);
   this->setRows(rows);
   this->setCols(cols);
@@ -520,6 +540,10 @@ OGComplexDiagonalMatrix::asOGComplexDiagonalMatrix() const
 template<typename T>
 OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows, int cols)
 {
+  if (data == nullptr)
+  {
+    throw librdagException();
+  }
   this->setData(data);
   this->setRows(rows);
   this->setCols(cols);
