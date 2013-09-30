@@ -35,7 +35,7 @@ class OGScalar: public OGTerminal
     virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
-  private:
+  protected:
     T _value;
 };
 
@@ -102,6 +102,8 @@ template <typename T> class OGMatrix: public OGArray<T>
     OGMatrix(T * data, int rows, int cols);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
+  protected:
+    OGMatrix(int rows, int cols);
 };
 
 extern template class OGMatrix<real16>;
@@ -142,6 +144,8 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
     OGDiagonalMatrix(T * data, int rows, int cols);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
+  protected:
+    OGDiagonalMatrix(int rows, int cols);
 };
 
 extern template class OGDiagonalMatrix<real16>;
