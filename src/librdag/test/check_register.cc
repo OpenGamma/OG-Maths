@@ -6,6 +6,7 @@
 
 #include "gtest/gtest.h"
 #include "register.hh"
+#include "math.h"
 
 namespace librdag {
 
@@ -25,6 +26,24 @@ TYPED_TEST_P(ScalarRegisterTest, AllocDealloc)
 REGISTER_TYPED_TEST_CASE_P(ScalarRegisterTest, AllocDealloc);
 typedef ::testing::Types<OGRealScalarRegister, OGComplexScalarRegister> ScalarRegisterTypes;
 INSTANTIATE_TYPED_TEST_CASE_P(ScalarTypes, ScalarRegisterTest, ScalarRegisterTypes);
+
+TEST(ScalarRegisterTestInit, NanTest)
+{
+  /**
+   * Skip when NDEBUG is set, because -ffast-math will be turned on.
+   * The whole function can't be wrapped because CMake will still see it and
+   * try to run it.
+   */
+#ifndef NDEBUG
+  OGRealScalarRegister* r = new OGRealScalarRegister();
+  OGComplexScalarRegister* c = new OGComplexScalarRegister();
+  EXPECT_TRUE(std::isnan(r->getValue()));
+  EXPECT_TRUE(std::isnan(c->getValue().real()));
+  EXPECT_TRUE(std::isnan(c->getValue().imag()));
+  delete r;
+  delete c;
+#endif
+}
 
 template<typename T>
 class MatrixRegisterTest: public ::testing::Test {};

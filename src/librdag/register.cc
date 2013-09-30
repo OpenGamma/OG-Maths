@@ -62,7 +62,17 @@ Register::decRef()
  * OGRealScalarRegister
  */
 
-OGRealScalarRegister::OGRealScalarRegister(): OGRealScalar(0.0), Register() {}
+real16 getNaN()
+{
+  union {
+    real16 d;
+    unsigned long long int i;
+  } nanval;
+  nanval.i = 0x7FF1010101010101;
+  return nanval.d;
+}
+
+OGRealScalarRegister::OGRealScalarRegister(): OGRealScalar(getNaN()), Register() {}
 
 void
 OGRealScalarRegister::alloc() {}
@@ -74,7 +84,18 @@ OGRealScalarRegister::free() {}
  * OGComplexScalarRegister
  */
 
-OGComplexScalarRegister::OGComplexScalarRegister(): OGComplexScalar(0.0), Register() {}
+complex16 getComplexNaN()
+{
+  union {
+    real16 d;
+    unsigned long long int i;
+  } nanval1, nanval2;
+  nanval1.i = 0x7FFDEAD101010101;
+  nanval2.i = 0x7FFDEAD202020202;
+  return complex16(nanval1.d, nanval2.d);
+}
+
+OGComplexScalarRegister::OGComplexScalarRegister(): OGComplexScalar(getComplexNaN()), Register() {}
 
 void
 OGComplexScalarRegister::alloc() {}
