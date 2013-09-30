@@ -52,6 +52,12 @@ OGNumeric::asSELECTRESULT() const
   return nullptr;
 }
 
+const OGExpr*
+OGNumeric::asOGExpr() const
+{
+  return nullptr;
+}
+
 const OGTerminal*
 OGNumeric::asOGTerminal() const
 {

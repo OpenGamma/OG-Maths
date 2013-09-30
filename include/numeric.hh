@@ -24,6 +24,7 @@ class OGComplexDiagonalMatrix;
 class OGRealSparseMatrix;
 class OGComplexSparseMatrix;
 class Visitor;
+class OGExpr;
 class COPY;
 class PLUS;
 class NEGATE;
@@ -40,6 +41,7 @@ class OGNumeric: private Uncopyable
     virtual void debug_print() const = 0;
     virtual void accept(Visitor &v) const = 0;
     virtual OGNumeric* copy() const = 0;
+    virtual const OGExpr* asOGExpr() const;
     virtual const COPY* asCOPY() const;
     virtual const PLUS* asPLUS() const;
     virtual const NEGATE* asNEGATE() const;
