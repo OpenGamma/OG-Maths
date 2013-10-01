@@ -23,7 +23,7 @@ using namespace librdag;
 template<typename T> bool ArrayEquals(T * expected, T * computed, size_t length)
 {
     if(length<0){
-      throw librdagException();
+      throw runtime_error("Negative array length specified");
     }
     for(size_t i=0; i < length; i++)
     {
@@ -45,8 +45,8 @@ template<typename T> bool ArrayEquals(T * expected, T * computed, size_t length)
  */
 template<typename T> bool ArrayOfArraysEquals(T ** expected, T ** computed, size_t rows, size_t cols)
 {
-    if(rows<0){
-      throw librdagException();
+    if(rows<0 || cols<0){
+      throw runtime_error("Negative row or column count specified");
     }
     for(size_t i=0; i < rows; i++)
     {

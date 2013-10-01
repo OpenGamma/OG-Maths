@@ -17,10 +17,9 @@ namespace librdag {
 /*
  * General exception thing
  */
-class librdagException: public exception
+class rdag_error: public runtime_error
 {
-  public:
-    virtual const char* what() const throw();
+  using runtime_error::runtime_error;
 };
 
 } // namespace librdag
@@ -30,7 +29,7 @@ namespace convert {
 /*
  * General exception thing
  */
-class convertException: public runtime_error
+class convert_error: public runtime_error
 {
   using runtime_error::runtime_error;
 };

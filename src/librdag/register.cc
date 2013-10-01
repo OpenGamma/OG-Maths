@@ -45,7 +45,7 @@ Register::decRef()
 {
   if (_refCount < 1)
   {
-    throw librdagException();
+    throw rdag_error("Refcount for register has fallen below zero");
   }
 
   _refCount--;

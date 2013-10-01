@@ -68,7 +68,7 @@ PtrVector<cTp>::_check_arg(cTp arg)
 {
   if (arg == nullptr)
   {
-    throw new librdagException();
+    throw rdag_error("Attempt to put a null pointer in a PtrContainer");
   }
 }
 
