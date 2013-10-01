@@ -37,7 +37,8 @@ TEST(OGExprTest, COPY){
   OGExpr *copyWithArgs = new COPY(newArgs);
   ASSERT_EQ(1, copyWithArgs->getNArgs());
   EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-
+  // Debug string
+  copyWithArgs->debug_print();
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
@@ -59,7 +60,8 @@ TEST(OGExprTest, PLUS){
   ASSERT_EQ(2, plusWithArgs->getNArgs());
   EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
   EXPECT_EQ(newComplx, ((*newArgs)[1])->asOGComplexScalar());
-
+  // Debug string
+  plusWithArgs->debug_print();
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
@@ -75,7 +77,8 @@ TEST(OGExprTest, NEGATE){
   OGExpr *negateWithArgs = new NEGATE(newArgs);
   ASSERT_EQ(1, negateWithArgs->getNArgs());
   EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-
+  // Debug string
+  negateWithArgs->debug_print();
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
@@ -91,7 +94,8 @@ TEST(OGExprTest, SVD){
   OGExpr *svdWithArgs = new SVD(newArgs);
   ASSERT_EQ(1, svdWithArgs->getNArgs());
   EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-
+  // Debug string
+  svdWithArgs->debug_print();
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
@@ -110,7 +114,8 @@ TEST(OGExprTest, SELECTRESULT){
   ASSERT_EQ(2, selectWithArgs->getNArgs());
   EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
   EXPECT_EQ(newIndex, ((*newArgs)[1])->asOGIntegerScalar());
-
+  // Debug string
+  selectWithArgs->debug_print();
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
