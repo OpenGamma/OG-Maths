@@ -19,31 +19,31 @@ namespace librdag {
 /*
  * A vector that holds pointers. Null pointers are not allowed.
  */
-template<typename T>
+template<typename cTp>
 class PtrVector
 {
-  static_assert(is_pointer<T>::value && is_const<typename remove_pointer<T>::type>::value,
-                "Type T must be pointer to const type");
+  static_assert(is_pointer<cTp>::value && is_const<typename remove_pointer<cTp>::type>::value,
+                "Type cTp must be pointer to const type");
   public:
     PtrVector();
     virtual ~PtrVector();
-    typedef typename vector<T>::const_iterator citerator;
-    void push_back(T arg);
+    typedef typename vector<cTp>::const_iterator citerator;
+    void push_back(cTp arg);
     size_t size() const;
     citerator begin() const;
     citerator end() const;
-    T operator[](size_t n) const;
+    cTp operator[](size_t n) const;
     virtual PtrVector* copy() const = 0;
   private:
-    vector<T>* _vector;
-    void _check_arg(T arg);
+    vector<cTp>* _vector;
+    void _check_arg(cTp arg);
 };
 
 /*
  * A vector that holds pointers that point to data that it does not own.
  */
-template<typename T>
-class NonOwningPtrVector: public PtrVector<T>
+template<typename cTp>
+class NonOwningPtrVector: public PtrVector<cTp>
 {
   public:
     virtual NonOwningPtrVector* copy() const override;
@@ -55,8 +55,8 @@ class NonOwningPtrVector: public PtrVector<T>
  * Classes held in an OwningPtrVector must define a method copy() that returns
  * a pointer to a copy of itself.
  */
-template<typename T>
-class OwningPtrVector: public PtrVector<T>
+template<typename cTp>
+class OwningPtrVector: public PtrVector<cTp>
 {
   public:
     virtual ~OwningPtrVector() override;

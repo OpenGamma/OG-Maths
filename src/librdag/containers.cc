@@ -14,57 +14,57 @@ namespace librdag {
  * PtrVector
  */
 
-template<typename T>
-PtrVector<T>::PtrVector()
+template<typename cTp>
+PtrVector<cTp>::PtrVector()
 {
-  _vector = new vector<T>();
+  _vector = new vector<cTp>();
 }
 
-template<typename T>
-PtrVector<T>::~PtrVector()
+template<typename cTp>
+PtrVector<cTp>::~PtrVector()
 {
   delete _vector;
 }
 
-template<typename T>
+template<typename cTp>
 void
-PtrVector<T>::push_back(T arg)
+PtrVector<cTp>::push_back(cTp arg)
 {
   _check_arg(arg);
   _vector->push_back(arg);
 }
 
-template<typename T>
+template<typename cTp>
 size_t
-PtrVector<T>::size() const
+PtrVector<cTp>::size() const
 {
   return _vector->size();
 }
 
-template<typename T>
-typename PtrVector<T>::citerator
-PtrVector<T>::begin() const
+template<typename cTp>
+typename PtrVector<cTp>::citerator
+PtrVector<cTp>::begin() const
 {
   return _vector->begin();
 }
 
-template<typename T>
-typename PtrVector<T>::citerator
-PtrVector<T>::end() const
+template<typename cTp>
+typename PtrVector<cTp>::citerator
+PtrVector<cTp>::end() const
 {
   return _vector->end();
 }
 
-template<typename T>
-T
-PtrVector<T>::operator[](size_t n) const
+template<typename cTp>
+cTp
+PtrVector<cTp>::operator[](size_t n) const
 {
   return (*_vector)[n];
 }
 
-template<typename T>
+template<typename cTp>
 void
-PtrVector<T>::_check_arg(T arg)
+PtrVector<cTp>::_check_arg(cTp arg)
 {
   if (arg == nullptr)
   {
@@ -79,9 +79,9 @@ template class PtrVector<const OGNumeric*>;
  * NonOwningPtrVector
  */
 
-template<typename T>
-NonOwningPtrVector<T>*
-NonOwningPtrVector<T>::copy() const
+template<typename cTp>
+NonOwningPtrVector<cTp>*
+NonOwningPtrVector<cTp>::copy() const
 {
   NonOwningPtrVector* c = new NonOwningPtrVector();
   for (auto it = this->begin(); it != this->end(); ++it)
@@ -98,8 +98,8 @@ template class NonOwningPtrVector<const OGNumeric*>;
  * OwningPtrVector
  */
 
-template<typename T>
-OwningPtrVector<T>::~OwningPtrVector()
+template<typename cTp>
+OwningPtrVector<cTp>::~OwningPtrVector()
 {
   for (auto it = this->begin(); it != this->end(); ++it)
   {
@@ -117,15 +117,15 @@ namespace detail {
  * data.
  */
 
-template<typename T, bool Q = is_fundamental<typename remove_pointer<T>::type>::value >
+template<typename cTp, bool Q = is_fundamental<typename remove_pointer<cTp>::type>::value >
 struct owningptrvector_copy_impl;
 
-template<typename T>
-struct owningptrvector_copy_impl<T, false>
+template<typename cTp>
+struct owningptrvector_copy_impl<cTp, false>
 {
-  OwningPtrVector<T>* operator()(const OwningPtrVector<T>* src)
+  OwningPtrVector<cTp>* operator()(const OwningPtrVector<cTp>* src)
   {
-    OwningPtrVector<T>* c = new OwningPtrVector<T>();
+    OwningPtrVector<cTp>* c = new OwningPtrVector<cTp>();
     for (auto it = src->begin(); it != src->end(); ++it)
     {
       c->push_back((*it)->copy());
@@ -134,18 +134,18 @@ struct owningptrvector_copy_impl<T, false>
   }
 };
 
-template<typename T>
-struct owningptrvector_copy_impl<T, true>
+template<typename cTp>
+struct owningptrvector_copy_impl<cTp, true>
 {
-  OwningPtrVector<T>* operator()(const OwningPtrVector<T>* src)
+  OwningPtrVector<cTp>* operator()(const OwningPtrVector<cTp>* src)
   {
-    OwningPtrVector<T>* c = new OwningPtrVector<T>();
+    OwningPtrVector<cTp>* c = new OwningPtrVector<cTp>();
     for (auto it = src->begin(); it != src->end(); ++it)
     {
-      typedef typename remove_pointer<T>::type Tnoptr;
-      typedef typename remove_const<Tnoptr>::type Tnoptrnoconst;
-      typedef Tnoptrnoconst* Tptr;
-      Tptr n = new Tnoptrnoconst;
+      typedef typename remove_pointer<cTp>::type cT;
+      typedef typename remove_const<cT>::type T;
+      typedef T* Tp;
+      Tp n = new T;
       *n = **it;
       c->push_back(n);
     }
@@ -155,11 +155,11 @@ struct owningptrvector_copy_impl<T, true>
 
 } // namespace detail
 
-template<typename T>
-OwningPtrVector<T>*
-OwningPtrVector<T>::copy() const
+template<typename cTp>
+OwningPtrVector<cTp>*
+OwningPtrVector<cTp>::copy() const
 {
-  return detail::owningptrvector_copy_impl<T>()(this);
+  return detail::owningptrvector_copy_impl<cTp>()(this);
 }
 
 template class OwningPtrVector<const int*>;
