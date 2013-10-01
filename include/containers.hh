@@ -22,6 +22,8 @@ namespace librdag {
 template<typename T>
 class PtrVector
 {
+  static_assert(is_pointer<T>::value && is_const<typename remove_pointer<T>::type>::value,
+                "Type T must be pointer to const type");
   public:
     PtrVector();
     virtual ~PtrVector();
