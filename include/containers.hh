@@ -25,16 +25,16 @@ class PtrVector
   public:
     PtrVector();
     virtual ~PtrVector();
-    typedef typename vector<T const *>::const_iterator citerator;
-    void push_back(T const * arg);
+    typedef typename vector<T>::const_iterator citerator;
+    void push_back(T arg);
     size_t size() const;
     citerator begin() const;
     citerator end() const;
-    const T* operator[](size_t n) const;
+    T operator[](size_t n) const;
     virtual PtrVector* copy() const = 0;
   private:
-    vector<T const *>* _vector;
-    void _check_arg(T const * arg);
+    vector<T>* _vector;
+    void _check_arg(T arg);
 };
 
 /*
@@ -63,10 +63,10 @@ class OwningPtrVector: public PtrVector<T>
 
 class OGNumeric;
 
-extern template class NonOwningPtrVector<int>;
-extern template class NonOwningPtrVector<OGNumeric>;
-extern template class OwningPtrVector<int>;
-extern template class OwningPtrVector<OGNumeric>;
+extern template class NonOwningPtrVector<const int*>;
+extern template class NonOwningPtrVector<const OGNumeric*>;
+extern template class OwningPtrVector<const int*>;
+extern template class OwningPtrVector<const OGNumeric*>;
 
 } // namespace librdag
 

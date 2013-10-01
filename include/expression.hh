@@ -31,7 +31,7 @@ namespace librdag
 /**
  * Container for expression arguments
  */
-typedef OwningPtrVector<OGNumeric> ArgContainer;
+typedef OwningPtrVector<const OGNumeric*> ArgContainer;
 
 /**
  *  Expr type

@@ -17,7 +17,7 @@ namespace librdag {
 template<typename T>
 PtrVector<T>::PtrVector()
 {
-  _vector = new vector<T const *>();
+  _vector = new vector<T>();
 }
 
 template<typename T>
@@ -28,7 +28,7 @@ PtrVector<T>::~PtrVector()
 
 template<typename T>
 void
-PtrVector<T>::push_back(T const * arg)
+PtrVector<T>::push_back(T arg)
 {
   _check_arg(arg);
   _vector->push_back(arg);
@@ -56,7 +56,7 @@ PtrVector<T>::end() const
 }
 
 template<typename T>
-const T*
+T
 PtrVector<T>::operator[](size_t n) const
 {
   return (*_vector)[n];
@@ -64,7 +64,7 @@ PtrVector<T>::operator[](size_t n) const
 
 template<typename T>
 void
-PtrVector<T>::_check_arg(T const * arg)
+PtrVector<T>::_check_arg(T arg)
 {
   if (arg == nullptr)
   {
@@ -72,8 +72,8 @@ PtrVector<T>::_check_arg(T const * arg)
   }
 }
 
-template class PtrVector<int>;
-template class PtrVector<OGNumeric>;
+template class PtrVector<const int*>;
+template class PtrVector<const OGNumeric*>;
 
 /**
  * NonOwningPtrVector
@@ -91,8 +91,8 @@ NonOwningPtrVector<T>::copy() const
   return c;
 }
 
-template class NonOwningPtrVector<int>;
-template class NonOwningPtrVector<OGNumeric>;
+template class NonOwningPtrVector<const int*>;
+template class NonOwningPtrVector<const OGNumeric*>;
 
 /**
  * OwningPtrVector
@@ -117,7 +117,7 @@ namespace detail {
  * data.
  */
 
-template<typename T, bool Q = is_fundamental<T>::value >
+template<typename T, bool Q = is_fundamental<typename remove_pointer<T>::type>::value >
 struct owningptrvector_copy_impl;
 
 template<typename T>
@@ -142,7 +142,10 @@ struct owningptrvector_copy_impl<T, true>
     OwningPtrVector<T>* c = new OwningPtrVector<T>();
     for (auto it = src->begin(); it != src->end(); ++it)
     {
-      T* n = new T;
+      typedef typename remove_pointer<T>::type Tnoptr;
+      typedef typename remove_const<Tnoptr>::type Tnoptrnoconst;
+      typedef Tnoptrnoconst* Tptr;
+      Tptr n = new Tnoptrnoconst;
       *n = **it;
       c->push_back(n);
     }
@@ -159,7 +162,7 @@ OwningPtrVector<T>::copy() const
   return detail::owningptrvector_copy_impl<T>()(this);
 }
 
-template class OwningPtrVector<int>;
-template class OwningPtrVector<OGNumeric>;
+template class OwningPtrVector<const int*>;
+template class OwningPtrVector<const OGNumeric*>;
 
 } // namespace librdag
