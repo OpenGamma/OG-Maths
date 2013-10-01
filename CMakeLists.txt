@@ -85,6 +85,28 @@ if(DOXYGEN_FOUND)
   )
 endif(DOXYGEN_FOUND)
 
+# Coverage - must build underneath the source dir for this to work.
+if (CMAKE_BUILD_TYPE MATCHES "Debug" AND NOT WIN32)
+  set(CMAKE_C_FLAGS_DEBUG "--coverage ${CMAKE_C_FLAGS_DEBUG}")
+  set(CMAKE_CXX_FLAGS_DEBUG "--coverage ${CMAKE_CXX_FLAGS_DEBUG}")
+  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/coverage.info
+                     COMMAND lcov --capture -d . --output-file ${CMAKE_BINARY_DIR}/coverage.info --no-external
+                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                     COMMENT "Capturing coverage info")
+
+  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/coverage-no-external.info
+                     DEPENDS ${CMAKE_BINARY_DIR}/coverage.info
+                     COMMAND lcov --remove coverage.info "\"external/*\"" -o coverage-no-external.info
+                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                     COMMENT "Removing external from coverage info")
+
+  add_custom_target(coverage
+                    COMMAND genhtml -o lcov.out coverage-no-external.info
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                    DEPENDS ${CMAKE_BINARY_DIR}/coverage-no-external.info
+                    COMMENT "Generating coverage report")
+endif()
+
 enable_testing()
 
 add_subdirectory(src)
