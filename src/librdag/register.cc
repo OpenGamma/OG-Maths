@@ -142,4 +142,44 @@ void OGComplexMatrixRegister::free()
   setData(nullptr);
 }
 
+/**
+ * OGRealDiagonalMatrixRegister
+ */
+
+OGRealDiagonalMatrixRegister::OGRealDiagonalMatrixRegister(int rows, int cols)
+                             :OGRealDiagonalMatrix(rows, cols), Register() {}
+
+void OGRealDiagonalMatrixRegister::alloc()
+{
+  real16* data = new real16[getDatalen()];
+  setData(data);
+
+}
+
+void OGRealDiagonalMatrixRegister::free()
+{
+  delete[] getData();
+  setData(nullptr);
+}
+
+/**
+ * OGComplexDiagonalMatrixRegister
+ */
+
+OGComplexDiagonalMatrixRegister::OGComplexDiagonalMatrixRegister(int rows, int cols)
+                                :OGComplexDiagonalMatrix(rows, cols), Register() {}
+void OGComplexDiagonalMatrixRegister::alloc()
+{
+  complex16* data = new complex16[getDatalen()];
+  setData(data);
+
+}
+
+void OGComplexDiagonalMatrixRegister::free()
+{
+  delete[] getData();
+  setData(nullptr);
+}
+
+
 } // namespace librdag

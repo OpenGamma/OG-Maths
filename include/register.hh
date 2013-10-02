@@ -62,21 +62,25 @@ class OGComplexMatrixRegister: public OGComplexMatrix, public Register
     virtual void alloc() override;
     virtual void free() override;
 };
+
+class OGRealDiagonalMatrixRegister: public OGRealDiagonalMatrix, public Register
+{
+  public:
+    OGRealDiagonalMatrixRegister(int rows, int cols);
+  private:
+    virtual void alloc() override;
+    virtual void free() override;
+};
+
+class OGComplexDiagonalMatrixRegister: public OGComplexDiagonalMatrix, public Register
+{
+  public:
+    OGComplexDiagonalMatrixRegister(int rows, int cols);
+  private:
+    virtual void alloc() override;
+    virtual void free() override;
+};
 /*
-class OGRealDiagonalMatrixRegister
-{
-  private:
-    virtual void alloc() override;
-    virtual void free() override;
-};
-
-class OGComplexDiagonalMatrixRegister
-{
-  private:
-    virtual void alloc() override;
-    virtual void free() override;
-};
-
 class OGRealSparseMatrixRegister
 {
   private:
