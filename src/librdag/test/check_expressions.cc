@@ -35,8 +35,13 @@ TYPED_TEST_P(BinaryExprTest, Functionality){
   // Debug string
   expr->debug_print();
 
+  // Constructor with null args
+  EXPECT_THROW(new TypeParam(nullptr), rdag_error);
+
   // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
+  ArgContainer* wrongArgs = new ArgContainer();
+  wrongArgs->push_back(real->copy());
+  EXPECT_THROW(new TypeParam(wrongArgs), rdag_error);
 
   // Cleanup
   delete expr;
