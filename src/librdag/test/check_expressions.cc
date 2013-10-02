@@ -109,11 +109,19 @@ TEST(OGExprTest, SELECTRESULT){
   // Debug string
   selectresult->debug_print();
 
-  // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
+  // Constructor with null args
+  EXPECT_THROW(new SELECTRESULT(nullptr), rdag_error);
 
-  // Constructor with index argument of wrong type
-  // FIXME: Needs implementing once this throws an exception.
+  // Constructor with args of wrong length
+  ArgContainer* wrongArgs = new ArgContainer();
+  wrongArgs->push_back(real->copy());
+  EXPECT_THROW(new SELECTRESULT(wrongArgs), rdag_error);
+
+  // Constructor where second argument is not an integer type
+  ArgContainer* wrongTypeArgs = new ArgContainer();
+  wrongTypeArgs->push_back(real->copy());
+  wrongTypeArgs->push_back(real->copy());
+  EXPECT_THROW(new SELECTRESULT(wrongTypeArgs), rdag_error);
 
   // Cleanup
   delete selectresult;
