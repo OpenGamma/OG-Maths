@@ -12,7 +12,7 @@ using namespace std;
 using namespace librdag;
 
 TEST(OGExprTest, ScalarValues) {
-	// Constructor
+  // Constructor
   OGRealScalar *real = new OGRealScalar(1.0);
   ASSERT_EQ(1.0, real->getValue());
 
@@ -21,7 +21,7 @@ TEST(OGExprTest, ScalarValues) {
 }
 
 TEST(OGExprTest, ComplexValues) {
-	// Constructor
+  // Constructor
   OGComplexScalar *complx = new OGComplexScalar(complex16(1.0,2.0));
   ASSERT_EQ(complex16(1.0,2.0), complx->getValue());
 
@@ -31,91 +31,102 @@ TEST(OGExprTest, ComplexValues) {
 
 TEST(OGExprTest, COPY){
   // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  newArgs->push_back(newReal);
-  OGExpr *copyWithArgs = new COPY(newArgs);
-  ASSERT_EQ(1, copyWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
+  ArgContainer* args = new ArgContainer();
+  OGRealScalar* real = new OGRealScalar(3.14);
+  args->push_back(real);
+  OGExpr *copy = new COPY(args);
+  ASSERT_EQ(1, copy->getNArgs());
+  EXPECT_EQ(real, ((*args)[0])->asOGRealScalar());
+
   // Debug string
-  copyWithArgs->debug_print();
+  copy->debug_print();
+
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete copyWithArgs;
+  delete copy;
 }
 
 TEST(OGExprTest, PLUS){
-  // FIXME: It looks like there is a bug in this test (and probably
-  // similar ones) - checking arguments looks like the args that
-  // belong to the node are not actually being checked.
   // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  OGComplexScalar *newComplx = new OGComplexScalar(complex16(2.7182, 2.7182));
-  newArgs->push_back(newReal);
-  newArgs->push_back(newComplx);
-  OGExpr *plusWithArgs = new PLUS(newArgs);
-  ASSERT_EQ(2, plusWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-  EXPECT_EQ(newComplx, ((*newArgs)[1])->asOGComplexScalar());
+  ArgContainer* args = new ArgContainer();
+  OGRealScalar* real = new OGRealScalar(3.14);
+  OGComplexScalar *complx = new OGComplexScalar(complex16(2.7182, 2.7182));
+  args->push_back(real);
+  args->push_back(complx);
+  OGExpr *plus = new PLUS(args);
+  ASSERT_EQ(2, plus->getNArgs());
+  const ArgContainer* gotArgs = plus->getArgs();
+  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+  EXPECT_EQ(complx, ((*gotArgs)[1])->asOGComplexScalar());
+
   // Debug string
-  plusWithArgs->debug_print();
+  plus->debug_print();
+
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete plusWithArgs;
+  delete plus;
 }
 
 TEST(OGExprTest, NEGATE){
   // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  newArgs->push_back(newReal);
-  OGExpr *negateWithArgs = new NEGATE(newArgs);
-  ASSERT_EQ(1, negateWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
+  ArgContainer* args = new ArgContainer();
+  OGRealScalar *real = new OGRealScalar(3.14);
+  args->push_back(real);
+  OGExpr *negate = new NEGATE(args);
+  ASSERT_EQ(1, negate->getNArgs());
+  const ArgContainer* gotArgs = negate->getArgs();
+  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+
   // Debug string
-  negateWithArgs->debug_print();
+  negate->debug_print();
+
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete negateWithArgs;
+  delete negate;
 }
 
 TEST(OGExprTest, SVD){
   // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  newArgs->push_back(newReal);
-  OGExpr *svdWithArgs = new SVD(newArgs);
-  ASSERT_EQ(1, svdWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
+  ArgContainer* args = new ArgContainer();
+  OGRealScalar *real = new OGRealScalar(3.14);
+  args->push_back(real);
+  OGExpr *svd = new SVD(args);
+  ASSERT_EQ(1, svd->getNArgs());
+  const ArgContainer* gotArgs = svd->getArgs();
+  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+
   // Debug string
-  svdWithArgs->debug_print();
+  svd->debug_print();
+
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete svdWithArgs;
+  delete svd;
 }
 
 TEST(OGExprTest, SELECTRESULT){
   // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  OGIntegerScalar *newIndex = new OGIntegerScalar(2);
-  newArgs->push_back(newReal);
-  newArgs->push_back(newIndex);
-  OGExpr *selectWithArgs = new SELECTRESULT(newArgs);
-  ASSERT_EQ(2, selectWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-  EXPECT_EQ(newIndex, ((*newArgs)[1])->asOGIntegerScalar());
+  ArgContainer* args = new ArgContainer();
+  OGRealScalar *real = new OGRealScalar(3.14);
+  OGIntegerScalar *index = new OGIntegerScalar(2);
+  args->push_back(real);
+  args->push_back(index);
+  OGExpr *selectresult = new SELECTRESULT(args);
+  ASSERT_EQ(2, selectresult->getNArgs());
+  const ArgContainer* gotArgs = selectresult->getArgs();
+  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+  EXPECT_EQ(index, ((*gotArgs)[1])->asOGIntegerScalar());
+
   // Debug string
-  selectWithArgs->debug_print();
+  selectresult->debug_print();
+
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
@@ -123,7 +134,7 @@ TEST(OGExprTest, SELECTRESULT){
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete selectWithArgs;
+  delete selectresult;
 }
 
 TEST(VirtualCopyTest, RealScalar){
