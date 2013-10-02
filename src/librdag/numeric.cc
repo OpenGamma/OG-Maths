@@ -22,12 +22,6 @@ OGNumeric::~OGNumeric()
 {
 }
 
-void
-OGNumeric::debug_print() const
-{
-  cout << "Abstract OGNumeric type" << endl;
-}
-
 const COPY*
 OGNumeric::asCOPY() const
 {
