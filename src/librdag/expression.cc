@@ -45,12 +45,6 @@ OGExpr::getNArgs() const
 }
 
 void
-OGExpr::debug_print() const
-{
-	cout << "OGExpr base class" << endl;
-}
-
-void
 OGExpr::accept(Visitor &v) const
 {
   v.visit(this);
