@@ -61,6 +61,9 @@ TEST(ContainerTest, OwningPtrVectorTest) {
   }
   EXPECT_TRUE( (it1 == pv1->end()) && (it2 == pv2->end()) );
 
+  // Attempt to put a null pointer in the container
+  EXPECT_THROW(pv1->push_back(nullptr), rdag_error);
+
   // Delete - no leaks should occur. pv1 owns the pointers to individual ints.
   delete pv1;
   delete pv2;
@@ -119,6 +122,9 @@ TEST(ContainerTest, NonOwningPtrVectorTest) {
     EXPECT_EQ(**it1, **it2);
   }
   EXPECT_TRUE( (it1 == pv1->end()) && (it2 == pv2->end()) );
+
+  // Attempt to put a null pointer in the container
+  EXPECT_THROW(pv1->push_back(nullptr), rdag_error);
 
   // Delete everything
   delete pv1;
