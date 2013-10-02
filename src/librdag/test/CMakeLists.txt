@@ -9,7 +9,8 @@ SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 
 link_directories(${longdog_BINARY_DIR}/src/librdag})
 
-set(TESTS check_expressions check_containers check_execution check_rtti check_terminals check_register)
+set(TESTS check_expressions check_containers check_execution check_rtti
+          check_terminals check_register check_entrypt)
 
 # Compile and link each test and add to the list of tests
 foreach(TEST ${TESTS})
