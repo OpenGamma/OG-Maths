@@ -11,105 +11,76 @@
 using namespace std;
 using namespace librdag;
 
-TEST(OGExprTest, ScalarValues) {
-  // Constructor
-  OGRealScalar *real = new OGRealScalar(1.0);
-  ASSERT_EQ(1.0, real->getValue());
+/**
+ * BinaryExpr tests
+ */
 
-  // Cleanup
-  delete real;
-}
+template<typename T>
+class BinaryExprTest: public ::testing::Test {};
+TYPED_TEST_CASE_P(BinaryExprTest);
 
-TEST(OGExprTest, ComplexValues) {
-  // Constructor
-  OGComplexScalar *complx = new OGComplexScalar(complex16(1.0,2.0));
-  ASSERT_EQ(complex16(1.0,2.0), complx->getValue());
-
-  // Cleanup
-  delete complx;
-}
-
-TEST(OGExprTest, COPY){
-  // Constructor
-  ArgContainer* args = new ArgContainer();
-  OGRealScalar* real = new OGRealScalar(3.14);
-  args->push_back(real);
-  OGExpr *copy = new COPY(args);
-  ASSERT_EQ(1, copy->getNArgs());
-  EXPECT_EQ(real, ((*args)[0])->asOGRealScalar());
-
-  // Debug string
-  copy->debug_print();
-
-  // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
-
-  // Cleanup
-  delete copy;
-}
-
-TEST(OGExprTest, PLUS){
+TYPED_TEST_P(BinaryExprTest, Functionality){
   // Constructor
   ArgContainer* args = new ArgContainer();
   OGRealScalar* real = new OGRealScalar(3.14);
   OGComplexScalar *complx = new OGComplexScalar(complex16(2.7182, 2.7182));
   args->push_back(real);
   args->push_back(complx);
-  OGExpr *plus = new PLUS(args);
-  ASSERT_EQ(2, plus->getNArgs());
-  const ArgContainer* gotArgs = plus->getArgs();
+  TypeParam *expr = new TypeParam(args);
+  ASSERT_EQ(2, expr->getNArgs());
+  const ArgContainer* gotArgs = expr->getArgs();
   EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
   EXPECT_EQ(complx, ((*gotArgs)[1])->asOGComplexScalar());
 
   // Debug string
-  plus->debug_print();
+  expr->debug_print();
 
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete plus;
+  delete expr;
 }
 
-TEST(OGExprTest, NEGATE){
+REGISTER_TYPED_TEST_CASE_P(BinaryExprTest, Functionality);
+typedef ::testing::Types<PLUS> BinaryExprTypes;
+INSTANTIATE_TYPED_TEST_CASE_P(Binary, BinaryExprTest, BinaryExprTypes);
+
+/**
+ * UnaryExpr tests
+ */
+
+template<typename T>
+class UnaryExprTest: public ::testing::Test {};
+TYPED_TEST_CASE_P(UnaryExprTest);
+
+TYPED_TEST_P(UnaryExprTest, Functionality){
   // Constructor
   ArgContainer* args = new ArgContainer();
   OGRealScalar *real = new OGRealScalar(3.14);
   args->push_back(real);
-  OGExpr *negate = new NEGATE(args);
-  ASSERT_EQ(1, negate->getNArgs());
-  const ArgContainer* gotArgs = negate->getArgs();
+  TypeParam *expr = new TypeParam(args);
+  ASSERT_EQ(1, expr->getNArgs());
+  const ArgContainer* gotArgs = expr->getArgs();
   EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
 
   // Debug string
-  negate->debug_print();
+  expr->debug_print();
 
   // Constructor with args of wrong length
   // FIXME: Needs implementing once this throws an exception.
 
   // Cleanup
-  delete negate;
+  delete expr;
 }
 
-TEST(OGExprTest, SVD){
-  // Constructor
-  ArgContainer* args = new ArgContainer();
-  OGRealScalar *real = new OGRealScalar(3.14);
-  args->push_back(real);
-  OGExpr *svd = new SVD(args);
-  ASSERT_EQ(1, svd->getNArgs());
-  const ArgContainer* gotArgs = svd->getArgs();
-  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+REGISTER_TYPED_TEST_CASE_P(UnaryExprTest, Functionality);
+typedef ::testing::Types<NEGATE, SVD, COPY> UnaryExprTypes;
+INSTANTIATE_TYPED_TEST_CASE_P(Unary, UnaryExprTest, UnaryExprTypes);
 
-  // Debug string
-  svd->debug_print();
-
-  // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
-
-  // Cleanup
-  delete svd;
-}
+/**
+ * Tests for nodes with more specialised requirements
+ */
 
 TEST(OGExprTest, SELECTRESULT){
   // Constructor
