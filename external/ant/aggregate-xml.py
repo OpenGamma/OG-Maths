@@ -45,7 +45,8 @@ newroot = ET.Element('testsuites', stats)
 
 # Add the elements from each input root to the new root
 for root in roots:
-    newroot.extend(list(root))
+    for element in list(root):
+        newroot.append(element)
 
 # Write the output
 newtree = ET.ElementTree(newroot)
