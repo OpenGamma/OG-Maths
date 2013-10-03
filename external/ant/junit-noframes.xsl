@@ -151,14 +151,6 @@
 			<xsl:call-template name="summary"/>
 			<hr size="1" width="95%" align="left"/>
 			
-			<!-- Package List part -->
-			<xsl:call-template name="packagelist"/>
-			<hr size="1" width="95%" align="left"/>
-			
-			<!-- For each package create its part -->
-			<xsl:call-template name="packages"/>
-			<hr size="1" width="95%" align="left"/>
-			
 			<!-- For each class create the  part -->
 			<xsl:call-template name="classes"/>
 			
