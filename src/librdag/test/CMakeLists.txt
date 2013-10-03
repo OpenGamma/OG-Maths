@@ -16,10 +16,6 @@ set(TESTS check_expressions check_containers check_execution check_rtti
 foreach(TEST ${TESTS})
   add_executable(${TEST} ${TEST}.cc)
   target_link_libraries(${TEST} rdag gtest gtest_main pthread)
-  get_target_property(TEST_LOC ${TEST} LOCATION)
-  add_test(${TEST} ${TEST_LOC} --gtest_output=gtest-output/${TEST}.xml)
-  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    add_test(${TEST}_valgrind valgrind --leak-check=full --error-exitcode=1 ${TEST_LOC})
-  endif()
+  add_gtest(${TEST})
 endforeach()
 
