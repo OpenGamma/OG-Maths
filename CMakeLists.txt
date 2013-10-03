@@ -73,7 +73,6 @@ enable_testing()
 # Gtest
 add_subdirectory(external/gtest-1.6.0)
 include_directories(${gtest_SOURCE_DIR}/include)
-include(GTestTests)
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
