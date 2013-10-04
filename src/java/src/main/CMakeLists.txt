@@ -14,7 +14,7 @@ add_jar(${JARNAME} ${JAR_SOURCES}
         ENTRY_POINT com/opengamma/longdog/nativeloader/NativeLibrariesSelfTest
         OUTPUT_DIR ${JARDIR})
 
-add_test(NativeLibrariesSelfTest ${Java_JAVA_EXECUTABLE} -jar ${JARDIR}/${JARNAME}.jar)
+add_test(${NATIVE_SELF_TEST} ${Java_JAVA_EXECUTABLE} -jar ${JARDIR}/${JARNAME}.jar)
 
 # Build source JAR
 add_custom_target(sources ALL
