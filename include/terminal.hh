@@ -75,7 +75,6 @@ class OGIntegerScalar: public OGScalar<int>
 template <typename T> class OGArray: public OGTerminal
 {
   public:
-    virtual void accept(Visitor &v) const override;
     T * getData() const;
     int getRows() const;
     int getCols() const;

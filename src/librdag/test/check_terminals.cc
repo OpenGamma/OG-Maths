@@ -67,10 +67,13 @@ class FakeVisitor: public librdag::Visitor
   void visit(OGExpr const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
-  void visit(OGArray<real16> const SUPPRESS_UNUSED *thing){
+  void visit(OGScalar<real16> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
-  void visit(OGArray<complex16> const SUPPRESS_UNUSED *thing){
+  void visit(OGScalar<complex16> const SUPPRESS_UNUSED *thing){
+    toggleHasBeenVisited();
+  };
+  void visit(OGScalar<int> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
   void visit(OGMatrix<real16> const SUPPRESS_UNUSED *thing){
@@ -79,13 +82,16 @@ class FakeVisitor: public librdag::Visitor
   void visit(OGMatrix<complex16> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
-  void visit(OGScalar<real16> const SUPPRESS_UNUSED *thing){
+  void visit(OGDiagonalMatrix<real16> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
-  void visit(OGScalar<complex16> const SUPPRESS_UNUSED *thing){
+  void visit(OGDiagonalMatrix<complex16> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
-  void visit(OGScalar<int> const SUPPRESS_UNUSED *thing){
+  void visit(OGSparseMatrix<real16> const SUPPRESS_UNUSED *thing){
+    toggleHasBeenVisited();
+  };
+  void visit(OGSparseMatrix<complex16> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
   bool hasBeenVisited(){

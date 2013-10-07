@@ -30,12 +30,17 @@ class Lineariser: public Visitor
       _execlist->push_back(tree);
     }
 
-    virtual void visit(OGArray<real16> const *thing)
+    virtual void visit(OGScalar<real16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGArray<complex16> const *thing)
+    virtual void visit(OGScalar<complex16> const *thing)
+    {
+      visit_terminal(thing);
+    }
+
+    virtual void visit(OGScalar<int> const *thing)
     {
       visit_terminal(thing);
     }
@@ -50,17 +55,22 @@ class Lineariser: public Visitor
       visit_terminal(thing);
     }
 
-    virtual void visit(OGScalar<real16> const *thing)
+    virtual void visit(OGDiagonalMatrix<real16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGScalar<complex16> const *thing)
+    virtual void visit(OGDiagonalMatrix<complex16> const *thing)
     {
       visit_terminal(thing);
     }
 
-    virtual void visit(OGScalar<int> const *thing)
+    virtual void visit(OGSparseMatrix<real16> const *thing)
+    {
+      visit_terminal(thing);
+    }
+
+    virtual void visit(OGSparseMatrix<complex16> const *thing)
     {
       visit_terminal(thing);
     }
