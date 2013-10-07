@@ -15,7 +15,7 @@ namespace librdag {
 class OGNumeric;
 
 // Internal data structure for the ExecutionList.
-typedef NonOwningPtrVector<OGNumeric> _ExpressionList;
+typedef NonOwningPtrVector<const OGNumeric*> _ExpressionList;
 
 // An ExecutionList holds a list of expression nodes that are in order such that
 // no node has inputs that are computed by a node further down the list. Thus,

@@ -16,7 +16,7 @@ using namespace librdag;
  */
 TEST(ContainerTest, OwningPtrVectorTest) {
   // Default constructor
-  OwningPtrVector<int> *pv1 = new OwningPtrVector<int>();
+  OwningPtrVector<const int*> *pv1 = new OwningPtrVector<const int*>();
   EXPECT_EQ(0, pv1->size());
 
   // Add elements
@@ -51,10 +51,10 @@ TEST(ContainerTest, OwningPtrVectorTest) {
   EXPECT_EQ(5, i);
 
   // Copy the OwningPtrVector
-  OwningPtrVector<int> *pv2 = pv1->copy();
+  OwningPtrVector<const int*> *pv2 = pv1->copy();
 
   // Test the copy is the same as the original
-  OwningPtrVector<int>::citerator it1, it2;
+  OwningPtrVector<const int*>::citerator it1, it2;
   for (it1 = pv1->begin(), it2 = pv2->begin(); it1 != pv1->end(), it2 != pv2->end(); ++it1, ++it2)
   {
     EXPECT_EQ(**it1, **it2);
