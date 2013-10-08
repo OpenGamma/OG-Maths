@@ -6,7 +6,9 @@
 
 #include <stdio.h>
 #include "entrypt.hh"
+#include "numeric.hh"
 #include "expression.hh"
+#include "terminal.hh"
 #include "exprtypeenum.h"
 #include <typeinfo>
 #include <iostream>
@@ -141,7 +143,17 @@ entrypt(const OGNumeric* expr)
    * and the terminal that was passed in (because they would be the same thing if we just returned
    * the tree as-is).
    */
-  return expr->copy()->asOGTerminal();
+  const OGTerminal* asTerminal = expr->asOGTerminal();
+  if (asTerminal)
+  {
+    // Slightly fiddly because we get an OGNumeric* back from copy.
+    return asTerminal->copy()->asOGTerminal();
+  }
+  else
+  {
+    // Expressions would have been null from the cast anyway
+    return nullptr;
+  }
 }
 
 } // namespace librdag
