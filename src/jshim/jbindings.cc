@@ -18,24 +18,24 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
 {
   if(!obj)
   {
-    throw convertException("bindPrimitiveArrayData: null obj");
+    throw convert_error("bindPrimitiveArrayData: null obj");
   }
   if(!method)
   {
-    throw convertException("bindPrimitiveArrayData: null method");
+    throw convert_error("bindPrimitiveArrayData: null method");
   }
   JNIEnv *env = NULL;
   jint jStatus = 0;
   jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
-    throw convertException("Thread attach failed");
+    throw convert_error("Thread attach failed");
   }
   jobject dataobj = NULL;
   dataobj = env->CallObjectMethod(obj, method);
   if(!dataobj)
   {
-    throw convertException("CallObjectMethod failed");
+    throw convert_error("CallObjectMethod failed");
   }
   S * array = reinterpret_cast<S *>(&dataobj);
   T * _dataptr = (T *) env->GetPrimitiveArrayCritical(*array,NULL);
@@ -59,22 +59,22 @@ template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, 
 {
   if(!nativeData)
   {
-    throw convertException("unbindPrimitiveArrayData: null nativeData");
+    throw convert_error("unbindPrimitiveArrayData: null nativeData");
   }
   if(!obj)
   {
-    throw convertException("unbindPrimitiveArrayData: null obj");
+    throw convert_error("unbindPrimitiveArrayData: null obj");
   }
   if(!method)
   {
-    throw convertException("unbindPrimitiveArrayData: null method");
+    throw convert_error("unbindPrimitiveArrayData: null method");
   }
   JNIEnv *env = NULL;
   jint jStatus = 0;
   jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
-    throw convertException("Thread attach failed");
+    throw convert_error("Thread attach failed");
   }
   jobject dataobj = env->CallObjectMethod(obj, method);
   S * array = reinterpret_cast<S *>(&dataobj);
@@ -101,7 +101,7 @@ template <typename T> void unbindOGArrayData(T * nativeData, jobject obj)
   jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
-    throw convertException("Thread attach failed");
+    throw convert_error("Thread attach failed");
   }
   jobject dataobj = env->CallObjectMethod(obj, JVMManager::getOGTerminalClazz_getData());
   jdoubleArray * array = reinterpret_cast<jdoubleArray *>(&dataobj);

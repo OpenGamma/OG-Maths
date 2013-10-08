@@ -23,7 +23,7 @@ using namespace librdag;
 template<typename T> bool ArrayEquals(T * expected, T * computed, size_t length)
 {
     if(length<0){
-      throw librdagException();
+      throw runtime_error("Negative array length specified");
     }
     for(size_t i=0; i < length; i++)
     {
@@ -45,8 +45,8 @@ template<typename T> bool ArrayEquals(T * expected, T * computed, size_t length)
  */
 template<typename T> bool ArrayOfArraysEquals(T ** expected, T ** computed, size_t rows, size_t cols)
 {
-    if(rows<0){
-      throw librdagException();
+    if(rows<0 || cols<0){
+      throw runtime_error("Negative row or column count specified");
     }
     for(size_t i=0; i < rows; i++)
     {
@@ -162,6 +162,9 @@ TEST(TerminalsTest, OGRealScalarTest) {
   ASSERT_EQ(tmp->getValue(),copy->asOGRealScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGRealScalar());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete [] expected;
   delete copy;
@@ -214,6 +217,9 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   ASSERT_EQ(tmp->getValue(),copy->asOGComplexScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGComplexScalar());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete [] expected;
   delete copy;
@@ -246,6 +252,9 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
   ASSERT_EQ(tmp->getValue(),copy->asOGIntegerScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGIntegerScalar());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete copy;
   delete tmp;
@@ -332,6 +341,9 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   ASSERT_EQ(tmp->getCols(),copy->asOGRealMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGRealMatrix());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete copy;
   delete tmp;
@@ -419,6 +431,9 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_EQ(tmp->getCols(),copy->asOGComplexMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGComplexMatrix());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete copy;
   delete tmp;
@@ -506,6 +521,9 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   ASSERT_EQ(tmp->getCols(),copy->asOGRealDiagonalMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGRealDiagonalMatrix());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete copy;
   delete tmp;
@@ -594,6 +612,9 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   ASSERT_EQ(tmp->getCols(),copy->asOGComplexDiagonalMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGComplexDiagonalMatrix());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete copy;
   delete tmp;
@@ -705,6 +726,9 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   ASSERT_TRUE(ArrayEquals(tmp->getColPtr(),copy->asOGRealSparseMatrix()->getColPtr(),6));
   ASSERT_EQ(copy,copy->asOGRealSparseMatrix());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete copy;
   delete tmp;
@@ -823,6 +847,9 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_TRUE(ArrayEquals(tmp->getColPtr(),copy->asOGComplexSparseMatrix()->getColPtr(),6));
   ASSERT_EQ(copy,copy->asOGComplexSparseMatrix());
   
+  // Check debug string
+  copy->debug_print();
+
   // clean up
   delete copy;
   delete tmp;

@@ -25,7 +25,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
   try {
     JVMManager::initialize(jvm);
   }
-  catch (convertException e)
+  catch (convert_error e)
   {
     DEBUG_PRINT("Exception in JNI_OnLoad: %s\n.", e.what());
     return JNI_ERR;
@@ -47,7 +47,7 @@ JVMManager::initialize(JavaVM *jvm)
   int ret = jvm->GetEnv((void **)&_env, JNI_VERSION_1_2);
   if (ret)
   {
-    throw convertException("Error getting JNI environment.");
+    throw convert_error("Error getting JNI environment.");
   }
 
   // Set up cached pointers
@@ -91,7 +91,7 @@ JVMManager::registerReferences()
   _OGExprTypeEnumClazz__hashdefined = _env->GetFieldID(_OGExprTypeEnumClazz, "_hashDefined", "J");
   if (_OGExprTypeEnumClazz__hashdefined == 0)
   {
-    throw convertException("ERROR: fieldID _hashDefined not found.");
+    throw convert_error("ERROR: fieldID _hashDefined not found.");
   }
 }
 
@@ -110,7 +110,7 @@ JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * method
   if (methodToSet == 0)
   {
     DEBUG_PRINT("ERROR: method %s() not found.\n",methodName);
-    throw convertException("Method not found");
+    throw convert_error("Method not found");
   }
   else
   {
@@ -129,7 +129,7 @@ JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * glob
   if(tmpClass==NULL)
   {
     DEBUG_PRINT("Cannot find class %s in JNI_OnLoad.\n", FQclassname);
-    throw convertException("Class not found.");
+    throw convert_error("Class not found.");
   }
 
   *globalRef = NULL;
@@ -137,7 +137,7 @@ JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * glob
   if(*globalRef==NULL)
   {
     DEBUG_PRINT("Cannot create Global reference for %s.\n",FQclassname);
-    throw convertException("Cannot create global reference.");
+    throw convert_error("Cannot create global reference.");
   }
 }
 
@@ -218,7 +218,7 @@ JVMManager::newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init)
   jobjectArray ret = env->NewObjectArray(len, clazz, init);
   if (!ret)
   {
-    throw convertException("NewObjectArray call failed.");
+    throw convert_error("NewObjectArray call failed.");
   }
   return ret;
 }
@@ -229,7 +229,7 @@ JVMManager::newDoubleArray(JNIEnv *env, jsize len)
   jdoubleArray ret = env->NewDoubleArray(len);
   if (!ret)
   {
-    throw convertException("NewDoubleArray call failed.");
+    throw convert_error("NewDoubleArray call failed.");
   }
   return ret;
 }
@@ -240,7 +240,7 @@ JVMManager::getEnv(void **penv)
   jint status = _jvm->AttachCurrentThread(penv, nullptr);
   if (status)
   {
-    throw convertException("Error attaching current thread.");
+    throw convert_error("Error attaching current thread.");
   }
 }
 
@@ -253,7 +253,7 @@ JVMManager::callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...)
   va_end(args);
   if (!dataobj)
   {
-    throw convertException("CallObjectMethod failed.");
+    throw convert_error("CallObjectMethod failed.");
   }
   return dataobj;
 }

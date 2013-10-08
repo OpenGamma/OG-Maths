@@ -137,14 +137,14 @@ OGNumeric* createExpression(jobject obj)
   break;
   default:
   {
-    throw convertException("Unknown node type");
+    throw convert_error("Unknown node type");
   }
   break;
   }
 
   if(_expr == nullptr)
   {
-    throw convertException("_expr is NULL, and probably hasn't been set by the factory");
+    throw convert_error("_expr is NULL, and probably hasn't been set by the factory");
   }
 
   DEBUG_PRINT("Returning from exprfactory\n");
