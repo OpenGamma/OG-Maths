@@ -58,7 +58,8 @@ const OGRealSparseMatrix *ogrealsparsematrix = new OGRealSparseMatrix(colPtr, ro
 complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };
 const OGComplexSparseMatrix *ogcomplexsparsematrix = new OGComplexSparseMatrix(colPtr, rowIdx, csparseData, 2, 2);
 
-const OGTerminal* terminals[] = { ogreal, ogcomplex };
+const OGTerminal* terminals[] = { ogreal, ogcomplex, ogrealmatrix, ogcomplexmatrix, ogrealdiagonalmatrix,
+                                  ogcomplexdiagonalmatrix, ogrealsparsematrix, ogcomplexsparsematrix };
 INSTANTIATE_TEST_CASE_P(ValueParam, ExecutionOneNodeTest, ::testing::ValuesIn(terminals));
 
 TEST(LinearisationTest, UnaryTreeLinearisation)
