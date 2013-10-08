@@ -24,11 +24,11 @@ class JOGRealScalar: public OGRealScalar
 {
   public:
     using OGRealScalar::OGRealScalar;
-    JOGRealScalar(jobject * obj);
+    JOGRealScalar(jobject obj);
     virtual ~JOGRealScalar() override;
     virtual void debug_print() const override;
   private:
-    jobject * _backingObject = nullptr;
+    jobject _backingObject = nullptr;
     real16 * _dataRef = nullptr;
 };
 
@@ -42,11 +42,11 @@ class JOGComplexScalar: public OGComplexScalar
 {
   public:
     using OGComplexScalar::OGComplexScalar;
-    JOGComplexScalar(jobject * obj);
+    JOGComplexScalar(jobject obj);
     virtual ~JOGComplexScalar() override;
     virtual void debug_print() const override;
   private:
-    jobject * _backingObject = nullptr;
+    jobject _backingObject = nullptr;
     complex16 * _dataRef = nullptr;
 };
 
@@ -57,11 +57,11 @@ class JOGRealMatrix: public OGRealMatrix
 {
   public:
     using OGRealMatrix::OGRealMatrix;
-    JOGRealMatrix(jobject * obj);
+    JOGRealMatrix(jobject obj);
     virtual ~JOGRealMatrix() override;
     virtual void debug_print() const override;
   private:
-    jobject * _backingObject = nullptr;
+    jobject _backingObject = nullptr;
 };
 
 /*
@@ -70,11 +70,11 @@ class JOGRealMatrix: public OGRealMatrix
 class JOGComplexMatrix: public OGComplexMatrix
 {
   public:
-    JOGComplexMatrix(jobject * obj);
+    JOGComplexMatrix(jobject obj);
     virtual ~JOGComplexMatrix() override;
     virtual void debug_print() const override;
   private:
-    jobject * _backingObject = nullptr;
+    jobject _backingObject = nullptr;
 };
 
 /*
@@ -83,13 +83,13 @@ class JOGComplexMatrix: public OGComplexMatrix
 class JOGRealSparseMatrix: public OGRealSparseMatrix
 {
   public:
-    JOGRealSparseMatrix(jobject * obj);
+    JOGRealSparseMatrix(jobject obj);
     virtual ~JOGRealSparseMatrix() override;
     virtual void debug_print() const override;
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
   private:
-    jobject * _backingObject = nullptr;
+    jobject _backingObject = nullptr;
 };
 
 /*
@@ -98,13 +98,13 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
 class JOGComplexSparseMatrix: public OGComplexSparseMatrix
 {
   public:
-    JOGComplexSparseMatrix(jobject * obj);
+    JOGComplexSparseMatrix(jobject obj);
     virtual ~JOGComplexSparseMatrix() override;
     virtual void debug_print() const override;
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
   private:
-    jobject * _backingObject = nullptr;
+    jobject _backingObject = nullptr;
 };
 
 /*
@@ -113,11 +113,11 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
 class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 {
   public:
-    JOGRealDiagonalMatrix(jobject * obj);
+    JOGRealDiagonalMatrix(jobject obj);
     virtual ~JOGRealDiagonalMatrix() override;
     virtual void debug_print() const override;
   private:
-    jobject * _backingObject = nullptr;
+    jobject _backingObject = nullptr;
 };
 
 /*
@@ -126,11 +126,11 @@ class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 class JOGComplexDiagonalMatrix: public OGComplexDiagonalMatrix
 {
   public:
-    JOGComplexDiagonalMatrix(jobject * obj);
+    JOGComplexDiagonalMatrix(jobject obj);
     virtual ~JOGComplexDiagonalMatrix() override;
     virtual void debug_print() const override;
   private:
-    jobject * _backingObject = nullptr;
+    jobject _backingObject = nullptr;
 };
 
 } // namespace convert

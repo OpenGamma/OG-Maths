@@ -107,6 +107,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Material
 
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
+  delete chain;
   convert::OGTerminalPtrContainer_t<real16>* res = convert::dispatchToReal16ArrayOfArrays(answer);
   jobjectArray returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, res->data, res->rows, res->cols);
 
@@ -131,6 +132,7 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
 
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
+  delete chain;
   convert::OGTerminalPtrContainer_t<complex16>* res = convert::dispatchToComplex16ArrayOfArrays(answer);
 
   jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, res->data, res->rows, res->cols);
