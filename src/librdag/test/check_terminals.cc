@@ -529,6 +529,10 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   
   // Check debug string
   copy->debug_print();
+  // Check debug string for matrix with more rows than cols (swapped rows/cols)
+  OGRealDiagonalMatrix* tmp2 = new OGRealDiagonalMatrix(data,cols,rows);
+  tmp2->debug_print();
+  delete tmp2;
 
   // clean up
   delete copy;
@@ -620,6 +624,10 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   
   // Check debug string
   copy->debug_print();
+  // Check debug string for matrix with more rows than cols (swapped rows/cols)
+  OGComplexDiagonalMatrix* tmp2 = new OGComplexDiagonalMatrix(data,cols,rows);
+  tmp2->debug_print();
+  delete tmp2;
 
   // clean up
   delete copy;
