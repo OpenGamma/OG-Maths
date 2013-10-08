@@ -22,7 +22,7 @@ OGExpr::OGExpr(ArgContainer *args)
 {
   if (args == nullptr)
   {
-    throw new librdagException();
+    throw rdag_error("Null args passed to Expr constructor");
   }
   this->_args = args;
 }
@@ -45,12 +45,6 @@ OGExpr::getNArgs() const
 }
 
 void
-OGExpr::debug_print() const
-{
-	cout << "OGExpr base class" << endl;
-}
-
-void
 OGExpr::accept(Visitor &v) const
 {
   v.visit(this);
@@ -64,7 +58,7 @@ OGUnaryExpr::OGUnaryExpr(ArgContainer* args): OGExpr(args)
 {
   if (args->size() != 1)
   {
-    throw new librdagException();
+    throw rdag_error("ArgContainer passed to UnaryExpr does not have exactly one argument");
   }
 }
 
@@ -72,7 +66,7 @@ OGBinaryExpr::OGBinaryExpr(ArgContainer* args): OGExpr(args)
 {
   if (args->size() != 2)
   {
-    throw new librdagException();
+    throw rdag_error("ArgContainer passed to BinaryExpr does not have exactly two arguments");
   }
 }
 
@@ -162,7 +156,7 @@ SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {
   const OGIntegerScalar* i = (*args)[1]->asOGIntegerScalar();
   if (i == nullptr)
   {
-    throw new librdagException();
+    throw rdag_error("Second argument of SelectResult is not an integer");
   }
 }
 

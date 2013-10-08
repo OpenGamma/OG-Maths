@@ -1,0 +1,5 @@
+text=auto
+# Whitespace configuration:
+* whitespace=space-before-tab,tab-in-indent,trailing-space,tabwidth=2
+# Ignore bonkers whitespace in xsl sheet
+external/ant/junit-noframes.xsl whitespace=-trailing-space,-space-before-tab

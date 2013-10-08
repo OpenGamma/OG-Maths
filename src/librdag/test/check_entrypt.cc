@@ -4,13 +4,20 @@
  * Please see distribution for license.
  */
 
+#include "gtest/gtest.h"
 #include "entrypt.hh"
 #include "expression.hh"
+#include "terminal.hh"
 
 using namespace std;
 using namespace librdag;
 
-int main(void ) {
-  OGExpr *plus = new PLUS(new OGRealScalar(2), new OGRealScalar(3));
-  entrypt((struct c_OGNumeric*) plus);
+TEST(EntryptTest, ResultNotNull) {
+  ArgContainer *args = new ArgContainer();
+  args->push_back(new OGRealScalar(2));
+  args->push_back(new OGRealScalar(3));
+  OGExpr *plus = new PLUS(args);
+  entrypt(plus);
+  EXPECT_TRUE(true);
+  delete plus;
 }

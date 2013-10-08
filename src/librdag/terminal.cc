@@ -18,13 +18,13 @@ namespace librdag {
 real16**
 OGTerminal::toReal16ArrayOfArrays() const
 {
-  throw librdagException();
+  throw rdag_error("OGTerminal::toReal16ArrayOfArrays() called but not implemented");
 }
 
 complex16**
 OGTerminal::toComplex16ArrayOfArrays() const
 {
-  throw librdagException();
+  throw rdag_error("OGTerminal::toComplex16ArrayOfArrays() called but not implemented");
 }
 
 const OGTerminal*
@@ -207,7 +207,7 @@ OGArray<T>::setRows(int rows)
 {
   if(rows<0)
   {
-    throw librdagException();
+    throw rdag_error("Attempt to set rows to a negative value");
   }  
   _rows = rows;
 }
@@ -218,7 +218,7 @@ OGArray<T>::setCols(int cols)
 {
   if(cols<0)
   {
-    throw librdagException();
+    throw rdag_error("Attempt to set cols to a negative value");
   }
   _cols = cols;
 }
@@ -229,7 +229,7 @@ OGArray<T>::setDatalen(int datalen)
 {
   if(datalen<0)
   {
-    throw librdagException();
+    throw rdag_error("Attempt to set dalaten to a negative value");
   }
   _datalen = datalen;
 }
@@ -254,7 +254,7 @@ OGMatrix<T>::OGMatrix(T* data, int rows, int cols)
 {
   if (data == nullptr)
   {
-    throw librdagException();
+    throw rdag_error("Null data pointer passed to Matrix constructor");
   }
   this->setData(data);
   this->setRows(rows);
@@ -384,7 +384,7 @@ OGDiagonalMatrix<T>::OGDiagonalMatrix(T* data, int rows, int cols)
 {
   if (data == nullptr)
   {
-    throw librdagException();
+    throw rdag_error("Null data passed to DiagonalMatrix constructor");
   }
   this->setData(data);
   this->setRows(rows);
@@ -542,7 +542,7 @@ OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows,
 {
   if (data == nullptr)
   {
-    throw librdagException();
+    throw rdag_error("Null data passed to SparseMatrix constructor");
   }
   this->setData(data);
   this->setRows(rows);
@@ -579,7 +579,7 @@ OGSparseMatrix<T>::setColPtr(int* colPtr)
 {
   if(colPtr==nullptr)
   {
-    throw librdagException();
+    throw rdag_error("Attempt to set colPtr to null");
   }
   _colPtr = colPtr;
 }
@@ -590,7 +590,7 @@ OGSparseMatrix<T>::setRowIdx(int* rowIdx)
 {
   if(rowIdx==nullptr)
   {
-    throw librdagException();
+    throw rdag_error("Attempt to set rowIdx to null");
   }  
   _rowIdx = rowIdx;
 }

@@ -11,114 +11,120 @@
 using namespace std;
 using namespace librdag;
 
-TEST(OGExprTest, ScalarValues) {
-	// Constructor
-  OGRealScalar *real = new OGRealScalar(1.0);
-  ASSERT_EQ(1.0, real->getValue());
+/**
+ * BinaryExpr tests
+ */
 
-  // Cleanup
-  delete real;
-}
+template<typename T>
+class BinaryExprTest: public ::testing::Test {};
+TYPED_TEST_CASE_P(BinaryExprTest);
 
-TEST(OGExprTest, ComplexValues) {
-	// Constructor
-  OGComplexScalar *complx = new OGComplexScalar(complex16(1.0,2.0));
-  ASSERT_EQ(complex16(1.0,2.0), complx->getValue());
-
-  // Cleanup
-  delete complx;
-}
-
-TEST(OGExprTest, COPY){
+TYPED_TEST_P(BinaryExprTest, Functionality){
   // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  newArgs->push_back(newReal);
-  OGExpr *copyWithArgs = new COPY(newArgs);
-  ASSERT_EQ(1, copyWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
+  ArgContainer* args = new ArgContainer();
+  OGRealScalar* real = new OGRealScalar(3.14);
+  OGComplexScalar *complx = new OGComplexScalar(complex16(2.7182, 2.7182));
+  args->push_back(real);
+  args->push_back(complx);
+  TypeParam *expr = new TypeParam(args);
+  ASSERT_EQ(2, expr->getNArgs());
+  const ArgContainer* gotArgs = expr->getArgs();
+  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+  EXPECT_EQ(complx, ((*gotArgs)[1])->asOGComplexScalar());
+
+  // Debug string
+  expr->debug_print();
+
+  // Constructor with null args
+  EXPECT_THROW(new TypeParam(nullptr), rdag_error);
 
   // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
+  ArgContainer* wrongArgs = new ArgContainer();
+  wrongArgs->push_back(real->copy());
+  EXPECT_THROW(new TypeParam(wrongArgs), rdag_error);
 
   // Cleanup
-  delete copyWithArgs;
+  delete expr;
 }
 
-TEST(OGExprTest, PLUS){
-  // FIXME: It looks like there is a bug in this test (and probably
-  // similar ones) - checking arguments looks like the args that
-  // belong to the node are not actually being checked.
+REGISTER_TYPED_TEST_CASE_P(BinaryExprTest, Functionality);
+typedef ::testing::Types<PLUS> BinaryExprTypes;
+INSTANTIATE_TYPED_TEST_CASE_P(Binary, BinaryExprTest, BinaryExprTypes);
+
+/**
+ * UnaryExpr tests
+ */
+
+template<typename T>
+class UnaryExprTest: public ::testing::Test {};
+TYPED_TEST_CASE_P(UnaryExprTest);
+
+TYPED_TEST_P(UnaryExprTest, Functionality){
   // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  OGComplexScalar *newComplx = new OGComplexScalar(complex16(2.7182, 2.7182));
-  newArgs->push_back(newReal);
-  newArgs->push_back(newComplx);
-  OGExpr *plusWithArgs = new PLUS(newArgs);
-  ASSERT_EQ(2, plusWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-  EXPECT_EQ(newComplx, ((*newArgs)[1])->asOGComplexScalar());
+  ArgContainer* args = new ArgContainer();
+  OGRealScalar *real = new OGRealScalar(3.14);
+  args->push_back(real);
+  TypeParam *expr = new TypeParam(args);
+  ASSERT_EQ(1, expr->getNArgs());
+  const ArgContainer* gotArgs = expr->getArgs();
+  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+
+  // Debug string
+  expr->debug_print();
+
+  // Constructor with null args
+  EXPECT_THROW(new TypeParam(nullptr), rdag_error);
 
   // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
+  ArgContainer* wrongArgs = new ArgContainer();
+  wrongArgs->push_back(real->copy());
+  wrongArgs->push_back(real->copy());
+  EXPECT_THROW(new TypeParam(wrongArgs), rdag_error);
 
   // Cleanup
-  delete plusWithArgs;
+  delete expr;
 }
 
-TEST(OGExprTest, NEGATE){
-  // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  newArgs->push_back(newReal);
-  OGExpr *negateWithArgs = new NEGATE(newArgs);
-  ASSERT_EQ(1, negateWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
+REGISTER_TYPED_TEST_CASE_P(UnaryExprTest, Functionality);
+typedef ::testing::Types<NEGATE, SVD, COPY> UnaryExprTypes;
+INSTANTIATE_TYPED_TEST_CASE_P(Unary, UnaryExprTest, UnaryExprTypes);
 
-  // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
-
-  // Cleanup
-  delete negateWithArgs;
-}
-
-TEST(OGExprTest, SVD){
-  // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  newArgs->push_back(newReal);
-  OGExpr *svdWithArgs = new SVD(newArgs);
-  ASSERT_EQ(1, svdWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-
-  // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
-
-  // Cleanup
-  delete svdWithArgs;
-}
+/**
+ * Tests for nodes with more specialised requirements
+ */
 
 TEST(OGExprTest, SELECTRESULT){
   // Constructor
-  ArgContainer* newArgs = new ArgContainer();
-  OGRealScalar *newReal = new OGRealScalar(3.14);
-  OGIntegerScalar *newIndex = new OGIntegerScalar(2);
-  newArgs->push_back(newReal);
-  newArgs->push_back(newIndex);
-  OGExpr *selectWithArgs = new SELECTRESULT(newArgs);
-  ASSERT_EQ(2, selectWithArgs->getNArgs());
-  EXPECT_EQ(newReal, ((*newArgs)[0])->asOGRealScalar());
-  EXPECT_EQ(newIndex, ((*newArgs)[1])->asOGIntegerScalar());
+  ArgContainer* args = new ArgContainer();
+  OGRealScalar *real = new OGRealScalar(3.14);
+  OGIntegerScalar *index = new OGIntegerScalar(2);
+  args->push_back(real);
+  args->push_back(index);
+  OGExpr *selectresult = new SELECTRESULT(args);
+  ASSERT_EQ(2, selectresult->getNArgs());
+  const ArgContainer* gotArgs = selectresult->getArgs();
+  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+  EXPECT_EQ(index, ((*gotArgs)[1])->asOGIntegerScalar());
+
+  // Debug string
+  selectresult->debug_print();
+
+  // Constructor with null args
+  EXPECT_THROW(new SELECTRESULT(nullptr), rdag_error);
 
   // Constructor with args of wrong length
-  // FIXME: Needs implementing once this throws an exception.
+  ArgContainer* wrongArgs = new ArgContainer();
+  wrongArgs->push_back(real->copy());
+  EXPECT_THROW(new SELECTRESULT(wrongArgs), rdag_error);
 
-  // Constructor with index argument of wrong type
-  // FIXME: Needs implementing once this throws an exception.
+  // Constructor where second argument is not an integer type
+  ArgContainer* wrongTypeArgs = new ArgContainer();
+  wrongTypeArgs->push_back(real->copy());
+  wrongTypeArgs->push_back(real->copy());
+  EXPECT_THROW(new SELECTRESULT(wrongTypeArgs), rdag_error);
 
   // Cleanup
-  delete selectWithArgs;
+  delete selectresult;
 }
 
 TEST(VirtualCopyTest, RealScalar){

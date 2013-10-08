@@ -42,7 +42,6 @@ class OGExpr: public OGNumeric
     virtual ~OGExpr();
     const ArgContainer* getArgs() const;
     size_t getNArgs() const;
-    virtual void debug_print() const override;
     virtual void accept(Visitor &v) const override;
   protected:
     OGExpr(ArgContainer* args);
