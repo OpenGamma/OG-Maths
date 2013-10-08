@@ -20,13 +20,13 @@ using namespace librdag;
  * @param obj a Java OGNumeric type
  * @return a pointer to an ArgContainer representing the parameters
  */
-ArgContainer* generateArgs(jobject *obj)
+ArgContainer* generateArgs(jobject obj)
 {
   // get object array
   jmethodID method = JVMManager::getOGExprClazz_getExprs();
   JNIEnv *env = nullptr;
   JVMManager::getEnv((void **)&env);
-  jobject dataobj = JVMManager::callObjectMethod(env, *obj, method);
+  jobject dataobj = JVMManager::callObjectMethod(env, obj, method);
   jobjectArray * args = reinterpret_cast<jobjectArray *>(&dataobj);
   jsize len = env->GetArrayLength((jarray)*args);
   DEBUG_PRINT("JOGExpr arg size is %d\n",(int)len);
@@ -60,79 +60,79 @@ OGNumeric* createExpression(jobject obj)
   case OGREALSCALAR_ENUM:
   {
     DEBUG_PRINT("Binding a JOGRealScalar\n");
-    _expr = new JOGRealScalar(&obj);
+    _expr = new JOGRealScalar(obj);
   }
   break;
   case OGCOMPLEXSCALAR_ENUM:
   {
     DEBUG_PRINT("Binding a JOGComplexScalar\n");
-    _expr = new JOGComplexScalar(&obj);
+    _expr = new JOGComplexScalar(obj);
   }
   break;
   case OGREALMATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGRealMatrix\n");
-    _expr = new JOGRealMatrix(&obj);
+    _expr = new JOGRealMatrix(obj);
   }
   break;
   case OGCOMPLEXMATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGComplexMatrix\n");
-    _expr = new JOGComplexMatrix(&obj);
+    _expr = new JOGComplexMatrix(obj);
   }
   break;
   case OGREALSPARSEMATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGRealSparseMatrix\n");
-    _expr = new JOGRealSparseMatrix(&obj);
+    _expr = new JOGRealSparseMatrix(obj);
   }
   break;
   case OGCOMPLEXSPARSEMATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGComplexSparseMatrix\n");
-    _expr = new JOGComplexSparseMatrix(&obj);
+    _expr = new JOGComplexSparseMatrix(obj);
   }
   break;
   case OGREALDIAGONALMATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGRealDiagonalMatrix\n");
-    _expr = new JOGRealDiagonalMatrix(&obj);
+    _expr = new JOGRealDiagonalMatrix(obj);
   }
   break;
   case OGCOMPLEXDIAGONALMATRIX_ENUM:
   {
     DEBUG_PRINT("Binding a JOGComplexDiagonalMatrix\n");
-    _expr = new JOGComplexDiagonalMatrix(&obj);
+    _expr = new JOGComplexDiagonalMatrix(obj);
   }
   break;
   case COPY_ENUM:
   {
     DEBUG_PRINT("COPY function\n");
-    _expr = new COPY(generateArgs(&obj));
+    _expr = new COPY(generateArgs(obj));
   }
   break;
   case NEGATE_ENUM:
   {
     DEBUG_PRINT("NEGATE function\n");
-    _expr = new NEGATE(generateArgs(&obj));
+    _expr = new NEGATE(generateArgs(obj));
   }
   break;
   case PLUS_ENUM:
   {
     DEBUG_PRINT("PLUS function\n");
-    _expr = new PLUS(generateArgs(&obj));
+    _expr = new PLUS(generateArgs(obj));
   }
   break;
   case SVD_ENUM:
   {
     DEBUG_PRINT("SVD function\n");
-    _expr = new SVD(generateArgs(&obj));
+    _expr = new SVD(generateArgs(obj));
   }
   break;
   case SELECTRESULT_ENUM:
   {
     DEBUG_PRINT("Select Result function\n");
-    _expr = new SELECTRESULT(generateArgs(&obj));
+    _expr = new SELECTRESULT(generateArgs(obj));
   }
   break;
   default:

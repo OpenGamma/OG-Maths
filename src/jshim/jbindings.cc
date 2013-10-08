@@ -4,6 +4,7 @@
  * Please see distribution for license.
  */
 
+#include "debug.h"
 #include "jbindings.hh"
 #include "jvmmanager.hh"
 #include "exceptions.hh"
@@ -24,6 +25,7 @@ template <typename T, typename S> T * bindPrimitiveArrayData(jobject obj, jmetho
   {
     throw convert_error("bindPrimitiveArrayData: null method");
   }
+  VAL64BIT_PRINT("Binding for jobject", obj);
   JNIEnv *env = NULL;
   jint jStatus = 0;
   jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
@@ -69,6 +71,7 @@ template <typename T, typename S> void unbindPrimitiveArrayData(T * nativeData, 
   {
     throw convert_error("unbindPrimitiveArrayData: null method");
   }
+  VAL64BIT_PRINT("Unbinding for jobject", obj);
   JNIEnv *env = NULL;
   jint jStatus = 0;
   jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
@@ -98,6 +101,7 @@ template <typename T> void unbindOGArrayData(T * nativeData, jobject obj)
 {
   JNIEnv *env = NULL;
   jint jStatus = 0;
+  VAL64BIT_PRINT("Unbinding for OGArrayData", obj);
   jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
   if(jStatus)
   {
