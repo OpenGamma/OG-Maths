@@ -68,6 +68,8 @@ set(CMAKE_JAVA_INCLUDE_PATH $ENV{CLASSPATH})
 # Place executables and libraries in bin on Windows so that its linker can find them.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${longdog_BINARY_DIR}/bin)
 
+enable_testing()
+
 # Gtest
 add_subdirectory(external/gtest-1.6.0)
 include_directories(${gtest_SOURCE_DIR}/include)
@@ -85,7 +87,42 @@ if(DOXYGEN_FOUND)
   )
 endif(DOXYGEN_FOUND)
 
-enable_testing()
+# Set the name of the java tests so we can exclude then from C++ coverage
+set(TESTNG_TEST TestNG)
+set(NATIVE_SELF_TEST NativeLibrariesSelfTest)
+set(JAVA_TESTS_REGEX "\"(${TESTNG_TEST})|(${NATIVE_SELF_TEST})\"")
+
+# Coverage - must build underneath the source dir for this to work.
+# This should be run before make test to avoid gathering coverage info
+# for code that was run as a result of calling it through the Java interface.
+if (CMAKE_BUILD_TYPE MATCHES "Debug" AND NOT WIN32)
+  set(CMAKE_C_FLAGS_DEBUG "--coverage ${CMAKE_C_FLAGS_DEBUG}")
+  set(CMAKE_CXX_FLAGS_DEBUG "--coverage ${CMAKE_CXX_FLAGS_DEBUG}")
+  add_custom_target(gencovinfo
+                    COMMAND ${CMAKE_CTEST_COMMAND} --force-new-ctest-process -E ${JAVA_TESTS_REGEX}
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                    COMMENT "Running tests to gather C++ coverage information")
+  add_custom_target(coverageinfo
+                    COMMAND lcov --capture -i -d . --output-file ${CMAKE_BINARY_DIR}/coverage-initial.info --no-external
+                    COMMAND lcov --capture -d . --output-file ${CMAKE_BINARY_DIR}/coverage-run.info --no-external
+                    COMMAND lcov -a ${CMAKE_BINARY_DIR}/coverage-initial.info -a ${CMAKE_BINARY_DIR}/coverage-run.info --output-file ${CMAKE_BINARY_DIR}/coverage.info --no-external
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                    DEPENDS gencovinfo
+                    COMMENT "Capturing coverage info")
+
+  add_custom_target(coverageextract
+                     DEPENDS coverageinfo
+                     COMMAND lcov -o coverage-extract.info --extract coverage.info "\"${CMAKE_SOURCE_DIR}/include/*\"" "\"${CMAKE_SOURCE_DIR}/src/*\""
+                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                     COMMENT "Removing external from coverage info")
+
+  add_custom_target(coverage
+                    COMMAND genhtml -o lcov.out coverage-extract.info
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                    DEPENDS coverageextract
+                    COMMENT "Generating coverage report")
+endif()
+
 
 add_subdirectory(src)
 
@@ -94,12 +131,12 @@ set(LONGDOGJAR ${JARDIR}/${LONGDOG}.jar)
 set(LONGDOGTESTJAR ${JARDIR}/${LONGDOG}-tests.jar)
 
 if (WIN32)
-  add_test(Test ${Java_JAVA_EXECUTABLE} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
   string(REPLACE ";" "\\;" CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH};${LONGDOGJAR};${LONGDOGTESTJAR}")
-  set_tests_properties(Test PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
+  set_tests_properties(${TESTNG_TEST} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
 else()
   set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR})
-  add_test(Test ${Java_JAVA_EXECUTABLE} -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
 endif()
 
 
@@ -124,4 +161,3 @@ message("
   Jar Tool...................: " ${Java_JAR_EXECUTABLE} "
   Python executable..........: " ${PYTHON_EXECUTABLE} "
   ")
-
