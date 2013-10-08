@@ -160,13 +160,6 @@ OGIntegerScalar::debug_print() const
  */
 
 template<typename T>
-void
-OGArray<T>::accept(Visitor &v) const
-{
-  v.visit(this);
-}
-
-template<typename T>
 T*
 OGArray<T>::getData() const
 {

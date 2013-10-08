@@ -13,7 +13,7 @@ namespace librdag {
 class Lineariser: public Visitor
 {
   public:
-    _ExpressionList* linearise(OGNumeric* tree)
+    _ExpressionList* linearise(const OGNumeric* tree)
     {
       _execlist = new _ExpressionList();
       tree->accept(*this);
@@ -28,26 +28,6 @@ class Lineariser: public Visitor
         (*it)->accept(*this);
       }
       _execlist->push_back(tree);
-    }
-
-    virtual void visit(OGArray<real16> const *thing)
-    {
-      visit_terminal(thing);
-    }
-
-    virtual void visit(OGArray<complex16> const *thing)
-    {
-      visit_terminal(thing);
-    }
-
-    virtual void visit(OGMatrix<real16> const *thing)
-    {
-      visit_terminal(thing);
-    }
-
-    virtual void visit(OGMatrix<complex16> const *thing)
-    {
-      visit_terminal(thing);
     }
 
     virtual void visit(OGScalar<real16> const *thing)
@@ -65,6 +45,36 @@ class Lineariser: public Visitor
       visit_terminal(thing);
     }
 
+    virtual void visit(OGMatrix<real16> const *thing)
+    {
+      visit_terminal(thing);
+    }
+
+    virtual void visit(OGMatrix<complex16> const *thing)
+    {
+      visit_terminal(thing);
+    }
+
+    virtual void visit(OGDiagonalMatrix<real16> const *thing)
+    {
+      visit_terminal(thing);
+    }
+
+    virtual void visit(OGDiagonalMatrix<complex16> const *thing)
+    {
+      visit_terminal(thing);
+    }
+
+    virtual void visit(OGSparseMatrix<real16> const *thing)
+    {
+      visit_terminal(thing);
+    }
+
+    virtual void visit(OGSparseMatrix<complex16> const *thing)
+    {
+      visit_terminal(thing);
+    }
+
   private:
     void visit_terminal(OGTerminal const *tree)
     {
@@ -73,7 +83,7 @@ class Lineariser: public Visitor
     _ExpressionList* _execlist;
 };
 
-ExecutionList::ExecutionList(OGNumeric* tree)
+ExecutionList::ExecutionList(const OGNumeric* tree)
 {
   _execList = Lineariser().linearise(tree);
 }
