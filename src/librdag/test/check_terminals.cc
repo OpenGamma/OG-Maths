@@ -860,3 +860,27 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   delete copy;
   delete tmp;
 }
+
+/**
+ * Check OGArray methods not tested otherwise
+ */
+
+/* Subclass of OGArray that will allow us to get at the setDatalen method with
+ * invalid data.
+ */
+class OGNaughtyArray: public OGArray<real16>
+{
+public:
+    OGNaughtyArray(int datalen)
+    {
+      setDatalen(datalen);
+    }
+    virtual void debug_print() const override {}
+    virtual void accept(Visitor SUPPRESS_UNUSED &v) const override {}
+    virtual OGNumeric* copy() const override { return nullptr; }
+};
+
+TEST(OGArrayTest, NegativeDatalen)
+{
+  EXPECT_ANY_THROW(OGNaughtyArray(-1));
+}
