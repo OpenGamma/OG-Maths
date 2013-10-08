@@ -125,6 +125,7 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" AND NOT WIN32)
 endif()
 
 
+
 add_subdirectory(src)
 
 add_gtest_report()
@@ -139,7 +140,20 @@ if (WIN32)
   set_tests_properties(${TESTNG_TEST} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
 else()
   set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR})
-  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  set(JAVA_TESTNG_ARGS -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} ${JAVA_TESTNG_ARGS})
+  set(JACOCOJAR $ENV{JACOCOJAR})
+  add_custom_target(jacocorun
+                    COMMAND ${Java_JAVA_EXECUTABLE} -javaagent:${JACOCOJAR} ${JAVA_TESTNG_ARGS}
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                    COMMENT "Gathering Java test coverage information")
+  add_custom_target(jacoco
+                    COMMAND ${Java_JAVA_EXECUTABLE} com.opengamma.jacocoreporter.ReportGenerator jacoco.exec
+                            ${JARDIR}/CMakeFiles/${LONGDOG}.dir ${CMAKE_SOURCE_DIR}/src/java/src/main/java
+                            coveragereport
+                    DEPENDS jacocorun
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                    COMMENT "Generating Java test coverage report")
 endif()
 
 
