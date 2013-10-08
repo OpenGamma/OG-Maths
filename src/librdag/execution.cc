@@ -13,7 +13,7 @@ namespace librdag {
 class Lineariser: public Visitor
 {
   public:
-    _ExpressionList* linearise(OGNumeric* tree)
+    _ExpressionList* linearise(const OGNumeric* tree)
     {
       _execlist = new _ExpressionList();
       tree->accept(*this);
@@ -83,7 +83,7 @@ class Lineariser: public Visitor
     _ExpressionList* _execlist;
 };
 
-ExecutionList::ExecutionList(OGNumeric* tree)
+ExecutionList::ExecutionList(const OGNumeric* tree)
 {
   _execList = Lineariser().linearise(tree);
 }

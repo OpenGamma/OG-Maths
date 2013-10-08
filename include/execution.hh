@@ -23,7 +23,7 @@ typedef NonOwningPtrVector<const OGNumeric*> _ExpressionList;
 class ExecutionList
 {
   public:
-    ExecutionList(OGNumeric *tree);
+    ExecutionList(const OGNumeric *tree);
     ~ExecutionList();
     typedef typename _ExpressionList::citerator citerator;
     size_t size();
