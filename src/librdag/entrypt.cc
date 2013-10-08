@@ -6,7 +6,9 @@
 
 #include <stdio.h>
 #include "entrypt.hh"
+#include "numeric.hh"
 #include "expression.hh"
+#include "terminal.hh"
 #include "exprtypeenum.h"
 #include <typeinfo>
 #include <iostream>
@@ -58,22 +60,6 @@ class PrintTreeVisitor: public librdag::Visitor
         _walker->talkandwalk(*(it));
       }
     };
-    void visit(librdag::OGArray<real16> const *thing) override
-    {
-      cout << "Have OGArray<real16> " << thing << endl;
-    }
-    void visit(librdag::OGMatrix<real16> const *thing) override
-    {
-      cout << "Have OGMatrix<real16> " << thing << endl;
-    }
-    void visit(librdag::OGMatrix<complex16> const *thing) override
-    {
-      cout << "Have OGMatrix<complex16> " << thing << endl;
-    }    
-    void visit(librdag::OGArray<complex16> const *thing) override
-    {
-      cout << "Have OGArray<complex16> " << thing << endl;
-    }
     void visit(librdag::OGScalar<real16> const *thing) override
     {
       cout << "Have OGScalar<real16> " << thing << endl;
@@ -85,6 +71,30 @@ class PrintTreeVisitor: public librdag::Visitor
     void visit(librdag::OGScalar<int> const *thing) override
     {
       cout << "Have OGScalar<int> " << thing << endl;
+    }
+    void visit(librdag::OGMatrix<real16> const *thing) override
+    {
+      cout << "Have OGMatrix<real16> " << thing << endl;
+    }
+    void visit(librdag::OGMatrix<complex16> const *thing) override
+    {
+      cout << "Have OGMatrix<complex16> " << thing << endl;
+    }
+    void visit(librdag::OGDiagonalMatrix<real16> const *thing) override
+    {
+      cout << "Have OGDiagonalMatrix<real16> " << thing << endl;
+    }
+    void visit(librdag::OGDiagonalMatrix<complex16> const *thing) override
+    {
+      cout << "Have OGDiagonalMatrix<complex16> " << thing << endl;
+    }
+    void visit(librdag::OGSparseMatrix<real16> const *thing) override
+    {
+      cout << "Have OGSparseMatrix<real16> " << thing << endl;
+    }
+    void visit(librdag::OGSparseMatrix<complex16> const *thing) override
+    {
+      cout << "Have OGSparseMatrix<complex16> " << thing << endl;
     }
 };
 
@@ -120,14 +130,30 @@ void Walker::talkandwalk(librdag::OGNumeric const * numeric_expr_types)
 }
 
 const OGTerminal*
-entrypt(OGNumeric* expr)
+entrypt(const OGNumeric* expr)
 {
   printf("Accessing DAG walker.\n");
   Walker * walker = new Walker();
   walker->walk((librdag::OGNumeric *) expr);
   delete walker;
   printf("Returning from DAG walker.\n");
-  return expr->asOGTerminal();
+  /* Return a copy of the node that was passed. The reason for doing this is that we eventually
+   * expect entrypt to return the register for the result. For now, returning a copy of the tree
+   * means that if a terminal is passed in, we don't get a surprise when we delete both the result
+   * and the terminal that was passed in (because they would be the same thing if we just returned
+   * the tree as-is).
+   */
+  const OGTerminal* asTerminal = expr->asOGTerminal();
+  if (asTerminal)
+  {
+    // Slightly fiddly because we get an OGNumeric* back from copy.
+    return asTerminal->copy()->asOGTerminal();
+  }
+  else
+  {
+    // Expressions would have been null from the cast anyway
+    return nullptr;
+  }
 }
 
 } // namespace librdag

@@ -7,29 +7,34 @@
 #include "execution.hh"
 #include "expression.hh"
 #include "terminal.hh"
+#include "test/terminals.hh"
 #include "gtest/gtest.h"
 
 using namespace std;
 using namespace librdag;
 
-TEST(LinearisationTest, OneNodeLinearisation)
+class ExecutionOneNodeTest: public ::testing::TestWithParam<const OGTerminal*> {};
+
+TEST_P(ExecutionOneNodeTest, TerminalTypes)
 {
   // Test "base case" - one node
-  OGNumeric* real = new OGRealScalar(1.0);
-  ExecutionList* el1 = new ExecutionList(real);
+  const OGTerminal* node = GetParam();
+  ExecutionList* el1 = new ExecutionList(node);
   // Check size
   EXPECT_EQ(1, el1->size());
   // Check iteration
   auto it = el1->begin();
-  EXPECT_EQ(real, *it);
+  EXPECT_EQ(node, *it);
   ++it;
   EXPECT_EQ(it, el1->end());
   // Check subscripting
-  EXPECT_EQ(real, (*el1)[0]);
+  EXPECT_EQ(node, (*el1)[0]);
   // Should free all memory
   delete el1;
-  delete real;
+  delete node;
 }
+
+INSTANTIATE_TEST_CASE_P(ValueParam, ExecutionOneNodeTest, ::testing::ValuesIn(terminals));
 
 TEST(LinearisationTest, UnaryTreeLinearisation)
 {
