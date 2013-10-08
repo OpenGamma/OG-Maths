@@ -128,14 +128,20 @@ void Walker::talkandwalk(librdag::OGNumeric const * numeric_expr_types)
 }
 
 const OGTerminal*
-entrypt(OGNumeric* expr)
+entrypt(const OGNumeric* expr)
 {
   printf("Accessing DAG walker.\n");
   Walker * walker = new Walker();
   walker->walk((librdag::OGNumeric *) expr);
   delete walker;
   printf("Returning from DAG walker.\n");
-  return expr->asOGTerminal();
+  /* Return a copy of the node that was passed. The reason for doing this is that we eventually
+   * expect entrypt to return the register for the result. For now, returning a copy of the tree
+   * means that if a terminal is passed in, we don't get a surprise when we delete both the result
+   * and the terminal that was passed in (because they would be the same thing if we just returned
+   * the tree as-is).
+   */
+  return expr->copy()->asOGTerminal();
 }
 
 } // namespace librdag
