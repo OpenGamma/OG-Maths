@@ -11,6 +11,16 @@
 namespace librdag {
 
 /**
+ * Register refcount warning test
+ */
+TEST(RegisterTest, RefCountWarning)
+{
+  OGRealScalarRegister* r = new OGRealScalarRegister();
+  r->incRef();
+  delete r;
+}
+
+/**
  * Scalar register tests
  */
 
