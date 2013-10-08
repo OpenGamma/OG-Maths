@@ -35,6 +35,7 @@ TEST_P(ExecutionOneNodeTest, TerminalTypes)
 
 const OGTerminal* ogreal = new OGRealScalar(1.0);
 const OGTerminal* ogcomplex = new OGComplexScalar(complex16(1.0, 2.0));
+const OGTerminal* ogint = new OGIntegerScalar(1);
 
 double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
 const OGTerminal* ogrealmatrix = new OGRealMatrix(realData, 2, 3);
@@ -58,7 +59,7 @@ const OGRealSparseMatrix *ogrealsparsematrix = new OGRealSparseMatrix(colPtr, ro
 complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };
 const OGComplexSparseMatrix *ogcomplexsparsematrix = new OGComplexSparseMatrix(colPtr, rowIdx, csparseData, 2, 2);
 
-const OGTerminal* terminals[] = { ogreal, ogcomplex, ogrealmatrix, ogcomplexmatrix, ogrealdiagonalmatrix,
+const OGTerminal* terminals[] = { ogreal, ogcomplex, ogint, ogrealmatrix, ogcomplexmatrix, ogrealdiagonalmatrix,
                                   ogcomplexdiagonalmatrix, ogrealsparsematrix, ogcomplexsparsematrix };
 INSTANTIATE_TEST_CASE_P(ValueParam, ExecutionOneNodeTest, ::testing::ValuesIn(terminals));
 
