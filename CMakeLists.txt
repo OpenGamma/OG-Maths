@@ -147,7 +147,7 @@ if (WIN32)
   set_tests_properties(${TESTNG_TEST} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
 else()
   set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR})
-  set(JAVA_TESTNG_ARGS -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  set(JAVA_TESTNG_ARGS -Xcheck:jni -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
   add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} ${JAVA_TESTNG_ARGS})
   set(JACOCOJAR $ENV{JACOCOJAR})
   add_custom_target(jacocorun
