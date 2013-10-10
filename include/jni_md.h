@@ -36,16 +36,26 @@
  *
  * ***** END LICENSE BLOCK *****/
 
-// FIXME: This needs altering to suit all OSes. Don't let this get through a PR.
-
 #ifndef _JNI_MD_H
 #define _JNI_MD_H
 
+#ifdef __MINGW32__
+#define JNIEXPORT __declspec(dllexport)
+#define JNICALL __stdcall
+#else // __MINGW32__
 #define JNIEXPORT
 #define JNICALL
+#endif // __MINGW32__
 
 typedef int jint;
+
+// Assumption: targets are 64bit, either Linux, OS X, or MinGW.
+#ifdef __MINGW32__
+typedef __int64 jlong;
+#else // __MINGW32__
 typedef long long jlong;
+#endif // __MINGW32__
+
 typedef signed char jbyte;
 
 #endif /* _JNI_MD_H */
