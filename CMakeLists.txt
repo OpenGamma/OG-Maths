@@ -26,9 +26,13 @@ if (PYTHONINTERP_FOUND)
   message(STATUS "Using Python version ${PYTHON_VERSION_STRING}")
 endif()
 
-# Use threads - we force -pthread in preference to -lpthread
-set(THREADS_HAVE_PTHREAD_ARG "THREADS_HAVE_PTHREAD_ARG")
-find_package(Threads)
+if(WIN32)
+  set(CMAKE_THREAD_LIBS_INIT -mthreads)
+else()
+  # we force -pthread in preference to -lpthread because it sets -D_REENTRANT
+  set(THREADS_HAVE_PTHREAD_ARG "THREADS_HAVE_PTHREAD_ARG")
+  find_package(Threads)
+endif()
 
 set(longdog_VERSION_MAJOR 0)
 set(longdog_VERSION_MINOR 0)
