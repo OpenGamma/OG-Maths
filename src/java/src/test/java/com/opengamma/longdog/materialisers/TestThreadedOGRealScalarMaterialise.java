@@ -6,17 +6,15 @@
 
 package com.opengamma.longdog.materialisers;
 
-import org.testng.annotations.DataProvider;
+import java.util.Random;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import org.testng.annotations.Test;
 
 import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
 import com.opengamma.longdog.exceptions.MathsException;
 import com.opengamma.longdog.testhelpers.ArraysHelpers;
-
-import java.lang.Runnable;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.Random;
 
 public class TestThreadedOGRealScalarMaterialise {
 
