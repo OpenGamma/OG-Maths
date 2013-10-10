@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include "jvmmanager.hh"
 #include "exceptions.hh"
 #include "debug.h"
