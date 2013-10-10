@@ -23,6 +23,7 @@ using namespace convert;
  */
 void checkEx(JNIEnv* env)
 {
+
   jthrowable e = env->ExceptionOccurred();
   if (e)
   {

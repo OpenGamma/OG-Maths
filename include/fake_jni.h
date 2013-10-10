@@ -105,6 +105,7 @@ typedef _jfloatArray *jfloatArray;
 typedef _jdoubleArray *jdoubleArray;
 typedef _jobjectArray *jobjectArray;
 
+
 struct _jfieldID {};
 typedef struct _jfieldID *jfieldID;
 
@@ -113,11 +114,13 @@ typedef struct _jmethodID *jmethodID;
 
 typedef class JNIEnv_ JNIEnv;
 
+
 // This is a quick hack so the first jshim test doesn't blow up.
 static _jclass allClasses;
 static _jobject allGlobalRefs;
 static _jfieldID allFieldIds;
 static _jthrowable allThrows;
+
 
 class JNIEnv_
 {
@@ -140,6 +143,7 @@ class JNIEnv_
     virtual jclass FindClass(const char SUPPRESS_UNUSED *name) { return &allClasses; }
     virtual jthrowable ExceptionOccurred() {return &allThrows; }
     virtual void ExceptionDescribe() {};
+
 };
 
 

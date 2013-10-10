@@ -24,8 +24,8 @@ class Fake_JavaVM: public JavaVM
   public:   
     virtual int GetEnv(void SUPPRESS_UNUSED ** env, int SUPPRESS_UNUSED version) override
     {
-        *env = _env;
-        return JNI_OK;
+     *env = _env;
+     return JNI_OK;
     }
     void setVersion(int value)
     {

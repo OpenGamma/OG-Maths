@@ -6,7 +6,6 @@
 
 #ifndef _JVMMANAGER_HH
 #define _JVMMANAGER_HH
-
 #include "modifiermacros.h"
 
 // if this is defined the user must provide sufficient and suitable structs to 
