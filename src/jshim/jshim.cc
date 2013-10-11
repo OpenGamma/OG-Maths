@@ -22,75 +22,6 @@ using namespace convert;
 extern "C" {
 #endif
 
-//
-//
-// JNI methods and helpers
-//
-//
-
-/*
- * Converts a real16 ** to a java double[][]
- * @param env, the JNI environment pointer
- * @param inputData, the real16 array of arrays to convert
- * @param rows the number of rows in the array
- * @param cols the number of columns in the array
- * @return a jobjectArray which is a double[][] equivalent of {@code inputData}
- */
-jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inputData, int rows, int cols)
-{
-  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  for(int i = 0; i < rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
-    env->SetDoubleArrayRegion(tmp, 0, cols, inputData[i]);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
-  return returnVal;
-}
-
-
-
-/**
- *
- */
-jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
-{
-  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  real16 * aRow = new real16[cols];
-  for(int i = 0; i < rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
-    for(int j = 0; j < cols; j++)
-    {
-      aRow[j]=std::real(inputData[i][j]);
-    }
-    env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
-  delete aRow;
-  return returnVal;
-}
-
-/**
-*
-*/
-jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
-{
-  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  real16 * aRow = new real16[cols];
-  for(int i = 0; i < rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
-    for(int j = 0; j < cols; j++)
-    {
-      aRow[j]=std::imag(inputData[i][j]);
-    }
-    env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
-  delete aRow;
-  return returnVal;
-}
 
 /*
  * Class:     com_opengamma_longdog_materialisers_Materialisers
@@ -109,14 +40,14 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Material
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
   delete chain;
-  
+
   DispatchToReal16ArrayOfArrays *visitor = new DispatchToReal16ArrayOfArrays();
   answer->accept(*visitor);
-   
+
   jobjectArray returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
 
   delete visitor;
-  
+
   DEBUG_PRINT("Returning\n");
   return returnVal;
 }
@@ -146,7 +77,7 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
   jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
   jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
   delete visitor;
-  
+
   jobject returnVal = env->NewObject(JVMManager::getComplexArrayContainerClazz(),
                                      JVMManager::getComplexArrayContainerClazz_ctor_DAoA_DAoA(),
                                      realPart, complexPart);
@@ -165,6 +96,27 @@ JNIEXPORT jboolean JNICALL Java_com_opengamma_longdog_materialisers_Materialiser
 {
   jboolean returnVal = 0;
   return returnVal;
+}
+
+JNIEXPORT jobject JNICALL
+Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToOGTerminal(JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
+{
+  DEBUG_PRINT("materialiseToOGTerminal\n");
+  DEBUG_PRINT("Calling convert::createExpression\n");
+  // convert obj to OGNumeric objs
+  librdag::OGNumeric * chain = convert::createExpression(obj);
+
+  DEBUG_PRINT("Calling entrypt function\n");
+  const librdag::OGTerminal* answer = entrypt(chain);
+  delete chain;
+
+  DispatchToOGTerminal *visitor = new DispatchToOGTerminal(env);
+  answer->accept(*visitor);
+  jobject result = visitor->getObject();
+  delete visitor;
+
+  DEBUG_PRINT("Returning\n");
+  return result;
 }
 
 #ifdef __cplusplus

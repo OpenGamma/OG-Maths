@@ -15,6 +15,18 @@ namespace librdag {
  * OGTerminal
  */
 
+real16*
+OGTerminal::toReal16Array() const
+{
+  throw rdag_error("OGTerminal::toReal16Array() called but not implemented");
+}
+
+complex16*
+OGTerminal::toComplex16Array() const
+{
+  throw rdag_error("OGTerminal::toComplex16Array() called but not implemented");
+}
+
 real16**
 OGTerminal::toReal16ArrayOfArrays() const
 {
@@ -393,6 +405,20 @@ OGDiagonalMatrix<T>::accept(Visitor &v) const
 }
 
 template<typename T>
+T*
+OGDiagonalMatrix<T>::toArray() const
+{
+  int datalen = this->getDatalen();
+  T* data = this->getData();
+  T* tmp = new T[datalen];
+  for (int i = 0; i < datalen; i++)
+  {
+    tmp[i] = data[i];
+  }
+  return tmp;
+}
+
+template<typename T>
 T**
 OGDiagonalMatrix<T>::toArrayOfArrays() const
 {
@@ -455,6 +481,12 @@ OGRealDiagonalMatrix::debug_print() const
   }
 }
 
+real16*
+OGRealDiagonalMatrix::toReal16Array() const
+{
+  return this->toArray();
+}
+
 real16**
 OGRealDiagonalMatrix::toReal16ArrayOfArrays() const
 {
@@ -506,6 +538,12 @@ OGComplexDiagonalMatrix::debug_print() const
       printf("%6.4f + %6.4fi\n",0.e0,0.e0);
     }
   }
+}
+
+complex16*
+OGComplexDiagonalMatrix::toComplex16Array() const
+{
+  return this->toArray();
 }
 
 complex16**

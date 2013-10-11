@@ -118,8 +118,14 @@ TEST(TerminalsTest, OGTerminalTest) {
   ASSERT_NE(term,nullptr);
   term = expr_t->asOGTerminal();
   ASSERT_EQ(term,nullptr);
+
+  // Check throwing when toReal16Array and toComplex16Array are not implemented
+  term = terminal_t->asOGTerminal();
+  EXPECT_THROW(term->toReal16Array(), rdag_error);
+  EXPECT_THROW(term->toComplex16Array(), rdag_error);
+
+  // Clean up
   delete expr_t;
-  delete term;
 }
 
 /*
@@ -486,13 +492,26 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   // check getData
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));  
   
-  // wire up array for ArrOfArr test
+  // wire up array for ArrOfArr and Arr test
   real16 expectedtmp[12] = {1e0,0e0,0e0,0e0,0e0,2e0,0e0,0e0,0e0,0e0,3e0,0e0};
+  real16 expectedarr[3] = {1e0, 2e0, 3e0};
   real16 ** expected = new real16  * [rows];
   for(int i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
   
+  // check toArray()
+  real16* arr = tmp->toArray();
+  for (int i = 0; i < 3; i++)
+    EXPECT_TRUE(arr[i] == expectedarr[i]);
+  delete[] arr;
+
+  // check toReal16Array()
+  arr = tmp->toReal16Array();
+  for (int i = 0; i < 3; i++)
+    EXPECT_TRUE(arr[i] == expectedarr[i]);
+  delete[] arr;
+
   // check toArrayOfArrays()
   real16 ** computed = tmp->toArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<real16>(expected,computed,rows,cols));
@@ -581,13 +600,25 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   // check getData
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));  
   
-  // wire up array for ArrOfArr test
+  // wire up array for Arr and ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{2e0,20e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{3e0,30e0},{0e0,0e0}};
+  complex16 expectedarr[3] = {{1e0,10e0}, {2e0,20e0}, {3e0,30e0}};
   complex16 ** expected = new complex16  * [rows];
   for(int i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
-  
+   // check toArray()
+  complex16* arr = tmp->toArray();
+  for (int i = 0; i < 3; i++)
+    EXPECT_TRUE(arr[i] == expectedarr[i]);
+  delete[] arr;
+
+  // check toComplex16Array()
+  arr = tmp->toComplex16Array();
+  for (int i = 0; i < 3; i++)
+    EXPECT_TRUE(arr[i] == expectedarr[i]);
+  delete[] arr;
+
   // check toArrayOfArrays()
   complex16 ** computed = tmp->toArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
