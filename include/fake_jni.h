@@ -105,13 +105,18 @@ typedef _jfloatArray *jfloatArray;
 typedef _jdoubleArray *jdoubleArray;
 typedef _jobjectArray *jobjectArray;
 
-struct _jfieldID;
+struct _jfieldID {};
 typedef struct _jfieldID *jfieldID;
 
 struct _jmethodID;
 typedef struct _jmethodID *jmethodID;
 
 typedef class JNIEnv_ JNIEnv;
+
+// This is a quick hack so the first jshim test doesn't blow up.
+static _jclass allClasses;
+static _jobject allGlobalRefs;
+static _jfieldID allFieldIds;
 
 class JNIEnv_
 {
@@ -126,12 +131,12 @@ class JNIEnv_
     virtual jsize GetArrayLength(jarray SUPPRESS_UNUSED array) { return 0; }
     virtual jobject GetObjectArrayElement(jobjectArray SUPPRESS_UNUSED array, jsize SUPPRESS_UNUSED index) { return nullptr; }
     virtual jlong GetLongField(jobject SUPPRESS_UNUSED obj, jfieldID SUPPRESS_UNUSED fieldID) { return 0; }
-    virtual jfieldID GetFieldID(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *name, const char SUPPRESS_UNUSED *sig) { return nullptr; }
+    virtual jfieldID GetFieldID(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *name, const char SUPPRESS_UNUSED *sig) { return &allFieldIds; }
     virtual jmethodID GetMethodID(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *name, const char SUPPRESS_UNUSED *sig) { return nullptr; }
-    virtual jobject NewGlobalRef(jobject SUPPRESS_UNUSED lobj) { return nullptr; }
+    virtual jobject NewGlobalRef(jobject SUPPRESS_UNUSED lobj) { return &allGlobalRefs; }
     virtual jobjectArray NewObjectArray(jsize SUPPRESS_UNUSED len, jclass SUPPRESS_UNUSED clazz, jobject SUPPRESS_UNUSED init) { return nullptr; }
     virtual jdoubleArray NewDoubleArray(jsize SUPPRESS_UNUSED len) { return nullptr; }
-    virtual jclass FindClass(const char SUPPRESS_UNUSED *name) { return nullptr; }
+    virtual jclass FindClass(const char SUPPRESS_UNUSED *name) { return &allClasses; }
 };
 
 
