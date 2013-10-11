@@ -6,6 +6,7 @@
 
 #ifndef _ENTRYPT_H
 #define _ENTRYPT_H
+#include "terminal.hh"
 
 namespace librdag {
 

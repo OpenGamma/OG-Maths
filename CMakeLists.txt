@@ -26,6 +26,13 @@ if (PYTHONINTERP_FOUND)
   message(STATUS "Using Python version ${PYTHON_VERSION_STRING}")
 endif()
 
+if(WIN32)
+  set(CMAKE_THREAD_LIBS_INIT -mthreads)
+else()
+  # we force -pthread in preference to -lpthread because it sets -D_REENTRANT
+  set(THREADS_HAVE_PTHREAD_ARG "THREADS_HAVE_PTHREAD_ARG")
+  find_package(Threads)
+endif()
 
 set(longdog_VERSION_MAJOR 0)
 set(longdog_VERSION_MINOR 0)
@@ -37,15 +44,17 @@ set(longdog_VERSION
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 # tweak flags
-set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_C_FLAGS}")
-set(CMAKE_C_FLAGS_DEBUG "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_C_FLAGS_RELEASE "-ffast-math -O2 -march=core2 -funroll-loops -DNDEBUG")
-set(CMAKE_C_FLAGS_RELWITHDEBINFO "-ffast-math -march=core2 -funroll-loops ${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+set(FFAST_MATH_SAFE "-fno-math-errno -ffinite-math-only -fno-rounding-math -fno-signaling-nans -fcx-limited-range") # -funsafe-math-optimizations is missing as it messes with the FPU control word which can cause segfaults when running through the JNI interface 
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_CXX_FLAGS}")
+set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
+set(CMAKE_C_FLAGS_DEBUG "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
+set(CMAKE_C_FLAGS_RELEASE "${FFAST_MATH_SAFE} -O2 -march=core2 -funroll-loops -DNDEBUG")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "${FFAST_MATH_SAFE} -march=core2 -funroll-loops ${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+
+set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
-set(CMAKE_CXX_FLAGS_RELEASE "-ffast-math -O2 -march=core2 -funroll-loops -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-ffast-math -march=core2 -funroll-loops ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+set(CMAKE_CXX_FLAGS_RELEASE "${FFAST_MATH_SAFE}-O2 -march=core2 -funroll-loops -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${FFAST_MATH_SAFE} -march=core2 -funroll-loops ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
 
 # Add Java
@@ -140,7 +149,7 @@ if (WIN32)
   set_tests_properties(${TESTNG_TEST} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
 else()
   set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR})
-  set(JAVA_TESTNG_ARGS -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  set(JAVA_TESTNG_ARGS -Xcheck:jni -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
   add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} ${JAVA_TESTNG_ARGS})
   set(JACOCOJAR $ENV{JACOCOJAR})
   add_custom_target(jacocorun
@@ -176,5 +185,7 @@ message("
   Java Compiler flags........: " ${CMAKE_Java_COMPILE_FLAGS} "
   JavaH Tool.................: " ${Java_JAVAH_EXECUTABLE} "
   Jar Tool...................: " ${Java_JAR_EXECUTABLE} "
+  Java Library...............: " ${JAVA_JVM_LIBRARY} "
   Python executable..........: " ${PYTHON_EXECUTABLE} "
+  Threads flag..............:: " ${CMAKE_THREAD_LIBS_INIT} "
   ")
