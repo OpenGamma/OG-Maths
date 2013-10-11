@@ -7,6 +7,8 @@
 #ifndef _JVMMANAGER_HH
 #define _JVMMANAGER_HH
 
+#include "modifiermacros.h"
+
 // if this is defined the user must provide sufficient and suitable structs to 
 // fake the parts of the JVM interface used.
 #ifdef _FAKE_JNI_H
@@ -23,46 +25,46 @@ namespace convert {
  */
 class JVMManager {
   public:
-    static JavaVM* getJVM();
-    static void initialize(JavaVM* jvm);
+    DLLEXPORT_C static JavaVM* getJVM();
+    DLLEXPORT_C static void initialize(JavaVM* jvm);
     // Classes, methods, and fields
-    static jclass getOGNumericClazz();
-    static jclass getOGExprClazz();
-    static jclass getOGArrayClazz();
-    static jclass getOGTerminalClazz();
-    static jclass getOGScalarClazz();
-    static jclass getOGSparseMatrixClazz();
-    static jclass getBigDDoubleArrayClazz();
-    static jclass getComplexArrayContainerClazz();
-    static jclass getOGExprTypeEnumClazz();
-    static jclass getOGRealScalarClazz();
-    static jclass getOGComplexScalarClazz();
-    static jclass getOGRealDenseMatrixClazz();
-    static jclass getOGComplexDenseMatrixClazz();
-    static jclass getOGRealDiagonalMatrixClazz();
-    static jclass getOGComplexDiagonalMatrixClazz();
-    static jmethodID getOGRealScalarClazz_init();
-    static jmethodID getOGComplexScalarClazz_init();
-    static jmethodID getOGRealDenseMatrixClazz_init();
-    static jmethodID getOGComplexDenseMatrixClazz_init();
-    static jmethodID getOGRealDiagonalMatrixClazz_init();
-    static jmethodID getOGComplexDiagonalMatrixClazz_init();
-    static jmethodID getOGTerminalClazz_getData();
-    static jmethodID getOGNumericClazz_getType();
-    static jmethodID getOGExprClazz_getExprs();
-    static jmethodID getOGExprClazz_getNExprs();
-    static jmethodID getOGArrayClazz_getRows();
-    static jmethodID getOGArrayClazz_getCols();
-    static jmethodID getOGSparseMatrixClazz_getColPtr();
-    static jmethodID getOGSparseMatrixClazz_getRowIdx();
-    static jmethodID getComplexArrayContainerClazz_ctor_DAoA_DAoA();
-    static jfieldID  getOGExprTypeEnumClazz__hashdefined();
+    DLLEXPORT_C static jclass getOGNumericClazz();
+    DLLEXPORT_C static jclass getOGExprClazz();
+    DLLEXPORT_C static jclass getOGArrayClazz();
+    DLLEXPORT_C static jclass getOGTerminalClazz();
+    DLLEXPORT_C static jclass getOGScalarClazz();
+    DLLEXPORT_C static jclass getOGSparseMatrixClazz();
+    DLLEXPORT_C static jclass getBigDDoubleArrayClazz();
+    DLLEXPORT_C static jclass getComplexArrayContainerClazz();
+    DLLEXPORT_C static jclass getOGExprTypeEnumClazz();
+    DLLEXPORT_C static jclass getOGRealScalarClazz();
+    DLLEXPORT_C static jclass getOGComplexScalarClazz();
+    DLLEXPORT_C static jclass getOGRealDenseMatrixClazz();
+    DLLEXPORT_C static jclass getOGComplexDenseMatrixClazz();
+    DLLEXPORT_C static jclass getOGRealDiagonalMatrixClazz();
+    DLLEXPORT_C static jclass getOGComplexDiagonalMatrixClazz();
+    DLLEXPORT_C static jmethodID getOGRealScalarClazz_init();
+    DLLEXPORT_C static jmethodID getOGComplexScalarClazz_init();
+    DLLEXPORT_C static jmethodID getOGRealDenseMatrixClazz_init();
+    DLLEXPORT_C static jmethodID getOGComplexDenseMatrixClazz_init();
+    DLLEXPORT_C static jmethodID getOGRealDiagonalMatrixClazz_init();
+    DLLEXPORT_C static jmethodID getOGComplexDiagonalMatrixClazz_init();
+    DLLEXPORT_C static jmethodID getOGTerminalClazz_getData();
+    DLLEXPORT_C static jmethodID getOGNumericClazz_getType();
+    DLLEXPORT_C static jmethodID getOGExprClazz_getExprs();
+    DLLEXPORT_C static jmethodID getOGExprClazz_getNExprs();
+    DLLEXPORT_C static jmethodID getOGArrayClazz_getRows();
+    DLLEXPORT_C static jmethodID getOGArrayClazz_getCols();
+    DLLEXPORT_C static jmethodID getOGSparseMatrixClazz_getColPtr();
+    DLLEXPORT_C static jmethodID getOGSparseMatrixClazz_getRowIdx();
+    DLLEXPORT_C static jmethodID getComplexArrayContainerClazz_ctor_DAoA_DAoA();
+    DLLEXPORT_C static jfieldID  getOGExprTypeEnumClazz__hashdefined();
     // Wrappers for JNIEnv and JavaVM methods
-    static jobjectArray newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init);
-    static jdoubleArray newDoubleArray(JNIEnv *env, jsize len);
-    static jobject newDouble(JNIEnv* env, jdouble v);
-    static void getEnv(void **penv);
-    static jobject callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...);
+    DLLEXPORT_C static jobjectArray newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init);
+    DLLEXPORT_C static jdoubleArray newDoubleArray(JNIEnv *env, jsize len);
+    DLLEXPORT_C static jobject newDouble(JNIEnv* env, jdouble v);
+    DLLEXPORT_C static void getEnv(void **penv);
+    DLLEXPORT_C static jobject callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...);
   private:
     static void registerReferences();
     static void registerGlobalMethodReference(jclass *globalRef, jmethodID* methodToSet, const char* methodName, const char* methodSignature);
