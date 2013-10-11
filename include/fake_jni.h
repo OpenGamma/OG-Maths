@@ -140,16 +140,15 @@ class JNIEnv_
 };
 
 
-class JavaVM_{
+class JavaVM {
   public:
-        virtual ~JavaVM_();
+        virtual ~JavaVM();
         virtual int GetEnv(void ** env, int version) = 0;
         virtual jint AttachCurrentThread(void **penv, void *args) = 0;
   protected:
     int _version;
     JNIEnv * _env;
 };
-typedef JavaVM_ JavaVM;
 
 typedef int jsize;
 
