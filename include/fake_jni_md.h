@@ -48,14 +48,7 @@
 #endif // __MINGW32__
 
 typedef int jint;
-
-// Assumption: targets are 64bit, either Linux, OS X, or MinGW.
-#ifdef __MINGW32__
-typedef __int64 jlong;
-#else // __MINGW32__
 typedef long long jlong;
-#endif // __MINGW32__
-
 typedef signed char jbyte;
 
 #endif /* _JNI_MD_H */
