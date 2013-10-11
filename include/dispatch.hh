@@ -4,29 +4,75 @@
  * Please see distribution for license.
  */
 
-/**
- * Holds references to data needed to construct a terminal type
- */
-
-#include "numerictypes.hh"
+#ifndef _DISPATCH_HH
+#define _DISPATCH_HH
+#include "visitor.hh"
+#include "warningmacros.h"
 
 namespace librdag {
-class OGTerminal;
+  class OGNumeric;
+  class OGTerminal;
 }
 
 namespace convert {
 
-template <typename T> struct OGTerminalPtrContainer_t
+using namespace librdag;  
+  
+class DispatchToReal16ArrayOfArrays: public librdag::Visitor
 {
-  T** data;
-  int rows;
-  int cols;
-  int * colPtr;
-  int * rowIdx;
+  public:
+    virtual ~DispatchToReal16ArrayOfArrays();
+    virtual void visit(librdag::OGExpr const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGScalar<real16> const *thing);
+    virtual void visit(librdag::OGScalar<complex16> const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGScalar<int> const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGMatrix<real16> const *thing);
+    virtual void visit(librdag::OGMatrix<complex16> const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGDiagonalMatrix<real16> const *thing);
+    virtual void visit(librdag::OGDiagonalMatrix<complex16> const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGSparseMatrix<real16> const *thing);
+    virtual void visit(librdag::OGSparseMatrix<complex16> const SUPPRESS_UNUSED *thing);
+    void setData(real16 ** data);
+    void setRows(int rows);
+    void setCols(int cols);
+    real16 ** getData();
+    int getRows();
+    int getCols();
+  private:
+    real16 ** _data = nullptr;
+    int rows;
+    int cols;
+    
 };
 
-OGTerminalPtrContainer_t<real16>* dispatchToReal16ArrayOfArrays(const librdag::OGTerminal* terminal);
-OGTerminalPtrContainer_t<complex16>* dispatchToComplex16ArrayOfArrays(const librdag::OGTerminal* terminal);
 
 
+class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
+{
+  public:
+    virtual ~DispatchToComplex16ArrayOfArrays();
+    virtual void visit(librdag::OGExpr const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGScalar<real16> const *thing);
+    virtual void visit(librdag::OGScalar<complex16> const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGScalar<int> const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGMatrix<real16> const *thing);
+    virtual void visit(librdag::OGMatrix<complex16> const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGDiagonalMatrix<real16> const *thing);
+    virtual void visit(librdag::OGDiagonalMatrix<complex16> const SUPPRESS_UNUSED *thing);
+    virtual void visit(librdag::OGSparseMatrix<real16> const *thing);
+    virtual void visit(librdag::OGSparseMatrix<complex16> const SUPPRESS_UNUSED *thing);
+    void setData(complex16 ** data);
+    void setRows(int rows);
+    void setCols(int cols);
+    complex16 ** getData();
+    int getRows();
+    int getCols();
+  private:
+    complex16 ** _data = nullptr;
+    int rows;
+    int cols;    
+};
+  
 } // namespace convert
+
+#endif // _DISPATCH_HH

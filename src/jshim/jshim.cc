@@ -12,6 +12,7 @@
 #include "exprfactory.hh"
 #include "warningmacros.h"
 #include "dispatch.hh"
+#include "visitor.hh"
 #include "debug.h"
 #include <stdio.h>
 
@@ -108,9 +109,14 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Material
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
   delete chain;
-  convert::OGTerminalPtrContainer_t<real16>* res = convert::dispatchToReal16ArrayOfArrays(answer);
-  jobjectArray returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, res->data, res->rows, res->cols);
+  
+  DispatchToReal16ArrayOfArrays *visitor = new DispatchToReal16ArrayOfArrays();
+  answer->accept(*visitor);
+   
+  jobjectArray returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
 
+  delete visitor;
+  
   DEBUG_PRINT("Returning\n");
   return returnVal;
 }
@@ -133,10 +139,14 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
   delete chain;
-  convert::OGTerminalPtrContainer_t<complex16>* res = convert::dispatchToComplex16ArrayOfArrays(answer);
 
-  jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, res->data, res->rows, res->cols);
-  jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, res->data, res->rows, res->cols);
+  DispatchToComplex16ArrayOfArrays *visitor = new DispatchToComplex16ArrayOfArrays();
+  answer->accept(*visitor);
+
+  jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
+  jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
+  delete visitor;
+  
   jobject returnVal = env->NewObject(JVMManager::getComplexArrayContainerClazz(),
                                      JVMManager::getComplexArrayContainerClazz_ctor_DAoA_DAoA(),
                                      realPart, complexPart);
