@@ -8,6 +8,8 @@
 #define _JVMMANAGER_HH
 #include "modifiermacros.h"
 
+#include "modifiermacros.h"
+
 // if this is defined the user must provide sufficient and suitable structs to 
 // fake the parts of the JVM interface used.
 #ifdef _FAKE_JNI_H
