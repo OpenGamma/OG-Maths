@@ -44,7 +44,7 @@
 
 #include "warningmacros.h"
 
-#include "jni_md_linux.h"
+#include "fake_jni_md.h"
 
 /*
  * jboolean constants
