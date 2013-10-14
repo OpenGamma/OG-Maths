@@ -216,8 +216,6 @@ typedef JavaVM_ JavaVM;
 
 typedef int jsize;
 
-#define JNIEXPORT 
-#define JNICALL 
 #ifdef __cplusplus
 extern "C"
 #endif
