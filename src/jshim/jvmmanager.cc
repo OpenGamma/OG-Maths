@@ -10,6 +10,7 @@
 #include "jvmmanager.hh"
 #include "exceptions.hh"
 #include "debug.h"
+#include <iostream>
 
 namespace convert {
 
@@ -46,7 +47,7 @@ JVMManager::initialize(JavaVM *jvm)
 
   // Attempt to get env for JNI version 1.2
   int ret = jvm->GetEnv((void **)&_env, JNI_VERSION_1_2);
-  if (ret)
+  if (ret != JNI_OK)
   {
     throw convert_error("Error getting JNI environment.");
   }
@@ -69,6 +70,7 @@ JVMManager::registerReferences()
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGArray", &_OGArrayClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/ExprTypeEnum", &_OGExprTypeEnumClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGSparseMatrix", &_OGSparseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGScalar", &_OGScalarClazz);  
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/lazy/OGExpr", &_OGExprClazz);
   registerGlobalClassReference("[D", &_BigDDoubleArrayClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/other/ComplexArrayContainer", &_ComplexArrayContainerClazz);
@@ -93,6 +95,7 @@ JVMManager::registerReferences()
   registerGlobalMethodReference(&_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getColPtr, "getColPtr",  "()[I");
   registerGlobalMethodReference(&_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getRowIdx, "getRowIdx",  "()[I");
   registerGlobalMethodReference(&_OGExprClazz, &_OGExprClazz_getExprs, "getExprs",  "()[Lcom/opengamma/longdog/datacontainers/OGNumeric;");
+  registerGlobalMethodReference(&_OGExprClazz, &_OGExprClazz_getNExprs, "getNExprs",  "()I");  
   registerGlobalMethodReference(&_ComplexArrayContainerClazz, &_ComplexArrayContainerClazz_ctor_DAoA_DAoA, "<init>","([[D[[D)V");
   registerGlobalMethodReference(&_OGRealScalarClazz, &_OGRealScalarClazz_init, "<init>", "(Ljava/lang/Number;)V");
   registerGlobalMethodReference(&_OGComplexScalarClazz, &_OGComplexScalarClazz_init, "<init>", "(Ljava/lang/Number;Ljava/lang/Number;)V");
@@ -105,11 +108,8 @@ JVMManager::registerReferences()
   // REGISTER FIELD REFERENCES
   //
 
-  _OGExprTypeEnumClazz__hashdefined = _env->GetFieldID(_OGExprTypeEnumClazz, "_hashDefined", "J");
-  if (_OGExprTypeEnumClazz__hashdefined == 0)
-  {
-    throw convert_error("ERROR: fieldID _hashDefined not found.");
-  }
+  registerGlobalFieldReference(&_OGExprTypeEnumClazz, &_OGExprTypeEnumClazz__hashdefined, "_hashDefined", "J");
+  
 }
 
 JavaVM*
@@ -118,19 +118,37 @@ JVMManager::getJVM()
   return _jvm;
 }
 
+void 
+JVMManager::registerGlobalFieldReference(jclass * globalRef, jfieldID * fieldToSet, const char * fieldName, const char * fieldSignature)
+{
+  jfieldID tmp = nullptr;
+  tmp = _env->GetFieldID(*globalRef, fieldName, fieldSignature);
+  if (tmp == nullptr)
+  {
+    DEBUG_PRINT("ERROR: field %s() not found.\n",fieldName);
+    throw convert_error("field not found");
+  }
+  else
+  {
+    *fieldToSet = tmp;    
+    DEBUG_PRINT("Field found: %s()\n\t", fieldName);
+    VAL64BIT_PRINT("field pointer", fieldToSet);
+  }
+}
+
 void
 JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * methodToSet, const char * methodName, const char * methodSignature)
 {
-  jmethodID tmp = NULL;
+  jmethodID tmp = nullptr;
   tmp = _env->GetMethodID(*globalRef, methodName, methodSignature);
-  *methodToSet = tmp;
-  if (methodToSet == 0)
+  if (tmp == nullptr)
   {
     DEBUG_PRINT("ERROR: method %s() not found.\n",methodName);
     throw convert_error("Method not found");
   }
   else
   {
+    *methodToSet = tmp;
     DEBUG_PRINT("Method found: %s()\n\t", methodName);
     VAL64BIT_PRINT("method pointer", methodToSet);
   }
@@ -139,19 +157,18 @@ JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * method
 void
 JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * globalRef)
 {
-  jclass tmpClass = NULL; // tmp class reference
+  jclass tmpClass = nullptr; // tmp class reference
   // find OGNumeric
-  tmpClass = NULL;
   tmpClass = _env->FindClass(FQclassname); // find class
-  if(tmpClass==NULL)
+  if(tmpClass==nullptr)
   {
     DEBUG_PRINT("Cannot find class %s in JNI_OnLoad.\n", FQclassname);
     throw convert_error("Class not found.");
   }
 
-  *globalRef = NULL;
+  *globalRef = nullptr;
   *globalRef = (jclass) (_env->NewGlobalRef(tmpClass));
-  if(*globalRef==NULL)
+  if(*globalRef==nullptr)
   {
     DEBUG_PRINT("Cannot create Global reference for %s.\n",FQclassname);
     throw convert_error("Cannot create global reference.");
@@ -228,41 +245,42 @@ jfieldID JVMManager:: getOGExprTypeEnumClazz__hashdefined()
 
 // Instantiation of JVMManager's fields
 
-JavaVM* JVMManager::_jvm;
-JNIEnv* JVMManager::_env;
-jclass JVMManager::_DoubleClazz;
-jclass JVMManager::_OGNumericClazz;
-jclass JVMManager::_OGExprClazz;
-jclass JVMManager::_OGArrayClazz;
-jclass JVMManager::_OGTerminalClazz;
-jclass JVMManager::_OGScalarClazz;
-jclass JVMManager::_OGSparseMatrixClazz;
-jclass JVMManager::_BigDDoubleArrayClazz;
-jclass JVMManager::_ComplexArrayContainerClazz;
-jclass JVMManager::_OGExprTypeEnumClazz;
-jclass JVMManager::_OGRealScalarClazz;
-jclass JVMManager::_OGComplexScalarClazz;
-jclass JVMManager::_OGRealDenseMatrixClazz;
-jclass JVMManager::_OGComplexDenseMatrixClazz;
-jclass JVMManager::_OGRealDiagonalMatrixClazz;
-jclass JVMManager::_OGComplexDiagonalMatrixClazz;
-jmethodID JVMManager::_DoubleClazz_init;
-jmethodID JVMManager::_OGRealScalarClazz_init;
-jmethodID JVMManager::_OGComplexScalarClazz_init;
-jmethodID JVMManager::_OGRealDenseMatrixClazz_init;
-jmethodID JVMManager::_OGComplexDenseMatrixClazz_init;
-jmethodID JVMManager::_OGRealDiagonalMatrixClazz_init;
-jmethodID JVMManager::_OGComplexDiagonalMatrixClazz_init;
-jmethodID JVMManager::_OGTerminalClazz_getData;
-jmethodID JVMManager::_OGNumericClazz_getType;
-jmethodID JVMManager::_OGExprClazz_getExprs;
-jmethodID JVMManager::_OGExprClazz_getNExprs;
-jmethodID JVMManager::_OGArrayClazz_getRows;
-jmethodID JVMManager::_OGArrayClazz_getCols;
-jmethodID JVMManager::_OGSparseMatrixClazz_getColPtr;
-jmethodID JVMManager::_OGSparseMatrixClazz_getRowIdx;
-jmethodID JVMManager::_ComplexArrayContainerClazz_ctor_DAoA_DAoA;
-jfieldID  JVMManager::_OGExprTypeEnumClazz__hashdefined;
+JavaVM* JVMManager::_jvm = nullptr;
+JNIEnv* JVMManager::_env = nullptr;
+jclass JVMManager::_DoubleClazz = nullptr;
+jclass JVMManager::_OGNumericClazz = nullptr;
+jclass JVMManager::_OGExprClazz = nullptr;
+jclass JVMManager::_OGArrayClazz = nullptr;
+jclass JVMManager::_OGTerminalClazz = nullptr;
+jclass JVMManager::_OGScalarClazz = nullptr;
+jclass JVMManager::_OGSparseMatrixClazz = nullptr;
+jclass JVMManager::_BigDDoubleArrayClazz = nullptr;
+jclass JVMManager::_ComplexArrayContainerClazz = nullptr;
+jclass JVMManager::_OGExprTypeEnumClazz = nullptr;
+jclass JVMManager::_OGRealScalarClazz = nullptr;
+jclass JVMManager::_OGComplexScalarClazz= nullptr;
+jclass JVMManager::_OGRealDenseMatrixClazz = nullptr;
+jclass JVMManager::_OGComplexDenseMatrixClazz = nullptr;
+jclass JVMManager::_OGRealDiagonalMatrixClazz = nullptr;
+jclass JVMManager::_OGComplexDiagonalMatrixClazz = nullptr;
+jmethodID JVMManager::_DoubleClazz_init = nullptr;
+jmethodID JVMManager::_OGRealScalarClazz_init = nullptr;
+jmethodID JVMManager::_OGComplexScalarClazz_init = nullptr;
+jmethodID JVMManager::_OGRealDenseMatrixClazz_init = nullptr;
+jmethodID JVMManager::_OGComplexDenseMatrixClazz_init = nullptr;
+jmethodID JVMManager::_OGRealDiagonalMatrixClazz_init = nullptr;
+jmethodID JVMManager::_OGComplexDiagonalMatrixClazz_init = nullptr;
+jmethodID JVMManager::_OGTerminalClazz_getData = nullptr;
+jmethodID JVMManager::_OGNumericClazz_getType = nullptr;
+jmethodID JVMManager::_OGExprClazz_getExprs = nullptr;
+jmethodID JVMManager::_OGExprClazz_getNExprs = nullptr;
+jmethodID JVMManager::_OGArrayClazz_getRows = nullptr;
+jmethodID JVMManager::_OGArrayClazz_getCols = nullptr;
+jmethodID JVMManager::_OGSparseMatrixClazz_getColPtr = nullptr;
+jmethodID JVMManager::_OGSparseMatrixClazz_getRowIdx = nullptr;
+jmethodID JVMManager::_ComplexArrayContainerClazz_ctor_DAoA_DAoA = nullptr;
+jfieldID  JVMManager::_OGExprTypeEnumClazz__hashdefined = nullptr;
+
 
 // Wrappers to JavaVM and JNIEnv methods
 

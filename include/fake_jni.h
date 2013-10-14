@@ -43,7 +43,6 @@
 #define _FAKE_JNI_HH
 
 #include "warningmacros.h"
-
 #include "fake_jni_md.h"
 
 /*
@@ -106,13 +105,20 @@ typedef _jdoubleArray *jdoubleArray;
 typedef _jobjectArray *jobjectArray;
 
 
-struct _jfieldID {};
+class _jfieldID {
+  public:
+    _jfieldID(){};
+    virtual ~_jfieldID(){};
+};
+
 typedef struct _jfieldID *jfieldID;
 
-struct _jmethodID;
-typedef struct _jmethodID *jmethodID;
-
-typedef class JNIEnv_ JNIEnv;
+class _jmethodID {
+  public:
+    _jmethodID(){};
+    virtual ~_jmethodID(){};
+};
+typedef class _jmethodID *jmethodID;
 
 
 // This is a quick hack so the first jshim test doesn't blow up.
@@ -125,31 +131,81 @@ static _jthrowable allThrows;
 class JNIEnv_
 {
   public:
-    virtual void SetDoubleArrayRegion(jdoubleArray SUPPRESS_UNUSED array, jsize SUPPRESS_UNUSED start, jsize SUPPRESS_UNUSED len, const jdouble SUPPRESS_UNUSED *buf) {}
-    virtual void SetObjectArrayElement(jobjectArray SUPPRESS_UNUSED array, SUPPRESS_UNUSED jsize index, SUPPRESS_UNUSED jobject val) {}
-    virtual jobject NewObject(jclass SUPPRESS_UNUSED clazz, jmethodID SUPPRESS_UNUSED methodID, ...) { return nullptr; }
-    virtual jint CallIntMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) { return 0; }
-    virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) { return nullptr; }
-    virtual void * GetPrimitiveArrayCritical(jarray SUPPRESS_UNUSED array, jboolean SUPPRESS_UNUSED *isCopy) { return nullptr; }
-    virtual void ReleasePrimitiveArrayCritical(jarray SUPPRESS_UNUSED array, void SUPPRESS_UNUSED *carray, SUPPRESS_UNUSED jint mode) {}
-    virtual jsize GetArrayLength(jarray SUPPRESS_UNUSED array) { return 0; }
-    virtual jobject GetObjectArrayElement(jobjectArray SUPPRESS_UNUSED array, jsize SUPPRESS_UNUSED index) { return nullptr; }
-    virtual jlong GetLongField(jobject SUPPRESS_UNUSED obj, jfieldID SUPPRESS_UNUSED fieldID) { return 0; }
-    virtual jfieldID GetFieldID(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *name, const char SUPPRESS_UNUSED *sig) { return &allFieldIds; }
-    virtual jmethodID GetMethodID(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *name, const char SUPPRESS_UNUSED *sig) { return nullptr; }
-    virtual jobject NewGlobalRef(jobject SUPPRESS_UNUSED lobj) { return &allGlobalRefs; }
-    virtual jobjectArray NewObjectArray(jsize SUPPRESS_UNUSED len, jclass SUPPRESS_UNUSED clazz, jobject SUPPRESS_UNUSED init) { return nullptr; }
-    virtual jdoubleArray NewDoubleArray(jsize SUPPRESS_UNUSED len) { return nullptr; }
-    virtual jclass FindClass(const char SUPPRESS_UNUSED *name) { return &allClasses; }
     virtual jthrowable ExceptionOccurred() {return &allThrows; }
     virtual void ExceptionDescribe() {};
-
+    virtual void SetDoubleArrayRegion(jdoubleArray SUPPRESS_UNUSED array, jsize SUPPRESS_UNUSED start, jsize SUPPRESS_UNUSED len, const jdouble SUPPRESS_UNUSED *buf)
+    {
+      
+    }
+    virtual void SetObjectArrayElement(jobjectArray SUPPRESS_UNUSED array, SUPPRESS_UNUSED jsize index, SUPPRESS_UNUSED jobject val)
+    {
+      
+    }
+    virtual jobject NewObject(jclass SUPPRESS_UNUSED clazz, jmethodID SUPPRESS_UNUSED methodID, ...) {
+      return nullptr;
+    }
+    virtual jint CallIntMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) {
+      return 0;
+    }
+    virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) 
+    {
+      return nullptr; 
+    }
+    virtual void * GetPrimitiveArrayCritical(jarray SUPPRESS_UNUSED array, jboolean SUPPRESS_UNUSED *isCopy)
+    {
+      return nullptr;
+    }
+    virtual void ReleasePrimitiveArrayCritical(jarray SUPPRESS_UNUSED array, void SUPPRESS_UNUSED *carray, SUPPRESS_UNUSED jint mode)
+    {
+      
+    }
+    virtual jsize GetArrayLength(jarray SUPPRESS_UNUSED array) 
+    {
+      return 0;
+    }
+    virtual jobject GetObjectArrayElement(jobjectArray SUPPRESS_UNUSED array, jsize SUPPRESS_UNUSED index)
+    {
+      return nullptr;
+    }
+    virtual jlong GetLongField(jobject SUPPRESS_UNUSED obj, jfieldID SUPPRESS_UNUSED fieldID)
+    {
+      return 0;
+    }
+    virtual jfieldID GetFieldID(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *name, const char SUPPRESS_UNUSED *sig)
+    {
+      return &allFieldIds;
+    }
+    virtual jmethodID GetMethodID(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *name, const char SUPPRESS_UNUSED *sig)
+    {
+      return nullptr;
+    }
+    virtual jobject NewGlobalRef(jobject SUPPRESS_UNUSED lobj)
+    {
+      return &allGlobalRefs;
+    }
+    virtual jobjectArray NewObjectArray(jsize SUPPRESS_UNUSED len, jclass SUPPRESS_UNUSED clazz, jobject SUPPRESS_UNUSED init)
+    {
+      return nullptr;
+    }
+    virtual jdoubleArray NewDoubleArray(jsize SUPPRESS_UNUSED len)
+    {
+      return nullptr;
+    }
+    virtual jclass FindClass(const char SUPPRESS_UNUSED *name)
+    {
+      return &allClasses;
+    }
+    virtual ~JNIEnv_()
+    {
+      
+    };
 };
 
+typedef JNIEnv_ JNIEnv;
 
 class JavaVM_{
   public:
-        virtual ~JavaVM_();
+        virtual ~JavaVM_(){};
         virtual int GetEnv(void ** env, int version) = 0;
         virtual jint AttachCurrentThread(void **penv, void *args) = 0;
   protected:
@@ -159,5 +215,12 @@ class JavaVM_{
 typedef JavaVM_ JavaVM;
 
 typedef int jsize;
+
+#define JNIEXPORT 
+#define JNICALL 
+#ifdef __cplusplus
+extern "C"
+#endif
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved);
 
 #endif
