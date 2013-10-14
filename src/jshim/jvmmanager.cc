@@ -246,7 +246,7 @@ jfieldID JVMManager:: getOGExprTypeEnumClazz__hashdefined()
 // Instantiation of JVMManager's fields
 
 JavaVM* JVMManager::_jvm = nullptr;
-JNIEnv* JVMManager::_env = nullptr;
+thread_local JNIEnv* JVMManager::_env = nullptr;
 jclass JVMManager::_DoubleClazz = nullptr;
 jclass JVMManager::_OGNumericClazz = nullptr;
 jclass JVMManager::_OGExprClazz = nullptr;
