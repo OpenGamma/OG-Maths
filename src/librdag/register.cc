@@ -58,6 +58,7 @@ Register::decRef()
   return _refCount;
 }
 
+
 /**
  * OGRealScalarRegister
  */
@@ -79,6 +80,12 @@ OGRealScalarRegister::alloc() {}
 
 void
 OGRealScalarRegister::free() {}
+
+OGNumeric * 
+OGRealScalarRegister::copy() const
+{
+  return OGRealScalar::copy();
+}
 
 /**
  * OGComplexScalarRegister
@@ -103,6 +110,12 @@ OGComplexScalarRegister::alloc() {}
 void
 OGComplexScalarRegister::free() {}
 
+OGNumeric * 
+OGComplexScalarRegister::copy() const
+{
+  return OGComplexScalar::copy();
+}
+
 /**
  * OGRealMatrixRegister
  */
@@ -123,6 +136,12 @@ void OGRealMatrixRegister::free()
   setData(nullptr);
 }
 
+OGNumeric * 
+OGRealMatrixRegister::copy() const
+{
+  return OGRealMatrix::copy();
+}
+
 /**
  * OGComplexMatrixRegister
  */
@@ -140,6 +159,12 @@ void OGComplexMatrixRegister::free()
 {
   delete[] getData();
   setData(nullptr);
+}
+
+OGNumeric * 
+OGComplexMatrixRegister::copy() const
+{
+  return OGComplexMatrix::copy();
 }
 
 /**
@@ -162,6 +187,12 @@ void OGRealDiagonalMatrixRegister::free()
   setData(nullptr);
 }
 
+OGNumeric * 
+OGRealDiagonalMatrixRegister::copy() const
+{
+  return OGRealDiagonalMatrix::copy();
+}
+
 /**
  * OGComplexDiagonalMatrixRegister
  */
@@ -181,5 +212,10 @@ void OGComplexDiagonalMatrixRegister::free()
   setData(nullptr);
 }
 
+OGNumeric * 
+OGComplexDiagonalMatrixRegister::copy() const
+{
+  return OGComplexDiagonalMatrix::copy();
+}
 
 } // namespace librdag

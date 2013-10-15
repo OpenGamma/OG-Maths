@@ -94,6 +94,12 @@ OGNumeric::asOGComplexMatrix() const
   return nullptr;
 }
 
+const OGLogicalMatrix*
+OGNumeric::asOGLogicalMatrix() const
+{
+  return nullptr;
+}
+
 const OGRealDiagonalMatrix*
 OGNumeric::asOGRealDiagonalMatrix() const
 {

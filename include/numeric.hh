@@ -19,6 +19,7 @@ class OGComplexScalar;
 class OGIntegerScalar;
 class OGRealMatrix;
 class OGComplexMatrix;
+class OGLogicalMatrix;
 class OGRealDiagonalMatrix;
 class OGComplexDiagonalMatrix;
 class OGRealSparseMatrix;
@@ -53,6 +54,7 @@ class OGNumeric: private Uncopyable
     virtual const OGIntegerScalar* asOGIntegerScalar() const;
     virtual const OGRealMatrix* asOGRealMatrix() const;
     virtual const OGComplexMatrix* asOGComplexMatrix() const;
+    virtual const OGLogicalMatrix* asOGLogicalMatrix() const;
     virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const;
     virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const;
     virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const;

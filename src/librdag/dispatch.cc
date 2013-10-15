@@ -14,17 +14,26 @@
 
 namespace librdag {
 
-void PlusRunner::run(Register const SUPPRESS_UNUSED * reg0, OGComplexMatrix const SUPPRESS_UNUSED * arg0, OGComplexMatrix const SUPPRESS_UNUSED * arg1) const
+void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGComplexMatrix const SUPPRESS_UNUSED * arg0, OGComplexMatrix const SUPPRESS_UNUSED * arg1) const
 {
   
 }
 
-void PlusRunner::run(Register const SUPPRESS_UNUSED * reg0, OGRealMatrix const SUPPRESS_UNUSED * arg0, OGRealMatrix const SUPPRESS_UNUSED * arg1) const
+void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGRealMatrix const SUPPRESS_UNUSED * arg0, OGRealMatrix const SUPPRESS_UNUSED * arg1) const
 {
   
 }
+
+void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGRealScalar const SUPPRESS_UNUSED * arg0, OGRealScalar const SUPPRESS_UNUSED * arg1) const 
+{
+  // impl convert and run for types OGRealScalar and OGRealScalar 
+  cout << "In virtual overridden PlusRunner T run() REAL REAL " << std::endl;
+  const OGRealScalar * ret = new OGRealScalar(arg0->getValue()+arg1->getValue());
+  reg0->push_back(ret);
+}
   
-  
+
+
 Dispatcher::Dispatcher()
 {
     this->_PlusRunner = new PlusRunner();     
@@ -161,8 +170,7 @@ void Dispatcher::dispatch(PLUS const SUPPRESS_UNUSED *thing) const {
       const RegContainer * regs = thing->getRegs();
       const OGNumeric * arg0 = (*args)[0];
       const OGNumeric * arg1 = (*args)[1];
-      const Register * reg0 = (*regs)[0]; 
-      this->_PlusRunner->run(reg0, arg0->asOGTerminal(), arg1->asOGTerminal());
+      this->_PlusRunner->eval(const_cast<RegContainer *>(regs), arg0->asOGTerminal(), arg1->asOGTerminal());
 }
 
 void Dispatcher::dispatch(NEGATE const SUPPRESS_UNUSED *thing) const {
