@@ -53,7 +53,7 @@ class OGRealScalar: public OGScalar<real16>
     virtual OGNumeric* copy() const override;
     virtual const OGRealScalar* asOGRealScalar() const override;
     virtual void debug_print() const override;
-    virtual ExprType_t getType() const override;    
+    virtual ExprType_t getType() const override;
 };
 
 class OGComplexScalar: public OGScalar<complex16>
