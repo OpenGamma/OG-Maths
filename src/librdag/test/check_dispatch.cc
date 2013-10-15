@@ -32,7 +32,7 @@ TEST(DispatchTest, SimpleTest) {
   ArgContainer* plusArgs = new ArgContainer();
   plusArgs->push_back(real1);
   plusArgs->push_back(real2);
-  OGNumeric *plus = new PLUS(plusArgs);
+  OGExpr *plus = new PLUS(plusArgs);
   ExecutionList* el1 = new ExecutionList(plus);
   const OGNumeric * val;
   int counter = 0;
@@ -42,6 +42,9 @@ TEST(DispatchTest, SimpleTest) {
     val = *it;
     dispatchfn(val);
   }
+  const RegContainer * reg = plus->getRegs();
+  const OGNumeric * answer = (*reg)[0];
+  answer->debug_print();
   delete plus;
   delete el1;
 }

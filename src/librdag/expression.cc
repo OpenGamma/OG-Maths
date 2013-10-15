@@ -26,11 +26,13 @@ OGExpr::OGExpr(ArgContainer *args)
     throw rdag_error("Null args passed to Expr constructor");
   }
   this->_args = args;
+  this->_regs = new RegContainer();
 }
 
 OGExpr::~OGExpr()
 {
   delete this->_args;
+  delete this->_regs;
 }
 
 const ArgContainer*
@@ -57,11 +59,17 @@ OGExpr::asOGExpr() const
   return this;
 }
 
-const NonOwningPtrVector<Register> * 
+const RegContainer * 
 OGExpr::getRegs() const
 {
   return this->_regs;
 }
+
+void OGExpr::debug_print() const
+{
+  cout << "OGExpr::debug_print()" << std::endl;
+}
+
 
 /**
  * Things that extend OGExpr
