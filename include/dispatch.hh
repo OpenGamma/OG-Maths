@@ -8,6 +8,7 @@
 #define _DISPATCH_HH
 #include "visitor.hh"
 #include "warningmacros.h"
+#include "jvmmanager.hh"
 
 namespace librdag {
   class OGNumeric;
@@ -16,8 +17,12 @@ namespace librdag {
 
 namespace convert {
 
-using namespace librdag;  
-  
+using namespace librdag;
+
+jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inputData, int rows, int cols);
+jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols);
+jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols);
+
 class DispatchToReal16ArrayOfArrays: public librdag::Visitor
 {
   public:
@@ -42,7 +47,6 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
     real16 ** _data = nullptr;
     int rows;
     int cols;
-    
 };
 
 
@@ -70,9 +74,32 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
   private:
     complex16 ** _data = nullptr;
     int rows;
-    int cols;    
+    int cols;
 };
-  
+
+class DispatchToOGTerminal: public librdag::Visitor
+{
+  public:
+    DispatchToOGTerminal(JNIEnv* env);
+    virtual ~DispatchToOGTerminal();
+    virtual void visit(librdag::OGExpr const *thing);
+    virtual void visit(librdag::OGScalar<real16> const *thing);
+    virtual void visit(librdag::OGScalar<complex16> const *thing);
+    virtual void visit(librdag::OGScalar<int> const *thing);
+    virtual void visit(librdag::OGMatrix<real16> const *thing);
+    virtual void visit(librdag::OGMatrix<complex16> const *thing);
+    virtual void visit(librdag::OGDiagonalMatrix<real16> const *thing);
+    virtual void visit(librdag::OGDiagonalMatrix<complex16> const *thing);
+    virtual void visit(librdag::OGSparseMatrix<real16> const *thing);
+    virtual void visit(librdag::OGSparseMatrix<complex16> const *thing);
+    jobject getObject();
+  private:
+    void setObject(jobject obj);
+    jobject _obj = nullptr;
+    JNIEnv* _env;
+};
+
+
 } // namespace convert
 
 #endif // _DISPATCH_HH

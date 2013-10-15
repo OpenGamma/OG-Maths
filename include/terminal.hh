@@ -18,6 +18,8 @@ namespace librdag {
 class OGTerminal: public OGNumeric
 {
   public:
+    virtual real16* toReal16Array() const;
+    virtual complex16* toComplex16Array() const;
     virtual real16 ** toReal16ArrayOfArrays() const;
     virtual complex16 ** toComplex16ArrayOfArrays() const;
     virtual const OGTerminal* asOGTerminal() const override;
@@ -142,6 +144,7 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
   public:
     OGDiagonalMatrix(T * data, int rows, int cols);
     virtual void accept(Visitor &v) const override;
+    T* toArray() const;
     T** toArrayOfArrays() const;
   protected:
     OGDiagonalMatrix(int rows, int cols);
@@ -155,6 +158,7 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
   public:
     using OGDiagonalMatrix::OGDiagonalMatrix;
     virtual void debug_print() const override;
+    virtual real16* toReal16Array() const override;
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const override;
@@ -165,6 +169,7 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
   public:
     using OGDiagonalMatrix::OGDiagonalMatrix;
     virtual void debug_print() const override;
+    virtual complex16* toComplex16Array() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const override;

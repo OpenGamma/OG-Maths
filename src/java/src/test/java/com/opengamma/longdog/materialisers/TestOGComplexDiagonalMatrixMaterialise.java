@@ -6,6 +6,8 @@
 
 package com.opengamma.longdog.materialisers;
 
+import java.util.Arrays;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -56,4 +58,18 @@ public class TestOGComplexDiagonalMatrixMaterialise {
     }
   }
 
+  @Test(dataProvider = "dataContainer")
+  public void materialiseToOGTerminal(double[] inputReal, double[] inputComplex, int rows, int cols, double[][] expectedReal, double[][] expectedImag) {
+    OGComplexDiagonalMatrix tmp = new OGComplexDiagonalMatrix(inputReal, inputComplex, rows, cols);
+    OGComplexDiagonalMatrix answer = (OGComplexDiagonalMatrix) Materialisers.toOGTerminal(tmp);
+    if (answer.getRows() != tmp.getRows()) {
+      throw new MathsException("Rows not equal");
+    }
+    if (answer.getCols() != tmp.getCols()) {
+      throw new MathsException("Cols not equal");
+    }
+    if (!Arrays.equals(tmp.getData(), answer.getData())) {
+      throw new MathsException("Arrays not equal");
+    }
+  }
 }

@@ -9,14 +9,6 @@ extern "C" {
 #endif
 /*
  * Class:     com_opengamma_longdog_materialisers_Materialisers
- * Method:    materialiseToJOGNumeric
- * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/OGNumeric;
- */
-JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJOGNumeric
-  (JNIEnv *, jclass, jobject);
-
-/*
- * Class:     com_opengamma_longdog_materialisers_Materialisers
  * Method:    materialiseToJDoubleArrayOfArrays
  * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)[[D
  */
@@ -37,6 +29,14 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
  * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJBoolean
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Method:    materialiseToOGTerminal
+ * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/OGTerminal;
+ */
+JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToOGTerminal
   (JNIEnv *, jclass, jobject);
 
 #ifdef __cplusplus

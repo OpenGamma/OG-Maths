@@ -6,12 +6,15 @@
 
 package com.opengamma.longdog.materialisers;
 
+import java.util.Arrays;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.opengamma.longdog.datacontainers.matrix.OGComplexDenseMatrix;
 import com.opengamma.longdog.datacontainers.other.ComplexArrayContainer;
 import com.opengamma.longdog.exceptions.MathsException;
+import com.opengamma.longdog.helpers.DenseMemoryManipulation;
 import com.opengamma.longdog.testhelpers.ArraysHelpers;
 
 public class TestOGComplexDenseMatrixMaterialise {
@@ -52,6 +55,16 @@ public class TestOGComplexDenseMatrixMaterialise {
     }
     if (!ArraysHelpers.ArraysEquals(expectedImag, answer.getImag())) {
       throw new MathsException("IMAG: Arrays not equal");
+    }
+  }
+
+  @Test(dataProvider = "dataContainer")
+  public void materialisetoOGTerminal(double[][] inputReal, double[][] inputImag, double[][] expectedReal, double[][] expectedImag) {
+    OGComplexDenseMatrix tmp = new OGComplexDenseMatrix(inputReal, inputImag);
+    OGComplexDenseMatrix answer = (OGComplexDenseMatrix) Materialisers.toOGTerminal(tmp);
+    double[] expected = DenseMemoryManipulation.convertTwoRowMajorDoublePointerToColumnMajorInterleavedSinglePointer(expectedReal, expectedImag);
+    if (!Arrays.equals(expected, answer.getData())) {
+      throw new MathsException("Arrays not equal");
     }
   }
 

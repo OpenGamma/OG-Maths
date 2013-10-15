@@ -6,11 +6,14 @@
 
 package com.opengamma.longdog.materialisers;
 
+import java.util.Arrays;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.longdog.exceptions.MathsException;
+import com.opengamma.longdog.helpers.DenseMemoryManipulation;
 import com.opengamma.longdog.testhelpers.ArraysHelpers;
 
 public class TestOGRealDenseMatrixMaterialise {
@@ -44,4 +47,12 @@ public class TestOGRealDenseMatrixMaterialise {
     }
   }
 
+  @Test(dataProvider = "dataContainer")
+  public void materialiseToRealDenseMatrix(double[][] input, double[][] expected) {
+    OGRealDenseMatrix tmp = new OGRealDenseMatrix(input);
+    OGRealDenseMatrix m = (OGRealDenseMatrix) Materialisers.toOGTerminal(tmp);
+    if (!Arrays.equals(tmp.getData(), m.getData())) {
+      throw new MathsException("Arrays not equal");
+    }
+  }
 }

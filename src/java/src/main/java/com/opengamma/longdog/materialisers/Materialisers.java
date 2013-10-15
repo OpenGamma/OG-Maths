@@ -7,6 +7,7 @@
 package com.opengamma.longdog.materialisers;
 
 import com.opengamma.longdog.datacontainers.OGNumeric;
+import com.opengamma.longdog.datacontainers.OGTerminal;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.matrix.OGArray;
 import com.opengamma.longdog.datacontainers.other.ComplexArrayContainer;
@@ -33,6 +34,8 @@ public class Materialisers {
   private static native ComplexArrayContainer materialiseToJComplexArrayContainer(OGNumeric arg0);
 
   private static native boolean materialiseToJBoolean(OGNumeric arg0);
+
+  private static native OGTerminal materialiseToOGTerminal(OGNumeric arg0);
 
   /**
    * Materialise the tree at arg0 to a complex array stored in a ComplexArrayContainer.
@@ -73,7 +76,7 @@ public class Materialisers {
    * Naïvely print the tree associated with arg
    * @param arg the root of the tree
    * @param buf a buffer in which to hold the printed tree
-   * @param level the level at which to start indents (usually 0) 
+   * @param level the level at which to start indents (usually 0)
    */
   public static void printTree(OGNumeric arg, StringBuffer buf, int level) {
     Catchers.catchNullFromArgList(arg, 1);
@@ -100,4 +103,8 @@ public class Materialisers {
     level--;
   }
 
+  public static OGTerminal toOGTerminal(OGNumeric arg0) {
+    Catchers.catchNullFromArgList(arg0, 1);
+    return materialiseToOGTerminal(arg0);
+  }
 }
