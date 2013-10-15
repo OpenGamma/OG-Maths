@@ -18,10 +18,22 @@
 
 using namespace convert;
 
+/*
+ * Check for exception
+ */
+void checkEx(JNIEnv* env)
+{
+  jthrowable e = env->ExceptionOccurred();
+  if (e)
+  {
+    env->ExceptionDescribe();
+    throw convert_error("Java exception thrown in JNI.");
+  }
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 /*
  * Class:     com_opengamma_longdog_materialisers_Materialisers
@@ -37,6 +49,8 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Material
   // convert obj to OGNumeric objs
   librdag::OGNumeric * chain = convert::createExpression(obj);
 
+  DEBUG_PRINT("Check for exception before entrypt\n");
+  checkEx(env);
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
   delete chain;
@@ -67,6 +81,8 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
   // convert obj to OGNumeric objs
   librdag::OGNumeric * chain = convert::createExpression(obj);
 
+  DEBUG_PRINT("Check for exception before entrypt\n");
+  checkEx(env);
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
   delete chain;
@@ -106,6 +122,8 @@ Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToOGTerminal(J
   // convert obj to OGNumeric objs
   librdag::OGNumeric * chain = convert::createExpression(obj);
 
+  DEBUG_PRINT("Check for exception before entrypt\n");
+  checkEx(env);
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
   delete chain;

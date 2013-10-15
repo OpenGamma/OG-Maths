@@ -316,20 +316,6 @@ jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, c
   return returnVal;
 }
 
-/*
- * Check for exception
- */
-
-void checkEx(JNIEnv* env)
-{
-  jthrowable e = env->ExceptionOccurred();
-  if (e)
-  {
-    env->ExceptionDescribe();
-    throw convert_error("Java exception thrown in JNI.");
-  }
-}
-
 DispatchToOGTerminal::DispatchToOGTerminal(JNIEnv* env): _obj(nullptr), _env(env) {}
 
 DispatchToOGTerminal::~DispatchToOGTerminal() {}
