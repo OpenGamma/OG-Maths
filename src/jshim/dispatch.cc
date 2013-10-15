@@ -355,7 +355,7 @@ DispatchToOGTerminal::visit(librdag::OGExpr SUPPRESS_UNUSED const *thing)
 void
 DispatchToOGTerminal::visit(librdag::OGScalar<real16> const *thing)
 {
-  jclass cls = _env->FindClass("com/opengamma/longdog/datacontainers/scalar/OGRealScalar");
+  jclass cls = JVMManager::getOGRealScalarClazz();
   jmethodID constructor = _env->GetMethodID(cls, "<init>", "(Ljava/lang/Number;)V");
   jobject value = NewDouble(_env, thing->getValue());
   jobject newobject = _env->NewObject(cls, constructor, value);
@@ -365,8 +365,8 @@ DispatchToOGTerminal::visit(librdag::OGScalar<real16> const *thing)
 void
 DispatchToOGTerminal::visit(librdag::OGScalar<complex16> const *thing)
 {
-  jclass cls = _env->FindClass("com/opengamma/longdog/datacontainers/scalar/OGComplexScalar");
-  jmethodID constructor = _env->GetMethodID(cls, "<init>", "(Ljava/lang/Number;Ljava/lang/Number;)V");
+  jclass cls = JVMManager::getOGComplexScalarClazz();
+  jmethodID constructor = JVMManager::getOGComplexScalarClazz_init();
   complex16 value = thing->getValue();
   jobject real = NewDouble(_env, value.real());
   jobject imag = NewDouble(_env, value.imag());
@@ -383,8 +383,8 @@ DispatchToOGTerminal::visit(librdag::OGScalar<int> SUPPRESS_UNUSED const *thing)
 void
 DispatchToOGTerminal::visit(librdag::OGMatrix<real16> const *thing)
 {
-  jclass cls = _env->FindClass("com/opengamma/longdog/datacontainers/matrix/OGRealDenseMatrix");
-  jmethodID constructor = _env->GetMethodID(cls, "<init>", "([[D)V");
+  jclass cls = JVMManager::getOGRealDenseMatrixClazz();
+  jmethodID constructor = JVMManager::getOGRealDenseMatrixClazz_init();
   jobjectArray darr = convertCreal16ArrOfArr2JDoubleArrOfArr(_env, thing->toReal16ArrayOfArrays(), thing->getRows(), thing->getCols());
   jobject newobject = _env->NewObject(cls, constructor, darr);
   setObject(newobject);
@@ -393,8 +393,8 @@ DispatchToOGTerminal::visit(librdag::OGMatrix<real16> const *thing)
 void
 DispatchToOGTerminal::visit(librdag::OGMatrix<complex16> const *thing)
 {
-  jclass cls = _env->FindClass("com/opengamma/longdog/datacontainers/matrix/OGComplexDenseMatrix");
-  jmethodID constructor = _env->GetMethodID(cls, "<init>", "([[D[[D)V");
+  jclass cls = JVMManager::getOGComplexDenseMatrixClazz();
+  jmethodID constructor = JVMManager::getOGComplexDenseMatrixClazz_init();
   complex16** values = thing->toComplex16ArrayOfArrays();
   int rows = thing->getRows();
   int cols = thing->getCols();
@@ -407,18 +407,18 @@ DispatchToOGTerminal::visit(librdag::OGMatrix<complex16> const *thing)
 void
 DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<real16> const *thing)
 {
-  jclass cls = _env->FindClass("com/opengamma/longdog/datacontainers/matrix/OGRealDiagonalMatrix");
-  jmethodID constructor = _env->GetMethodID(cls, "<init>", "([DII)V");
+  jclass cls = JVMManager::getOGRealDiagonalMatrixClazz();
+  jmethodID constructor = JVMManager::getOGRealDiagonalMatrixClazz_init();
   jdoubleArray darr = convertCreal16Arr2JDoubleArr(_env, thing->toReal16Array(), thing->getDatalen());
   jobject newobject = _env->NewObject(cls, constructor, darr, thing->getRows(), thing->getCols());
   setObject(newobject);
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<complex16> SUPPRESS_UNUSED const *thing)
+DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
 {
-  jclass cls = _env->FindClass("com/opengamma/longdog/datacontainers/matrix/OGComplexDiagonalMatrix");
-  jmethodID constructor = _env->GetMethodID(cls, "<init>", "([D[DII)V");
+  jclass cls = JVMManager::getOGComplexDiagonalMatrixClazz();
+  jmethodID constructor = JVMManager::getOGComplexDiagonalMatrixClazz_init();
   complex16* values = thing->toComplex16Array();
   int datalen = thing->getDatalen();
   jdoubleArray realpart = extractRealPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
