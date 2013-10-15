@@ -11,7 +11,7 @@
 #include "exprtypeenum.h"
 #include "exprfactory.hh"
 #include "warningmacros.h"
-#include "dispatch.hh"
+#include "jdispatch.hh"
 #include "visitor.hh"
 #include "debug.h"
 #include <stdio.h>

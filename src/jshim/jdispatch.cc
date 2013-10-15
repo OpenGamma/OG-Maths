@@ -4,7 +4,7 @@
  * Please see distribution for license.
  */
 
-#include "dispatch.hh"
+#include "jdispatch.hh"
 #include "visitor.hh"
 #include "warningmacros.h"
 #include "terminal.hh"
