@@ -62,6 +62,7 @@ JVMManager::registerReferences()
   // REGISTER CLASS REFERENCES
   //
 
+  registerGlobalClassReference("java/lang/Double", &_DoubleClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/OGNumeric", &_OGNumericClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/OGTerminal", &_OGTerminalClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGArray", &_OGArrayClazz);
@@ -83,6 +84,7 @@ JVMManager::registerReferences()
   // REGISTER METHOD REFERENCES
   //
 
+  registerGlobalMethodReference(&_DoubleClazz, &_DoubleClazz_init, "<init>", "(D)V");
   registerGlobalMethodReference(&_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/longdog/datacontainers/ExprTypeEnum;");
   registerGlobalMethodReference(&_OGTerminalClazz, &_OGTerminalClazz_getData, "getData",  "()[D");
   registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getRows, "getRows",  "()I");
@@ -227,6 +229,7 @@ jfieldID JVMManager:: getOGExprTypeEnumClazz__hashdefined()
 
 JavaVM* JVMManager::_jvm;
 JNIEnv* JVMManager::_env;
+jclass JVMManager::_DoubleClazz;
 jclass JVMManager::_OGNumericClazz;
 jclass JVMManager::_OGExprClazz;
 jclass JVMManager::_OGArrayClazz;
@@ -242,6 +245,7 @@ jclass JVMManager::_OGRealDenseMatrixClazz;
 jclass JVMManager::_OGComplexDenseMatrixClazz;
 jclass JVMManager::_OGRealDiagonalMatrixClazz;
 jclass JVMManager::_OGComplexDiagonalMatrixClazz;
+jmethodID JVMManager::_DoubleClazz_init;
 jmethodID JVMManager::_OGRealScalarClazz_init;
 jmethodID JVMManager::_OGComplexScalarClazz_init;
 jmethodID JVMManager::_OGRealDenseMatrixClazz_init;
@@ -306,6 +310,16 @@ JVMManager::callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...)
     throw convert_error("CallObjectMethod failed.");
   }
   return dataobj;
+}
+
+/*
+ * Make a new double object because there's no autoboxing in JNI.
+ */
+
+jobject
+JVMManager::newDouble(JNIEnv* env, jdouble v)
+{
+  return env->NewObject(_DoubleClazz, _DoubleClazz_init, v);
 }
 
 } // namespace convert

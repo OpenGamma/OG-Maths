@@ -316,18 +316,6 @@ jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, c
   return returnVal;
 }
 
-
-/*
- * Make a new double object because there's no autoboxing in JNI.
- */
-
-jobject NewDouble(JNIEnv* env, jdouble v)
-{
-  jclass cls = env->FindClass("java/lang/Double");
-  jmethodID constructor = env->GetMethodID(cls, "<init>", "(D)V");
-  return env->NewObject(cls, constructor, v);
-}
-
 /*
  * Check for exception
  */
@@ -356,8 +344,8 @@ void
 DispatchToOGTerminal::visit(librdag::OGScalar<real16> const *thing)
 {
   jclass cls = JVMManager::getOGRealScalarClazz();
-  jmethodID constructor = _env->GetMethodID(cls, "<init>", "(Ljava/lang/Number;)V");
-  jobject value = NewDouble(_env, thing->getValue());
+  jmethodID constructor = JVMManager::getOGRealScalarClazz_init();
+  jobject value = JVMManager::newDouble(_env, thing->getValue());
   jobject newobject = _env->NewObject(cls, constructor, value);
   setObject(newobject);
 }
@@ -368,8 +356,8 @@ DispatchToOGTerminal::visit(librdag::OGScalar<complex16> const *thing)
   jclass cls = JVMManager::getOGComplexScalarClazz();
   jmethodID constructor = JVMManager::getOGComplexScalarClazz_init();
   complex16 value = thing->getValue();
-  jobject real = NewDouble(_env, value.real());
-  jobject imag = NewDouble(_env, value.imag());
+  jobject real = JVMManager::newDouble(_env, value.real());
+  jobject imag = JVMManager::newDouble(_env, value.imag());
   jobject newobject = _env->NewObject(cls, constructor, real, imag);
   setObject(newobject);
 }

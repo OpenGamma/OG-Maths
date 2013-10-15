@@ -54,6 +54,7 @@ class JVMManager {
     // Wrappers for JNIEnv and JavaVM methods
     static jobjectArray newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init);
     static jdoubleArray newDoubleArray(JNIEnv *env, jsize len);
+    static jobject newDouble(JNIEnv* env, jdouble v);
     static void getEnv(void **penv);
     static jobject callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...);
   private:
@@ -63,6 +64,7 @@ class JVMManager {
     static JavaVM* _jvm;
     static JNIEnv* _env;
     // Classes, methods, and fields
+    static jclass _DoubleClazz;
     static jclass _OGNumericClazz;
     static jclass _OGExprClazz;
     static jclass _OGArrayClazz;
@@ -78,6 +80,7 @@ class JVMManager {
     static jclass _OGComplexDenseMatrixClazz;
     static jclass _OGRealDiagonalMatrixClazz;
     static jclass _OGComplexDiagonalMatrixClazz;
+    static jmethodID _DoubleClazz_init;
     static jmethodID _OGRealScalarClazz_init;
     static jmethodID _OGComplexScalarClazz_init;
     static jmethodID _OGRealDenseMatrixClazz_init;
