@@ -55,13 +55,14 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Material
   checkEx(env);
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
-  delete chain;
-
+  DEBUG_PRINT("Returning from entrypt function\n");
+  
   DispatchToReal16ArrayOfArrays *visitor = new DispatchToReal16ArrayOfArrays();
   answer->accept(*visitor);
 
   jobjectArray returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
 
+  delete chain;
   delete visitor;
 
   DEBUG_PRINT("Returning\n");
