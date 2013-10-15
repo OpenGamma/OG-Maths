@@ -39,4 +39,15 @@ public class TestOGComplexScalarMaterialise {
     }
   }
 
+  @Test(dataProvider = "dataContainer")
+  public void materialiseToOGTerminal(double[] input, double[][] expectedReal, double[][] expectedImag) {
+    OGComplexScalar tmp = new OGComplexScalar(input);
+    OGComplexScalar answer = (OGComplexScalar) Materialisers.toOGTerminal(tmp);
+    if (tmp.getReal() != answer.getReal()) {
+      throw new MathsException("REAL part not equal");
+    }
+    if (tmp.getImag() != answer.getImag()) {
+      throw new MathsException("IMAG part not equal");
+    }
+  }
 }

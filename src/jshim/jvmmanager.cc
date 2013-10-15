@@ -62,6 +62,7 @@ JVMManager::registerReferences()
   // REGISTER CLASS REFERENCES
   //
 
+  registerGlobalClassReference("java/lang/Double", &_DoubleClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/OGNumeric", &_OGNumericClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/OGTerminal", &_OGTerminalClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGArray", &_OGArrayClazz);
@@ -71,10 +72,19 @@ JVMManager::registerReferences()
   registerGlobalClassReference("[D", &_BigDDoubleArrayClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/other/ComplexArrayContainer", &_ComplexArrayContainerClazz);
 
+
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGRealScalar", &_OGRealScalarClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGComplexScalar", &_OGComplexScalarClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealDenseMatrix", &_OGRealDenseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexDenseMatrix", &_OGComplexDenseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealDiagonalMatrix", &_OGRealDiagonalMatrixClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexDiagonalMatrix", &_OGComplexDiagonalMatrixClazz);
+
   //
   // REGISTER METHOD REFERENCES
   //
 
+  registerGlobalMethodReference(&_DoubleClazz, &_DoubleClazz_init, "<init>", "(D)V");
   registerGlobalMethodReference(&_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/longdog/datacontainers/ExprTypeEnum;");
   registerGlobalMethodReference(&_OGTerminalClazz, &_OGTerminalClazz_getData, "getData",  "()[D");
   registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getRows, "getRows",  "()I");
@@ -83,6 +93,12 @@ JVMManager::registerReferences()
   registerGlobalMethodReference(&_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getRowIdx, "getRowIdx",  "()[I");
   registerGlobalMethodReference(&_OGExprClazz, &_OGExprClazz_getExprs, "getExprs",  "()[Lcom/opengamma/longdog/datacontainers/OGNumeric;");
   registerGlobalMethodReference(&_ComplexArrayContainerClazz, &_ComplexArrayContainerClazz_ctor_DAoA_DAoA, "<init>","([[D[[D)V");
+  registerGlobalMethodReference(&_OGRealScalarClazz, &_OGRealScalarClazz_init, "<init>", "(Ljava/lang/Number;)V");
+  registerGlobalMethodReference(&_OGComplexScalarClazz, &_OGComplexScalarClazz_init, "<init>", "(Ljava/lang/Number;Ljava/lang/Number;)V");
+  registerGlobalMethodReference(&_OGRealDenseMatrixClazz, &_OGRealDenseMatrixClazz_init, "<init>", "([[D)V");
+  registerGlobalMethodReference(&_OGComplexDenseMatrixClazz, &_OGComplexDenseMatrixClazz_init, "<init>", "([[D[[D)V");
+  registerGlobalMethodReference(&_OGRealDiagonalMatrixClazz, &_OGRealDiagonalMatrixClazz_init, "<init>", "([DII)V");
+  registerGlobalMethodReference(&_OGComplexDiagonalMatrixClazz, &_OGComplexDiagonalMatrixClazz_init, "<init>", "([D[DII)V");
 
   //
   // REGISTER FIELD REFERENCES
@@ -161,8 +177,32 @@ jclass JVMManager::getBigDDoubleArrayClazz()
 { return _BigDDoubleArrayClazz; }
 jclass JVMManager::getComplexArrayContainerClazz()
 { return _ComplexArrayContainerClazz; }
+jclass JVMManager::getOGRealScalarClazz()
+{ return _OGRealScalarClazz; }
+jclass JVMManager::getOGComplexScalarClazz()
+{ return _OGComplexScalarClazz; }
+jclass JVMManager::getOGRealDenseMatrixClazz()
+{ return _OGRealDenseMatrixClazz; }
+jclass JVMManager::getOGComplexDenseMatrixClazz()
+{ return _OGComplexDenseMatrixClazz; }
+jclass JVMManager::getOGRealDiagonalMatrixClazz()
+{ return _OGRealDiagonalMatrixClazz; }
+jclass JVMManager::getOGComplexDiagonalMatrixClazz()
+{ return _OGComplexDiagonalMatrixClazz; }
 jclass JVMManager::getOGExprTypeEnumClazz()
 { return _OGExprTypeEnumClazz; }
+jmethodID JVMManager::getOGRealScalarClazz_init()
+{ return _OGRealScalarClazz_init; }
+jmethodID JVMManager::getOGComplexScalarClazz_init()
+{ return _OGComplexScalarClazz_init; }
+jmethodID JVMManager::getOGRealDenseMatrixClazz_init()
+{ return _OGRealDenseMatrixClazz_init; }
+jmethodID JVMManager::getOGComplexDenseMatrixClazz_init()
+{ return _OGComplexDenseMatrixClazz_init; }
+jmethodID JVMManager::getOGRealDiagonalMatrixClazz_init()
+{ return _OGRealDiagonalMatrixClazz_init; }
+jmethodID JVMManager::getOGComplexDiagonalMatrixClazz_init()
+{ return _OGComplexDiagonalMatrixClazz_init; }
 jmethodID JVMManager::getOGTerminalClazz_getData()
 { return _OGTerminalClazz_getData; }
 jmethodID JVMManager::getOGNumericClazz_getType()
@@ -189,6 +229,7 @@ jfieldID JVMManager:: getOGExprTypeEnumClazz__hashdefined()
 
 JavaVM* JVMManager::_jvm;
 JNIEnv* JVMManager::_env;
+jclass JVMManager::_DoubleClazz;
 jclass JVMManager::_OGNumericClazz;
 jclass JVMManager::_OGExprClazz;
 jclass JVMManager::_OGArrayClazz;
@@ -198,6 +239,19 @@ jclass JVMManager::_OGSparseMatrixClazz;
 jclass JVMManager::_BigDDoubleArrayClazz;
 jclass JVMManager::_ComplexArrayContainerClazz;
 jclass JVMManager::_OGExprTypeEnumClazz;
+jclass JVMManager::_OGRealScalarClazz;
+jclass JVMManager::_OGComplexScalarClazz;
+jclass JVMManager::_OGRealDenseMatrixClazz;
+jclass JVMManager::_OGComplexDenseMatrixClazz;
+jclass JVMManager::_OGRealDiagonalMatrixClazz;
+jclass JVMManager::_OGComplexDiagonalMatrixClazz;
+jmethodID JVMManager::_DoubleClazz_init;
+jmethodID JVMManager::_OGRealScalarClazz_init;
+jmethodID JVMManager::_OGComplexScalarClazz_init;
+jmethodID JVMManager::_OGRealDenseMatrixClazz_init;
+jmethodID JVMManager::_OGComplexDenseMatrixClazz_init;
+jmethodID JVMManager::_OGRealDiagonalMatrixClazz_init;
+jmethodID JVMManager::_OGComplexDiagonalMatrixClazz_init;
 jmethodID JVMManager::_OGTerminalClazz_getData;
 jmethodID JVMManager::_OGNumericClazz_getType;
 jmethodID JVMManager::_OGExprClazz_getExprs;
@@ -256,6 +310,16 @@ JVMManager::callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...)
     throw convert_error("CallObjectMethod failed.");
   }
   return dataobj;
+}
+
+/*
+ * Make a new double object because there's no autoboxing in JNI.
+ */
+
+jobject
+JVMManager::newDouble(JNIEnv* env, jdouble v)
+{
+  return env->NewObject(_DoubleClazz, _DoubleClazz_init, v);
 }
 
 } // namespace convert

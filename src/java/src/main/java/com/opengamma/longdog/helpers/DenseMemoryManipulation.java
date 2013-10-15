@@ -129,5 +129,4 @@ public class DenseMemoryManipulation {
       arrayToFill[i + 1] = value[1];
     }
   }
-
 }

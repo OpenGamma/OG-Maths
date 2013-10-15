@@ -35,4 +35,13 @@ public class TestOGRealScalarMaterialise {
     }
   }
 
+  @Test(dataProvider = "dataContainer")
+  public void materialiseToOGTerminal(double input, double[][] expected) {
+    OGRealScalar tmp = new OGRealScalar(input);
+    OGRealScalar answer = (OGRealScalar) Materialisers.toOGTerminal(tmp);
+    if (answer.getData()[0] != expected[0][0]) {
+      throw new MathsException("Arrays not equal");
+    }
+  }
+
 }

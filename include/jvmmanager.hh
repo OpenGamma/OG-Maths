@@ -29,6 +29,18 @@ class JVMManager {
     static jclass getBigDDoubleArrayClazz();
     static jclass getComplexArrayContainerClazz();
     static jclass getOGExprTypeEnumClazz();
+    static jclass getOGRealScalarClazz();
+    static jclass getOGComplexScalarClazz();
+    static jclass getOGRealDenseMatrixClazz();
+    static jclass getOGComplexDenseMatrixClazz();
+    static jclass getOGRealDiagonalMatrixClazz();
+    static jclass getOGComplexDiagonalMatrixClazz();
+    static jmethodID getOGRealScalarClazz_init();
+    static jmethodID getOGComplexScalarClazz_init();
+    static jmethodID getOGRealDenseMatrixClazz_init();
+    static jmethodID getOGComplexDenseMatrixClazz_init();
+    static jmethodID getOGRealDiagonalMatrixClazz_init();
+    static jmethodID getOGComplexDiagonalMatrixClazz_init();
     static jmethodID getOGTerminalClazz_getData();
     static jmethodID getOGNumericClazz_getType();
     static jmethodID getOGExprClazz_getExprs();
@@ -42,6 +54,7 @@ class JVMManager {
     // Wrappers for JNIEnv and JavaVM methods
     static jobjectArray newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init);
     static jdoubleArray newDoubleArray(JNIEnv *env, jsize len);
+    static jobject newDouble(JNIEnv* env, jdouble v);
     static void getEnv(void **penv);
     static jobject callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...);
   private:
@@ -51,6 +64,7 @@ class JVMManager {
     static JavaVM* _jvm;
     static JNIEnv* _env;
     // Classes, methods, and fields
+    static jclass _DoubleClazz;
     static jclass _OGNumericClazz;
     static jclass _OGExprClazz;
     static jclass _OGArrayClazz;
@@ -60,6 +74,19 @@ class JVMManager {
     static jclass _BigDDoubleArrayClazz;
     static jclass _ComplexArrayContainerClazz;
     static jclass _OGExprTypeEnumClazz;
+    static jclass _OGRealScalarClazz;
+    static jclass _OGComplexScalarClazz;
+    static jclass _OGRealDenseMatrixClazz;
+    static jclass _OGComplexDenseMatrixClazz;
+    static jclass _OGRealDiagonalMatrixClazz;
+    static jclass _OGComplexDiagonalMatrixClazz;
+    static jmethodID _DoubleClazz_init;
+    static jmethodID _OGRealScalarClazz_init;
+    static jmethodID _OGComplexScalarClazz_init;
+    static jmethodID _OGRealDenseMatrixClazz_init;
+    static jmethodID _OGComplexDenseMatrixClazz_init;
+    static jmethodID _OGRealDiagonalMatrixClazz_init;
+    static jmethodID _OGComplexDiagonalMatrixClazz_init;
     static jmethodID _OGTerminalClazz_getData;
     static jmethodID _OGNumericClazz_getType;
     static jmethodID _OGExprClazz_getExprs;
