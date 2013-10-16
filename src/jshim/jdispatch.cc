@@ -427,9 +427,30 @@ DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> const *thing)
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGSparseMatrix<complex16> SUPPRESS_UNUSED const *thing)
+DispatchToOGTerminal::visit(librdag::OGSparseMatrix<complex16> const *thing)
 {
-  throw convert_error("Not implemented yet");
+  // Column pointer
+  int colPtrLen = thing->getRows() + 1;
+  jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
+  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, thing->getColPtr());
+
+  // Row index
+  int datalen = thing->getDatalen();
+  jintArray jRowIdx = JVMManager::newIntArray(_env, datalen);
+  _env->SetIntArrayRegion(jRowIdx, 0, datalen, thing->getRowIdx());
+
+  // Values
+  complex16* values = thing->toComplex16Array();
+  jdoubleArray realpart = extractRealPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
+  jdoubleArray imagpart = extractComplexPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
+
+  // Call constructor
+  jclass cls = JVMManager::getOGComplexSparseMatrixClazz();
+  jmethodID constructor = JVMManager::getOGComplexSparseMatrixClazz_init();
+  jobject newobject = _env->NewObject(cls, constructor, jColPtr, jRowIdx, realpart, imagpart, thing->getRows(), thing->getCols());
+
+  // Done
+  setObject(newobject);
 }
 
 jobject
