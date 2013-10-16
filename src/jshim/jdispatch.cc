@@ -401,18 +401,32 @@ DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
   setObject(newobject);
 }
 
+jint* makeCJintArray(const int* arr, int len)
+{
+  jint* jintArr = new jint[len];
+  for (int i = 0; i < len; ++i)
+  {
+    jintArr[i] = arr[i];
+  }
+  return jintArr;
+}
+
 void
 DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> const *thing)
 {
   // Column pointer
   int colPtrLen = thing->getRows() + 1;
   jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
-  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, thing->getColPtr());
+  jint* colPtr = makeCJintArray(thing->getColPtr(), colPtrLen);
+  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  delete[] colPtr;
 
   // Row index
   int datalen = thing->getDatalen();
   jintArray jRowIdx = JVMManager::newIntArray(_env, datalen);
-  _env->SetIntArrayRegion(jRowIdx, 0, datalen, thing->getRowIdx());
+  jint* rowIdx = makeCJintArray(thing->getRowIdx(), datalen);
+  _env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  delete[] rowIdx;
 
   // Values
   jdoubleArray values = convertCreal16Arr2JDoubleArr(_env, thing->toReal16Array(), datalen);
@@ -432,12 +446,16 @@ DispatchToOGTerminal::visit(librdag::OGSparseMatrix<complex16> const *thing)
   // Column pointer
   int colPtrLen = thing->getRows() + 1;
   jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
-  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, thing->getColPtr());
+  jint* colPtr = makeCJintArray(thing->getColPtr(), colPtrLen);
+  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  delete[] colPtr;
 
   // Row index
   int datalen = thing->getDatalen();
   jintArray jRowIdx = JVMManager::newIntArray(_env, datalen);
-  _env->SetIntArrayRegion(jRowIdx, 0, datalen, thing->getRowIdx());
+  jint* rowIdx = makeCJintArray(thing->getRowIdx(), datalen);
+  _env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  delete[] rowIdx;
 
   // Values
   complex16* values = thing->toComplex16Array();
