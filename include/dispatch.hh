@@ -1050,8 +1050,6 @@ virtual T run(RegContainer SUPPRESS_UNUSED * reg0, OGRealMatrix const * arg0, OG
 
 };
 
-template class DispatchBinaryOp<void>;
-
 // typedef the void dispatch of a binary operation
 typedef DispatchBinaryOp<void> DispatchVoidBinaryOp;
 
