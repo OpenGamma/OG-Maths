@@ -197,6 +197,18 @@ OGArray<T>::getData() const
 }
 
 template<typename T>
+T*
+OGArray<T>::toArray() const
+{
+  T* tmp = new T[_datalen];
+  for (int i = 0; i < _datalen; i++)
+  {
+    tmp[i] = _data[i];
+  }
+  return tmp;
+}
+
+template<typename T>
 int
 OGArray<T>::getRows() const
 {
@@ -433,20 +445,6 @@ void
 OGDiagonalMatrix<T>::accept(Visitor &v) const
 {
   v.visit(this);
-}
-
-template<typename T>
-T*
-OGDiagonalMatrix<T>::toArray() const
-{
-  int datalen = this->getDatalen();
-  T* data = this->getData();
-  T* tmp = new T[datalen];
-  for (int i = 0; i < datalen; i++)
-  {
-    tmp[i] = data[i];
-  }
-  return tmp;
 }
 
 template<typename T>
@@ -717,6 +715,12 @@ OGRealSparseMatrix::debug_print() const
   }
 }
 
+real16*
+OGRealSparseMatrix::toReal16Array() const
+{
+  return this->toArray();
+}
+
 real16**
 OGRealSparseMatrix::toReal16ArrayOfArrays() const
 {
@@ -761,6 +765,12 @@ OGComplexSparseMatrix::debug_print() const
       printf("(%d,%d) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
     }
   }
+}
+
+complex16*
+OGComplexSparseMatrix::toComplex16Array() const
+{
+  return this->toArray();
 }
 
 complex16**
