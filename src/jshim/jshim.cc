@@ -31,6 +31,7 @@ void checkEx(JNIEnv* env)
   }
 }
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
