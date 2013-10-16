@@ -402,9 +402,28 @@ DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> SUPPRESS_UNUSED const *thing)
+DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> const *thing)
 {
-  throw convert_error("Not implemented yet");
+  // Column pointer
+  int colPtrLen = thing->getRows() + 1;
+  jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
+  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, thing->getColPtr());
+
+  // Row index
+  int datalen = thing->getDatalen();
+  jintArray jRowIdx = JVMManager::newIntArray(_env, datalen);
+  _env->SetIntArrayRegion(jRowIdx, 0, datalen, thing->getRowIdx());
+
+  // Values
+  jdoubleArray values = convertCreal16Arr2JDoubleArr(_env, thing->toReal16Array(), datalen);
+
+  // Call constructor
+  jclass cls = JVMManager::getOGRealSparseMatrixClazz();
+  jmethodID constructor = JVMManager::getOGRealSparseMatrixClazz_init();
+  jobject newobject = _env->NewObject(cls, constructor, jColPtr, jRowIdx, values, thing->getRows(), thing->getCols());
+
+  // Done
+  setObject(newobject);
 }
 
 void

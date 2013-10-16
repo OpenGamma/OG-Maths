@@ -18,21 +18,6 @@
 
 using namespace convert;
 
-/*
- * Check for exception
- */
-void checkEx(JNIEnv* env)
-{
-
-  jthrowable e = env->ExceptionOccurred();
-  if (e)
-  {
-    env->ExceptionDescribe();
-    throw convert_error("Java exception thrown in JNI.");
-  }
-}
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
