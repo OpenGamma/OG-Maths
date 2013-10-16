@@ -117,6 +117,7 @@ typedef class JNIEnv_ JNIEnv;
 static _jclass allClasses;
 static _jobject allGlobalRefs;
 static _jfieldID allFieldIds;
+static _jthrowable allThrows;
 
 class JNIEnv_
 {
@@ -137,6 +138,8 @@ class JNIEnv_
     virtual jobjectArray NewObjectArray(jsize SUPPRESS_UNUSED len, jclass SUPPRESS_UNUSED clazz, jobject SUPPRESS_UNUSED init) { return nullptr; }
     virtual jdoubleArray NewDoubleArray(jsize SUPPRESS_UNUSED len) { return nullptr; }
     virtual jclass FindClass(const char SUPPRESS_UNUSED *name) { return &allClasses; }
+    virtual jthrowable ExceptionOccurred() {return &allThrows; }
+    virtual void ExceptionDescribe() {};
 };
 
 

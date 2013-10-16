@@ -36,48 +36,6 @@ void checkEx(JNIEnv* env)
 extern "C" {
 #endif
 
-/**
- *
- */
-jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
-{
-  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), nullptr);
-  real16 * aRow = new real16[cols];
-  for(int i = 0; i < rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
-    for(int j = 0; j < cols; j++)
-    {
-      aRow[j]=std::real(inputData[i][j]);
-    }
-    env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
-  delete aRow;
-  return returnVal;
-}
-
-/**
-*
-*/
-jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
-{
-  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), nullptr);
-  real16 * aRow = new real16[cols];
-  for(int i = 0; i < rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
-    for(int j = 0; j < cols; j++)
-    {
-      aRow[j]=std::imag(inputData[i][j]);
-    }
-    env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
-  delete aRow;
-  return returnVal;
-}
-
 /*
  * Class:     com_opengamma_longdog_materialisers_Materialisers
  * Method:    materialiseToJDoubleArrayOfArrays
