@@ -14,9 +14,11 @@
 
 namespace librdag {
 
+template class DispatchBinaryOp<void>;
+
 void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGComplexMatrix const SUPPRESS_UNUSED * arg0, OGComplexMatrix const SUPPRESS_UNUSED * arg1) const
 {
-  
+
 }
 
 void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGRealMatrix const SUPPRESS_UNUSED * arg0, OGRealMatrix const SUPPRESS_UNUSED * arg1) const
