@@ -7,7 +7,7 @@
 #ifndef _JBINDINGS_HH
 #define _JBINDINGS_HH
 
-#include "jni.h"
+#include "jvmmanager.hh"
 #include "numerictypes.hh"
 
 namespace convert {

@@ -5,7 +5,7 @@
  */
 
 #include "expression.hh"
-#include "jni.h"
+#include "jvmmanager.hh"
 
 using librdag::OGNumeric;
 
