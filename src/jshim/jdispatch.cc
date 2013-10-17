@@ -401,16 +401,74 @@ DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
   setObject(newobject);
 }
 
-void
-DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> SUPPRESS_UNUSED const *thing)
+jint* makeCJintArray(const int* arr, int len)
 {
-  throw convert_error("Not implemented yet");
+  jint* jintArr = new jint[len];
+  for (int i = 0; i < len; ++i)
+  {
+    jintArr[i] = arr[i];
+  }
+  return jintArr;
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGSparseMatrix<complex16> SUPPRESS_UNUSED const *thing)
+DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> const *thing)
 {
-  throw convert_error("Not implemented yet");
+  // Column pointer
+  int colPtrLen = thing->getCols() + 1;
+  jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
+  jint* colPtr = makeCJintArray(thing->getColPtr(), colPtrLen);
+  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  delete[] colPtr;
+
+  // Row index
+  int datalen = thing->getDatalen();
+  jintArray jRowIdx = JVMManager::newIntArray(_env, datalen);
+  jint* rowIdx = makeCJintArray(thing->getRowIdx(), datalen);
+  _env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  delete[] rowIdx;
+
+  // Values
+  jdoubleArray values = convertCreal16Arr2JDoubleArr(_env, thing->toReal16Array(), datalen);
+
+  // Call constructor
+  jclass cls = JVMManager::getOGRealSparseMatrixClazz();
+  jmethodID constructor = JVMManager::getOGRealSparseMatrixClazz_init();
+  jobject newobject = _env->NewObject(cls, constructor, jColPtr, jRowIdx, values, thing->getRows(), thing->getCols());
+
+  // Done
+  setObject(newobject);
+}
+
+void
+DispatchToOGTerminal::visit(librdag::OGSparseMatrix<complex16> const *thing)
+{
+  // Column pointer
+  int colPtrLen = thing->getCols() + 1;
+  jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
+  jint* colPtr = makeCJintArray(thing->getColPtr(), colPtrLen);
+  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  delete[] colPtr;
+
+  // Row index
+  int datalen = thing->getDatalen();
+  jintArray jRowIdx = JVMManager::newIntArray(_env, datalen);
+  jint* rowIdx = makeCJintArray(thing->getRowIdx(), datalen);
+  _env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  delete[] rowIdx;
+
+  // Values
+  complex16* values = thing->toComplex16Array();
+  jdoubleArray realpart = extractRealPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
+  jdoubleArray imagpart = extractComplexPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
+
+  // Call constructor
+  jclass cls = JVMManager::getOGComplexSparseMatrixClazz();
+  jmethodID constructor = JVMManager::getOGComplexSparseMatrixClazz_init();
+  jobject newobject = _env->NewObject(cls, constructor, jColPtr, jRowIdx, realpart, imagpart, thing->getRows(), thing->getCols());
+
+  // Done
+  setObject(newobject);
 }
 
 jobject
