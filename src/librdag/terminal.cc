@@ -201,10 +201,7 @@ T*
 OGArray<T>::toArray() const
 {
   T* tmp = new T[_datalen];
-  for (int i = 0; i < _datalen; i++)
-  {
-    tmp[i] = _data[i];
-  }
+  memcpy (tmp, _data, sizeof(T)*_datalen );
   return tmp;
 }
 
