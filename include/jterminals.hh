@@ -8,7 +8,7 @@
 #define _JTERMINALS_HH
 
 #include "terminal.hh"
-#include "jni.h"
+#include "jvmmanager.hh"
 
 namespace convert {
 
