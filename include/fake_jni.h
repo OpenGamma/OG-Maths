@@ -137,6 +137,10 @@ class JNIEnv_
     {
       
     }
+    virtual void SetIntArrayRegion(jintArray SUPPRESS_UNUSED array, jsize SUPPRESS_UNUSED start, jsize SUPPRESS_UNUSED len, const jint SUPPRESS_UNUSED *buf)
+    {
+
+    }
     virtual void SetObjectArrayElement(jobjectArray SUPPRESS_UNUSED array, SUPPRESS_UNUSED jsize index, SUPPRESS_UNUSED jobject val)
     {
       
@@ -188,6 +192,10 @@ class JNIEnv_
       return nullptr;
     }
     virtual jdoubleArray NewDoubleArray(jsize SUPPRESS_UNUSED len)
+    {
+      return nullptr;
+    }
+    virtual jintArray NewIntArray(jsize SUPPRESS_UNUSED len)
     {
       return nullptr;
     }

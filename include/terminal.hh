@@ -80,7 +80,8 @@ class OGIntegerScalar: public OGScalar<int>
 template <typename T> class OGArray: public OGTerminal
 {
   public:
-    T * getData() const;
+    T * getData() const; // Returns a pointer to the underlying data
+    T * toArray() const; // Returns a pointer to a copy of the underlying data
     int getRows() const;
     int getCols() const;
     int getDatalen() const;
@@ -149,7 +150,6 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
   public:
     OGDiagonalMatrix(T * data, int rows, int cols);
     virtual void accept(Visitor &v) const override;
-    T* toArray() const;
     T** toArrayOfArrays() const;
   protected:
     OGDiagonalMatrix(int rows, int cols);
@@ -210,6 +210,7 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
   public:
     using OGSparseMatrix::OGSparseMatrix;
     virtual void debug_print() const override;
+    virtual real16* toReal16Array() const override;
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const override;
@@ -221,6 +222,7 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
   public:
     using OGSparseMatrix::OGSparseMatrix;
     virtual void debug_print() const override;
+    virtual complex16* toComplex16Array() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;

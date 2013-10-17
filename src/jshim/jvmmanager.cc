@@ -14,6 +14,19 @@
 
 namespace convert {
 
+/*
+ * Check for exception
+ */
+void checkEx(JNIEnv* env)
+{
+  jthrowable e = env->ExceptionOccurred();
+  if (e)
+  {
+    env->ExceptionDescribe();
+    throw convert_error("Java exception thrown in JNI.");
+  }
+}
+
 /**
  * JNI_OnLoad
  */
@@ -82,6 +95,8 @@ JVMManager::registerReferences()
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexDenseMatrix", &_OGComplexDenseMatrixClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealDiagonalMatrix", &_OGRealDiagonalMatrixClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexDiagonalMatrix", &_OGComplexDiagonalMatrixClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealSparseMatrix", &_OGRealSparseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexSparseMatrix", &_OGComplexSparseMatrixClazz);
 
   //
   // REGISTER METHOD REFERENCES
@@ -103,6 +118,8 @@ JVMManager::registerReferences()
   registerGlobalMethodReference(&_OGComplexDenseMatrixClazz, &_OGComplexDenseMatrixClazz_init, "<init>", "([[D[[D)V");
   registerGlobalMethodReference(&_OGRealDiagonalMatrixClazz, &_OGRealDiagonalMatrixClazz_init, "<init>", "([DII)V");
   registerGlobalMethodReference(&_OGComplexDiagonalMatrixClazz, &_OGComplexDiagonalMatrixClazz_init, "<init>", "([D[DII)V");
+  registerGlobalMethodReference(&_OGRealSparseMatrixClazz, &_OGRealSparseMatrixClazz_init, "<init>", "([I[I[DII)V");
+  registerGlobalMethodReference(&_OGComplexSparseMatrixClazz, &_OGComplexSparseMatrixClazz_init, "<init>", "([I[I[D[DII)V");
 
   //
   // REGISTER FIELD REFERENCES
@@ -207,6 +224,10 @@ jclass JVMManager::getOGRealDiagonalMatrixClazz()
 { return _OGRealDiagonalMatrixClazz; }
 jclass JVMManager::getOGComplexDiagonalMatrixClazz()
 { return _OGComplexDiagonalMatrixClazz; }
+jclass JVMManager::getOGRealSparseMatrixClazz()
+{ return _OGRealSparseMatrixClazz; }
+jclass JVMManager::getOGComplexSparseMatrixClazz()
+{ return _OGComplexSparseMatrixClazz; }
 jclass JVMManager::getOGExprTypeEnumClazz()
 { return _OGExprTypeEnumClazz; }
 jmethodID JVMManager::getOGRealScalarClazz_init()
@@ -221,6 +242,10 @@ jmethodID JVMManager::getOGRealDiagonalMatrixClazz_init()
 { return _OGRealDiagonalMatrixClazz_init; }
 jmethodID JVMManager::getOGComplexDiagonalMatrixClazz_init()
 { return _OGComplexDiagonalMatrixClazz_init; }
+jmethodID JVMManager::getOGRealSparseMatrixClazz_init()
+{ return _OGRealSparseMatrixClazz_init; }
+jmethodID JVMManager::getOGComplexSparseMatrixClazz_init()
+{ return _OGComplexSparseMatrixClazz_init; }
 jmethodID JVMManager::getOGTerminalClazz_getData()
 { return _OGTerminalClazz_getData; }
 jmethodID JVMManager::getOGNumericClazz_getType()
@@ -263,6 +288,8 @@ jclass JVMManager::_OGRealDenseMatrixClazz = nullptr;
 jclass JVMManager::_OGComplexDenseMatrixClazz = nullptr;
 jclass JVMManager::_OGRealDiagonalMatrixClazz = nullptr;
 jclass JVMManager::_OGComplexDiagonalMatrixClazz = nullptr;
+jclass JVMManager::_OGRealSparseMatrixClazz = nullptr;
+jclass JVMManager::_OGComplexSparseMatrixClazz = nullptr;
 jmethodID JVMManager::_DoubleClazz_init = nullptr;
 jmethodID JVMManager::_OGRealScalarClazz_init = nullptr;
 jmethodID JVMManager::_OGComplexScalarClazz_init = nullptr;
@@ -270,6 +297,8 @@ jmethodID JVMManager::_OGRealDenseMatrixClazz_init = nullptr;
 jmethodID JVMManager::_OGComplexDenseMatrixClazz_init = nullptr;
 jmethodID JVMManager::_OGRealDiagonalMatrixClazz_init = nullptr;
 jmethodID JVMManager::_OGComplexDiagonalMatrixClazz_init = nullptr;
+jmethodID JVMManager::_OGRealSparseMatrixClazz_init = nullptr;
+jmethodID JVMManager::_OGComplexSparseMatrixClazz_init = nullptr;
 jmethodID JVMManager::_OGTerminalClazz_getData = nullptr;
 jmethodID JVMManager::_OGNumericClazz_getType = nullptr;
 jmethodID JVMManager::_OGExprClazz_getExprs = nullptr;
@@ -281,7 +310,6 @@ jmethodID JVMManager::_OGSparseMatrixClazz_getRowIdx = nullptr;
 jmethodID JVMManager::_ComplexArrayContainerClazz_ctor_DAoA_DAoA = nullptr;
 jfieldID  JVMManager::_OGExprTypeEnumClazz__hashdefined = nullptr;
 
-
 // Wrappers to JavaVM and JNIEnv methods
 
 
@@ -292,6 +320,17 @@ JVMManager::newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init)
   if (!ret)
   {
     throw convert_error("NewObjectArray call failed.");
+  }
+  return ret;
+}
+
+jintArray
+JVMManager::newIntArray(JNIEnv *env, jsize len)
+{
+  jintArray ret = env->NewIntArray(len);
+  if (!ret)
+  {
+    throw convert_error("NewIntArray call failed.");
   }
   return ret;
 }
