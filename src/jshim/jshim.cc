@@ -23,6 +23,7 @@ using namespace convert;
  */
 void checkEx(JNIEnv* env)
 {
+
   jthrowable e = env->ExceptionOccurred();
   if (e)
   {
@@ -30,6 +31,7 @@ void checkEx(JNIEnv* env)
     throw convert_error("Java exception thrown in JNI.");
   }
 }
+
 
 #ifdef __cplusplus
 extern "C" {
