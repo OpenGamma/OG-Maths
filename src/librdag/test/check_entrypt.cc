@@ -29,16 +29,15 @@ TEST_P(EntryptOneNodeTest, TerminalTypes)
 INSTANTIATE_TEST_CASE_P(ValueParam, EntryptOneNodeTest, ::testing::ValuesIn(terminals));
 
 /**
- * Because entrypt doesn't call the dispatcher yet, feeding entrypt an expression will
- * result in null being returned. This test is a placeholder for a test of actual
- * functionality, and will need changing when dispatch is implemented.
+ * Very simple test that entrypt is "working", as in it returns something not null that is sane.
  */
-TEST(EntryptTest, ExprResultNull) {
+TEST(EntryptTest, ExprResultNull)
+{
   ArgContainer *args = new ArgContainer();
   args->push_back(new OGRealScalar(2));
   args->push_back(new OGRealScalar(3));
   OGExpr *plus = new PLUS(args);
   const OGTerminal* result = entrypt(plus);
-  EXPECT_EQ(nullptr, result);
+  EXPECT_EQ(result->asOGRealScalar()->getValue(), 5);
   delete plus;
 }

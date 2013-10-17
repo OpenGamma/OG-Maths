@@ -10,6 +10,7 @@
 #include "exceptions.hh"
 #include "gtest/gtest.h"
 #include "warningmacros.h"
+#include "exprtypeenum.h"
 
 using namespace std;
 using namespace librdag;
@@ -142,6 +143,9 @@ TEST(TerminalsTest, OGRealScalarTest) {
   // check getValue is ok
   ASSERT_EQ(tmp->getValue(), value);
 
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), REAL_SCALAR_ENUM);
+  
   // wire up array for ArrOfArr test
   real16 expectedtmp[1] = {3.14e0};
   real16 ** expected = new real16 * [1];
@@ -198,6 +202,9 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   // check getValue is ok
   ASSERT_EQ(tmp->getValue(), value);
 
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), COMPLEX_SCALAR_ENUM);
+  
   // wire up array for ArrOfArr test
   complex16 expectedtmp[1] = {{3.14e0, 0.00159e0}};
   complex16  ** expected = new complex16  * [1];
@@ -252,6 +259,9 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
   
   // check getValue is ok
   ASSERT_EQ(tmp->getValue(), value);
+  
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), INTEGER_SCALAR_ENUM);  
 
   // check toReal16ArrayOfArrays, should throw
   ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
@@ -311,6 +321,9 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   
   // check getData
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
+  
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), REAL_MATRIX_ENUM);  
   
   // wire up array for ArrOfArr test
   real16 expectedtmp[12] = {1e0,4e0,7e0,10e0,2e0,5e0,8e0,11e0,3e0,6e0,9e0,12e0};
@@ -402,6 +415,9 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   // check getData
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
   
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), COMPLEX_MATRIX_ENUM);    
+  
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0},{2e0,20e0},{5e0,50e0},{8e0,80e0},{11e0,110e0},{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}};
   complex16 ** expected = new complex16  * [rows];
@@ -492,7 +508,10 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   // check getData
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));  
   
-  // wire up array for ArrOfArr and Arr test
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), REAL_DIAGONAL_MATRIX_ENUM);
+  
+  // wire up array for ArrOfArr test
   real16 expectedtmp[12] = {1e0,0e0,0e0,0e0,0e0,2e0,0e0,0e0,0e0,0e0,3e0,0e0};
   real16 expectedarr[3] = {1e0, 2e0, 3e0};
   real16 ** expected = new real16  * [rows];
@@ -600,7 +619,10 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   // check getData
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));  
   
-  // wire up array for Arr and ArrOfArr test
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), COMPLEX_DIAGONAL_MATRIX_ENUM);  
+  
+  // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{2e0,20e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{3e0,30e0},{0e0,0e0}};
   complex16 expectedarr[3] = {{1e0,10e0}, {2e0,20e0}, {3e0,30e0}};
   complex16 ** expected = new complex16  * [rows];
@@ -726,6 +748,9 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   // check getRowIdx
   ASSERT_TRUE(ArrayEquals(tmp->getRowIdx(),rowIdx,7));
   
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), REAL_SPARSE_MATRIX_ENUM);
+  
   // wire up array for ArrOfArr test
   real16 expectedtmp[20] = { 1e0, 2e0, 0e0, 0e0 ,  3e0, 0e0, 4e0, 0e0 ,  0e0, 5e0, 6e0, 0e0 ,  0e0, 0e0, 7e0, 0e0 , 0e0, 0e0, 0e0, 0e0};
   real16 ** expected = new real16  * [rows];
@@ -840,6 +865,9 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
 
   // check getRowIdx
   ASSERT_TRUE(ArrayEquals(tmp->getRowIdx(),rowIdx,12));  
+  
+  // check getType() is ok
+  ASSERT_EQ(tmp->getType(), COMPLEX_SPARSE_MATRIX_ENUM);  
   
   // wire up array for ArrOfArr test
   complex16 expectedtmp[20] = {

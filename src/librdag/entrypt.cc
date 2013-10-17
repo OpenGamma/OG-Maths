@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include "entrypt.hh"
+#include "dispatch.hh"
 #include "numeric.hh"
 #include "expression.hh"
 #include "terminal.hh"
@@ -144,7 +145,7 @@ entrypt(const OGNumeric* expr)
    * the tree as-is).
    */
   const OGTerminal* asTerminal = expr->asOGTerminal();
-  if (asTerminal)
+  if (asTerminal!=nullptr)
   {
     // Slightly fiddly because we get an OGNumeric* back from copy.
     return asTerminal->copy()->asOGTerminal();
@@ -152,7 +153,21 @@ entrypt(const OGNumeric* expr)
   else
   {
     // Expressions would have been null from the cast anyway
-    return nullptr;
+    const OGExpr * asOGExpr = expr->asOGExpr();
+    Dispatcher * disp = new Dispatcher();
+    printf("Dispatching from entrypt\n");
+    disp->dispatch(asOGExpr);
+    const RegContainer * reg = asOGExpr->getRegs();
+    const OGNumeric * answer = (*reg)[0];
+    answer->debug_print();
+    const OGTerminal * returnTerm = answer->asOGTerminal();
+    if(returnTerm==nullptr)
+    {
+      throw rdag_error("Evaluated terminal is not casting asOGTerminal correctly.");
+    }
+    delete disp;
+    printf("Dispatch deleted\n");
+    return returnTerm;
   }
 }
 

@@ -21,6 +21,7 @@ class Register
     virtual ~Register();
     virtual int incRef();
     virtual int decRef();
+    virtual OGNumeric * copy() const = 0;
   private:
     virtual void alloc() = 0;
     virtual void free() = 0;
@@ -31,6 +32,7 @@ class OGRealScalarRegister: public OGRealScalar, public Register
 {
   public:
     OGRealScalarRegister();
+    virtual OGNumeric * copy() const override;
   private:
     virtual void alloc() override;
     virtual void free() override;
@@ -40,6 +42,7 @@ class OGComplexScalarRegister: public OGComplexScalar, public Register
 {
   public:
     OGComplexScalarRegister();
+    virtual OGNumeric * copy() const override;
   private:
     virtual void alloc() override;
     virtual void free() override;
@@ -49,6 +52,7 @@ class OGRealMatrixRegister: public OGRealMatrix, public Register
 {
   public:
     OGRealMatrixRegister(int rows, int cols);
+    virtual OGNumeric * copy() const override;
   private:
     virtual void alloc() override;
     virtual void free() override;
@@ -58,6 +62,7 @@ class OGComplexMatrixRegister: public OGComplexMatrix, public Register
 {
   public:
     OGComplexMatrixRegister(int rows, int cols);
+    virtual OGNumeric * copy() const override;    
   private:
     virtual void alloc() override;
     virtual void free() override;
@@ -67,6 +72,7 @@ class OGRealDiagonalMatrixRegister: public OGRealDiagonalMatrix, public Register
 {
   public:
     OGRealDiagonalMatrixRegister(int rows, int cols);
+    virtual OGNumeric * copy() const override;    
   private:
     virtual void alloc() override;
     virtual void free() override;
@@ -76,6 +82,7 @@ class OGComplexDiagonalMatrixRegister: public OGComplexDiagonalMatrix, public Re
 {
   public:
     OGComplexDiagonalMatrixRegister(int rows, int cols);
+    virtual OGNumeric * copy() const override;    
   private:
     virtual void alloc() override;
     virtual void free() override;

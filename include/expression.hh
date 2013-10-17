@@ -18,6 +18,7 @@
 #include "visitor.hh"
 #include "exceptions.hh"
 #include "containers.hh"
+#include "register.hh"
 
 using namespace std;
 
@@ -31,7 +32,9 @@ namespace librdag
 /**
  * Container for expression arguments
  */
+
 typedef OwningPtrVector<const OGNumeric*> ArgContainer;
+typedef OwningPtrVector<const OGNumeric*>  RegContainer;
 
 /**
  *  Expr type
@@ -42,11 +45,15 @@ class OGExpr: public OGNumeric
     virtual ~OGExpr();
     const ArgContainer* getArgs() const;
     size_t getNArgs() const;
+    virtual const OGExpr* asOGExpr() const override;    
+    virtual void debug_print() const override;
     virtual void accept(Visitor &v) const override;
+    virtual const RegContainer * getRegs() const;
   protected:
     OGExpr(ArgContainer* args);
   private:
-    ArgContainer* _args;
+    ArgContainer * _args;
+    RegContainer * _regs;
 };
 
 /**
@@ -72,6 +79,7 @@ class COPY: public OGUnaryExpr
     virtual OGNumeric* copy() const override;
     virtual const COPY* asCOPY() const override;
     virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;      
 };
 
 
@@ -81,7 +89,8 @@ class PLUS: public OGBinaryExpr
     PLUS(ArgContainer *args);
     virtual OGNumeric* copy() const override;
     virtual const PLUS* asPLUS() const override;
-    virtual void debug_print() const override;
+    virtual void debug_print() const override;     
+    virtual ExprType_t getType() const override;      
 };
 
 
@@ -92,6 +101,7 @@ class NEGATE: public OGUnaryExpr
     virtual OGNumeric* copy() const override;
     virtual const NEGATE* asNEGATE() const override;
     virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;      
 };
 
 class SVD: public OGUnaryExpr
@@ -101,6 +111,7 @@ class SVD: public OGUnaryExpr
     virtual OGNumeric* copy() const override;
     virtual const SVD* asSVD() const override;
     virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;      
 };
 
 class SELECTRESULT: public OGBinaryExpr
@@ -110,6 +121,7 @@ class SELECTRESULT: public OGBinaryExpr
     virtual OGNumeric* copy() const override;
     virtual const SELECTRESULT* asSELECTRESULT() const override;
     virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;      
 };
 
 
