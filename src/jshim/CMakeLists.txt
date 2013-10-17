@@ -17,7 +17,7 @@ target_link_libraries(jshim rdag)
 set_target_properties(jshim PROPERTIES SOVERSION ${longdog_VERSION_MAJOR} VERSION ${longdog_VERSION})
 install(TARGETS jshim DESTINATION lib)
 
-add_library(jshimtest SHARED jshim.cc jterminals.cc jbindings.cc exprfactory.cc dispatch.cc jvmmanager.cc)
+add_library(jshimtest SHARED jshim.cc jterminals.cc jbindings.cc exprfactory.cc jdispatch.cc jvmmanager.cc)
 add_dependencies(jshimtest rdag)
 target_link_libraries(jshimtest rdag)
 set_target_properties(jshimtest PROPERTIES SOVERSION ${longdog_VERSION_MAJOR} VERSION ${longdog_VERSION} COMPILE_DEFINITIONS _FAKE_JNI_H=1)
