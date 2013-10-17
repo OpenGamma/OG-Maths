@@ -629,7 +629,8 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   for(int i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
-   // check toArray()
+
+  // check toArray()
   complex16* arr = tmp->toArray();
   for (int i = 0; i < 3; i++)
     EXPECT_TRUE(arr[i] == expectedarr[i]);
@@ -758,6 +759,18 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
     expected[i] = &(expectedtmp[i*cols]);
   }
   
+  // check toArray()
+  real16* arr = tmp->toArray();
+  for (int i = 0; i < 7; i++)
+    EXPECT_EQ(arr[i], data[i]);
+  delete[] arr;
+
+  // check toReal16Array()
+  arr = tmp->toReal16Array();
+  for (int i = 0; i < 7; i++)
+    EXPECT_EQ(arr[i], data[i]);
+  delete[] arr;
+
   // check toArrayOfArrays()
   real16 ** computed = tmp->toArrayOfArrays(); 
   ASSERT_TRUE(ArrayOfArraysEquals<real16>(expected,computed,rows,cols));
@@ -882,6 +895,18 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
     expected[i] = &(expectedtmp[i*cols]);
   }
   
+  // check toArray()
+  complex16* arr = tmp->toArray();
+  for (int i = 0; i < 7; i++)
+    EXPECT_EQ(arr[i], data[i]);
+  delete[] arr;
+
+  // check toComplex16Array()
+  arr = tmp->toComplex16Array();
+  for (int i = 0; i < 7; i++)
+    EXPECT_EQ(arr[i], data[i]);
+  delete[] arr;
+
   // check toArrayOfArrays()
   complex16 ** computed = tmp->toArrayOfArrays(); 
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
