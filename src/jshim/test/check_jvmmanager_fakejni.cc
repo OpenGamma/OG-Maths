@@ -545,7 +545,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_getEnv)
 }
 
 
-// test bad getEnv()
+// test bad getEnv(), this is done by making the thread attachment return an error.
 TEST(JVMManagerFakeJNITest, Test_JVMManager_badgetEnv)
 { 
     class Fake_JavaVM_wBadAttach: public Fake_JavaVM
@@ -575,7 +575,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_badgetEnv)
 }
 
 
-// test bad getJVM()
+// test ok getJVM()
 TEST(JVMManagerFakeJNITest, Test_JVMManager_getJVM)
 {
   JVMManager * jvm_manager = new JVMManager();    
