@@ -18,7 +18,7 @@ public class TestOGRealSparseMatrixMaterialise {
 
   @DataProvider
   public Object[][] dataContainer() {
-    Object[][] obj = new Object[2][5];
+    Object[][] obj = new Object[3][5];
 
     obj[0][0] = new int[] {0, 1};
     obj[0][1] = new int[] {0};
@@ -32,12 +32,18 @@ public class TestOGRealSparseMatrixMaterialise {
     obj[1][3] = 2;
     obj[1][4] = 2;
 
+    obj[2][0] = new int[] {0, 3, 6, 10, 12, 12};
+    obj[2][1] = new int[] {0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3};
+    obj[2][2] = new double[] { 1.0, 5.0, 90.0, 2.0, 60.0, 10.0, 30.0, 7.0, 11.0, 15.0, 120.0, 160.0};
+    obj[2][3] = 4;
+    obj[2][4] = 5;
+
     return obj;
   };
 
   @Test(dataProvider = "dataContainer")
-  public void materialiseToOGTerminal(int[] colIdx, int[] rowPtr, double[] values, int rows, int cols) {
-    OGRealSparseMatrix tmp = new OGRealSparseMatrix(colIdx, rowPtr, values, rows, cols);
+  public void materialiseToOGTerminal(int[] colPtr, int[] rowIdx, double[] values, int rows, int cols) {
+    OGRealSparseMatrix tmp = new OGRealSparseMatrix(colPtr, rowIdx, values, rows, cols);
     OGRealSparseMatrix answer = (OGRealSparseMatrix) Materialisers.toOGTerminal(tmp);
     if (!Arrays.equals(tmp.getData(), answer.getData())) {
       throw new MathsException("Arrays are not equal");

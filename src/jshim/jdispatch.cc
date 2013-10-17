@@ -415,7 +415,7 @@ void
 DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> const *thing)
 {
   // Column pointer
-  int colPtrLen = thing->getRows() + 1;
+  int colPtrLen = thing->getCols() + 1;
   jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
   jint* colPtr = makeCJintArray(thing->getColPtr(), colPtrLen);
   _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
@@ -444,7 +444,7 @@ void
 DispatchToOGTerminal::visit(librdag::OGSparseMatrix<complex16> const *thing)
 {
   // Column pointer
-  int colPtrLen = thing->getRows() + 1;
+  int colPtrLen = thing->getCols() + 1;
   jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
   jint* colPtr = makeCJintArray(thing->getColPtr(), colPtrLen);
   _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);

@@ -823,8 +823,6 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
  */
 TEST(TerminalsTest, OGComplexSparseMatrix) {
   // data
-//   double[][] realData = { { 1, 2, 0, 0 }, { 5, 0, 7, 0 }, { 0, 10, 11, 0 }, { 0, 0, 15, 0 } };
-//   double[][] imagData = { { 10, 20, 30, 0 }, { 0, 60, 70, 0 }, { 90, 100, 0, 120 }, { 0, 0, 0, 160 } };
   complex16 data [12] = { {1, 10}, {5, 0}, {0, 90}, {2, 20}, {0, 60}, {10, 100}, {0, 30}, {7, 70}, {11, 0}, {15, 0}, {0, 120}, {0, 160} };
   int colPtr [6] = { 0, 3, 6, 10, 12, 12 };
   int rowIdx [12] = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 };
@@ -897,13 +895,13 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   
   // check toArray()
   complex16* arr = tmp->toArray();
-  for (int i = 0; i < 7; i++)
+  for (int i = 0; i < 12; i++)
     EXPECT_EQ(arr[i], data[i]);
   delete[] arr;
 
   // check toComplex16Array()
   arr = tmp->toComplex16Array();
-  for (int i = 0; i < 7; i++)
+  for (int i = 0; i < 12; i++)
     EXPECT_EQ(arr[i], data[i]);
   delete[] arr;
 
