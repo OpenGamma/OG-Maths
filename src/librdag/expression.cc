@@ -8,6 +8,7 @@
 #include "expression.hh"
 #include "terminal.hh"
 #include "exceptions.hh"
+#include "exprtypeenum.h"
 
 using namespace std;
 
@@ -25,11 +26,13 @@ OGExpr::OGExpr(ArgContainer *args)
     throw rdag_error("Null args passed to Expr constructor");
   }
   this->_args = args;
+  this->_regs = new RegContainer();
 }
 
 OGExpr::~OGExpr()
 {
   delete this->_args;
+  delete this->_regs;
 }
 
 const ArgContainer*
@@ -49,6 +52,24 @@ OGExpr::accept(Visitor &v) const
 {
   v.visit(this);
 }
+
+const OGExpr*
+OGExpr::asOGExpr() const
+{
+  return this;
+}
+
+const RegContainer * 
+OGExpr::getRegs() const
+{
+  return this->_regs;
+}
+
+void OGExpr::debug_print() const
+{
+  cout << "OGExpr::debug_print()" << std::endl;
+}
+
 
 /**
  * Things that extend OGExpr
@@ -70,6 +91,9 @@ OGBinaryExpr::OGBinaryExpr(ArgContainer* args): OGExpr(args)
   }
 }
 
+/**
+ * COPY node
+ */
 COPY::COPY(ArgContainer* args): OGUnaryExpr(args) {}
 
 OGNumeric*
@@ -90,6 +114,15 @@ COPY::debug_print() const
 	cout << "COPY base class" << endl;
 }
 
+ExprType_t
+COPY::getType() const
+{
+  return COPY_ENUM;
+}
+
+/**
+ * PLUS node
+ */
 PLUS::PLUS(ArgContainer* args): OGBinaryExpr(args) {}
 
 OGNumeric*
@@ -110,6 +143,15 @@ PLUS::debug_print() const
 	cout << "PLUS base class" << endl;
 }
 
+ExprType_t
+PLUS::getType() const
+{
+  return PLUS_ENUM;
+}
+
+/**
+ * NEGATE node
+ */
 NEGATE::NEGATE(ArgContainer* args): OGUnaryExpr(args) {
 }
 
@@ -131,6 +173,15 @@ NEGATE::debug_print() const
   cout << "NEGATE base class" << endl;
 }
 
+ExprType_t
+NEGATE::getType() const
+{
+  return NEGATE_ENUM;
+}
+
+/**
+ * SVD node
+ */
 SVD::SVD(ArgContainer* args): OGUnaryExpr(args) {}
 
 OGNumeric*
@@ -151,6 +202,15 @@ SVD::debug_print() const
 	cout << "SVD base class" << endl;
 }
 
+ExprType_t
+SVD::getType() const
+{
+  return SVD_ENUM;
+}
+
+/**
+ * SELECTRESULT node
+ */
 SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {
   // Check that the second argument is an integer
   const OGIntegerScalar* i = (*args)[1]->asOGIntegerScalar();
@@ -176,6 +236,12 @@ void
 SELECTRESULT::debug_print() const
 {
 	printf("SELECTRESULT base class\n");
+}
+
+ExprType_t
+SELECTRESULT::getType() const
+{
+  return SELECTRESULT_ENUM;
 }
 
 } // namespace librdag

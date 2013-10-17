@@ -8,6 +8,7 @@
 #define _NUMERIC_HH
 
 #include "uncopyable.hh"
+#include "exprtypeenum.h"
 
 namespace librdag {
   
@@ -18,11 +19,13 @@ class OGComplexScalar;
 class OGIntegerScalar;
 class OGRealMatrix;
 class OGComplexMatrix;
+class OGLogicalMatrix;
 class OGRealDiagonalMatrix;
 class OGComplexDiagonalMatrix;
 class OGRealSparseMatrix;
 class OGComplexSparseMatrix;
 class Visitor;
+class OGExpr;
 class COPY;
 class PLUS;
 class NEGATE;
@@ -39,6 +42,7 @@ class OGNumeric: private Uncopyable
     virtual void debug_print() const = 0;
     virtual void accept(Visitor &v) const = 0;
     virtual OGNumeric* copy() const = 0;
+    virtual const OGExpr* asOGExpr() const;
     virtual const COPY* asCOPY() const;
     virtual const PLUS* asPLUS() const;
     virtual const NEGATE* asNEGATE() const;
@@ -50,10 +54,12 @@ class OGNumeric: private Uncopyable
     virtual const OGIntegerScalar* asOGIntegerScalar() const;
     virtual const OGRealMatrix* asOGRealMatrix() const;
     virtual const OGComplexMatrix* asOGComplexMatrix() const;
+    virtual const OGLogicalMatrix* asOGLogicalMatrix() const;
     virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const;
     virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const;
     virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const;
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const;
+    virtual ExprType_t getType() const;
 };
 
 } 

@@ -72,6 +72,7 @@ PtrVector<cTp>::_check_arg(cTp arg)
   }
 }
 
+
 template class PtrVector<const int*>;
 template class PtrVector<const OGNumeric*>;
 
@@ -90,6 +91,7 @@ NonOwningPtrVector<cTp>::copy() const
   }
   return c;
 }
+
 
 template class NonOwningPtrVector<const int*>;
 template class NonOwningPtrVector<const OGNumeric*>;
