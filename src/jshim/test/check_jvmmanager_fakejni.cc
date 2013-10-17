@@ -40,10 +40,10 @@ class Fake_JavaVM: public JavaVM
 // Test bad JVM (GetEnv() env ptr returns JNI_ERR)
 TEST(JVMManagerFakeJNITest, Test_JVMManager_initialize_badversion)
 {
-    class Fake_JavaVM: public JavaVM
+    class Fake_JavaVM_badinit: public JavaVM
     {
       public:   
-        virtual ~Fake_JavaVM(){};
+        virtual ~Fake_JavaVM_badinit(){};
         virtual int GetEnv(void SUPPRESS_UNUSED ** env, int SUPPRESS_UNUSED version) override
         {
             *env = _env;
@@ -57,7 +57,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_initialize_badversion)
     };
    
     JVMManager * jvm_manager = new JVMManager();
-    Fake_JavaVM * jvm = new Fake_JavaVM();
+    Fake_JavaVM_badinit * jvm = new Fake_JavaVM_badinit();
     JNIEnv theEnv;
     JNIEnv * env  = &theEnv;   
     jvm->setEnv((void **) &env);
