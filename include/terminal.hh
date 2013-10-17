@@ -53,6 +53,7 @@ class OGRealScalar: public OGScalar<real16>
     virtual OGNumeric* copy() const override;
     virtual const OGRealScalar* asOGRealScalar() const override;
     virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
 };
 
 class OGComplexScalar: public OGScalar<complex16>
@@ -63,6 +64,7 @@ class OGComplexScalar: public OGScalar<complex16>
     virtual OGNumeric* copy() const override;
     virtual const OGComplexScalar* asOGComplexScalar() const override;
     virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;    
 };
 
 class OGIntegerScalar: public OGScalar<int>
@@ -72,6 +74,7 @@ class OGIntegerScalar: public OGScalar<int>
     virtual OGNumeric* copy() const override;
     virtual const OGIntegerScalar* asOGIntegerScalar() const override;
     virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
 };
 
 template <typename T> class OGArray: public OGTerminal
@@ -118,6 +121,7 @@ class OGRealMatrix: public OGMatrix<real16>
     virtual real16 ** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealMatrix* asOGRealMatrix() const override;
+    virtual ExprType_t getType() const override;
 };
 
 class OGComplexMatrix: public OGMatrix<complex16>
@@ -128,6 +132,7 @@ class OGComplexMatrix: public OGMatrix<complex16>
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGComplexMatrix* asOGComplexMatrix() const override;
+    virtual ExprType_t getType() const override;
 };
 
 class OGLogicalMatrix: public OGRealMatrix
@@ -162,6 +167,7 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const override;
+    virtual ExprType_t getType() const override;    
 };
 
 class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
@@ -173,6 +179,7 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
     virtual complex16** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const override;
+    virtual ExprType_t getType() const override;    
 };
 
 /**
@@ -186,7 +193,7 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
     virtual void accept(Visitor &v) const override;
     int* getColPtr() const;
     int* getRowIdx() const;
-    T** toArrayOfArrays() const;
+    T** toArrayOfArrays() const;   
   protected:
     void setColPtr(int * colPtr);
     void setRowIdx(int * rowIdx);
@@ -206,6 +213,7 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const override;
+    virtual ExprType_t getType() const override;
 };
 
 class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
@@ -216,6 +224,7 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual complex16** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;
+    virtual ExprType_t getType() const override;
 };
 
 

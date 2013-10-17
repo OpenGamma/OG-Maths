@@ -52,6 +52,12 @@ OGNumeric::asSELECTRESULT() const
   return nullptr;
 }
 
+const OGExpr*
+OGNumeric::asOGExpr() const
+{
+  return nullptr;
+}
+
 const OGTerminal*
 OGNumeric::asOGTerminal() const
 {
@@ -88,6 +94,12 @@ OGNumeric::asOGComplexMatrix() const
   return nullptr;
 }
 
+const OGLogicalMatrix*
+OGNumeric::asOGLogicalMatrix() const
+{
+  return nullptr;
+}
+
 const OGRealDiagonalMatrix*
 OGNumeric::asOGRealDiagonalMatrix() const
 {
@@ -111,5 +123,11 @@ OGNumeric::asOGComplexSparseMatrix() const
 {
   return nullptr;
 }
+
+ExprType_t OGNumeric::getType() const
+{
+  return UNKNOWN_EXPR_ENUM;
+}
+
 
 } // namespace librdag
