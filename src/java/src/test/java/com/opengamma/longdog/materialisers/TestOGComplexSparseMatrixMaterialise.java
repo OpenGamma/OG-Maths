@@ -18,7 +18,7 @@ public class TestOGComplexSparseMatrixMaterialise {
 
   @DataProvider
   public Object[][] dataContainer() {
-    Object[][] obj = new Object[2][6];
+    Object[][] obj = new Object[3][6];
 
     obj[0][0] = new int[] {0, 1};
     obj[0][1] = new int[] {0};
@@ -34,12 +34,19 @@ public class TestOGComplexSparseMatrixMaterialise {
     obj[1][4] = 2;
     obj[1][5] = 2;
 
+    obj[2][0] = new int[] {0, 3, 6, 10, 12, 12};
+    obj[2][1] = new int[] {0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3};
+    obj[2][2] = new double[] { 1.0, 5.0,  0.0,  2.0,  0.0,  10.0,  0.0,  7.0, 11.0, 15.0,   0.0,   0.0};
+    obj[2][3] = new double[] {10.0, 0.0, 90.0, 20.0, 60.0, 100.0, 30.0, 70.0,  0.0,  0.0, 120.0, 160.0};
+    obj[2][4] = 4;
+    obj[2][5] = 5;
+
     return obj;
   };
 
   @Test(dataProvider = "dataContainer")
-  public void materialiseToOGTerminal(int[] colIdx, int[] rowPtr, double[] realpart, double[] imagpart, int rows, int cols) {
-    OGComplexSparseMatrix tmp = new OGComplexSparseMatrix(colIdx, rowPtr, realpart, imagpart, rows, cols);
+  public void materialiseToOGTerminal(int[] colPtr, int[] rowIdx, double[] realpart, double[] imagpart, int rows, int cols) {
+    OGComplexSparseMatrix tmp = new OGComplexSparseMatrix(colPtr, rowIdx, realpart, imagpart, rows, cols);
     OGComplexSparseMatrix answer = (OGComplexSparseMatrix) Materialisers.toOGTerminal(tmp);
     if (!Arrays.equals(tmp.getData(), answer.getData())) {
       throw new MathsException("Arrays are not equal");
