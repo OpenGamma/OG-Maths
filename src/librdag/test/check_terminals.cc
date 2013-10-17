@@ -629,7 +629,8 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   for(int i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
-   // check toArray()
+
+  // check toArray()
   complex16* arr = tmp->toArray();
   for (int i = 0; i < 3; i++)
     EXPECT_TRUE(arr[i] == expectedarr[i]);
@@ -758,6 +759,18 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
     expected[i] = &(expectedtmp[i*cols]);
   }
   
+  // check toArray()
+  real16* arr = tmp->toArray();
+  for (int i = 0; i < 7; i++)
+    EXPECT_EQ(arr[i], data[i]);
+  delete[] arr;
+
+  // check toReal16Array()
+  arr = tmp->toReal16Array();
+  for (int i = 0; i < 7; i++)
+    EXPECT_EQ(arr[i], data[i]);
+  delete[] arr;
+
   // check toArrayOfArrays()
   real16 ** computed = tmp->toArrayOfArrays(); 
   ASSERT_TRUE(ArrayOfArraysEquals<real16>(expected,computed,rows,cols));
@@ -810,8 +823,6 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
  */
 TEST(TerminalsTest, OGComplexSparseMatrix) {
   // data
-//   double[][] realData = { { 1, 2, 0, 0 }, { 5, 0, 7, 0 }, { 0, 10, 11, 0 }, { 0, 0, 15, 0 } };
-//   double[][] imagData = { { 10, 20, 30, 0 }, { 0, 60, 70, 0 }, { 90, 100, 0, 120 }, { 0, 0, 0, 160 } };
   complex16 data [12] = { {1, 10}, {5, 0}, {0, 90}, {2, 20}, {0, 60}, {10, 100}, {0, 30}, {7, 70}, {11, 0}, {15, 0}, {0, 120}, {0, 160} };
   int colPtr [6] = { 0, 3, 6, 10, 12, 12 };
   int rowIdx [12] = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 };
@@ -882,6 +893,18 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
     expected[i] = &(expectedtmp[i*cols]);
   }
   
+  // check toArray()
+  complex16* arr = tmp->toArray();
+  for (int i = 0; i < 12; i++)
+    EXPECT_EQ(arr[i], data[i]);
+  delete[] arr;
+
+  // check toComplex16Array()
+  arr = tmp->toComplex16Array();
+  for (int i = 0; i < 12; i++)
+    EXPECT_EQ(arr[i], data[i]);
+  delete[] arr;
+
   // check toArrayOfArrays()
   complex16 ** computed = tmp->toArrayOfArrays(); 
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
