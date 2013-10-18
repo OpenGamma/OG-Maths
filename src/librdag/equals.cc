@@ -54,8 +54,12 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
   real16 diff = (val1-val2);
   if(std::fabs(diff)>maxabserror) return false;
 
+  // check if they are both 0, else the rel error gets stuck with /0
+  if((val1==0.e0)&&(val2==0.e0)) return true;
+
   // check if they are within a relative error bound, div difference by largest of the 2
-  real16 relerror = std::fabs(val1) > std::fabs(val2) ? std::fabs(diff/val1) : std::fabs(diff/val2);
+  real16 divisor = std::fabs(val1) > std::fabs(val2) ? val1 : val2;
+  real16 relerror = std::fabs(diff/divisor);
   if(relerror > maxrelerror) return false;
 
   // all ok
