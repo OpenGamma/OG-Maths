@@ -8,9 +8,41 @@
 #include "warningmacros.h"
 #include "equals.hh"
 #include "terminal.hh"
+#include "register.hh"
+#include <cfloat>
 
 using namespace std;
 using namespace librdag;
+
+TEST(EqualsTest, SingleValueFuzzyEqualsReal16) {
+  real16 NaN = getNaN();
+  real16 pinf = getPosInf();
+  real16 ninf = getNegInf();
+  ASSERT_TRUE(SingleValueFuzzyEquals(1,1));
+  ASSERT_TRUE(SingleValueFuzzyEquals(0,0));
+  ASSERT_TRUE(SingleValueFuzzyEquals(0,-0));
+  ASSERT_FALSE(SingleValueFuzzyEquals(NaN,1));
+  ASSERT_FALSE(SingleValueFuzzyEquals(1,NaN));
+  ASSERT_FALSE(SingleValueFuzzyEquals(NaN,NaN));
+  ASSERT_TRUE(SingleValueFuzzyEquals(pinf,pinf));
+  ASSERT_TRUE(SingleValueFuzzyEquals(ninf,ninf));
+  ASSERT_FALSE(SingleValueFuzzyEquals(pinf,ninf));
+  ASSERT_FALSE(SingleValueFuzzyEquals(ninf,pinf));
+  ASSERT_FALSE(SingleValueFuzzyEquals(pinf,DBL_MAX));
+  ASSERT_FALSE(SingleValueFuzzyEquals(ninf,-DBL_MAX));
+  ASSERT_TRUE(SingleValueFuzzyEquals(DBL_MIN,DBL_MIN)); // same value
+  ASSERT_FALSE(SingleValueFuzzyEquals(1,2)); // will trip return on abs error difference
+  ASSERT_FALSE(SingleValueFuzzyEquals(DBL_MIN/2,0)); // will return on relerror difference
+  ASSERT_TRUE(SingleValueFuzzyEquals(1+DBL_EPSILON/2,1)); // close enough
+
+}
+
+TEST(EqualsTest, SingleValueFuzzyEqualsComplex16) {
+  ASSERT_TRUE(SingleValueFuzzyEquals({1,10},{1,10}));
+  ASSERT_FALSE(SingleValueFuzzyEquals({1,10},{5,10}));
+  ASSERT_FALSE(SingleValueFuzzyEquals({1,10},{1,50}));
+}
+
 
 TEST(EqualsTest, ArrayBitEquals_real16) {
 
@@ -25,6 +57,22 @@ TEST(EqualsTest, ArrayBitEquals_real16) {
   delete [] data1;
   delete [] data2;
   delete [] data3;
+
+}
+
+TEST(EqualsTest, ArrayFuzzyEquals_real16) {
+
+  int len = 4;
+  real16 * data = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real16 * same = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real16 * diff  = new  real16[4]{getNaN(),2.0e0,3.0e0,4.0e0};
+
+  ASSERT_FALSE(ArrayFuzzyEquals(data, diff, len));
+  ASSERT_TRUE(ArrayFuzzyEquals(data, same, len));
+
+  delete [] data;
+  delete [] same;
+  delete [] diff;
 
 }
 
