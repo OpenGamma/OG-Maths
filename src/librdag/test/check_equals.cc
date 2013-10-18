@@ -113,11 +113,19 @@ TEST(EqualsTest, OGRealScalar) {
 
   OGRealScalar * scalar = new OGRealScalar(1.0e0);
   OGRealScalar * same = new OGRealScalar(1.0e0);
+  OGRealScalar * slightlyoutdata = new OGRealScalar(1.0e0+DBL_EPSILON/2);
+  OGRealScalar * toofaroutdata = new OGRealScalar(1.0e0+DBL_EPSILON);
   OGRealScalar * baddata = new OGRealScalar(2.0e0);
   OGComplexScalar * badtype = new OGComplexScalar({1.0e0,2.0e0});
 
   ASSERT_TRUE(scalar->equals(same));
   ASSERT_TRUE(*scalar==*same);
+
+  ASSERT_TRUE(scalar->fuzzyequals(same));
+  ASSERT_TRUE(*scalar==~*same);
+  ASSERT_TRUE(*scalar==~*slightlyoutdata);
+  ASSERT_FALSE(*scalar==~*toofaroutdata);
+
   ASSERT_FALSE(scalar->equals(baddata));
   ASSERT_FALSE(scalar->equals(badtype));
   ASSERT_TRUE(*scalar!=*badtype);
@@ -125,9 +133,13 @@ TEST(EqualsTest, OGRealScalar) {
 
   delete scalar;
   delete same;
+  delete slightlyoutdata;
+  delete toofaroutdata;
   delete baddata;
   delete badtype;
 }
+
+
 
 
 TEST(EqualsTest, OGComplexScalar) {

@@ -59,6 +59,40 @@ OGTerminal::operator!=(const OGTerminal&  other) const
   return !(this->equals(&other));
 }
 
+detail::FuzzyCompareOGTerminalContainer&
+OGTerminal::operator~(void) const
+{
+  detail::FuzzyCompareOGTerminalContainer * thing = new detail::FuzzyCompareOGTerminalContainer(this);
+  return *thing;
+}
+
+
+bool OGTerminal::operator==(const detail::FuzzyCompareOGTerminalContainer& thing) const
+{
+  const OGTerminal * ptr = thing.getTerminal();
+  bool retval;
+  retval=this->fuzzyequals(ptr);
+  delete &thing;
+  return retval;
+}
+
+/**
+ * FuzzyCompareOGTerminalContainer
+ */
+detail::FuzzyCompareOGTerminalContainer::FuzzyCompareOGTerminalContainer(const OGTerminal * terminal)
+{
+  this->_terminal = terminal;
+}
+
+detail::FuzzyCompareOGTerminalContainer::~FuzzyCompareOGTerminalContainer(){}
+
+const OGTerminal *
+detail::FuzzyCompareOGTerminalContainer::getTerminal() const
+{
+  return this->_terminal;
+}
+
+
 /**
  * OGScalar
  */
@@ -107,6 +141,22 @@ OGScalar<T>::equals(const OGTerminal * other) const
   }
   return true;
 }
+
+template<typename T>
+bool
+OGScalar<T>::fuzzyequals(const OGTerminal * other) const
+{
+  if(this->getType()!=other->getType())
+  {
+    return false;
+  }
+  if(!SingleValueFuzzyEquals(static_cast<const OGScalar *>(other)->getValue(),this->_value))
+  {
+    return false;
+  }
+  return true;
+}
+
 
 template class OGScalar<real16>;
 template class OGScalar<complex16>;
@@ -297,7 +347,7 @@ OGArray<T>::setDatalen(int datalen)
 
 template<typename T>
 bool
-OGArray<T>::equals(const OGTerminal * other) const
+OGArray<T>::fundamentalsEqual(const OGTerminal * other) const
 {
   if(this->getType()!=other->getType())
   {
@@ -312,7 +362,29 @@ OGArray<T>::equals(const OGTerminal * other) const
   {
     return false;
   }
+  return true;
+}
+
+template<typename T>
+bool
+OGArray<T>::equals(const OGTerminal * other) const
+{
+  if(!fundamentalsEqual(other)) return false;
+  const OGArray * typetwiddle = static_cast<const OGArray *>(other);
   if(!ArrayBitEquals(typetwiddle->getData(),this->getData(),this->getDatalen()))
+  {
+    return false;
+  }
+  return true;
+}
+
+template<typename T>
+bool
+OGArray<T>::fuzzyequals(const OGTerminal * other) const
+{
+  if(!fundamentalsEqual(other)) return false;
+  const OGArray * typetwiddle = static_cast<const OGArray *>(other);
+  if(!ArrayFuzzyEquals(typetwiddle->getData(),this->getData(),this->getDatalen()))
   {
     return false;
   }
@@ -747,6 +819,26 @@ bool
 OGSparseMatrix<T>::equals(const OGTerminal * other) const
 {
   if(!OGArray<T>::equals(other))
+  {
+    return false;
+  }
+  const OGSparseMatrix * typetwiddle = static_cast<const OGSparseMatrix<T> *>(other);
+  if(!ArrayBitEquals(typetwiddle->getColPtr(),this->getColPtr(),this->getCols()+1))
+  {
+    return false;
+  }
+  if(!ArrayBitEquals(typetwiddle->getRowIdx(),this->getRowIdx(),this->getDatalen()))
+  {
+    return false;
+  }
+  return true;
+}
+
+template<typename T>
+bool
+OGSparseMatrix<T>::fuzzyequals(const OGTerminal * other) const
+{
+  if(!OGArray<T>::fuzzyequals(other))
   {
     return false;
   }
