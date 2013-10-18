@@ -24,6 +24,9 @@ class OGTerminal: public OGNumeric
     virtual real16 ** toReal16ArrayOfArrays() const;
     virtual complex16 ** toComplex16ArrayOfArrays() const;
     virtual const OGTerminal* asOGTerminal() const override;
+    virtual bool equals(const OGTerminal *)const = 0;
+    virtual bool operator==(const OGTerminal&) const;
+    virtual bool operator!=(const OGTerminal&) const;
 };
 
 /**
@@ -38,7 +41,7 @@ class OGScalar: public OGTerminal
     virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
-    virtual bool equals(OGTerminal * ) const;
+    virtual bool equals(const OGTerminal * ) const override;
   protected:
     T _value;
 };
@@ -87,6 +90,7 @@ template <typename T> class OGArray: public OGTerminal
     int getRows() const;
     int getCols() const;
     int getDatalen() const;
+    virtual bool equals(const OGTerminal *)const override;
   protected:
     void setData(T * data);
     void setRows(int rows);
@@ -109,7 +113,6 @@ template <typename T> class OGMatrix: public OGArray<T>
     OGMatrix(T * data, int rows, int cols);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
-    virtual bool equals(OGTerminal * ) const;
   protected:
     OGMatrix(int rows, int cols);
 };
@@ -196,7 +199,8 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
     virtual void accept(Visitor &v) const override;
     int* getColPtr() const;
     int* getRowIdx() const;
-    T** toArrayOfArrays() const;   
+    T** toArrayOfArrays() const;
+    virtual bool equals(const OGTerminal * ) const override; // override OGArray equals to add in calls to check colPtr and rowIdx
   protected:
     void setColPtr(int * colPtr);
     void setRowIdx(int * rowIdx);
@@ -231,20 +235,6 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;
     virtual ExprType_t getType() const override;
 };
-
-namespace detail {
-  template<typename T> const OGTerminal * asOGTerminalT(const OGTerminal * other, const T * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGRealScalar * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGComplexScalar * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGIntegerScalar * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGRealMatrix * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGComplexMatrix * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGLogicalMatrix * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGRealDiagonalMatrix * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGComplexDiagonalMatrix * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGRealSparseMatrix * twiddle);
-  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGComplexSparseMatrix * twiddle);
-}
 
 } // end namespace librdag
 
