@@ -207,7 +207,17 @@ void Dispatcher::dispatch(PLUS const *thing) const {
       const RegContainer * regs = thing->getRegs();
       const OGNumeric * arg0 = (*args)[0];
       const OGNumeric * arg1 = (*args)[1];
-      this->_PlusRunner->eval(const_cast<RegContainer *>(regs), arg0->asOGTerminal(), arg1->asOGTerminal());
+      const OGTerminal* arg0t = arg0->asOGTerminal();
+      const OGTerminal* arg1t = arg1->asOGTerminal();
+      if (arg0t == nullptr)
+      {
+        arg0t = (*(arg0->asOGExpr()->getRegs()))[0]->asOGTerminal();
+      }
+      if (arg1t == nullptr)
+      {
+        arg1t = (*(arg1->asOGExpr()->getRegs()))[0]->asOGTerminal();
+      }
+      this->_PlusRunner->eval(const_cast<RegContainer *>(regs), arg0t, arg1t);
 }
 
 void Dispatcher::dispatch(NEGATE const SUPPRESS_UNUSED *thing) const {
