@@ -5,7 +5,6 @@
  */
 #include <assert.h>
 #include <string.h>
-#include "convertto.hh"
 #include "terminal.hh"
 #include "warningmacros.h"
 
