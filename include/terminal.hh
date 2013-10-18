@@ -9,6 +9,7 @@
 
 #include "numeric.hh"
 #include "numerictypes.hh"
+#include "warningmacros.h"
 
 namespace librdag {
    
@@ -37,6 +38,7 @@ class OGScalar: public OGTerminal
     virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
+    virtual bool equals(OGTerminal * ) const;
   protected:
     T _value;
 };
@@ -107,6 +109,7 @@ template <typename T> class OGMatrix: public OGArray<T>
     OGMatrix(T * data, int rows, int cols);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
+    virtual bool equals(OGTerminal * ) const;
   protected:
     OGMatrix(int rows, int cols);
 };
@@ -229,6 +232,19 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual ExprType_t getType() const override;
 };
 
+namespace detail {
+  template<typename T> const OGTerminal * asOGTerminalT(const OGTerminal * other, const T * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGRealScalar * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGComplexScalar * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGIntegerScalar * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGRealMatrix * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGComplexMatrix * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGLogicalMatrix * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGRealDiagonalMatrix * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGComplexDiagonalMatrix * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGRealSparseMatrix * twiddle);
+  extern template const OGTerminal * asOGTerminalT(const OGTerminal * other, const OGComplexSparseMatrix * twiddle);
+}
 
 } // end namespace librdag
 

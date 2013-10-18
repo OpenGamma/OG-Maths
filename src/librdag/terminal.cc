@@ -8,6 +8,8 @@
 #include "terminal.hh"
 #include "exceptions.hh"
 #include "visitor.hh"
+#include "warningmacros.h"
+#include "equals.hh"
 
 namespace librdag {
 
@@ -45,6 +47,58 @@ OGTerminal::asOGTerminal() const
   return this;
 }
 
+
+namespace detail {
+  template<typename T> const OGTerminal * asOGTerminalT(const OGTerminal * thing, const OGRealScalar SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGRealScalar();
+  }
+  template<typename T> const OGTerminal * asOGTerminalT(const OGTerminal * thing, const OGComplexScalar SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGComplexScalar();
+  }
+  template<typename T> const OGTerminal * asOGTerminalT(const OGTerminal * thing, const OGIntegerScalar SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGIntegerScalar();
+  }
+  template<typename T> const OGTerminal * asOGTerminalT(const OGTerminal * thing, const OGRealMatrix SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGRealMatrix();
+  }
+  template<typename T> const OGTerminal * asOGTerminalT(const OGTerminal * thing, const OGComplexMatrix SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGComplexMatrix();
+  }
+
+  template<> OGTerminal const* asOGTerminalT<OGScalar<real16> >(OGTerminal const* thing, const OGScalar<real16> SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGRealScalar();
+  }
+  template<> OGTerminal const* asOGTerminalT<OGScalar<complex16> >(OGTerminal const* thing, const OGScalar<complex16> SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGComplexScalar();
+  }
+  template<> OGTerminal const* asOGTerminalT<OGScalar<int> >(OGTerminal const* thing, const OGScalar<int> SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGIntegerScalar();
+  }
+  template<> OGTerminal const* asOGTerminalT<OGMatrix<real16> >(OGTerminal const* thing, const OGMatrix<real16> SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGRealMatrix();
+  }
+  template<> OGTerminal const* asOGTerminalT<OGMatrix<complex16> >(OGTerminal const* thing, const OGMatrix<complex16> SUPPRESS_UNUSED * twiddle)
+  {
+    return thing->asOGComplexMatrix();
+  }
+
+  template const OGTerminal * asOGTerminalT<OGRealScalar> (const OGTerminal * thing, const OGRealScalar * twiddle);
+  template const OGTerminal * asOGTerminalT<OGComplexScalar> (const OGTerminal * thing, const OGComplexScalar * twiddle);
+  template const OGTerminal * asOGTerminalT<OGIntegerScalar> (const OGTerminal * thing, const OGIntegerScalar * twiddle);
+  template const OGTerminal * asOGTerminalT<OGRealMatrix> (const OGTerminal * thing, const  OGRealMatrix * twiddle);
+  template const OGTerminal * asOGTerminalT<OGComplexMatrix> (const OGTerminal * thing, const OGRealMatrix * twiddle);
+
+}
+
 /**
  * OGScalar
  */
@@ -77,6 +131,24 @@ OGScalar<T>::toArrayOfArrays() const
   tmp[0] = new T[1];
   tmp[0][0] = this->getValue();
   return tmp;
+}
+
+template<typename T>
+bool
+OGScalar<T>::equals(OGTerminal * other) const
+{
+  const OGScalar<T> * typetwiddle = nullptr;
+  const OGTerminal * comparable = detail::asOGTerminalT(other, typetwiddle);
+  if(comparable==nullptr)
+  {
+    return false;
+  }
+  // we know the type is an OGScalar<T> via RTTI and traits on the type T so can just cast
+  if(static_cast<const OGScalar<T> *>(comparable)->getValue()!=this->_value)
+  {
+    return false;
+  }
+  return true;
 }
 
 template class OGScalar<real16>;
@@ -318,6 +390,32 @@ OGMatrix<T>::toArrayOfArrays() const
     }
   }
   return tmp;
+}
+
+template<typename T>
+bool
+OGMatrix<T>::equals(OGTerminal * other) const
+{
+  const OGMatrix<T> * typetwiddle = nullptr;
+  const OGTerminal * comparable = detail::asOGTerminalT(other, typetwiddle);
+  if(comparable==nullptr)
+  {
+    return false;
+  }
+  typetwiddle = static_cast<const OGMatrix<T> *>(comparable);
+  if(typetwiddle ->getRows()!=this->getRows())
+  {
+    return false;
+  }
+  if(typetwiddle ->getCols()!=this->getCols())
+  {
+    return false;
+  }
+  if(!ArrayBitEquals(typetwiddle->getData(),this->getData(),this->getDatalen()))
+  {
+    return false;
+}
+  return true;
 }
 
 template class OGMatrix<real16>;
