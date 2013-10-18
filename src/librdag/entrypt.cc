@@ -9,6 +9,7 @@
 #include "dispatch.hh"
 #include "numeric.hh"
 #include "expression.hh"
+#include "execution.hh"
 #include "terminal.hh"
 #include "exprtypeenum.h"
 #include <typeinfo>
@@ -136,25 +137,39 @@ entrypt(const OGNumeric* expr)
   const OGTerminal* asTerminal = expr->asOGTerminal();
   if (asTerminal!=nullptr)
   {
+    // If we were passed a terminal, return a copy of it.
     // Slightly fiddly because we get an OGNumeric* back from copy.
     return asTerminal->copy()->asOGTerminal();
   }
   else
   {
-    // Expressions would have been null from the cast anyway
-    const OGExpr * asOGExpr = expr->asOGExpr();
+    ExecutionList* el = new ExecutionList(expr);
     Dispatcher * disp = new Dispatcher();
-    disp->dispatch(asOGExpr);
-    const RegContainer * reg = asOGExpr->getRegs();
+    
+    printf("Dispatching from entrypt\n");
+
+    for (auto it = el->begin(); it != el->end(); ++it)
+    {
+      const OGExpr* exprToDispatch = (*it)->asOGExpr();
+      if (exprToDispatch != nullptr)
+      {
+        disp->dispatch(exprToDispatch);
+      }
+    }
+
+    const RegContainer * reg = expr->asOGExpr()->getRegs();
+    
     // Make a copy of the result because it gets blown away by the deletion of the tree
     const OGNumeric * answer = (*reg)[0]->copy();
     answer->debug_print();
     const OGTerminal * returnTerm = answer->asOGTerminal();
+    
     if(returnTerm==nullptr)
     {
       throw rdag_error("Evaluated terminal is not casting asOGTerminal correctly.");
     }
     delete disp;
+    delete el;
     return returnTerm;
   }
 }
