@@ -9,9 +9,26 @@
 
 #include "numeric.hh"
 #include "numerictypes.hh"
+#include "warningmacros.h"
 
 namespace librdag {
-   
+
+
+namespace detail {
+
+class FuzzyCompareOGTerminalContainer
+{
+  public:
+    FuzzyCompareOGTerminalContainer(const OGTerminal * terminal);
+    ~FuzzyCompareOGTerminalContainer();
+    const OGTerminal * getTerminal() const;
+  private:
+    const OGTerminal * _terminal;
+};
+
+}
+
+
 /*
  * Base class for terminal nodes in the AST
  */
@@ -23,7 +40,20 @@ class OGTerminal: public OGNumeric
     virtual real16 ** toReal16ArrayOfArrays() const;
     virtual complex16 ** toComplex16ArrayOfArrays() const;
     virtual const OGTerminal* asOGTerminal() const override;
+    virtual bool equals(const OGTerminal *)const = 0;
+    virtual bool fuzzyequals(const OGTerminal *)const = 0;
+    virtual bool operator==(const OGTerminal&) const;
+    virtual bool operator!=(const OGTerminal&) const;
+    virtual detail::FuzzyCompareOGTerminalContainer& operator~(void) const;
+    virtual bool operator==(const detail::FuzzyCompareOGTerminalContainer&) const;
+    virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
+    OGTerminal();
+    virtual ~OGTerminal();
+  private:
+    detail::FuzzyCompareOGTerminalContainer& getFuzzyContainer() const;
+    detail::FuzzyCompareOGTerminalContainer * _fuzzyref = nullptr;
 };
+
 
 /**
  * Things that extend OGScalar
@@ -37,6 +67,8 @@ class OGScalar: public OGTerminal
     virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
+    virtual bool equals(const OGTerminal * ) const override;
+    virtual bool fuzzyequals(const OGTerminal * ) const override;
   protected:
     T _value;
 };
@@ -85,11 +117,14 @@ template <typename T> class OGArray: public OGTerminal
     int getRows() const;
     int getCols() const;
     int getDatalen() const;
+    virtual bool equals(const OGTerminal *)const override;
+    virtual bool fuzzyequals(const OGTerminal * ) const override;
   protected:
     void setData(T * data);
     void setRows(int rows);
     void setCols(int cols);
     void setDatalen(int datalen);
+    bool fundamentalsEqual(const OGTerminal * ) const;
   private:
     T * _data = nullptr;
     int _rows  = 0;
@@ -193,7 +228,9 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
     virtual void accept(Visitor &v) const override;
     int* getColPtr() const;
     int* getRowIdx() const;
-    T** toArrayOfArrays() const;   
+    T** toArrayOfArrays() const;
+    virtual bool equals(const OGTerminal * ) const override; // override OGArray equals to add in calls to check colPtr and rowIdx
+    virtual bool fuzzyequals(const OGTerminal * ) const override;
   protected:
     void setColPtr(int * colPtr);
     void setRowIdx(int * rowIdx);
@@ -228,7 +265,6 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;
     virtual ExprType_t getType() const override;
 };
-
 
 } // end namespace librdag
 
