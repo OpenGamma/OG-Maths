@@ -39,5 +39,6 @@ TEST(EntryptTest, ExprResultNull)
   OGExpr *plus = new PLUS(args);
   const OGTerminal* result = entrypt(plus);
   EXPECT_EQ(result->asOGRealScalar()->getValue(), 5);
+  delete result;
   delete plus;
 }

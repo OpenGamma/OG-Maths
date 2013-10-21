@@ -14,6 +14,7 @@
 
 namespace librdag {
 
+template class DispatchUnaryOp<void>;
 template class DispatchBinaryOp<void>;
 
 void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGComplexMatrix const SUPPRESS_UNUSED * arg0, OGComplexMatrix const SUPPRESS_UNUSED * arg1) const
@@ -26,7 +27,7 @@ void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGRealMatrix const SUP
   
 }
 
-void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGRealScalar const SUPPRESS_UNUSED * arg0, OGRealScalar const SUPPRESS_UNUSED * arg1) const 
+void PlusRunner::run(RegContainer* reg0, OGRealScalar const * arg0, OGRealScalar const * arg1) const
 {
   // impl convert and run for types OGRealScalar and OGRealScalar 
   cout << "In virtual overridden PlusRunner T run() REAL REAL " << std::endl;
@@ -34,19 +35,26 @@ void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGRealScalar const SUP
   reg0->push_back(ret);
 }
   
-
+void NegateRunner::run(RegContainer* reg, const OGRealScalar* arg) const
+{
+  cout << "IN Negate runner." << endl;
+  const OGRealScalar* ret = new OGRealScalar(-(arg->getValue()));
+  reg->push_back(ret);
+}
 
 Dispatcher::Dispatcher()
 {
-    this->_PlusRunner = new PlusRunner();     
+    _PlusRunner = new PlusRunner();
+    _NegateRunner = new NegateRunner();
 }
   
   
 Dispatcher::~Dispatcher(){
-  delete this->_PlusRunner;
+  delete _PlusRunner;
+  delete _NegateRunner;
 }
   
-void Dispatcher::dispatch(OGNumeric const SUPPRESS_UNUSED *thing) const
+void Dispatcher::dispatch(OGNumeric const *thing) const
 {
     cout << "Dispatching..." << std::endl;
     ExprType_t ID = thing->getType();
@@ -166,7 +174,7 @@ void Dispatcher::dispatch(OGComplexSparseMatrix const SUPPRESS_UNUSED * thing) c
   
 }
   
-void Dispatcher::dispatch(PLUS const SUPPRESS_UNUSED *thing) const {
+void Dispatcher::dispatch(PLUS const *thing) const {
       cout << "ABOUT TO DISPATCH A PLUS OP" << std::endl;
       const ArgContainer * args = thing->getArgs();
       const RegContainer * regs = thing->getRegs();
@@ -177,6 +185,10 @@ void Dispatcher::dispatch(PLUS const SUPPRESS_UNUSED *thing) const {
 
 void Dispatcher::dispatch(NEGATE const SUPPRESS_UNUSED *thing) const {
       cout << "ABOUT TO DISPATCH A NEGATE OP" << std::endl;
+      const ArgContainer* args = thing->getArgs();
+      const RegContainer* regs = thing->getRegs();
+      const OGNumeric *arg = (*args)[0];
+      _NegateRunner->eval(const_cast<RegContainer *>(regs), arg->asOGTerminal());
 }
 
 void Dispatcher::dispatch(COPY const SUPPRESS_UNUSED *thing) const {

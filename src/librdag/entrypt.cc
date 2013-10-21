@@ -133,11 +133,6 @@ void Walker::talkandwalk(librdag::OGNumeric const * numeric_expr_types)
 const OGTerminal*
 entrypt(const OGNumeric* expr)
 {
-  printf("Accessing DAG walker.\n");
-  Walker * walker = new Walker();
-  walker->walk((librdag::OGNumeric *) expr);
-  delete walker;
-  printf("Returning from DAG walker.\n");
   /* Return a copy of the node that was passed. The reason for doing this is that we eventually
    * expect entrypt to return the register for the result. For now, returning a copy of the tree
    * means that if a terminal is passed in, we don't get a surprise when we delete both the result
@@ -155,10 +150,10 @@ entrypt(const OGNumeric* expr)
     // Expressions would have been null from the cast anyway
     const OGExpr * asOGExpr = expr->asOGExpr();
     Dispatcher * disp = new Dispatcher();
-    printf("Dispatching from entrypt\n");
     disp->dispatch(asOGExpr);
     const RegContainer * reg = asOGExpr->getRegs();
-    const OGNumeric * answer = (*reg)[0];
+    // Make a copy of the result because it gets blown away by the deletion of the tree
+    const OGNumeric * answer = (*reg)[0]->copy();
     answer->debug_print();
     const OGTerminal * returnTerm = answer->asOGTerminal();
     if(returnTerm==nullptr)
@@ -166,7 +161,6 @@ entrypt(const OGNumeric* expr)
       throw rdag_error("Evaluated terminal is not casting asOGTerminal correctly.");
     }
     delete disp;
-    printf("Dispatch deleted\n");
     return returnTerm;
   }
 }

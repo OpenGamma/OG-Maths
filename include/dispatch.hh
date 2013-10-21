@@ -14,14 +14,15 @@
 #include "warningmacros.h"
 #include "jvmmanager.hh"
 #include "exceptions.hh"
-
+#include "debug.h"
 
 
 namespace librdag {
 
 // fwd decl
 class PlusRunner;
-  
+class NegateRunner;
+
 /**
  * The class for dispatching execution based on OGNumeric type
  */
@@ -53,7 +54,118 @@ public:
   
 private:
   PlusRunner * _PlusRunner;
+  NegateRunner* _NegateRunner;
   
+};
+
+/**
+ * For dispatching operations of the form "T foo(Register * register1, OGTerminal * arg)"
+ */
+template<typename T> class  DispatchUnaryOp
+{
+public:
+  virtual ~DispatchUnaryOp(){};
+
+  // will run the operation
+  T eval(RegContainer SUPPRESS_UNUSED * reg, OGTerminal const * arg) const
+  {
+    ExprType_t argID = arg->getType();
+    switch(argID)
+    {
+      case REAL_SPARSE_MATRIX_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGRealSparseMatrix());\n");
+        run(reg, arg->asOGRealSparseMatrix());
+        break;
+      case REAL_SCALAR_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGRealScalar());\n");
+        run(reg, arg->asOGRealScalar());
+        break;
+      case REAL_DIAGONAL_MATRIX_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGRealDiagonalMatrix());\n");
+        run(reg, arg->asOGRealDiagonalMatrix());
+        break;
+      case INTEGER_SCALAR_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGIntegerScalar());\n");
+        run(reg, arg->asOGIntegerScalar());
+        break;
+      case COMPLEX_MATRIX_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGComplexMatrix());\n");
+        run(reg, arg->asOGComplexMatrix());
+        break;
+      case COMPLEX_DIAGONAL_MATRIX_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGComplexDiagonalMatrix());\n");
+        run(reg, arg->asOGComplexDiagonalMatrix());
+        break;
+      case COMPLEX_SCALAR_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGComplexScalar());\n");
+        run(reg, arg->asOGComplexScalar());
+        break;
+      case LOGICAL_MATRIX_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGLogicalMatrix());\n");
+        run(reg, arg->asOGLogicalMatrix());
+        break;
+      case REAL_MATRIX_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGRealMatrix());\n");
+        run(reg, arg->asOGRealMatrix());
+        break;
+      case COMPLEX_SPARSE_MATRIX_ENUM:
+        DEBUG_PRINT("running with run(reg, arg->asOGComplexSparseMatrix());\n");
+        run(reg, arg->asOGComplexSparseMatrix());
+        break;
+      default:
+          throw rdag_error("Unknown type in dispatch on arg");
+    }
+  }
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealScalar const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGRealScalar
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGComplexScalar const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGComplexScalar
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGIntegerScalar const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGIntegerScalar
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealMatrix const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGRealMatrix
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGLogicalMatrix const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGLogicalMatrix
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGComplexMatrix const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGComplexMatrix
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealDiagonalMatrix const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGRealDiagonalMatrix
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGComplexDiagonalMatrix const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGComplexDiagonalMatrix
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealSparseMatrix const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGRealSparseMatrix
+  };
+
+  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGComplexSparseMatrix const SUPPRESS_UNUSED * arg) const
+  {
+    // impl convert and run for type OGComplexSparseMatrix
+  };
 };
 
 
@@ -66,7 +178,7 @@ public:
 virtual ~DispatchBinaryOp(){};
  
 // will run the operation
-T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const SUPPRESS_UNUSED * arg0, OGTerminal const SUPPRESS_UNUSED * arg1) const
+T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal const *arg1) const
 {
   ExprType_t arg0ID = arg0->getType();
   ExprType_t arg1ID = arg1->getType();
@@ -1061,6 +1173,15 @@ public:
   virtual void run(RegContainer SUPPRESS_UNUSED * reg0, OGComplexMatrix const SUPPRESS_UNUSED * arg0, OGComplexMatrix const SUPPRESS_UNUSED * arg1) const override;
   virtual void run(RegContainer SUPPRESS_UNUSED * reg0, OGRealMatrix const SUPPRESS_UNUSED * arg0, OGRealMatrix const SUPPRESS_UNUSED * arg1) const override;
   virtual void run(RegContainer SUPPRESS_UNUSED * reg0, OGRealScalar const SUPPRESS_UNUSED * arg0, OGRealScalar const SUPPRESS_UNUSED * arg1) const override;
+};
+
+// typedef the void dispatch of a unary operation
+typedef DispatchUnaryOp<void> DispatchVoidUnaryOp;
+
+class NegateRunner: public DispatchVoidUnaryOp, private Uncopyable
+{
+  public:
+    virtual void run(RegContainer* reg, const OGRealScalar* arg) const override;
 };
 
 } // namespace librdag
