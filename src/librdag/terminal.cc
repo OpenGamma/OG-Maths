@@ -66,7 +66,8 @@ OGTerminal::operator~(void) const
   return *thing;
 }
 
-
+//TODO: fix this so it uses forwarding or similar so temporaries and state of malloc
+// doesn't propagate.
 bool OGTerminal::operator==(const detail::FuzzyCompareOGTerminalContainer& thing) const
 {
   const OGTerminal * ptr = thing.getTerminal();
@@ -75,6 +76,16 @@ bool OGTerminal::operator==(const detail::FuzzyCompareOGTerminalContainer& thing
   delete &thing;
   return retval;
 }
+
+bool OGTerminal::operator!=(const detail::FuzzyCompareOGTerminalContainer& thing) const
+{
+  const OGTerminal * ptr = thing.getTerminal();
+  bool retval;
+  retval=!(this->fuzzyequals(ptr));
+  delete &thing;
+  return retval;
+}
+
 
 /**
  * FuzzyCompareOGTerminalContainer

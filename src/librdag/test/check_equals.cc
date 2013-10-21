@@ -10,6 +10,8 @@
 #include "terminal.hh"
 #include "register.hh"
 #include <cfloat>
+#include <iostream>
+#include <cstdint>
 
 using namespace std;
 using namespace librdag;
@@ -18,22 +20,42 @@ TEST(EqualsTest, SingleValueFuzzyEqualsReal16) {
   real16 NaN = getNaN();
   real16 pinf = getPosInf();
   real16 ninf = getNegInf();
-  ASSERT_TRUE(SingleValueFuzzyEquals(1,1));
-  ASSERT_TRUE(SingleValueFuzzyEquals(0,0));
-  ASSERT_TRUE(SingleValueFuzzyEquals(0,-0));
+
+  union
+  {
+    uint64_t i;
+    real16 d;
+  } neg0;
+
+  neg0.i = 8000000000000000;
+
+  // NaN branch
+  ASSERT_FALSE(SingleValueFuzzyEquals(NaN,NaN));
   ASSERT_FALSE(SingleValueFuzzyEquals(NaN,1));
   ASSERT_FALSE(SingleValueFuzzyEquals(1,NaN));
-  ASSERT_FALSE(SingleValueFuzzyEquals(NaN,NaN));
+
+  // Inf branches
   ASSERT_TRUE(SingleValueFuzzyEquals(pinf,pinf));
   ASSERT_TRUE(SingleValueFuzzyEquals(ninf,ninf));
   ASSERT_FALSE(SingleValueFuzzyEquals(pinf,ninf));
   ASSERT_FALSE(SingleValueFuzzyEquals(ninf,pinf));
   ASSERT_FALSE(SingleValueFuzzyEquals(pinf,DBL_MAX));
   ASSERT_FALSE(SingleValueFuzzyEquals(ninf,-DBL_MAX));
-  ASSERT_TRUE(SingleValueFuzzyEquals(DBL_MIN,DBL_MIN)); // same value
-  ASSERT_FALSE(SingleValueFuzzyEquals(1,2)); // will trip return on abs error difference
-  ASSERT_FALSE(SingleValueFuzzyEquals(DBL_MIN/2,0)); // will return on relerror difference
-  ASSERT_TRUE(SingleValueFuzzyEquals(1+DBL_EPSILON/2,1)); // close enough
+
+  // val 0 branches
+  ASSERT_TRUE(SingleValueFuzzyEquals(0.e0,0.e0));
+  ASSERT_TRUE(SingleValueFuzzyEquals(0.e0,neg0.d));
+  ASSERT_TRUE(SingleValueFuzzyEquals(neg0.d,0.e0));
+  ASSERT_TRUE(SingleValueFuzzyEquals(neg0.d,neg0.d));
+
+  // same value as it trips the return true on "difference less than abs tol" branch
+  ASSERT_TRUE(SingleValueFuzzyEquals(DBL_EPSILON,2.e0*DBL_EPSILON));
+
+  // same value as it trips the return true on "difference less than relative error" branch
+  ASSERT_TRUE(SingleValueFuzzyEquals(1.e308,9.99999999999999e0*1.e307));
+
+  // fail, just plain different
+  ASSERT_FALSE(SingleValueFuzzyEquals(1.e0,2.e0));
 
 }
 
@@ -65,7 +87,7 @@ TEST(EqualsTest, ArrayFuzzyEquals_real16) {
   int len = 4;
   real16 * data = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
   real16 * same = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real16 * diff  = new  real16[4]{getNaN(),2.0e0,3.0e0,4.0e0};
+  real16 * diff  = new  real16[4]{-1.0e0,2.0e0,3.0e0,4.0e0};
 
   ASSERT_FALSE(ArrayFuzzyEquals(data, diff, len));
   ASSERT_TRUE(ArrayFuzzyEquals(data, same, len));
@@ -85,6 +107,22 @@ TEST(EqualsTest, ArrayBitEquals_complex16) {
 
   ASSERT_TRUE(ArrayBitEquals(data1, data2, len));
   ASSERT_FALSE(ArrayBitEquals(data1, data3, len));
+
+  delete [] data1;
+  delete [] data2;
+  delete [] data3;
+
+}
+
+TEST(EqualsTest, ArrayFuzzyEquals_complex16) {
+
+  int len = 4;
+  complex16 * data1 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+  complex16 * data2 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+  complex16 * data3 = new complex16[4] {{-1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+
+  ASSERT_TRUE(ArrayFuzzyEquals(data1, data2, len));
+  ASSERT_FALSE(ArrayFuzzyEquals(data1, data3, len));
 
   delete [] data1;
   delete [] data2;
@@ -113,32 +151,28 @@ TEST(EqualsTest, OGRealScalar) {
 
   OGRealScalar * scalar = new OGRealScalar(1.0e0);
   OGRealScalar * same = new OGRealScalar(1.0e0);
-  OGRealScalar * slightlyoutdata = new OGRealScalar(1.0e0+DBL_EPSILON/2);
-  OGRealScalar * toofaroutdata = new OGRealScalar(1.0e0+DBL_EPSILON);
   OGRealScalar * baddata = new OGRealScalar(2.0e0);
   OGComplexScalar * badtype = new OGComplexScalar({1.0e0,2.0e0});
 
   ASSERT_TRUE(scalar->equals(same));
   ASSERT_TRUE(*scalar==*same);
+  ASSERT_FALSE(scalar->equals(baddata));
+  ASSERT_TRUE(*scalar!=*baddata);
+  ASSERT_FALSE(scalar->equals(badtype));
+  ASSERT_TRUE(*scalar!=*badtype);
 
   ASSERT_TRUE(scalar->fuzzyequals(same));
   ASSERT_TRUE(*scalar==~*same);
-  ASSERT_TRUE(*scalar==~*slightlyoutdata);
-  ASSERT_FALSE(*scalar==~*toofaroutdata);
-
-  ASSERT_FALSE(scalar->equals(baddata));
-  ASSERT_FALSE(scalar->equals(badtype));
-  ASSERT_TRUE(*scalar!=*badtype);
-  ASSERT_TRUE(*scalar!=*badtype);
+  ASSERT_FALSE(scalar->fuzzyequals(baddata));
+  ASSERT_TRUE(*scalar!=~*baddata);
+  ASSERT_FALSE(scalar->fuzzyequals(badtype));
+  ASSERT_TRUE(*scalar!=~*badtype);
 
   delete scalar;
   delete same;
-  delete slightlyoutdata;
-  delete toofaroutdata;
   delete baddata;
   delete badtype;
 }
-
 
 
 
@@ -152,8 +186,16 @@ TEST(EqualsTest, OGComplexScalar) {
   ASSERT_TRUE(scalar->equals(same));
   ASSERT_TRUE(*scalar==*same);
   ASSERT_FALSE(scalar->equals(baddata));
+  ASSERT_TRUE(*scalar!=*baddata);
   ASSERT_FALSE(scalar->equals(badtype));
   ASSERT_TRUE(*scalar!=*badtype);
+
+  ASSERT_TRUE(scalar->fuzzyequals(same));
+  ASSERT_TRUE(*scalar==~*same);
+  ASSERT_FALSE(scalar->fuzzyequals(baddata));
+  ASSERT_TRUE(*scalar!=~*baddata);
+  ASSERT_FALSE(scalar->fuzzyequals(badtype));
+  ASSERT_TRUE(*scalar!=~*badtype);
 
   delete scalar;
   delete same;
@@ -171,8 +213,16 @@ TEST(EqualsTest, OGIntegerScalar) {
   ASSERT_TRUE(scalar->equals(same));
   ASSERT_TRUE(*scalar==*same);
   ASSERT_FALSE(scalar->equals(baddata));
+  ASSERT_TRUE(*scalar!=*baddata);
   ASSERT_FALSE(scalar->equals(badtype));
   ASSERT_TRUE(*scalar!=*badtype);
+
+  ASSERT_TRUE(scalar->fuzzyequals(same));
+  ASSERT_TRUE(*scalar==~*same);
+  ASSERT_FALSE(scalar->fuzzyequals(baddata));
+  ASSERT_TRUE(*scalar!=~*baddata);
+  ASSERT_FALSE(scalar->fuzzyequals(badtype));
+  ASSERT_TRUE(*scalar!=~*badtype);
 
   delete scalar;
   delete same;
@@ -194,10 +244,24 @@ TEST(EqualsTest, OGRealMatrix) {
   ASSERT_TRUE(matrix->equals(same));
   ASSERT_TRUE(*matrix==*same);
   ASSERT_FALSE(matrix->equals(badrows));
+  ASSERT_TRUE(*matrix!=*badrows);
   ASSERT_FALSE(matrix->equals(badcols));
+  ASSERT_TRUE(*matrix!=*badcols);
   ASSERT_FALSE(matrix->equals(baddata));
+  ASSERT_TRUE(*matrix!=*baddata);
   ASSERT_FALSE(matrix->equals(badtype));
   ASSERT_TRUE(*matrix!=*badtype);
+
+  ASSERT_TRUE(matrix->fuzzyequals(same));
+  ASSERT_TRUE(*matrix==~*same);
+  ASSERT_FALSE(matrix->fuzzyequals(badrows));
+  ASSERT_TRUE(*matrix!=~*badrows);
+  ASSERT_FALSE(matrix->fuzzyequals(badcols));
+  ASSERT_TRUE(*matrix!=~*badcols);
+  ASSERT_FALSE(matrix->fuzzyequals(baddata));
+  ASSERT_TRUE(*matrix!=~*baddata);
+  ASSERT_FALSE(matrix->fuzzyequals(badtype));
+  ASSERT_TRUE(*matrix!=~*badtype);
 
   delete[] r_data1;
   delete[] r_data2;
@@ -225,10 +289,24 @@ TEST(EqualsTest, OGComplexMatrix) {
   ASSERT_TRUE(matrix->equals(same));
   ASSERT_TRUE(*matrix==*same);
   ASSERT_FALSE(matrix->equals(badrows));
+  ASSERT_TRUE(*matrix!=*badrows);
   ASSERT_FALSE(matrix->equals(badcols));
+  ASSERT_TRUE(*matrix!=*badcols);
   ASSERT_FALSE(matrix->equals(baddata));
+  ASSERT_TRUE(*matrix!=*baddata);
   ASSERT_FALSE(matrix->equals(badtype));
   ASSERT_TRUE(*matrix!=*badtype);
+
+  ASSERT_TRUE(matrix->fuzzyequals(same));
+  ASSERT_TRUE(*matrix==~*same);
+  ASSERT_FALSE(matrix->fuzzyequals(badrows));
+  ASSERT_TRUE(*matrix!=~*badrows);
+  ASSERT_FALSE(matrix->fuzzyequals(badcols));
+  ASSERT_TRUE(*matrix!=~*badcols);
+  ASSERT_FALSE(matrix->fuzzyequals(baddata));
+  ASSERT_TRUE(*matrix!=~*baddata);
+  ASSERT_FALSE(matrix->fuzzyequals(badtype));
+  ASSERT_TRUE(*matrix!=~*badtype);
 
   delete[] c_data1;
   delete[] c_data2;
@@ -263,12 +341,32 @@ TEST(EqualsTest, OGRealSparseMatrix) {
   ASSERT_TRUE(matrix->equals(same));
   ASSERT_TRUE(*matrix==*same);
   ASSERT_FALSE(matrix->equals(badrows));
+  ASSERT_TRUE(*matrix!=*badrows);
   ASSERT_FALSE(matrix->equals(badcols));
+  ASSERT_TRUE(*matrix!=*badcols);
   ASSERT_FALSE(matrix->equals(baddata));
+  ASSERT_TRUE(*matrix!=*baddata);
   ASSERT_FALSE(matrix->equals(badcolptr));
+  ASSERT_TRUE(*matrix!=*badcolptr);
   ASSERT_FALSE(matrix->equals(badrowidx));
+  ASSERT_TRUE(*matrix!=*badrowidx);
   ASSERT_FALSE(matrix->equals(badtype));
   ASSERT_TRUE(*matrix!=*badtype);
+
+  ASSERT_TRUE(matrix->fuzzyequals(same));
+  ASSERT_TRUE(*matrix==~*same);
+  ASSERT_FALSE(matrix->fuzzyequals(badrows));
+  ASSERT_TRUE(*matrix!=~*badrows);
+  ASSERT_FALSE(matrix->fuzzyequals(badcols));
+  ASSERT_TRUE(*matrix!=~*badcols);
+  ASSERT_FALSE(matrix->fuzzyequals(baddata));
+  ASSERT_TRUE(*matrix!=~*baddata);
+  ASSERT_FALSE(matrix->fuzzyequals(badcolptr));
+  ASSERT_TRUE(*matrix!=~*badcolptr);
+  ASSERT_FALSE(matrix->fuzzyequals(badrowidx));
+  ASSERT_TRUE(*matrix!=~*badrowidx);
+  ASSERT_FALSE(matrix->fuzzyequals(badtype));
+  ASSERT_TRUE(*matrix!=~*badtype);
 
   delete matrix;
   delete same;
@@ -307,12 +405,32 @@ TEST(EqualsTest, OGComplexSparseMatrix) {
   ASSERT_TRUE(matrix->equals(same));
   ASSERT_TRUE(*matrix==*same);
   ASSERT_FALSE(matrix->equals(badrows));
+  ASSERT_TRUE(*matrix!=*badrows);
   ASSERT_FALSE(matrix->equals(badcols));
+  ASSERT_TRUE(*matrix!=*badcols);
   ASSERT_FALSE(matrix->equals(baddata));
+  ASSERT_TRUE(*matrix!=*baddata);
   ASSERT_FALSE(matrix->equals(badcolptr));
+  ASSERT_TRUE(*matrix!=*badcolptr);
   ASSERT_FALSE(matrix->equals(badrowidx));
+  ASSERT_TRUE(*matrix!=*badrowidx);
   ASSERT_FALSE(matrix->equals(badtype));
   ASSERT_TRUE(*matrix!=*badtype);
+
+  ASSERT_TRUE(matrix->fuzzyequals(same));
+  ASSERT_TRUE(*matrix==~*same);
+  ASSERT_FALSE(matrix->fuzzyequals(badrows));
+  ASSERT_TRUE(*matrix!=~*badrows);
+  ASSERT_FALSE(matrix->fuzzyequals(badcols));
+  ASSERT_TRUE(*matrix!=~*badcols);
+  ASSERT_FALSE(matrix->fuzzyequals(baddata));
+  ASSERT_TRUE(*matrix!=~*baddata);
+  ASSERT_FALSE(matrix->fuzzyequals(badcolptr));
+  ASSERT_TRUE(*matrix!=~*badcolptr);
+  ASSERT_FALSE(matrix->fuzzyequals(badrowidx));
+  ASSERT_TRUE(*matrix!=~*badrowidx);
+  ASSERT_FALSE(matrix->fuzzyequals(badtype));
+  ASSERT_TRUE(*matrix!=~*badtype);
 
   delete matrix;
   delete same;
@@ -344,10 +462,24 @@ TEST(EqualsTest, OGRealDiagonalMatrix) {
   ASSERT_TRUE(matrix->equals(same));
   ASSERT_TRUE(*matrix==*same);
   ASSERT_FALSE(matrix->equals(badrows));
+  ASSERT_TRUE(*matrix!=*badrows);
   ASSERT_FALSE(matrix->equals(badcols));
+  ASSERT_TRUE(*matrix!=*badcols);
   ASSERT_FALSE(matrix->equals(baddata));
+  ASSERT_TRUE(*matrix!=*baddata);
   ASSERT_FALSE(matrix->equals(badtype));
   ASSERT_TRUE(*matrix!=*badtype);
+
+  ASSERT_TRUE(matrix->fuzzyequals(same));
+  ASSERT_TRUE(*matrix==~*same);
+  ASSERT_FALSE(matrix->fuzzyequals(badrows));
+  ASSERT_TRUE(*matrix!=~*badrows);
+  ASSERT_FALSE(matrix->fuzzyequals(badcols));
+  ASSERT_TRUE(*matrix!=~*badcols);
+  ASSERT_FALSE(matrix->fuzzyequals(baddata));
+  ASSERT_TRUE(*matrix!=~*baddata);
+  ASSERT_FALSE(matrix->fuzzyequals(badtype));
+  ASSERT_TRUE(*matrix!=~*badtype);
 
   delete[] r_data1;
   delete[] r_data2;
@@ -376,10 +508,24 @@ TEST(EqualsTest, OGComplexDiagonalMatrix) {
   ASSERT_TRUE(matrix->equals(same));
   ASSERT_TRUE(*matrix==*same);
   ASSERT_FALSE(matrix->equals(badrows));
+  ASSERT_TRUE(*matrix!=*badrows);
   ASSERT_FALSE(matrix->equals(badcols));
+  ASSERT_TRUE(*matrix!=*badcols);
   ASSERT_FALSE(matrix->equals(baddata));
+  ASSERT_TRUE(*matrix!=*baddata);
   ASSERT_FALSE(matrix->equals(badtype));
   ASSERT_TRUE(*matrix!=*badtype);
+
+  ASSERT_TRUE(matrix->fuzzyequals(same));
+  ASSERT_TRUE(*matrix==~*same);
+  ASSERT_FALSE(matrix->fuzzyequals(badrows));
+  ASSERT_TRUE(*matrix!=~*badrows);
+  ASSERT_FALSE(matrix->fuzzyequals(badcols));
+  ASSERT_TRUE(*matrix!=~*badcols);
+  ASSERT_FALSE(matrix->fuzzyequals(baddata));
+  ASSERT_TRUE(*matrix!=~*baddata);
+  ASSERT_FALSE(matrix->fuzzyequals(badtype));
+  ASSERT_TRUE(*matrix!=~*badtype);
 
   delete[] c_data1;
   delete[] c_data2;

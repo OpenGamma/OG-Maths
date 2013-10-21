@@ -15,7 +15,7 @@ namespace librdag {
 
 
 namespace detail {
- // fwd decl
+
 class FuzzyCompareOGTerminalContainer
 {
   public:
@@ -46,6 +46,7 @@ class OGTerminal: public OGNumeric
     virtual bool operator!=(const OGTerminal&) const;
     virtual detail::FuzzyCompareOGTerminalContainer& operator~(void) const;
     virtual bool operator==(const detail::FuzzyCompareOGTerminalContainer&) const;
+    virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
 };
 
 
