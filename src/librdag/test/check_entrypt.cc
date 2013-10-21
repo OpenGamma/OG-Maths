@@ -67,6 +67,19 @@ pair<const OGNumeric*, const OGNumeric*> negatepair(double v)
   return pair<const OGNumeric*, const OGNumeric*>(negate, expected);
 }
 
+double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+double realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
+
+pair<const OGNumeric*, const OGNumeric*> negaterealmatrix()
+{
+  const OGTerminal* ogrealmatrix = new OGRealMatrix(realData, 2, 3);
+  ArgContainer* arg = new ArgContainer();
+  arg->push_back(ogrealmatrix);
+  const OGNumeric* negate = new NEGATE(arg);
+  const OGTerminal* ogrealnegmatrix = new OGRealMatrix(realNegData, 2, 3);
+  return pair<const OGNumeric*, const OGNumeric*>(negate, ogrealnegmatrix);
+}
+
 pair<const OGNumeric*, const OGNumeric*> negates[] = { negatepair(1.0), negatepair(-1.0), negatepair(0.0) };
 
 INSTANTIATE_TEST_CASE_P(ValueParam, EntryptNegateTest, ::testing::ValuesIn(negates));

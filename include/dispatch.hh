@@ -132,19 +132,9 @@ public:
     // impl convert and run for type OGIntegerScalar
   };
 
-  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealMatrix const SUPPRESS_UNUSED * arg) const
-  {
-    // impl convert and run for type OGRealMatrix
-  };
-
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGLogicalMatrix const SUPPRESS_UNUSED * arg) const
   {
     // impl convert and run for type OGLogicalMatrix
-  };
-
-  virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGComplexMatrix const SUPPRESS_UNUSED * arg) const
-  {
-    // impl convert and run for type OGComplexMatrix
   };
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealDiagonalMatrix const SUPPRESS_UNUSED * arg) const
@@ -166,6 +156,10 @@ public:
   {
     // impl convert and run for type OGComplexSparseMatrix
   };
+
+  // Backstop methods for generic implementation
+  virtual T run(RegContainer * reg, OGRealMatrix const * arg) const = 0;
+  virtual T run(RegContainer * reg, OGComplexMatrix const * arg) const = 0;
 };
 
 
@@ -1182,6 +1176,8 @@ class NegateRunner: public DispatchVoidUnaryOp, private Uncopyable
 {
   public:
     virtual void run(RegContainer* reg, const OGRealScalar* arg) const override;
+    virtual void run(RegContainer* reg, const OGRealMatrix* arg) const override;
+    virtual void run(RegContainer* reg, const OGComplexMatrix* arg) const override;
 };
 
 } // namespace librdag
