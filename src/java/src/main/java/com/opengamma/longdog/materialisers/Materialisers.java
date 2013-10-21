@@ -44,11 +44,6 @@ public class Materialisers {
    */
   public static double[][] toDoubleArrayOfArrays(OGNumeric arg0) {
     Catchers.catchNullFromArgList(arg0, 1);
-    System.out.println("tree walking");
-    StringBuffer buf = new StringBuffer();
-    printTree(arg0, buf, 0);
-    System.out.println(buf.toString());
-    System.out.println("tree walking done");
     return materialiseToJDoubleArrayOfArrays(arg0);
   }
 
