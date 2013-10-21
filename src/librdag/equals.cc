@@ -83,7 +83,7 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
     return false;
   }
 
-// deal with infs
+// deal with infs in debug mode
 #ifdef __LOCALDEBUG
 #ifdef DEBUG
   bool val1isinf = std::isinf(val1);
@@ -103,16 +103,12 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
     return false;
   }
 #endif
-#else
-  if(val1 == val2)
-  {
-    return true; // (+/-)inf compares ==
-  }
 #endif
 
-  // check if they are both 0, else the rel error gets stuck with /0
-  if((val1==0.e0)&&(val2==0.e0)) return true;
-
+  if(val1 == val2)
+  {
+      return true; // (+/-)inf compares == as does (+/-)0.e0
+  }
 
   // check if they are below max absolute error bounds (i.e. small in the first place)
   real16 diff = (val1-val2);
