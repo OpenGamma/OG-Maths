@@ -62,30 +62,33 @@ OGTerminal::operator!=(const OGTerminal&  other) const
 detail::FuzzyCompareOGTerminalContainer&
 OGTerminal::operator~(void) const
 {
-  detail::FuzzyCompareOGTerminalContainer * thing = new detail::FuzzyCompareOGTerminalContainer(this);
-  return *thing;
+  return this->getFuzzyContainer();
 }
 
-//TODO: fix this so it uses forwarding or similar so temporaries and state of malloc
-// doesn't propagate.
 bool OGTerminal::operator==(const detail::FuzzyCompareOGTerminalContainer& thing) const
 {
-  const OGTerminal * ptr = thing.getTerminal();
-  bool retval;
-  retval=this->fuzzyequals(ptr);
-  delete &thing;
-  return retval;
+  return this->fuzzyequals(thing.getTerminal());
 }
 
 bool OGTerminal::operator!=(const detail::FuzzyCompareOGTerminalContainer& thing) const
 {
-  const OGTerminal * ptr = thing.getTerminal();
-  bool retval;
-  retval=!(this->fuzzyequals(ptr));
-  delete &thing;
-  return retval;
+  return !(this->fuzzyequals(thing.getTerminal()));
 }
 
+OGTerminal::OGTerminal()
+{
+  _fuzzyref = new detail::FuzzyCompareOGTerminalContainer(this);
+}
+
+OGTerminal::~OGTerminal()
+{
+  delete _fuzzyref;
+}
+
+detail::FuzzyCompareOGTerminalContainer&
+OGTerminal::getFuzzyContainer() const{
+  return *_fuzzyref;
+}
 
 /**
  * FuzzyCompareOGTerminalContainer

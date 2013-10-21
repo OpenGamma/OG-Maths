@@ -47,6 +47,11 @@ class OGTerminal: public OGNumeric
     virtual detail::FuzzyCompareOGTerminalContainer& operator~(void) const;
     virtual bool operator==(const detail::FuzzyCompareOGTerminalContainer&) const;
     virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
+    OGTerminal();
+    virtual ~OGTerminal();
+  private:
+    detail::FuzzyCompareOGTerminalContainer& getFuzzyContainer() const;
+    detail::FuzzyCompareOGTerminalContainer * _fuzzyref = nullptr;
 };
 
 
