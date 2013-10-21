@@ -35,11 +35,38 @@ void PlusRunner::run(RegContainer* reg0, OGRealScalar const * arg0, OGRealScalar
   reg0->push_back(ret);
 }
   
-void NegateRunner::run(RegContainer* reg, const OGRealScalar* arg) const
+void
+NegateRunner::run(RegContainer* reg, const OGRealScalar* arg) const
 {
   cout << "IN Negate runner." << endl;
   const OGRealScalar* ret = new OGRealScalar(-(arg->getValue()));
   reg->push_back(ret);
+}
+
+void
+NegateRunner::run(RegContainer *reg, const OGRealMatrix *arg) const
+{
+  real16* data = arg->getData();
+  int datalen = arg->getDatalen();
+  real16* newData = new real16[datalen];
+  for (int i = 0; i < datalen; ++i)
+  {
+    newData[i] = -data[i];
+  }
+  reg->push_back(new OGRealMatrix(newData, arg->getRows(), arg->getCols()));
+}
+
+void
+NegateRunner::run(RegContainer SUPPRESS_UNUSED *reg, const OGComplexMatrix SUPPRESS_UNUSED *arg) const
+{
+  complex16* data = arg->getData();
+  int datalen = arg->getDatalen();
+  complex16* newData = new complex16[datalen];
+  for (int i = 0; i < datalen; ++i)
+  {
+    newData[i] = -data[i];
+  }
+  reg->push_back(new OGComplexMatrix(data, arg->getRows(), arg->getCols()));
 }
 
 Dispatcher::Dispatcher()
