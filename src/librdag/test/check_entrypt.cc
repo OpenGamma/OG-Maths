@@ -42,3 +42,31 @@ TEST(EntryptTest, ExprResultNull)
   delete result;
   delete plus;
 }
+
+class EntryptNegateTest: public ::testing::TestWithParam<std::pair<const OGNumeric*, const OGNumeric*> > {};
+
+TEST_P(EntryptNegateTest, Running)
+{
+  const NEGATE* node = GetParam().first->asNEGATE();
+  const OGRealScalar* expectedResult = GetParam().second->asOGRealScalar();
+  const OGNumeric *result = entrypt(node);
+  const OGRealScalar* resultScalar = result->asOGRealScalar();
+  ASSERT_NE(resultScalar, nullptr);
+  EXPECT_EQ(resultScalar->getValue(), expectedResult->getValue());
+  delete node;
+  delete expectedResult;
+  delete result;
+}
+
+pair<const OGNumeric*, const OGNumeric*> negatepair(double v)
+{
+  ArgContainer* args = new ArgContainer();
+  args->push_back(new OGRealScalar(v));
+  const OGNumeric* negate = new NEGATE(args);
+  const OGNumeric* expected = new OGRealScalar(-v);
+  return pair<const OGNumeric*, const OGNumeric*>(negate, expected);
+}
+
+pair<const OGNumeric*, const OGNumeric*> negates[] = { negatepair(1.0), negatepair(-1.0), negatepair(0.0) };
+
+INSTANTIATE_TEST_CASE_P(ValueParam, EntryptNegateTest, ::testing::ValuesIn(negates));
