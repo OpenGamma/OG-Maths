@@ -34,7 +34,6 @@ class ConvertTo
     ConvertTo();
     OGRealMatrixRegister * convertToOGRealMatrix(OGRealScalar const * thing) const;
     OGRealMatrixRegister * convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const;
-    OGRealMatrixRegister * convertToOGRealMatrix(OGLogicalMatrix const * thing) const;
     OGRealMatrixRegister * convertToOGRealMatrix(OGRealSparseMatrix const * thing) const;
 
     OGComplexMatrixRegister * convertToOGComplexMatrix(OGRealScalar const * thing) const;

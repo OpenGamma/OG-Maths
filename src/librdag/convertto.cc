@@ -45,12 +45,6 @@ ConvertTo::convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const
 }
 
 OGRealMatrixRegister *
-ConvertTo::convertToOGRealMatrix(OGLogicalMatrix const SUPPRESS_UNUSED * thing) const
-{
-  throw rdag_error("Context for convert logical to real matrix unknown and therefore not implemented.");
-}
-
-OGRealMatrixRegister *
 ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix const * thing) const
 {
 
