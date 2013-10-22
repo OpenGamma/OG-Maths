@@ -29,76 +29,127 @@ TEST_P(EntryptOneNodeTest, TerminalTypes)
 INSTANTIATE_TEST_CASE_P(ValueParam, EntryptOneNodeTest, ::testing::ValuesIn(terminals));
 
 /**
- * Entrypt with NEGATE nodes
+ * A TreeResultPair consists of a tree and the terminal it is expected to evaluate to.
  */
-class EntryptNegateTest: public ::testing::TestWithParam<std::pair<const OGNumeric*, const OGNumeric*> > {};
+typedef pair<const OGNumeric*, const OGNumeric*> TreeResultPair;
 
-TEST_P(EntryptNegateTest, Running)
+/**
+ * run_entrypt calls entrypt, checks the result and cleans up. This is common to
+ * all entrypt tests. Factoring it into a function that is called from TEST functions
+ * allows the tests to keep separate names for clarity.
+ */
+void run_entrypt(TreeResultPair param)
 {
-  const OGNumeric* node = GetParam().first;
-  const OGTerminal* expectedResult = GetParam().second->asOGTerminal();
+  const OGNumeric* node = param.first;
+  const OGTerminal* expectedResult = param.second->asOGTerminal();
   const OGTerminal *result = entrypt(node)->asOGTerminal();
   ASSERT_NE(result, nullptr);
   EXPECT_TRUE((*result)==(*expectedResult));
   delete node;
   delete expectedResult;
+  // FIXME Ad-hoc manual cleanup of result data. This needs to be handled
+  // sensibly by a Register in the future.
+  const OGRealMatrix* realMatrix = result->asOGRealMatrix();
+  if (realMatrix != nullptr)
+  {
+    delete[] realMatrix->getData();
+  }
+  const OGComplexMatrix* complexMatrix = result->asOGComplexMatrix();
+  if (complexMatrix != nullptr)
+  {
+    delete[] complexMatrix->getData();
+  }
   delete result;
+
 }
 
-pair<const OGNumeric*, const OGNumeric*> negatepair(double v)
+/**
+ * Entrypt with NEGATE nodes
+ */
+class EntryptNegateTest: public ::testing::TestWithParam<TreeResultPair> {};
+
+TEST_P(EntryptNegateTest, Running)
+{
+  run_entrypt(GetParam());
+}
+
+TreeResultPair negatepair(double v)
 {
   ArgContainer* args = new ArgContainer();
   args->push_back(new OGRealScalar(v));
   const OGNumeric* negate = new NEGATE(args);
   const OGNumeric* expected = new OGRealScalar(-v);
-  return pair<const OGNumeric*, const OGNumeric*>(negate, expected);
+  return TreeResultPair(negate, expected);
+}
+
+TreeResultPair doublenegate(double v)
+{
+  ArgContainer* args = new ArgContainer();
+  args->push_back(new OGRealScalar(v));
+  const OGNumeric* negate = new NEGATE(args);
+  args = new ArgContainer();
+  args->push_back(negate);
+  negate = new NEGATE(args);
+  const OGNumeric* expected = new OGRealScalar(v);
+  return TreeResultPair(negate, expected);
 }
 
 double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
 double realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
 
-pair<const OGNumeric*, const OGNumeric*> negaterealmatrix()
+TreeResultPair negaterealmatrix()
 {
   const OGTerminal* ogrealmatrix = new OGRealMatrix(realData, 2, 3);
   ArgContainer* arg = new ArgContainer();
   arg->push_back(ogrealmatrix);
   const OGNumeric* negate = new NEGATE(arg);
   const OGTerminal* ogrealnegmatrix = new OGRealMatrix(realNegData, 2, 3);
-  return pair<const OGNumeric*, const OGNumeric*>(negate, ogrealnegmatrix);
+  return TreeResultPair(negate, ogrealnegmatrix);
 }
 
-pair<const OGNumeric*, const OGNumeric*> negates[] = { negatepair(1.0), negatepair(-1.0), negatepair(0.0) };
+complex16 complexData[6] = { {1.0, 2.0}, {3.0, 4.0},  {5.0,  6.0},
+                             {7.0, 8.0}, {9.0, 10.0}, {11.0, 12.0} };
+complex16 complexNegData[6] = { {-1.0, -2.0}, {-3.0, -4.0},  {-5.0,  -6.0},
+                                {-7.0, -8.0}, {-9.0, -10.0}, {-11.0, -12.0} };
+
+TreeResultPair negatecomplexmatrix()
+{
+  const OGTerminal* ogcomplexmatrix = new OGComplexMatrix(complexData, 2, 3);
+  ArgContainer* arg = new ArgContainer();
+  arg->push_back(ogcomplexmatrix);
+  const OGNumeric* negate = new NEGATE(arg);
+  const OGTerminal* ogcomplexnegmatrix = new OGComplexMatrix(complexNegData, 2, 3);
+  return TreeResultPair(negate, ogcomplexnegmatrix);
+}
+
+TreeResultPair negates[] =
+   { negatepair(1.0), negatepair(-1.0), negatepair(0.0),
+     doublenegate(1.0), doublenegate(-1.0), doublenegate(0.0),
+     negaterealmatrix(), negatecomplexmatrix() };
 
 INSTANTIATE_TEST_CASE_P(ValueParam, EntryptNegateTest, ::testing::ValuesIn(negates));
 
 /**
  * Entrypt with PLUS nodes
  */
-class EntryptPlusTest: public ::testing::TestWithParam<std::pair<const OGNumeric*, const OGNumeric*> > {} ;
+class EntryptPlusTest: public ::testing::TestWithParam<TreeResultPair> {} ;
 
 TEST_P(EntryptPlusTest, Running)
 {
-  const OGNumeric* node = GetParam().first;
-  const OGTerminal* expectedResult = GetParam().second->asOGTerminal();
-  const OGTerminal *result = entrypt(node)->asOGTerminal();
-  ASSERT_NE(result, nullptr);
-  EXPECT_TRUE((*result)==(*expectedResult));
-  delete node;
-  delete expectedResult;
-  delete result;
+  run_entrypt(GetParam());
 }
 
-pair<const OGNumeric*, const OGNumeric*> plustestsimple()
+TreeResultPair plustestsimple()
 {
   ArgContainer* args = new ArgContainer();
   args->push_back(new OGRealScalar(2.0));
   args->push_back(new OGRealScalar(3.0));
   const OGNumeric* plus = new PLUS(args);
   const OGNumeric* expected = new OGRealScalar(2.0+3.0);
-  return pair<const OGNumeric*, const OGNumeric*>(plus, expected);
+  return TreeResultPair(plus, expected);
 }
 
-pair<const OGNumeric*, const OGNumeric*> plustesttwoplus()
+TreeResultPair plustesttwoplus()
 {
   ArgContainer* args = new ArgContainer();
   args->push_back(new OGRealScalar(2.0));
@@ -109,10 +160,10 @@ pair<const OGNumeric*, const OGNumeric*> plustesttwoplus()
   args->push_back(plus);
   plus = new PLUS(args);
   const OGNumeric* expected = new OGRealScalar(1.0+2.0+3.0);
-  return pair<const OGNumeric*, const OGNumeric*>(plus, expected);
+  return TreeResultPair(plus, expected);
 }
 
-pair<const OGNumeric*, const OGNumeric*> plustestbigtree()
+TreeResultPair plustestbigtree()
 {
   const OGNumeric* bigtree = new OGRealScalar(0.0);
   double sum = 0.0;
@@ -134,10 +185,10 @@ pair<const OGNumeric*, const OGNumeric*> plustestbigtree()
     bigtree = new PLUS(args);
   }
 
-  return pair<const OGNumeric*, const OGNumeric*>(bigtree, new OGRealScalar(sum));
+  return TreeResultPair(bigtree, new OGRealScalar(sum));
 }
 
-pair<const OGNumeric*, const OGNumeric*> pluses[] = { plustestsimple(), plustesttwoplus(), plustestbigtree() };
+TreeResultPair pluses[] = { plustestsimple(), plustesttwoplus(), plustestbigtree() };
 
 INSTANTIATE_TEST_CASE_P(ValueParam, EntryptPlusTest, ::testing::ValuesIn(pluses));
 

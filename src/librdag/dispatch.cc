@@ -57,7 +57,7 @@ NegateRunner::run(RegContainer *reg, const OGRealMatrix *arg) const
 }
 
 void
-NegateRunner::run(RegContainer SUPPRESS_UNUSED *reg, const OGComplexMatrix SUPPRESS_UNUSED *arg) const
+NegateRunner::run(RegContainer *reg, const OGComplexMatrix *arg) const
 {
   complex16* data = arg->getData();
   int datalen = arg->getDatalen();
@@ -66,7 +66,7 @@ NegateRunner::run(RegContainer SUPPRESS_UNUSED *reg, const OGComplexMatrix SUPPR
   {
     newData[i] = -data[i];
   }
-  reg->push_back(new OGComplexMatrix(data, arg->getRows(), arg->getCols()));
+  reg->push_back(new OGComplexMatrix(newData, arg->getRows(), arg->getCols()));
 }
 
 Dispatcher::Dispatcher()
@@ -223,7 +223,12 @@ void Dispatcher::dispatch(NEGATE const SUPPRESS_UNUSED *thing) const {
       const ArgContainer* args = thing->getArgs();
       const RegContainer* regs = thing->getRegs();
       const OGNumeric *arg = (*args)[0];
-      _NegateRunner->eval(const_cast<RegContainer *>(regs), arg->asOGTerminal());
+      const OGTerminal *argt = arg->asOGTerminal();
+      if (argt == nullptr)
+      {
+        argt = (*(arg->asOGExpr()->getRegs()))[0]->asOGTerminal();
+      }
+      _NegateRunner->eval(const_cast<RegContainer *>(regs), argt);
 }
 
 void Dispatcher::dispatch(COPY const SUPPRESS_UNUSED *thing) const {
