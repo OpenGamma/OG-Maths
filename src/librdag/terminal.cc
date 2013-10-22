@@ -469,15 +469,16 @@ template class OGMatrix<complex16>;
 void
 OGRealMatrix::debug_print() const
 {
-  size_t ptr=0;
   printf("\n");
-  for(int i = 0 ; i < this->getRows(); i++)
+  int lim = (this->getCols()-1);
+  int rows = this->getRows();
+  for(int i = 0 ; i < rows; i++)
   {
-    for(int j = 0 ; j < this->getCols()-1; j++)
+    for(int j = 0 ; j < lim; j++)
     {
-      printf("%6.4f, ",this->getData()[ptr++]);
+      printf("%6.4f, ",this->getData()[j*rows+i]);
     }
-    printf("%6.4f\n",this->getData()[ptr++]);
+    printf("%6.4f\n",this->getData()[lim*rows+i]);
   }
 }
 
@@ -513,18 +514,18 @@ OGRealMatrix::getType() const
 void
 OGComplexMatrix::debug_print() const
 {
-  size_t ptr=0;
   printf("\n");
-  for(int i = 0 ; i < this->getRows(); i++)
+  int lim = (this->getCols()-1);
+  int rows = this->getRows();
+  for(int i = 0 ; i < rows; i++)
   {
-    for(int j = 0 ; j < this->getCols()-1; j++)
+    for(int j = 0 ; j < lim; j++)
     {
-      printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
-      ptr++;
+      printf("%6.4f + %6.4fi, ",this->getData()[j*rows+i].real(),this->getData()[j*rows+i].imag());
     }
-    printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
-    ptr++;
+      printf("%6.4f + %6.4fi, ",this->getData()[lim*rows+i].real(),this->getData()[lim*rows+i].imag());
   }
+
 }
 
 complex16**
