@@ -183,43 +183,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGRealSparseMatrix(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -230,43 +230,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGRealScalar(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -277,43 +277,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGRealDiagonalMatrix(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -324,43 +324,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGIntegerScalar(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -371,43 +371,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGComplexMatrix(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -418,43 +418,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGComplexDiagonalMatrix(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -465,43 +465,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGComplexScalar(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -512,43 +512,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGLogicalMatrix(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -559,43 +559,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGRealMatrix(), arg1->asOGComplexSparseMatrix());
               break;
           default:
@@ -606,43 +606,43 @@ T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal c
         switch(arg1ID)
         {
           case REAL_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealSparseMatrix());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealSparseMatrix());
               break;
           case REAL_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealScalar());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealScalar());
               break;
           case REAL_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealDiagonalMatrix());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealDiagonalMatrix());
               break;
           case INTEGER_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGIntegerScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGIntegerScalar());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGIntegerScalar());
               break;
           case COMPLEX_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexMatrix());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexMatrix());
               break;
           case COMPLEX_DIAGONAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexDiagonalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexDiagonalMatrix());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexDiagonalMatrix());
               break;
           case COMPLEX_SCALAR_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexScalar());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexScalar());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexScalar());
               break;
           case LOGICAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGLogicalMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGLogicalMatrix());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGLogicalMatrix());
               break;
           case REAL_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealMatrix());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGRealMatrix());
               break;
           case COMPLEX_SPARSE_MATRIX_ENUM:
-              cout << "running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexSparseMatrix());" << std::endl;
+              DEBUG_PRINT("running with run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexSparseMatrix());\n");
               run(reg0, arg0->asOGComplexSparseMatrix(), arg1->asOGComplexSparseMatrix());
               break;
           default:
