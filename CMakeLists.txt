@@ -44,7 +44,9 @@ set(longdog_VERSION
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 # tweak flags
-set(FFAST_MATH_SAFE "-fno-math-errno -ffinite-math-only -fno-rounding-math -fno-signaling-nans -fcx-limited-range") # -funsafe-math-optimizations is missing as it messes with the FPU control word which can cause segfaults when running through the JNI interface 
+set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
+# -funsafe-math-optimizations is missing as it messes with the FPU control word which can cause segfaults when running through the JNI interface
+# -ffinite-math-only is missing as it messes with NaN and Inf in ways that break comparison behaviours
 
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
 set(CMAKE_C_FLAGS_DEBUG "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
