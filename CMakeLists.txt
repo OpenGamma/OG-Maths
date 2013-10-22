@@ -135,7 +135,10 @@ if (CMAKE_BUILD_TYPE MATCHES "Debug" AND NOT WIN32)
                     COMMENT "Generating coverage report")
 endif()
 
-
+# Whether we want noisy debug messages
+if (DEBUGMESSAGES)
+  add_definitions(-DDEBUGMESSAGES)
+endif()
 
 add_subdirectory(src)
 

@@ -6,7 +6,7 @@
 
 #include "warningmacros.h"
 
-#ifdef DEBUG
+#ifdef DEBUGMESSAGES
 #define DEBUG_PRINT(...) fprintf(stderr, __VA_ARGS__)
 #else
 #define DEBUG_PRINT(...) do {} while(0)

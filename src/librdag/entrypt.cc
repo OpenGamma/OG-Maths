@@ -146,7 +146,7 @@ entrypt(const OGNumeric* expr)
     ExecutionList* el = new ExecutionList(expr);
     Dispatcher * disp = new Dispatcher();
     
-    printf("Dispatching from entrypt\n");
+    DEBUG_PRINT("Dispatching from entrypt\n");
 
     for (auto it = el->begin(); it != el->end(); ++it)
     {
@@ -161,7 +161,6 @@ entrypt(const OGNumeric* expr)
     
     // Make a copy of the result because it gets blown away by the deletion of the tree
     const OGNumeric * answer = (*reg)[0]->copy();
-    answer->debug_print();
     const OGTerminal * returnTerm = answer->asOGTerminal();
     
     if(returnTerm==nullptr)

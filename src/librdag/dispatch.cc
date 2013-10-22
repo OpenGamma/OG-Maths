@@ -30,7 +30,7 @@ void PlusRunner::run(RegContainer SUPPRESS_UNUSED * reg0, OGRealMatrix const SUP
 void PlusRunner::run(RegContainer* reg0, OGRealScalar const * arg0, OGRealScalar const * arg1) const
 {
   // impl convert and run for types OGRealScalar and OGRealScalar 
-  cout << "In virtual overridden PlusRunner T run() REAL REAL " << std::endl;
+  DEBUG_PRINT("In virtual overridden PlusRunner T run() REAL REAL \n");
   const OGRealScalar * ret = new OGRealScalar(arg0->getValue()+arg1->getValue());
   reg0->push_back(ret);
 }
@@ -38,7 +38,7 @@ void PlusRunner::run(RegContainer* reg0, OGRealScalar const * arg0, OGRealScalar
 void
 NegateRunner::run(RegContainer* reg, const OGRealScalar* arg) const
 {
-  cout << "IN Negate runner." << endl;
+  DEBUG_PRINT("IN Negate runner.\n");
   const OGRealScalar* ret = new OGRealScalar(-(arg->getValue()));
   reg->push_back(ret);
 }
@@ -83,18 +83,16 @@ Dispatcher::~Dispatcher(){
   
 void Dispatcher::dispatch(OGNumeric const *thing) const
 {
-    cout << "Dispatching..." << std::endl;
+    DEBUG_PRINT("Dispatching...\n");
     ExprType_t ID = thing->getType();
-    cout << "TYPE IS" << ID << std::endl;
+    DEBUG_PRINT("TYPE IS %d\n", ID);
     bool isTerminalType = false;
     if(ID&IS_NODE_MASK){
-      cout << "is node..." << std::endl;
-      thing->debug_print();
+      DEBUG_PRINT("is node...\n");
       thing->asOGExpr();
     } else {
       isTerminalType = true;      
-      cout << "is terminal..." << std::endl;
-      thing->debug_print();       
+      DEBUG_PRINT("is terminal...\n");
     }
 
     // branch switch on isTerminalType?
@@ -132,7 +130,7 @@ void Dispatcher::dispatch(OGNumeric const *thing) const
           dispatch(thing->asOGIntegerScalar());
           break;          
         default:
-          cout << "NO SPECIFIC TYPE " << std::endl;
+          DEBUG_PRINT("NO SPECIFIC TYPE \n");
       }     
     }
     else
@@ -155,7 +153,7 @@ void Dispatcher::dispatch(OGNumeric const *thing) const
           dispatch(thing->asSELECTRESULT());
           break;
         default:
-          cout << "NO SPECIFIC TYPE " << std::endl;
+          DEBUG_PRINT("NO SPECIFIC TYPE \n");
       }
     }
 }
@@ -202,7 +200,7 @@ void Dispatcher::dispatch(OGComplexSparseMatrix const SUPPRESS_UNUSED * thing) c
 }
   
 void Dispatcher::dispatch(PLUS const *thing) const {
-      cout << "ABOUT TO DISPATCH A PLUS OP" << std::endl;
+      DEBUG_PRINT("ABOUT TO DISPATCH A PLUS OP\n");
       const ArgContainer * args = thing->getArgs();
       const RegContainer * regs = thing->getRegs();
       const OGNumeric * arg0 = (*args)[0];
@@ -221,7 +219,7 @@ void Dispatcher::dispatch(PLUS const *thing) const {
 }
 
 void Dispatcher::dispatch(NEGATE const SUPPRESS_UNUSED *thing) const {
-      cout << "ABOUT TO DISPATCH A NEGATE OP" << std::endl;
+      DEBUG_PRINT("ABOUT TO DISPATCH A NEGATE OP\n");
       const ArgContainer* args = thing->getArgs();
       const RegContainer* regs = thing->getRegs();
       const OGNumeric *arg = (*args)[0];
@@ -229,15 +227,15 @@ void Dispatcher::dispatch(NEGATE const SUPPRESS_UNUSED *thing) const {
 }
 
 void Dispatcher::dispatch(COPY const SUPPRESS_UNUSED *thing) const {
-      cout << "ABOUT TO DISPATCH A COPY OP" << std::endl;
+      DEBUG_PRINT("ABOUT TO DISPATCH A COPY OP\n");
 }
 
 void Dispatcher::dispatch(SVD const SUPPRESS_UNUSED *thing) const {
-      cout << "ABOUT TO DISPATCH A SVD OP" << std::endl;
+      DEBUG_PRINT("ABOUT TO DISPATCH A SVD OP\n");
 }
 
 void Dispatcher::dispatch(SELECTRESULT const SUPPRESS_UNUSED *thing) const {
-      cout << "ABOUT TO DISPATCH A SELECTRESULT OP" << std::endl;
+      DEBUG_PRINT("ABOUT TO DISPATCH A SELECTRESULT OP\n");
 }
   
   
