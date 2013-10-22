@@ -57,18 +57,14 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
 {
 
 #ifdef __LOCALDEBUG
-#ifdef DEBUG
   DEBUG_PRINT("FuzzyEquals: Comparing %24.16f and %24.16f\n", val1,val2);
-#endif
 #endif
 
   // IEEE754 nans not comparable, their relation is considered "unordered" sec 5.7.
   if(std::isnan(val1))
   {
 #ifdef __LOCALDEBUG
-#ifdef DEBUG
   DEBUG_PRINT("FuzzyEquals: Failed as value 1 is NaN\n");
-#endif
 #endif
     return false;
   }
@@ -76,9 +72,7 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
   if(std::isnan(val2))
   {
 #ifdef __LOCALDEBUG
-#ifdef DEBUG
   DEBUG_PRINT("FuzzyEquals: Failed as value 2 is NaN\n");
-#endif
 #endif
     return false;
   }
@@ -115,16 +109,12 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
   if(maxabserror>std::fabs(diff))
   {
 #ifdef __LOCALDEBUG
-#ifdef DEBUG
   DEBUG_PRINT("FuzzyEquals: Match as below diff bounds. maxabserror > diff. (%24.16f >  %24.16f)\n", maxabserror, std::abs(diff));
-#endif
 #endif
     return true;
   }
 #ifdef __LOCALDEBUG
-#ifdef DEBUG
   DEBUG_PRINT("FuzzyEquals: Failed as diff > maxabserror. (%24.16f >  %24.16f)\n", std::abs(diff), maxabserror);
-#endif
 #endif
 
   // check if they are within a relative error bound, div difference by largest of the 2
@@ -133,17 +123,13 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
   if(maxrelerror > relerror)
   {
 #ifdef __LOCALDEBUG
-#ifdef DEBUG
   DEBUG_PRINT("FuzzyEquals: Match as maxrelerror > relerror. (%24.16f >  %24.16f)\n", maxrelerror, relerror);
-#endif
 #endif
     return true;
   };
 
 #ifdef __LOCALDEBUG
-#ifdef DEBUG
   DEBUG_PRINT("FuzzyEquals: Fail as relerror > maxrelerror. (%24.16f >  %24.16f)\n", relerror, maxrelerror);
-#endif
 #endif
 
   return false;
