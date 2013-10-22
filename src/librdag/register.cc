@@ -103,7 +103,7 @@ OGRealMatrixRegister::OGRealMatrixRegister(int rows, int cols)
 
 void OGRealMatrixRegister::alloc()
 {
-  real16* data = new real16[getDatalen()];
+  real16* data = new real16[getDatalen()]();
   setData(data);
 
 }
@@ -128,7 +128,7 @@ OGComplexMatrixRegister::OGComplexMatrixRegister(int rows, int cols)
                         :OGComplexMatrix(rows, cols), Register() {}
 void OGComplexMatrixRegister::alloc()
 {
-  complex16* data = new complex16[getDatalen()];
+  complex16* data = new complex16[getDatalen()]();
   setData(data);
 
 }
@@ -154,7 +154,7 @@ OGRealDiagonalMatrixRegister::OGRealDiagonalMatrixRegister(int rows, int cols)
 
 void OGRealDiagonalMatrixRegister::alloc()
 {
-  real16* data = new real16[getDatalen()];
+  real16* data = new real16[getDatalen()]();
   setData(data);
 
 }
@@ -179,7 +179,7 @@ OGComplexDiagonalMatrixRegister::OGComplexDiagonalMatrixRegister(int rows, int c
                                 :OGComplexDiagonalMatrix(rows, cols), Register() {}
 void OGComplexDiagonalMatrixRegister::alloc()
 {
-  complex16* data = new complex16[getDatalen()];
+  complex16* data = new complex16[getDatalen()]();
   setData(data);
 
 }
