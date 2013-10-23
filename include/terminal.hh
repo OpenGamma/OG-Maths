@@ -89,12 +89,6 @@ class OGRealScalar: public OGScalar<real16>
 };
 
 
-class OGOwningRealScalar: public OGRealScalar
-{
-  public:
-    virtual ~OGOwningRealScalar() override =0 ;
-};
-
 class OGComplexScalar: public OGScalar<complex16>
 {
   public:
@@ -106,13 +100,6 @@ class OGComplexScalar: public OGScalar<complex16>
     virtual ExprType_t getType() const override;
 };
 
-class OGOwningComplexScalar: public OGComplexScalar
-{
-  public:
-    virtual ~OGOwningComplexScalar() override =0;
-};
-
-
 class OGIntegerScalar: public OGScalar<int>
 {
   public:
@@ -123,11 +110,6 @@ class OGIntegerScalar: public OGScalar<int>
     virtual ExprType_t getType() const override;
 };
 
-class OGOwningIntegerScalar: public OGIntegerScalar
-{
-  public:
-    virtual ~OGOwningIntegerScalar() override =0;
-};
 
 template <typename T> class OGArray: public OGTerminal
 {
