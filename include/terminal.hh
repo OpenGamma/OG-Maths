@@ -88,6 +88,7 @@ class OGRealScalar: public OGScalar<real16>
     virtual ExprType_t getType() const override;
 };
 
+
 class OGComplexScalar: public OGScalar<complex16>
 {
   public:
@@ -96,7 +97,7 @@ class OGComplexScalar: public OGScalar<complex16>
     virtual OGNumeric* copy() const override;
     virtual const OGComplexScalar* asOGComplexScalar() const override;
     virtual void debug_print() const override;
-    virtual ExprType_t getType() const override;    
+    virtual ExprType_t getType() const override;
 };
 
 class OGIntegerScalar: public OGScalar<int>
@@ -108,6 +109,7 @@ class OGIntegerScalar: public OGScalar<int>
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
 };
+
 
 template <typename T> class OGArray: public OGTerminal
 {
@@ -142,8 +144,6 @@ template <typename T> class OGMatrix: public OGArray<T>
     OGMatrix(T * data, int rows, int cols);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
-  protected:
-    OGMatrix(int rows, int cols);
 };
 
 extern template class OGMatrix<real16>;
@@ -160,6 +160,14 @@ class OGRealMatrix: public OGMatrix<real16>
     virtual ExprType_t getType() const override;
 };
 
+class OGOwningRealMatrix: public OGRealMatrix
+{
+  public:
+    OGOwningRealMatrix(int rows, int cols);
+    virtual ~OGOwningRealMatrix() override;
+    using OGRealMatrix::OGRealMatrix;
+};
+
 class OGComplexMatrix: public OGMatrix<complex16>
 {
   public:
@@ -169,6 +177,14 @@ class OGComplexMatrix: public OGMatrix<complex16>
     virtual OGNumeric* copy() const override;
     virtual const OGComplexMatrix* asOGComplexMatrix() const override;
     virtual ExprType_t getType() const override;
+};
+
+class OGOwningComplexMatrix: public OGComplexMatrix
+{
+  public:
+    OGOwningComplexMatrix(int rows, int cols);
+    virtual ~OGOwningComplexMatrix() override;
+    using OGComplexMatrix::OGComplexMatrix;
 };
 
 class OGLogicalMatrix: public OGRealMatrix
@@ -186,8 +202,6 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
     OGDiagonalMatrix(T * data, int rows, int cols);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
-  protected:
-    OGDiagonalMatrix(int rows, int cols);
 };
 
 extern template class OGDiagonalMatrix<real16>;
@@ -205,6 +219,13 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
     virtual ExprType_t getType() const override;    
 };
 
+class OGOwningRealDiagonalMatrix: public OGRealDiagonalMatrix
+{
+  public:
+    virtual ~OGOwningRealDiagonalMatrix() override;
+    using OGRealDiagonalMatrix::OGRealDiagonalMatrix;
+};
+
 class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 {
   public:
@@ -215,6 +236,13 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
     virtual OGNumeric* copy() const override;
     virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const override;
     virtual ExprType_t getType() const override;    
+};
+
+class OGOwningComplexDiagonalMatrix: public OGComplexDiagonalMatrix
+{
+  public:
+    virtual ~OGOwningComplexDiagonalMatrix() override;
+    using OGComplexDiagonalMatrix::OGComplexDiagonalMatrix;
 };
 
 /**
@@ -254,6 +282,13 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
     virtual ExprType_t getType() const override;
 };
 
+class OGOwningRealSparseMatrix: public OGRealSparseMatrix
+{
+  public:
+    virtual ~OGOwningRealSparseMatrix() override;
+    using OGRealSparseMatrix::OGRealSparseMatrix;
+};
+
 class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
 {
   public:
@@ -264,6 +299,13 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual OGNumeric* copy() const override;
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;
     virtual ExprType_t getType() const override;
+};
+
+class OGOwningComplexSparseMatrix: public OGComplexSparseMatrix
+{
+  public:
+    virtual ~OGOwningComplexSparseMatrix() override;
+    using OGComplexSparseMatrix::OGComplexSparseMatrix;
 };
 
 } // end namespace librdag

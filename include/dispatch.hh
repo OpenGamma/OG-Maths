@@ -10,7 +10,6 @@
 #include "numerictypes.hh"
 #include "expression.hh"
 #include "terminal.hh"
-#include "register.hh"
 #include "warningmacros.h"
 #include "jvmmanager.hh"
 #include "exceptions.hh"
