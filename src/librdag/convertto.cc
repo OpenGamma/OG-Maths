@@ -18,23 +18,21 @@ ConvertTo::ConvertTo()
 {}
 
 // things that convert to OGRealMatrix
-OGRealMatrixRegister *
+OGOwningRealMatrix *
 ConvertTo::convertToOGRealMatrix(OGRealScalar const * thing) const
 {
-  OGRealMatrixRegister * ret = new OGRealMatrixRegister(1,1);
-  ret->incRef();
+  OGOwningRealMatrix * ret = new OGOwningRealMatrix(1,1);
   ret->getData()[0]=thing->getValue();
   return ret;
 }
 
-OGRealMatrixRegister *
+OGOwningRealMatrix *
 ConvertTo::convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const
 {
   int rows = thing->getRows();
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
-  OGRealMatrixRegister * ret = new OGRealMatrixRegister(rows,cols);
-  ret->incRef();
+  OGOwningRealMatrix * ret = new OGOwningRealMatrix(rows,cols);
   real16 * diagdata = thing->getData();
   real16 * data = ret->getData();
   for(int i=0;i<wlen;i++)
@@ -44,7 +42,7 @@ ConvertTo::convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const
   return ret;
 }
 
-OGRealMatrixRegister *
+OGOwningRealMatrix *
 ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix const * thing) const
 {
 
@@ -54,8 +52,7 @@ ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix const * thing) const
   int * rowIdx = thing->getRowIdx();
   real16 * sparsedata = thing->getData();
 
-  OGRealMatrixRegister * ret = new OGRealMatrixRegister(rows,cols);
-  ret->incRef();
+  OGOwningRealMatrix * ret = new OGOwningRealMatrix(rows,cols);
   real16 * data = ret->getData();
   for (int ir = 0; ir < cols; ir++)
   {
@@ -70,32 +67,29 @@ ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix const * thing) const
 
 // things that convert to OGComplexMatrix
 
-OGComplexMatrixRegister *
+OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGRealScalar const * thing) const
 {
-  OGComplexMatrixRegister * ret = new OGComplexMatrixRegister(1,1);
-  ret->incRef();
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(1,1);
   ret->getData()[0]=thing->getValue();
   return ret;
 }
 
-OGComplexMatrixRegister *
+OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGComplexScalar const * thing) const
 {
-  OGComplexMatrixRegister * ret = new OGComplexMatrixRegister(1,1);
-  ret->incRef();
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(1,1);
   ret->getData()[0]=thing->getValue();
   return ret;
 }
 
-OGComplexMatrixRegister *
+OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGRealDiagonalMatrix const * thing) const
 {
   int rows = thing->getRows();
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
-  OGComplexMatrixRegister * ret = new OGComplexMatrixRegister(rows,cols);
-  ret->incRef();
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(rows,cols);
   real16 * diagdata = thing->getData();
   complex16 * data = ret->getData();
   for(int i=0;i<wlen;i++)
@@ -105,14 +99,13 @@ ConvertTo::convertToOGComplexMatrix(OGRealDiagonalMatrix const * thing) const
   return ret;
 }
 
-OGComplexMatrixRegister *
+OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGComplexDiagonalMatrix const * thing) const
 {
   int rows = thing->getRows();
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
-  OGComplexMatrixRegister * ret = new OGComplexMatrixRegister(rows,cols);
-  ret->incRef();
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(rows,cols);
   complex16 * diagdata = thing->getData();
   complex16 * data = ret->getData();
   for(int i=0;i<wlen;i++)
@@ -122,7 +115,7 @@ ConvertTo::convertToOGComplexMatrix(OGComplexDiagonalMatrix const * thing) const
   return ret;
 }
 
-OGComplexMatrixRegister *
+OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGRealSparseMatrix const * thing) const
 {
   int rows = thing->getRows();
@@ -130,9 +123,7 @@ ConvertTo::convertToOGComplexMatrix(OGRealSparseMatrix const * thing) const
   int * colPtr = thing->getColPtr();
   int * rowIdx = thing->getRowIdx();
   real16 * sparsedata = thing->getData();
-
-  OGComplexMatrixRegister * ret = new OGComplexMatrixRegister(rows,cols);
-  ret->incRef();
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(rows,cols);
   complex16 * data = ret->getData();
   for (int ir = 0; ir < cols; ir++)
   {
@@ -144,7 +135,7 @@ ConvertTo::convertToOGComplexMatrix(OGRealSparseMatrix const * thing) const
   return ret;
 }
 
-OGComplexMatrixRegister *
+OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGComplexSparseMatrix const * thing) const
 {
   int rows = thing->getRows();
@@ -152,9 +143,7 @@ ConvertTo::convertToOGComplexMatrix(OGComplexSparseMatrix const * thing) const
   int * colPtr = thing->getColPtr();
   int * rowIdx = thing->getRowIdx();
   complex16 * sparsedata = thing->getData();
-
-  OGComplexMatrixRegister * ret = new OGComplexMatrixRegister(rows,cols);
-  ret->incRef();
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(rows,cols);
   complex16 * data = ret->getData();
   for (int ir = 0; ir < cols; ir++)
   {
@@ -166,14 +155,13 @@ ConvertTo::convertToOGComplexMatrix(OGComplexSparseMatrix const * thing) const
   return ret;
 }
 
-OGComplexMatrixRegister *
+OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGRealMatrix const * thing) const
 {
   int rows = thing->getRows();
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
-  OGComplexMatrixRegister * ret = new OGComplexMatrixRegister(rows,cols);
-  ret->incRef();
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(rows,cols);
   real16 * densedata = thing->getData();
   complex16 * data = ret->getData();
   for(int i=0;i<wlen;i++)

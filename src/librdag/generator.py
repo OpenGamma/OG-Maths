@@ -142,14 +142,14 @@ class PrefixOp(UnaryFunction):
     def real_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'real16',
-              'returntype': 'OGRealMatrix' }
+              'returntype': 'OGOwningRealMatrix' }
         return prefix_matrix_runner_implementation %d
 
     @property
     def complex_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'complex16',
-              'returntype': 'OGComplexMatrix' }
+              'returntype': 'OGOwningComplexMatrix' }
         return prefix_matrix_runner_implementation %d
 
 class RunnersHeader(object):
