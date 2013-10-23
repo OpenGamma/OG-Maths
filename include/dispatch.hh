@@ -1159,26 +1159,8 @@ virtual T run(RegContainer SUPPRESS_UNUSED * reg0, OGRealMatrix const * arg0, OG
 // typedef the void dispatch of a binary operation
 typedef DispatchBinaryOp<void> DispatchVoidBinaryOp;
 
-
-class PlusRunner: public DispatchVoidBinaryOp, private Uncopyable
-{
-public:
-  using DispatchBinaryOp<void>::run;
-  virtual void run(RegContainer SUPPRESS_UNUSED * reg0, OGComplexMatrix const SUPPRESS_UNUSED * arg0, OGComplexMatrix const SUPPRESS_UNUSED * arg1) const override;
-  virtual void run(RegContainer SUPPRESS_UNUSED * reg0, OGRealMatrix const SUPPRESS_UNUSED * arg0, OGRealMatrix const SUPPRESS_UNUSED * arg1) const override;
-  virtual void run(RegContainer SUPPRESS_UNUSED * reg0, OGRealScalar const SUPPRESS_UNUSED * arg0, OGRealScalar const SUPPRESS_UNUSED * arg1) const override;
-};
-
 // typedef the void dispatch of a unary operation
 typedef DispatchUnaryOp<void> DispatchVoidUnaryOp;
-
-class NegateRunner: public DispatchVoidUnaryOp, private Uncopyable
-{
-  public:
-    virtual void run(RegContainer* reg, const OGRealScalar* arg) const override;
-    virtual void run(RegContainer* reg, const OGRealMatrix* arg) const override;
-    virtual void run(RegContainer* reg, const OGComplexMatrix* arg) const override;
-};
 
 } // namespace librdag
 
