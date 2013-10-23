@@ -212,11 +212,6 @@ OGRealScalar::getType() const
   return REAL_SCALAR_ENUM;
 }
 
-/**
- * OGOwningRealScalar
- */
-OGOwningRealScalar::~OGOwningRealScalar(){}
-
 
 /**
  * OGComplexScalar
@@ -254,10 +249,6 @@ OGComplexScalar::getType() const
   return COMPLEX_SCALAR_ENUM;
 }
 
-/**
- * OGOwningComplexScalar
- */
-OGOwningComplexScalar::~OGOwningComplexScalar(){}
 
 /**
  * OGIntegerScalar
@@ -289,10 +280,6 @@ OGIntegerScalar::getType() const
   return INTEGER_SCALAR_ENUM;
 }
 
-/**
- * OGOwningIntegerScalar
- */
-OGOwningIntegerScalar::~OGOwningIntegerScalar(){}
 
 /**
  * OGArray
