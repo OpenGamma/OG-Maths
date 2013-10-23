@@ -47,18 +47,6 @@ void run_entrypt(TreeResultPair param)
   EXPECT_TRUE((*result)==(*expectedResult));
   delete node;
   delete expectedResult;
-  // FIXME Ad-hoc manual cleanup of result data. This needs to be handled
-  // sensibly by a Register in the future.
-  const OGRealMatrix* realMatrix = result->asOGRealMatrix();
-  if (realMatrix != nullptr)
-  {
-    delete[] realMatrix->getData();
-  }
-  const OGComplexMatrix* complexMatrix = result->asOGComplexMatrix();
-  if (complexMatrix != nullptr)
-  {
-    delete[] complexMatrix->getData();
-  }
   delete result;
 
 }

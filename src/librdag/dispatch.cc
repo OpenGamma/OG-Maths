@@ -18,7 +18,6 @@ namespace librdag {
 template class DispatchUnaryOp<void>;
 template class DispatchBinaryOp<void>;
 
-
 Dispatcher::Dispatcher()
 {
     _PlusRunner = new PlusRunner();
