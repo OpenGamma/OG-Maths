@@ -1,2 +1,4 @@
 src/java/.checkstyle
 build
+*.pyc
+*.swp
