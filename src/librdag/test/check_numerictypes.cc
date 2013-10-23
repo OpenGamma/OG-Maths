@@ -8,7 +8,6 @@
 #include "warningmacros.h"
 #include "equals.hh"
 #include "terminal.hh"
-#include "register.hh"
 
 using namespace std;
 using namespace librdag;

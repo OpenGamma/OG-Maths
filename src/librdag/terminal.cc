@@ -213,6 +213,12 @@ OGRealScalar::getType() const
 }
 
 /**
+ * OGOwningRealScalar
+ */
+OGOwningRealScalar::~OGOwningRealScalar(){}
+
+
+/**
  * OGComplexScalar
  */
 
@@ -249,6 +255,11 @@ OGComplexScalar::getType() const
 }
 
 /**
+ * OGOwningComplexScalar
+ */
+OGOwningComplexScalar::~OGOwningComplexScalar(){}
+
+/**
  * OGIntegerScalar
  */
 
@@ -277,6 +288,11 @@ OGIntegerScalar::getType() const
 {
   return INTEGER_SCALAR_ENUM;
 }
+
+/**
+ * OGOwningIntegerScalar
+ */
+OGOwningIntegerScalar::~OGOwningIntegerScalar(){}
 
 /**
  * OGArray
@@ -413,14 +429,6 @@ template class OGArray<complex16>;
  */
 
 template<typename T>
-OGMatrix<T>::OGMatrix(int rows, int cols)
-{
-  this->setRows(rows);
-  this->setCols(cols);
-  this->setDatalen(rows*cols);
-}
-
-template<typename T>
 OGMatrix<T>::OGMatrix(T* data, int rows, int cols)
 {
   if (data == nullptr)
@@ -508,6 +516,20 @@ OGRealMatrix::getType() const
 
 
 /**
+ * OGOwningRealMatrix
+ */
+OGOwningRealMatrix::OGOwningRealMatrix(int rows, int cols): OGRealMatrix(new real16[rows*cols](),rows,cols)
+{
+
+}
+
+OGOwningRealMatrix::~OGOwningRealMatrix()
+{
+  delete [] this->getData();
+}
+
+
+/**
  * OGComplexMatrix
  */
 
@@ -553,16 +575,22 @@ OGComplexMatrix::getType() const
 }
 
 /**
+ * OGOwningComplexMatrix
+ */
+OGOwningComplexMatrix::OGOwningComplexMatrix(int rows, int cols): OGComplexMatrix(new complex16[rows*cols](),rows,cols)
+{
+
+}
+
+OGOwningComplexMatrix::~OGOwningComplexMatrix()
+{
+  delete [] this->getData();
+}
+
+/**
  * OGDiagonalMatrix
  */
 
-template<typename T>
-OGDiagonalMatrix<T>::OGDiagonalMatrix(int rows, int cols)
-{
-  this->setRows(rows);
-  this->setCols(cols);
-  this->setDatalen(rows>cols?cols:rows);
-}
 
 template<typename T>
 OGDiagonalMatrix<T>::OGDiagonalMatrix(T* data, int rows, int cols)
@@ -678,6 +706,15 @@ OGRealDiagonalMatrix::getType() const
 }
 
 /**
+ * OGOwningRealDiagonalMatrix
+ */
+OGOwningRealDiagonalMatrix::~OGOwningRealDiagonalMatrix()
+{
+  delete [] this->getData();
+}
+
+
+/**
  * OGComplexDiagonalMatrix
  */
 
@@ -741,6 +778,15 @@ ExprType_t
 OGComplexDiagonalMatrix::getType() const
 {
   return COMPLEX_DIAGONAL_MATRIX_ENUM;
+}
+
+
+/**
+ * OGOwningComplexDiagonalMatrix
+ */
+OGOwningComplexDiagonalMatrix::~OGOwningComplexDiagonalMatrix()
+{
+  delete [] this->getData();
 }
 
 /**
@@ -923,6 +969,16 @@ OGRealSparseMatrix::getType() const
   return REAL_SPARSE_MATRIX_ENUM;
 }
 
+/**
+ * OGOwningRealSparseMatrix
+ */
+OGOwningRealSparseMatrix::~OGOwningRealSparseMatrix()
+{
+  delete [] this->getColPtr();
+  delete [] this->getRowIdx();
+  delete [] this->getData();
+}
+
 
 /**
  * OGComplexSparseMatrix
@@ -973,6 +1029,16 @@ ExprType_t
 OGComplexSparseMatrix::getType() const
 {
   return COMPLEX_SPARSE_MATRIX_ENUM;
+}
+
+/**
+ * OGOwningComplexSparseMatrix
+ */
+OGOwningComplexSparseMatrix::~OGOwningComplexSparseMatrix()
+{
+  delete [] this->getColPtr();
+  delete [] this->getRowIdx();
+  delete [] this->getData();
 }
 
 } // namespace librdag
