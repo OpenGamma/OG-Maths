@@ -17,12 +17,16 @@ set(RUNNERS_HH ${BIN_INCLUDE_DIR}/runners.hh)
 set(RUNNERS_CC ${CMAKE_BINARY_DIR}/src/librdag/runners.cc)
 set(RUNNERS_GENERATOR ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generator.py)
 
+set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/templates.py)
+
 add_custom_command(OUTPUT ${RUNNERS_HH}
                    COMMAND ${RUNNERS_GENERATOR} -o ${RUNNERS_HH} --runners-hh
+                   DEPENDS ${GENERATOR_FILES}
                    COMMENT "Generating runners.hh")
 
 add_custom_command(OUTPUT ${RUNNERS_CC}
-                   DEPENDS ${RUNNERS_HH}
+                   DEPENDS ${RUNNERS_HH} ${GENERATOR_FILES}
                    COMMAND ${RUNNERS_GENERATOR} -o ${RUNNERS_CC} --runners-cc
                    COMMENT "Generating runners.cc")
 
