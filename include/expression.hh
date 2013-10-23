@@ -18,7 +18,6 @@
 #include "visitor.hh"
 #include "exceptions.hh"
 #include "containers.hh"
-#include "register.hh"
 
 using namespace std;
 

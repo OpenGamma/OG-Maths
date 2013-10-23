@@ -7,7 +7,6 @@
 #ifndef _CONVERTTO_HH
 #define _CONVERTTO_HH
 #include "terminal.hh"
-#include "register.hh"
 
 // defines permissable type conversions
 
@@ -32,17 +31,17 @@ class ConvertTo
 {
   public:
     ConvertTo();
-    OGRealMatrixRegister * convertToOGRealMatrix(OGRealScalar const * thing) const;
-    OGRealMatrixRegister * convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const;
-    OGRealMatrixRegister * convertToOGRealMatrix(OGRealSparseMatrix const * thing) const;
+    OGOwningRealMatrix * convertToOGRealMatrix(OGRealScalar const * thing) const;
+    OGOwningRealMatrix * convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const;
+    OGOwningRealMatrix * convertToOGRealMatrix(OGRealSparseMatrix const * thing) const;
 
-    OGComplexMatrixRegister * convertToOGComplexMatrix(OGRealScalar const * thing) const;
-    OGComplexMatrixRegister * convertToOGComplexMatrix(OGComplexScalar const * thing) const;
-    OGComplexMatrixRegister * convertToOGComplexMatrix(OGRealDiagonalMatrix const * thing) const;
-    OGComplexMatrixRegister * convertToOGComplexMatrix(OGComplexDiagonalMatrix const * thing) const;
-    OGComplexMatrixRegister * convertToOGComplexMatrix(OGRealSparseMatrix const * thing) const;
-    OGComplexMatrixRegister * convertToOGComplexMatrix(OGComplexSparseMatrix const * thing) const;
-    OGComplexMatrixRegister * convertToOGComplexMatrix(OGRealMatrix const * thing) const;
+    OGOwningComplexMatrix * convertToOGComplexMatrix(OGRealScalar const * thing) const;
+    OGOwningComplexMatrix * convertToOGComplexMatrix(OGComplexScalar const * thing) const;
+    OGOwningComplexMatrix * convertToOGComplexMatrix(OGRealDiagonalMatrix const * thing) const;
+    OGOwningComplexMatrix * convertToOGComplexMatrix(OGComplexDiagonalMatrix const * thing) const;
+    OGOwningComplexMatrix * convertToOGComplexMatrix(OGRealSparseMatrix const * thing) const;
+    OGOwningComplexMatrix * convertToOGComplexMatrix(OGComplexSparseMatrix const * thing) const;
+    OGOwningComplexMatrix * convertToOGComplexMatrix(OGRealMatrix const * thing) const;
 };
 
 }
