@@ -165,6 +165,7 @@ class OGOwningRealMatrix: public OGRealMatrix
   public:
     OGOwningRealMatrix(int rows, int cols);
     virtual ~OGOwningRealMatrix() override;
+    using OGRealMatrix::OGRealMatrix;
 };
 
 class OGComplexMatrix: public OGMatrix<complex16>
@@ -183,6 +184,7 @@ class OGOwningComplexMatrix: public OGComplexMatrix
   public:
     OGOwningComplexMatrix(int rows, int cols);
     virtual ~OGOwningComplexMatrix() override;
+    using OGComplexMatrix::OGComplexMatrix;
 };
 
 class OGLogicalMatrix: public OGRealMatrix
