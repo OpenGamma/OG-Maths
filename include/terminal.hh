@@ -223,6 +223,7 @@ class OGOwningRealDiagonalMatrix: public OGRealDiagonalMatrix
 {
   public:
     virtual ~OGOwningRealDiagonalMatrix() override;
+    using OGRealDiagonalMatrix::OGRealDiagonalMatrix;
 };
 
 class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
@@ -241,6 +242,7 @@ class OGOwningComplexDiagonalMatrix: public OGComplexDiagonalMatrix
 {
   public:
     virtual ~OGOwningComplexDiagonalMatrix() override;
+    using OGComplexDiagonalMatrix::OGComplexDiagonalMatrix;
 };
 
 /**
@@ -284,6 +286,7 @@ class OGOwningRealSparseMatrix: public OGRealSparseMatrix
 {
   public:
     virtual ~OGOwningRealSparseMatrix() override;
+    using OGRealSparseMatrix::OGRealSparseMatrix;
 };
 
 class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
@@ -302,6 +305,7 @@ class OGOwningComplexSparseMatrix: public OGComplexSparseMatrix
 {
   public:
     virtual ~OGOwningComplexSparseMatrix() override;
+    using OGComplexSparseMatrix::OGComplexSparseMatrix;
 };
 
 } // end namespace librdag
