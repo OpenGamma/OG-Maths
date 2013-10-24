@@ -132,7 +132,7 @@ public:
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealScalar const SUPPRESS_UNUSED * arg) const
   {
-    OGOwningRealMatrix * conv = this->getConvertTo()->convertToOGRealMatrix(arg);
+    OGRealMatrix * conv = this->getConvertTo()->convertToOGRealMatrix(arg);
     T ret = run(reg, conv);
     delete conv;
     return ret;
@@ -140,44 +140,52 @@ public:
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGComplexScalar const SUPPRESS_UNUSED * arg) const
   {
-//     return run(reg, this->getConvertTo()->convertToOGComplexMatrix(arg));
-    return nullptr;
+    OGComplexMatrix * conv = this->getConvertTo()->convertToOGComplexMatrix(arg);
+    T ret = run(reg, conv);
+    delete conv;
+    return ret;
   };
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGIntegerScalar const SUPPRESS_UNUSED * arg) const
   {
-//     return run(reg, this->getConvertTo()->convertToOGRealMatrix(arg));
     return nullptr;
   };
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGLogicalMatrix const SUPPRESS_UNUSED * arg) const
   {
-//     return run(reg, this->getConvertTo()->convertToOGRealMatrix(arg));
     return nullptr;
   };
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealDiagonalMatrix const SUPPRESS_UNUSED * arg) const
   {
-//     return run(reg, this->getConvertTo()->convertToOGRealMatrix(arg));
-    return nullptr;
+    OGRealMatrix * conv = this->getConvertTo()->convertToOGRealMatrix(arg);
+    T ret = run(reg, conv);
+    delete conv;
+    return ret;
   };
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGComplexDiagonalMatrix const SUPPRESS_UNUSED * arg) const
   {
-//     return run(reg, this->getConvertTo()->convertToOGComplexMatrix(arg));
-    return nullptr;
+    OGComplexMatrix * conv = this->getConvertTo()->convertToOGComplexMatrix(arg);
+    T ret = run(reg, conv);
+    delete conv;
+    return ret;
   };
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGRealSparseMatrix const SUPPRESS_UNUSED * arg) const
   {
-//     return run(reg, this->getConvertTo()->convertToOGRealMatrix(arg));
-    return nullptr;
+    OGRealMatrix * conv = this->getConvertTo()->convertToOGRealMatrix(arg);
+    T ret = run(reg, conv);
+    delete conv;
+    return ret;
   };
 
   virtual T run(RegContainer SUPPRESS_UNUSED * reg, OGComplexSparseMatrix const SUPPRESS_UNUSED * arg) const
   {
-//     return run(reg, this->getConvertTo()->convertToOGComplexMatrix(arg));
-    return nullptr;
+    OGComplexMatrix * conv = this->getConvertTo()->convertToOGComplexMatrix(arg);
+    T ret = run(reg, conv);
+    delete conv;
+    return ret;
   };
 
   // Backstop methods for generic implementation
