@@ -73,18 +73,20 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
   checkEx(env);
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
-  delete chain;
+
 
   DispatchToComplex16ArrayOfArrays *visitor = new DispatchToComplex16ArrayOfArrays();
   answer->accept(*visitor);
 
   jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
   jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
-  delete visitor;
 
   jobject returnVal = env->NewObject(JVMManager::getComplexArrayContainerClazz(),
                                      JVMManager::getComplexArrayContainerClazz_ctor_DAoA_DAoA(),
                                      realPart, complexPart);
+
+  delete chain;
+  delete visitor;
 
   DEBUG_PRINT("Returning\n");
   return returnVal;
@@ -114,11 +116,12 @@ Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToOGTerminal(J
   checkEx(env);
   DEBUG_PRINT("Calling entrypt function\n");
   const librdag::OGTerminal* answer = entrypt(chain);
-  delete chain;
 
   DispatchToOGTerminal *visitor = new DispatchToOGTerminal(env);
   answer->accept(*visitor);
   jobject result = visitor->getObject();
+
+  delete chain;
   delete visitor;
 
   DEBUG_PRINT("Returning\n");
