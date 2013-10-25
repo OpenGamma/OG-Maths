@@ -189,7 +189,8 @@ class OGOwningComplexMatrix: public OGComplexMatrix
 
 class OGLogicalMatrix: public OGRealMatrix
 {
-
+  public:
+    using OGRealMatrix::OGRealMatrix; // TODO: range limit inputs
 };
 
 /**
