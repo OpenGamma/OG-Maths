@@ -8,7 +8,7 @@
 
 namespace librdag {
 
-DLLEXPORT_C bool isScalar(const OGTerminal * terminal)
+bool isScalar(const OGTerminal * terminal)
 {
   if(terminal->asOGRealScalar()!=nullptr)
   {
@@ -25,12 +25,12 @@ DLLEXPORT_C bool isScalar(const OGTerminal * terminal)
   return false;
 }
 
-DLLEXPORT_C bool isMatrix(const OGTerminal * terminal)
+bool isMatrix(const OGTerminal * terminal)
 {
   return !isScalar(terminal);
 }
 
-DLLEXPORT_C bool isReal(const OGTerminal * terminal)
+bool isReal(const OGTerminal * terminal)
 {
   if(terminal->asOGRealScalar()!=nullptr)
   {
@@ -59,7 +59,7 @@ DLLEXPORT_C bool isReal(const OGTerminal * terminal)
   return false;
 }
 
-DLLEXPORT_C bool isComplex(const OGTerminal * terminal)
+bool isComplex(const OGTerminal * terminal)
 {
   return !isReal(terminal);
 }
