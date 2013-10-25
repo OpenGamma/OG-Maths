@@ -9,6 +9,7 @@
 #include "terminal.hh"
 #include "warningmacros.h"
 #include "exceptions.hh"
+#include <cstring>
 
 using namespace std;
 namespace librdag {
@@ -20,6 +21,14 @@ ConvertTo::ConvertTo()
 // things that convert to OGRealMatrix
 OGOwningRealMatrix *
 ConvertTo::convertToOGRealMatrix(OGRealScalar const * thing) const
+{
+  OGOwningRealMatrix * ret = new OGOwningRealMatrix(1,1);
+  ret->getData()[0]=thing->getValue();
+  return ret;
+}
+
+OGOwningRealMatrix *
+ConvertTo::convertToOGRealMatrix(OGIntegerScalar const * thing) const
 {
   OGOwningRealMatrix * ret = new OGOwningRealMatrix(1,1);
   ret->getData()[0]=thing->getValue();
@@ -41,6 +50,20 @@ ConvertTo::convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const
   }
   return ret;
 }
+
+OGOwningRealMatrix *
+ConvertTo::convertToOGRealMatrix(OGLogicalMatrix const * thing) const
+{
+  int rows = thing->getRows();
+  int cols = thing->getCols();
+  int wlen = thing->getDatalen();
+  OGOwningRealMatrix * ret = new OGOwningRealMatrix(rows,cols);
+  real16 * thedata = thing->getData();
+  real16 * data = ret->getData();
+  memcpy(data,thedata,sizeof(real16)*wlen);
+  return ret;
+}
+
 
 OGOwningRealMatrix *
 ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix const * thing) const
@@ -69,6 +92,14 @@ ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix const * thing) const
 
 OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGRealScalar const * thing) const
+{
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(1,1);
+  ret->getData()[0]=thing->getValue();
+  return ret;
+}
+
+OGOwningComplexMatrix *
+ConvertTo::convertToOGComplexMatrix(OGIntegerScalar const * thing) const
 {
   OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(1,1);
   ret->getData()[0]=thing->getValue();
@@ -157,6 +188,22 @@ ConvertTo::convertToOGComplexMatrix(OGComplexSparseMatrix const * thing) const
 
 OGOwningComplexMatrix *
 ConvertTo::convertToOGComplexMatrix(OGRealMatrix const * thing) const
+{
+  int rows = thing->getRows();
+  int cols = thing->getCols();
+  int wlen = thing->getDatalen();
+  OGOwningComplexMatrix * ret = new OGOwningComplexMatrix(rows,cols);
+  real16 * densedata = thing->getData();
+  complex16 * data = ret->getData();
+  for(int i=0;i<wlen;i++)
+  {
+    data[i]=densedata[i];
+  }
+  return ret;
+}
+
+OGOwningComplexMatrix *
+ConvertTo::convertToOGComplexMatrix(OGLogicalMatrix const * thing) const
 {
   int rows = thing->getRows();
   int cols = thing->getCols();
