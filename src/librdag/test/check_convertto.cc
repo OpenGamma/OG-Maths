@@ -34,6 +34,43 @@ TEST(ConvertToTest, OGRealScalarConvertToOGRealMatrix) {
 
 }
 
+TEST(ConvertToTest, OGIntegerScalarConvertToOGRealMatrix) {
+
+  int value = 13;
+  OGIntegerScalar * scalar = new OGIntegerScalar(value);
+  real16 * data = new real16[1];
+  data[0]=value;
+  OGRealMatrix * expected = new OGRealMatrix(data,1,1);
+  ConvertTo * c = new ConvertTo();
+  OGOwningRealMatrix * answer = c->convertToOGRealMatrix(scalar);
+  ASSERT_TRUE(*expected==~*answer);
+
+  delete c;
+  delete scalar;
+  delete expected;
+  delete [] data;
+  delete answer;
+
+}
+
+TEST(ConvertToTest, OGLogicalMatrixConvertToOGRealMatrix) {
+
+  real16 * input_values = new real16[12] {1,0,1,0,1,0,1,0,1,0,1,0};
+  OGLogicalMatrix * input = new OGLogicalMatrix(input_values,3,4);
+  real16 * expected_values = new real16[12]{1,0,1,0,1,0,1,0,1,0,1,0};
+  OGRealMatrix * expected = new OGRealMatrix(expected_values,3,4);
+  ConvertTo * c = new ConvertTo();
+  OGOwningRealMatrix * answer = c->convertToOGRealMatrix(input);
+  ASSERT_TRUE(*expected==~*answer);
+
+  delete c;
+  delete [] input_values;
+  delete [] expected_values;
+  delete input;
+  delete expected;
+  delete answer;
+
+}
 
 TEST(ConvertToTest, OGRealDiagonalMatrixConvertToOGRealMatrix) {
 
@@ -91,6 +128,24 @@ TEST(ConvertToTest, OGRealScalarConvertToOGComplexMatrix) {
   OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(scalar);
   ASSERT_TRUE(*expected==~*answer);
 
+  delete c;
+  delete scalar;
+  delete expected;
+  delete [] data;
+  delete answer;
+
+}
+
+TEST(ConvertToTest, OGIntegerScalarConvertToOGComplexMatrix) {
+
+  int value = {13};
+  OGIntegerScalar * scalar = new OGIntegerScalar(13);
+  complex16 * data = new complex16[1];
+  data[0]=value;
+  OGComplexMatrix * expected = new OGComplexMatrix(data,1,1);
+  ConvertTo * c = new ConvertTo();
+  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(scalar);
+  ASSERT_TRUE(*expected==~*answer);
 
   delete c;
   delete scalar;
@@ -222,6 +277,26 @@ TEST(ConvertToTest, OGRealMatrixConvertToOGComplexMatrix) {
   OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
+
+  delete c;
+  delete [] input_values;
+  delete [] expected_values;
+  delete input;
+  delete expected;
+  delete answer;
+
+}
+
+
+TEST(ConvertToTest, OGRealMatrixConvertToOGLogicalMatrix) {
+
+  real16 * input_values = new real16[12] {1,0,1,0,1,0,1,0,1,0,1,0};
+  complex16 * expected_values = new complex16[12]{{1,0},{0,0},{1,0},{0,0},{1,0},{0,0},{1,0},{0,0},{1,0},{0,0},{1,0},{0,0}};
+  OGLogicalMatrix * input = new OGLogicalMatrix(input_values,4,3);
+  OGComplexMatrix * expected = new OGComplexMatrix(expected_values,4,3);
+  ConvertTo * c = new ConvertTo();
+  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(input);
+  ASSERT_TRUE(*expected==~*answer);
 
   delete c;
   delete [] input_values;

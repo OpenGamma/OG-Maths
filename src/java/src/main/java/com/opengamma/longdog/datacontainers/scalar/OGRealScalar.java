@@ -40,4 +40,10 @@ public class OGRealScalar extends OGScalar {
     return _data;
   }
 
+  @Override
+  public String toString() {
+    String str = "\nOGRealScalar: value = " + String.format("%24.18f\n", _data[0]);
+    return str;
+  }
+
 }

@@ -10,6 +10,7 @@
 #include "numeric.hh"
 #include "numerictypes.hh"
 #include "warningmacros.h"
+#include "convertto.hh"
 
 namespace librdag {
 
@@ -28,30 +29,80 @@ class FuzzyCompareOGTerminalContainer
 
 }
 
-
 /*
  * Base class for terminal nodes in the AST
  */
 class OGTerminal: public OGNumeric
 {
   public:
+    /**
+     * Gets the number of rows
+     */
+    virtual int getRows() const = 0;
+    /**
+     * Gets the number of columns
+     */
+    virtual int getCols() const = 0;
+    /**
+     * Gets the data length
+     */
+    virtual int getDatalen() const = 0;
+    /**
+     * Copies the underlying data to a new real16 array
+     */
     virtual real16* toReal16Array() const;
+    /**
+     * Copies the underlying data to a new complex16 array
+     */
     virtual complex16* toComplex16Array() const;
+    /**
+     * Converts the data to a real16 array of arrays representation
+     */
     virtual real16 ** toReal16ArrayOfArrays() const;
+    /**
+     * Converts the data to a complex16 array of arrays representation
+     */
     virtual complex16 ** toComplex16ArrayOfArrays() const;
+    /**
+     * Returns a real dense matrix representation of this terminal
+     */
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const = 0;
+    /**
+     * Returns a complex dense matrix representation of this terminal
+     */
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const = 0;
+    /**
+     *  Returns this
+     */
     virtual const OGTerminal* asOGTerminal() const override;
+    /**
+     * Equals method. Computed bit wise on relavent data fields.
+     */
     virtual bool equals(const OGTerminal *)const = 0;
+    /**
+     * Fuzzy Equals method. Computed with a fuzzy tolerance (to deal with floating point fuzz) on relavent data fields.
+     */
     virtual bool fuzzyequals(const OGTerminal *)const = 0;
+    /**
+     * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
+     */
+    virtual bool mathsequals(const OGTerminal *)const;
     virtual bool operator==(const OGTerminal&) const;
     virtual bool operator!=(const OGTerminal&) const;
+    virtual bool operator%(const OGTerminal&) const;
     virtual detail::FuzzyCompareOGTerminalContainer& operator~(void) const;
     virtual bool operator==(const detail::FuzzyCompareOGTerminalContainer&) const;
     virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
     OGTerminal();
     virtual ~OGTerminal();
+    /**
+     * Gets the converter
+     */
+    const ConvertTo * getConvertTo() const;
   private:
     detail::FuzzyCompareOGTerminalContainer& getFuzzyContainer() const;
     detail::FuzzyCompareOGTerminalContainer * _fuzzyref = nullptr;
+    const ConvertTo * _converter = nullptr;
 };
 
 
@@ -64,6 +115,9 @@ class OGScalar: public OGTerminal
 {
   public:
     OGScalar(T data);
+    virtual int getRows() const override;
+    virtual int getCols() const override;
+    virtual int getDatalen() const override;
     virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
@@ -86,6 +140,8 @@ class OGRealScalar: public OGScalar<real16>
     virtual const OGRealScalar* asOGRealScalar() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 
@@ -98,6 +154,8 @@ class OGComplexScalar: public OGScalar<complex16>
     virtual const OGComplexScalar* asOGComplexScalar() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 class OGIntegerScalar: public OGScalar<int>
@@ -108,6 +166,8 @@ class OGIntegerScalar: public OGScalar<int>
     virtual const OGIntegerScalar* asOGIntegerScalar() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 
@@ -116,9 +176,9 @@ template <typename T> class OGArray: public OGTerminal
   public:
     T * getData() const; // Returns a pointer to the underlying data
     T * toArray() const; // Returns a pointer to a copy of the underlying data
-    int getRows() const;
-    int getCols() const;
-    int getDatalen() const;
+    virtual int getRows() const override;
+    virtual int getCols() const override;
+    virtual int getDatalen() const override;
     virtual bool equals(const OGTerminal *)const override;
     virtual bool fuzzyequals(const OGTerminal * ) const override;
   protected:
@@ -158,6 +218,8 @@ class OGRealMatrix: public OGMatrix<real16>
     virtual OGNumeric* copy() const override;
     virtual const OGRealMatrix* asOGRealMatrix() const override;
     virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 class OGOwningRealMatrix: public OGRealMatrix
@@ -177,6 +239,8 @@ class OGComplexMatrix: public OGMatrix<complex16>
     virtual OGNumeric* copy() const override;
     virtual const OGComplexMatrix* asOGComplexMatrix() const override;
     virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 class OGOwningComplexMatrix: public OGComplexMatrix
@@ -189,7 +253,9 @@ class OGOwningComplexMatrix: public OGComplexMatrix
 
 class OGLogicalMatrix: public OGRealMatrix
 {
-
+  public:
+    using OGRealMatrix::OGRealMatrix; // TODO: range limit inputs
+    virtual const OGLogicalMatrix * asOGLogicalMatrix() const override;
 };
 
 /**
@@ -216,7 +282,9 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const override;
-    virtual ExprType_t getType() const override;    
+    virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 class OGOwningRealDiagonalMatrix: public OGRealDiagonalMatrix
@@ -235,7 +303,9 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
     virtual complex16** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const override;
-    virtual ExprType_t getType() const override;    
+    virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 class OGOwningComplexDiagonalMatrix: public OGComplexDiagonalMatrix
@@ -280,6 +350,8 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
     virtual OGNumeric* copy() const override;
     virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const override;
     virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 class OGOwningRealSparseMatrix: public OGRealSparseMatrix
@@ -299,6 +371,8 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual OGNumeric* copy() const override;
     virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;
     virtual ExprType_t getType() const override;
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override;
 };
 
 class OGOwningComplexSparseMatrix: public OGComplexSparseMatrix
