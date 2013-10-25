@@ -10,6 +10,8 @@
 #include "visitor.hh"
 #include "warningmacros.h"
 #include "equals.hh"
+#include "iss.hh"
+#include "convertto.hh"
 #include <iostream>
 namespace librdag {
 
@@ -78,17 +80,62 @@ bool OGTerminal::operator!=(const detail::FuzzyCompareOGTerminalContainer& thing
 OGTerminal::OGTerminal()
 {
   _fuzzyref = new detail::FuzzyCompareOGTerminalContainer(this);
+  _converter = new ConvertTo();
 }
 
 OGTerminal::~OGTerminal()
 {
   delete _fuzzyref;
+  delete _converter;
 }
 
 detail::FuzzyCompareOGTerminalContainer&
 OGTerminal::getFuzzyContainer() const{
   return *_fuzzyref;
 }
+
+const ConvertTo *
+OGTerminal::getConvertTo() const
+{
+  return this->_converter;
+}
+
+bool
+OGTerminal::mathsequals(const OGTerminal * other) const
+{
+  OGTerminal * thisconv = nullptr;
+  OGTerminal * otherconv = nullptr;
+  bool ret = false;
+  if((this->getRows()!=other->getRows())||(this->getCols()!=other->getCols()))
+  {
+    return ret;
+  }
+  if(isReal(this)&&isReal(other))
+  {
+    otherconv = other->asFullOGRealMatrix();
+    thisconv = this->asFullOGRealMatrix();
+  }
+  else
+  {
+    otherconv = other->asFullOGComplexMatrix();
+    thisconv = this->asFullOGComplexMatrix();
+  }
+  if(thisconv->fuzzyequals(otherconv))
+  {
+    ret = true;
+  }
+  delete thisconv;
+  delete otherconv;
+  return ret;
+}
+
+bool
+OGTerminal::operator%(const OGTerminal& other) const
+{
+  return this->mathsequals(&other);
+}
+
+
 
 /**
  * FuzzyCompareOGTerminalContainer
@@ -115,6 +162,27 @@ template<typename T>
 OGScalar<T>::OGScalar(T data)
 {
   this->_value=data;
+}
+
+template<typename T>
+int
+OGScalar<T>::getRows() const
+{
+  return 1;
+}
+
+template<typename T>
+int
+OGScalar<T>::getCols() const
+{
+  return 1;
+}
+
+template<typename T>
+int
+OGScalar<T>::getDatalen() const
+{
+  return 1;
 }
 
 template<typename T>
@@ -212,6 +280,17 @@ OGRealScalar::getType() const
   return REAL_SCALAR_ENUM;
 }
 
+OGOwningRealMatrix *
+OGRealScalar::asFullOGRealMatrix() const
+{
+  return getConvertTo()->convertToOGRealMatrix(this);
+}
+
+OGOwningComplexMatrix *
+OGRealScalar::asFullOGComplexMatrix() const
+{
+  return getConvertTo()->convertToOGComplexMatrix(this);
+}
 
 /**
  * OGComplexScalar
@@ -249,6 +328,17 @@ OGComplexScalar::getType() const
   return COMPLEX_SCALAR_ENUM;
 }
 
+OGOwningRealMatrix *
+OGComplexScalar::asFullOGRealMatrix() const
+{
+  throw rdag_error("Cannot represent complex data in linear memory of type real16");
+}
+
+OGOwningComplexMatrix *
+OGComplexScalar::asFullOGComplexMatrix() const
+{
+  return getConvertTo()->convertToOGComplexMatrix(this);
+}
 
 /**
  * OGIntegerScalar
@@ -280,6 +370,17 @@ OGIntegerScalar::getType() const
   return INTEGER_SCALAR_ENUM;
 }
 
+OGOwningRealMatrix *
+OGIntegerScalar::asFullOGRealMatrix() const
+{
+  return getConvertTo()->convertToOGRealMatrix(this);
+}
+
+OGOwningComplexMatrix *
+OGIntegerScalar::asFullOGComplexMatrix() const
+{
+  return getConvertTo()->convertToOGComplexMatrix(this);
+}
 
 /**
  * OGArray
@@ -408,6 +509,7 @@ OGArray<T>::fuzzyequals(const OGTerminal * other) const
   return true;
 }
 
+
 template class OGArray<real16>;
 template class OGArray<complex16>;
 
@@ -501,6 +603,20 @@ OGRealMatrix::getType() const
   return REAL_MATRIX_ENUM;
 }
 
+OGOwningRealMatrix *
+OGRealMatrix::asFullOGRealMatrix() const
+{
+  real16 * ret = new real16[this->getDatalen()];
+  memcpy(ret,this->getData(),this->getDatalen()*sizeof(real16));
+  return new OGOwningRealMatrix(ret,this->getRows(),this->getCols());
+}
+
+OGOwningComplexMatrix *
+OGRealMatrix::asFullOGComplexMatrix() const
+{
+  return getConvertTo()->convertToOGComplexMatrix(this);
+}
+
 
 /**
  * OGOwningRealMatrix
@@ -513,6 +629,15 @@ OGOwningRealMatrix::OGOwningRealMatrix(int rows, int cols): OGRealMatrix(new rea
 OGOwningRealMatrix::~OGOwningRealMatrix()
 {
   delete [] this->getData();
+}
+
+/**
+ * Logical Matrix
+ */
+const OGLogicalMatrix *
+OGLogicalMatrix::asOGLogicalMatrix() const
+{
+  return this;
 }
 
 
@@ -560,6 +685,24 @@ OGComplexMatrix::getType() const
 {
   return COMPLEX_MATRIX_ENUM;
 }
+
+OGOwningRealMatrix *
+OGComplexMatrix::asFullOGRealMatrix() const
+{
+  throw rdag_error("Cannot represent complex data in linear memory of type real16");
+}
+
+OGOwningComplexMatrix *
+OGComplexMatrix::asFullOGComplexMatrix() const
+{
+  int len = this->getDatalen();
+  complex16 * data = this->getData();
+  complex16 * ret = new complex16[len];
+  memcpy(ret,data,len*sizeof(complex16));
+  return new OGOwningComplexMatrix(ret,this->getRows(),this->getCols());
+}
+
+
 
 /**
  * OGOwningComplexMatrix
@@ -692,6 +835,18 @@ OGRealDiagonalMatrix::getType() const
   return REAL_DIAGONAL_MATRIX_ENUM;
 }
 
+OGOwningRealMatrix *
+OGRealDiagonalMatrix::asFullOGRealMatrix() const
+{
+    return getConvertTo()->convertToOGRealMatrix(this);
+}
+
+OGOwningComplexMatrix *
+OGRealDiagonalMatrix::asFullOGComplexMatrix() const
+{
+  return getConvertTo()->convertToOGComplexMatrix(this);
+}
+
 /**
  * OGOwningRealDiagonalMatrix
  */
@@ -767,6 +922,17 @@ OGComplexDiagonalMatrix::getType() const
   return COMPLEX_DIAGONAL_MATRIX_ENUM;
 }
 
+OGOwningRealMatrix *
+OGComplexDiagonalMatrix::asFullOGRealMatrix() const
+{
+  throw rdag_error("Cannot represent complex data in linear memory of type real16");
+}
+
+OGOwningComplexMatrix *
+OGComplexDiagonalMatrix::asFullOGComplexMatrix() const
+{
+  return getConvertTo()->convertToOGComplexMatrix(this);
+}
 
 /**
  * OGOwningComplexDiagonalMatrix
@@ -956,6 +1122,18 @@ OGRealSparseMatrix::getType() const
   return REAL_SPARSE_MATRIX_ENUM;
 }
 
+OGOwningRealMatrix *
+OGRealSparseMatrix::asFullOGRealMatrix() const
+{
+  return getConvertTo()->convertToOGRealMatrix(this);
+}
+
+OGOwningComplexMatrix *
+OGRealSparseMatrix::asFullOGComplexMatrix() const
+{
+  return getConvertTo()->convertToOGComplexMatrix(this);
+}
+
 /**
  * OGOwningRealSparseMatrix
  */
@@ -1016,6 +1194,18 @@ ExprType_t
 OGComplexSparseMatrix::getType() const
 {
   return COMPLEX_SPARSE_MATRIX_ENUM;
+}
+
+OGOwningRealMatrix *
+OGComplexSparseMatrix::asFullOGRealMatrix() const
+{
+  throw rdag_error("Cannot represent complex data in linear memory of type real16");
+}
+
+OGOwningComplexMatrix *
+OGComplexSparseMatrix::asFullOGComplexMatrix() const
+{
+  return getConvertTo()->convertToOGComplexMatrix(this);
 }
 
 /**

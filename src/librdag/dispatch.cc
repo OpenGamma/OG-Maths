@@ -15,16 +15,35 @@
 
 namespace librdag {
 
-template class DispatchUnaryOp<void>;
-template class DispatchBinaryOp<void>;
+
+DispatchOp::DispatchOp()
+{
+ _convert = new ConvertTo();
+}
+
+const ConvertTo *
+DispatchOp::getConvertTo() const
+{
+  return _convert;
+}
+
+
+DispatchOp::~DispatchOp()
+{
+ delete _convert;
+}
+
+
+template class DispatchUnaryOp<void *>;
+template class DispatchBinaryOp<void *>;
 
 Dispatcher::Dispatcher()
 {
     _PlusRunner = new PlusRunner();
     _NegateRunner = new NegateRunner();
 }
-  
-  
+
+
 Dispatcher::~Dispatcher(){
   delete _PlusRunner;
   delete _NegateRunner;

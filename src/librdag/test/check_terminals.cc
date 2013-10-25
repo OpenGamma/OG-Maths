@@ -140,6 +140,15 @@ TEST(TerminalsTest, OGRealScalarTest) {
   // check ctor worked
   ASSERT_NE(tmp, nullptr); 
 
+  // check getRows is ok
+  ASSERT_EQ(tmp->getRows(), 1);
+
+  // check getCols is ok
+  ASSERT_EQ(tmp->getCols(), 1);
+
+  // check getDatalen is ok
+  ASSERT_EQ(tmp->getDatalen(), 1);
+
   // check getValue is ok
   ASSERT_EQ(tmp->getValue(), value);
 
@@ -200,11 +209,23 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   // check ctor worked
   ASSERT_NE(tmp, nullptr); 
 
+  // check getRows is ok
+  ASSERT_EQ(tmp->getRows(), 1);
+
+  // check getCols is ok
+  ASSERT_EQ(tmp->getCols(), 1);
+
+  // check getDatalen is ok
+  ASSERT_EQ(tmp->getDatalen(), 1);
+
   // check getValue is ok
   ASSERT_EQ(tmp->getValue(), value);
 
   // check getType() is ok
   ASSERT_EQ(tmp->getType(), COMPLEX_SCALAR_ENUM);
+
+  // check can't promote as real
+  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[1] = {{3.14e0, 0.00159e0}};
@@ -257,6 +278,15 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
   tmp = new OGIntegerScalar(value);
   // check ctor worked
   ASSERT_NE(tmp, nullptr); 
+
+  // check getRows is ok
+  ASSERT_EQ(tmp->getRows(), 1);
+
+  // check getCols is ok
+  ASSERT_EQ(tmp->getCols(), 1);
+
+  // check getDatalen is ok
+  ASSERT_EQ(tmp->getDatalen(), 1);
 
   // check getValue is ok
   ASSERT_EQ(tmp->getValue(), value);
@@ -457,6 +487,9 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 
   // check getType() is ok
   ASSERT_EQ(tmp->getType(), COMPLEX_MATRIX_ENUM);    
+
+  // check can't promote as real
+  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0},{2e0,20e0},{5e0,50e0},{8e0,80e0},{11e0,110e0},{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}};
@@ -739,6 +772,9 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
 
   // check getType() is ok
   ASSERT_EQ(tmp->getType(), COMPLEX_DIAGONAL_MATRIX_ENUM);  
+
+  // check can't promote as real
+  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{2e0,20e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{3e0,30e0},{0e0,0e0}};
@@ -1088,6 +1124,9 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   // check getType() is ok
   ASSERT_EQ(tmp->getType(), COMPLEX_SPARSE_MATRIX_ENUM);  
 
+  // check can't promote as real
+  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+
   // wire up array for ArrOfArr test
   complex16 expectedtmp[20] = {
     {1,10},{2,20},{0,30},{0,0},
@@ -1227,6 +1266,8 @@ public:
     virtual void debug_print() const override {}
     virtual void accept(Visitor SUPPRESS_UNUSED &v) const override {}
     virtual OGNumeric* copy() const override { return nullptr; }
+    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override { return nullptr; }
+    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override { return nullptr; }
 };
 
 TEST(OGArrayTest, NegativeDatalen)

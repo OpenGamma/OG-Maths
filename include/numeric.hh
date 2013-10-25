@@ -24,6 +24,9 @@ class OGRealDiagonalMatrix;
 class OGComplexDiagonalMatrix;
 class OGRealSparseMatrix;
 class OGComplexSparseMatrix;
+class OGOwningRealMatrix;
+class OGOwningComplexMatrix;
+class ConvertTo;
 class Visitor;
 class OGExpr;
 class COPY;
@@ -31,6 +34,7 @@ class PLUS;
 class NEGATE;
 class SVD;
 class SELECTRESULT;
+
 
 /*
  * Base class for absolutely everything!
