@@ -11,10 +11,10 @@
 
 namespace librdag {
 
-DLLEXPORT_C bool isScalar(const OGTerminal *);
-DLLEXPORT_C bool isMatrix(const OGTerminal *);
-DLLEXPORT_C bool isReal(const OGTerminal *);
-DLLEXPORT_C bool isComplex(const OGTerminal *);
+bool isScalar(const OGTerminal *);
+bool isMatrix(const OGTerminal *);
+bool isReal(const OGTerminal *);
+bool isComplex(const OGTerminal *);
 
 }
 #endif
