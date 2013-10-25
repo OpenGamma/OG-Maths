@@ -31,7 +31,7 @@ add_custom_command(OUTPUT ${RUNNERS_CC}
                    COMMAND ${RUNNERS_GENERATOR} -o ${RUNNERS_CC} --runners-cc
                    COMMENT "Generating runners.cc")
 
-set(RDAG_SOURCES entrypt.cc expression.cc execution.cc terminal.cc containers.cc numeric.cc dispatch.cc equals.cc numerictypes.cc convertto.cc ${RUNNERS_CC})
+set(RDAG_SOURCES entrypt.cc expression.cc execution.cc terminal.cc containers.cc numeric.cc dispatch.cc equals.cc numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC})
 
 add_library(rdag SHARED ${RDAG_SOURCES})
 
