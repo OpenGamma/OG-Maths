@@ -53,7 +53,11 @@ public final class NativeLibraries {
   /* properties file location, defaults to jar, can be overridden on command line */
   private static String s_configFileLocation = "/config/NativeLibraries.properties";
   /* true if config was supplied on the command line */
-  private static boolean s_commandlineconfig;
+  private static boolean s_configFileOnCommandline;
+  /* properties file location, defaults to jar, can be overridden on command line */
+  private static String s_instrSet;
+  /* true if instr set was supplied on the command line */
+  private static boolean s_instrSetOnCommandline;
 
   /**
    * Check whether the current platform is supported.
@@ -114,11 +118,23 @@ public final class NativeLibraries {
 
     InputStream propsFile = null;
 
+    // Is the instructionSet overridden?
+    String commandLineInstrSet = System.getProperty("instructionSet");
+    if (commandLineInstrSet != null) { // specified instruction set given
+      s_instrSetOnCommandline = true;
+      try {
+        SupportedInstructionSet.valueOf(commandLineInstrSet);
+      } catch (Exception e) {
+        throw new LongdogInitializationException("Invalid instruction set specified on command line (value given was):" + commandLineInstrSet);
+      }
+      s_instrSet = commandLineInstrSet;
+    }
+
     // Is the config file location overridden?
     String commandLineConfig = System.getProperty("configFile");
 
     if (commandLineConfig != null) { // yes we are using a config file specified on the command line
-      s_commandlineconfig = true;
+      s_configFileOnCommandline = true;
       if (s_debug) {
         System.out.println("Using command line supplied configfileloc information");
       }
@@ -204,7 +220,7 @@ public final class NativeLibraries {
     checkPlatformSupported();
     getConfigFromProperties();
 
-    if (!s_commandlineconfig) {
+    if (!s_configFileOnCommandline) {
       Path libDir;
       try {
         libDir = createTempDirectory("og-mathswrappers-");
@@ -281,9 +297,19 @@ public final class NativeLibraries {
       load(name);
     }
 
-    SupportedInstructionSet instructionSet = GetSupportedInstructionSet.getSupportedInstructionSet();
+    // instruction set was specified on command line
+    SupportedInstructionSet instructionSet;
+    if (s_instrSetOnCommandline) { // we know its valid, check was performed in getConfigFromProperties()
+      instructionSet = SupportedInstructionSet.valueOf(s_instrSet);
+    } else {
+      instructionSet = GetSupportedInstructionSet.getSupportedInstructionSet();
+      if (s_debug) {
+        System.out.println("Probed instruction set is: " + instructionSet.toString());
+      }
+    }
+
     if (s_debug) {
-      System.out.println("Probed instruction set is: " + instructionSet.toString());
+      System.out.println("Running with instruction set as: " + instructionSet.toString());
     }
 
     // load the libraries that do the heavy lifting
@@ -302,7 +328,7 @@ public final class NativeLibraries {
    */
   private static synchronized void load(String lib) {
 
-    if (!s_commandlineconfig) { // we are using the config from the file in the jar
+    if (!s_configFileOnCommandline) { // we are using the config from the file in the jar
       String libPath = s_tmpDir + File.separatorChar + lib;
       try {
         if (s_debug) {
