@@ -49,6 +49,7 @@ public final class NativeLibraries {
   private static boolean s_debug = true;
   private static List<String> s_libsToExtract = new ArrayList<String>();
   private static List<String> s_libsToLoad = new ArrayList<String>();
+  private static List<String> s_libsForInitialise = new ArrayList<String>();
   /* properties file location, defaults to jar, can be overridden on command line */
   private static String s_configFileLocation = "/config/NativeLibraries.properties";
   /* true if config was supplied on the command line */
@@ -101,6 +102,14 @@ public final class NativeLibraries {
   private static String getShortPlatform() {
     return getPlatform().toLowerCase().substring(0, 3);
   }
+
+  /**
+   * Probes the CPU and gets the maximum supported instruction set.
+   * @return maximum supported instruction set.
+   */
+//  private static SupportedInstructionSet getSupportedInstructionSet() {
+//    return SupportedInstructionSet.SSE42;
+//  }
 
   /**
    * Load configuration of native library loader from within the Longdog JAR.
@@ -166,6 +175,13 @@ public final class NativeLibraries {
           String[] libs = value.split(",");
           for (String lib : libs) {
             s_libsToLoad.add(lib.trim());
+          }
+        }
+        if (key.endsWith("initialise")) {
+          String value = (String) entry.getValue();
+          String[] libs = value.split(",");
+          for (String lib : libs) {
+            s_libsForInitialise.add(lib.trim());
           }
         }
       }
@@ -268,6 +284,12 @@ public final class NativeLibraries {
       }
     } // end if(!s_commandlineconfig)
 
+    // load initialisation libraries
+    for (String name : s_libsForInitialise) {
+      load(name);
+    }
+
+    // load the libraries that do the heavy lifting
     for (String name : s_libsToLoad) {
       load(name);
     }
