@@ -58,6 +58,8 @@ public final class NativeLibraries {
   private static String s_instrSet;
   /* true if instr set was supplied on the command line */
   private static boolean s_instrSetOnCommandline;
+  /* properties container */
+  private static Properties s_nativeLibrariesProperties = new Properties();
 
   /**
    * Check whether the current platform is supported.
@@ -114,7 +116,6 @@ public final class NativeLibraries {
     * and the subset of those that will be explicitly loaded.
     */
   private static void getConfigFromProperties() {
-    Properties nativeLibrariesProperties = new Properties();
 
     InputStream propsFile = null;
 
@@ -154,7 +155,7 @@ public final class NativeLibraries {
       }
     }
     try {
-      nativeLibrariesProperties.load(propsFile);
+      s_nativeLibrariesProperties.load(propsFile);
     } catch (IOException e) {
       throw new LongdogInitializationException("Cannot load native library properties.");
     }
@@ -163,36 +164,116 @@ public final class NativeLibraries {
     } catch (IOException e) {
       throw new LongdogInitializationException("Failed to close properties file stream.");
     }
+  }
 
+  /**
+   * gets values associated with "NativeLibraries.<platform_name>.propstring"
+   * @param propstring the string for which to search
+   * @return a list of strings associated with the property {@code propstring}
+   */
+  private static List<String> getValuesFromPropertiesFile(String propstring) {
     // look for NativeLibraries specific entries
+    List<String> tmplist = new ArrayList<String>();
     String nlString = "NativeLibraries." + getShortPlatform() + ".*";
     Pattern nlPattern = Pattern.compile(nlString, Pattern.CASE_INSENSITIVE);
-    for (Entry<Object, Object> entry : nativeLibrariesProperties.entrySet()) {
+    for (Entry<Object, Object> entry : s_nativeLibrariesProperties.entrySet()) {
       String key = entry.getKey().toString();
       Matcher nlMatch = nlPattern.matcher(key);
       if (nlMatch.matches()) {
-        if (key.endsWith(s_instrSet + ".libraries")) {
+        if (key.endsWith(propstring)) {
           String value = (String) entry.getValue();
           String[] libs = value.split(",");
           for (String lib : libs) {
-            s_libsToExtract.add(lib.trim());
-          }
-        }
-        if (key.endsWith(s_instrSet + ".load")) {
-          String value = (String) entry.getValue();
-          String[] libs = value.split(",");
-          for (String lib : libs) {
-            s_libsToLoad.add(lib.trim());
-          }
-        }
-        if (key.endsWith("initialise")) {
-          String value = (String) entry.getValue();
-          String[] libs = value.split(",");
-          for (String lib : libs) {
-            s_libsForInitialise.add(lib.trim());
+            tmplist.add(lib.trim());
           }
         }
       }
+    }
+    return tmplist;
+  }
+
+  /**
+   * Creates the og-maths tmpdir
+   * @return the og-maths tmpdir
+   */
+  private static Path gettmpdir() {
+    Path libDir;
+    try {
+      libDir = createTempDirectory("og-maths-");
+      libDir.toFile().deleteOnExit();
+    } catch (IOException e) {
+      throw new LongdogInitializationException("Could not create temp directory for native libaries", e);
+    }
+    return libDir;
+  }
+
+  /**
+   * Extracts the libs specified to the location specified
+   * @param libDir the location to which the libraries will be extracted
+   * @param libsToExtract the libraries to extract
+   */
+  private static void extract(Path libDir, List<String> libsToExtract) {
+    s_tmpDir = libDir.toString();
+
+    String url = "/lib";
+
+    Class<?> c = NativeLibraries.class;
+    for (String name : libsToExtract) {
+      if (s_debug) {
+        System.out.println("Extracting " + name);
+      }
+      String fsPath = libDir + "/" + name;
+      String jarPath = url + "/" + getShortPlatform() + "/" + name;
+
+      URL jarURL = c.getResource(jarPath);
+      if (jarURL == null) {
+        throw new LongdogInitializationException("Resource " + jarPath + " not found in jar file");
+      }
+
+      InputStream source = null;
+      OutputStream destination = null;
+      try {
+        source = c.getResourceAsStream(jarPath);
+        destination = new BufferedOutputStream(new FileOutputStream(fsPath));
+        byte[] buffer = new byte[1024 * 1024];
+        int len;
+        boolean haveReadBytes = false;
+        while ((len = source.read(buffer)) != -1) {
+          if (!haveReadBytes && (len == 0)) {
+            throw new LongdogInitializationException("0 bytes read for resource" + name);
+          }
+          haveReadBytes = true;
+          destination.write(buffer, 0, len);
+        }
+      } catch (Exception e) {
+        throw new LongdogInitializationException("Error extracting resource " + name, e);
+      } finally {
+        if (source != null) {
+          try {
+            source.close();
+          } catch (IOException e) {
+            throw new LongdogInitializationException("Error closing source stream for " + name, e);
+          }
+        }
+        if (destination != null) {
+          try {
+            destination.close();
+          } catch (IOException e) {
+            throw new LongdogInitializationException("Error closing destination stream for " + name, e);
+          }
+        }
+      }
+
+      File file = new File(fsPath);
+
+      try {
+        file.deleteOnExit();
+      } catch (SecurityException e) {
+        throw new LongdogInitializationException("Security settings prevent deletion of native libraries on exit", e);
+      }
+    }
+    if (s_debug) {
+      System.out.println("Native libraries extracted");
     }
   }
 
@@ -220,76 +301,12 @@ public final class NativeLibraries {
     checkPlatformSupported();
     getConfigFromProperties();
 
+    s_libsForInitialise = getValuesFromPropertiesFile("initialise");
+
+    Path unzipdir = null;
     if (!s_configFileOnCommandline) {
-      Path libDir;
-      try {
-        libDir = createTempDirectory("og-mathswrappers-");
-        libDir.toFile().deleteOnExit();
-      } catch (IOException e) {
-        throw new LongdogInitializationException("Could not create temp directory for native libaries", e);
-      }
-      s_tmpDir = libDir.toString();
-
-      String url = "/lib";
-
-      Class<?> c = NativeLibraries.class;
-      for (String name : s_libsToExtract) {
-        if (s_debug) {
-          System.out.println("Extracting " + name);
-        }
-        String fsPath = libDir + "/" + name;
-        String jarPath = url + "/" + getShortPlatform() + "/" + name;
-
-        URL jarURL = c.getResource(jarPath);
-        if (jarURL == null) {
-          throw new LongdogInitializationException("Resource " + jarPath + " not found in jar file");
-        }
-
-        InputStream source = null;
-        OutputStream destination = null;
-        try {
-          source = c.getResourceAsStream(jarPath);
-          destination = new BufferedOutputStream(new FileOutputStream(fsPath));
-          byte[] buffer = new byte[1024 * 1024];
-          int len;
-          boolean haveReadBytes = false;
-          while ((len = source.read(buffer)) != -1) {
-            if (!haveReadBytes && (len == 0)) {
-              throw new LongdogInitializationException("0 bytes read for resource" + name);
-            }
-            haveReadBytes = true;
-            destination.write(buffer, 0, len);
-          }
-        } catch (Exception e) {
-          throw new LongdogInitializationException("Error extracting resource " + name, e);
-        } finally {
-          if (source != null) {
-            try {
-              source.close();
-            } catch (IOException e) {
-              throw new LongdogInitializationException("Error closing source stream for " + name, e);
-            }
-          }
-          if (destination != null) {
-            try {
-              destination.close();
-            } catch (IOException e) {
-              throw new LongdogInitializationException("Error closing destination stream for " + name, e);
-            }
-          }
-        }
-
-        File file = new File(fsPath);
-
-        try {
-          file.deleteOnExit();
-        } catch (SecurityException e) {
-          throw new LongdogInitializationException("Security settings prevent deletion of native libraries on exit", e);
-        }
-      }
-      if (s_debug) {
-        System.out.println("Native libraries extracted");
-      }
+      unzipdir = gettmpdir();
+      extract(unzipdir, s_libsForInitialise);
     } // end if(!s_commandlineconfig)
 
     // load initialisation libraries
@@ -312,7 +329,16 @@ public final class NativeLibraries {
       System.out.println("Running with instruction set as: " + instructionSet.toString());
     }
 
+    s_libsToExtract = getValuesFromPropertiesFile(instructionSet.getTagline() + ".libraries");
+    if (s_debug) {
+      System.out.println("Attempting to extract: " + s_libsToExtract.toString());
+    }
+    if (!s_configFileOnCommandline) {
+      extract(unzipdir, s_libsToExtract);
+    } // end if(!s_commandlineconfig)
+
     // load the libraries that do the heavy lifting
+    s_libsToLoad = getValuesFromPropertiesFile(instructionSet.getTagline() + ".load");
     for (String name : s_libsToLoad) {
       load(name);
     }
