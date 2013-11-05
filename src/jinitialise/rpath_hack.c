@@ -4,27 +4,10 @@
  * Please see distribution for license.
  */
 
-#include <jni.h>
 #include "rpath_hack.h"
 #include "warningmacros.h"
 
 #ifdef __MINGW32__
-
-#ifdef __cplusplus
-extern "C"
-#endif
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void SUPPRESS_UNUSED *reserved)
-{
-     printf("OnLoad called for rpath_hack\n");
-
-     rpath_hack();
-
-     JNIEnv *env=NULL;
-     if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2)) {
-         return JNI_ERR; /* JNI version not supported */
-     }
-     return JNI_VERSION_1_2;
-}
 
 int varInThisLib = 0;
 
@@ -108,5 +91,6 @@ void rpath_hack() {
 #endif // _DEBUG
     }
 }
-
+#else
+  int ____________DUMMY; // to prevent empty translation unit
 #endif // __MINGW32__

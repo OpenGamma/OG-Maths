@@ -104,19 +104,11 @@ public final class NativeLibraries {
   }
 
   /**
-   * Probes the CPU and gets the maximum supported instruction set.
-   * @return maximum supported instruction set.
-   */
-//  private static SupportedInstructionSet getSupportedInstructionSet() {
-//    return SupportedInstructionSet.SSE42;
-//  }
-
-  /**
-   * Load configuration of native library loader from within the Longdog JAR.
-   * 
-   * Configuration includes the names of libraries that must be extracted,
-   * and the subset of those that will be explicitly loaded.
-   */
+    * Load configuration of native library loader from within the Longdog JAR.
+    *
+    * Configuration includes the names of libraries that must be extracted,
+    * and the subset of those that will be explicitly loaded.
+    */
   private static void getConfigFromProperties() {
     Properties nativeLibrariesProperties = new Properties();
 
@@ -288,6 +280,9 @@ public final class NativeLibraries {
     for (String name : s_libsForInitialise) {
       load(name);
     }
+
+    SupportedInstructionSet instructionSet = GetSupportedInstructionSet.getSupportedInstructionSet();
+    System.out.println("Probed instruction set is: " + instructionSet.toString());
 
     // load the libraries that do the heavy lifting
     for (String name : s_libsToLoad) {
