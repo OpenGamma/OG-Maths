@@ -73,9 +73,9 @@ enable_testing()
 # Multi-target libraries need to be built
 include(MultiLib)
 if(APPLE)
-  set(TARGET_TYPES dbg std sse42)
+  set(TARGET_TYPES dbg std sse41)
 else()
-  set(TARGET_TYPES dbg std sse42 avx)
+  set(TARGET_TYPES dbg std sse41 avx1)
 endif()
 
 # tweak flags
@@ -85,13 +85,13 @@ set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fc
 
 set(CMAKE_C_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
 set(CMAKE_C_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
-set(CMAKE_C_FLAGS_sse42 "${FFAST_MATH_SAFE} -O2 -march=corei7 -funroll-loops -DNDEBUG")
-set(CMAKE_C_FLAGS_avx "${FFAST_MATH_SAFE} -O2 -march=corei7-avx -funroll-loops -DNDEBUG")
+set(CMAKE_C_FLAGS_sse41 "${FFAST_MATH_SAFE} -O2 -march=core2 -msse4.1 -funroll-loops -DNDEBUG")
+set(CMAKE_C_FLAGS_avx1 "${FFAST_MATH_SAFE} -O2 -march=corei7-avx -funroll-loops -DNDEBUG")
 
 set(CMAKE_CXX_FLAGS_dbg "-DDEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
 set(CMAKE_CXX_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
-set(CMAKE_CXX_FLAGS_sse42 "${FFAST_MATH_SAFE} -O2 -march=corei7 -funroll-loops -DNDEBUG")
-set(CMAKE_CXX_FLAGS_avx "${FFAST_MATH_SAFE} -O2 -march=corei7-avx -funroll-loops -DNDEBUG")
+set(CMAKE_CXX_FLAGS_sse41 "${FFAST_MATH_SAFE} -O2 -march=core2 -msse4.1 -funroll-loops -DNDEBUG")
+set(CMAKE_CXX_FLAGS_avx1 "${FFAST_MATH_SAFE} -O2 -march=corei7-avx -funroll-loops -DNDEBUG")
 
 # Gtest
 add_subdirectory(external/gtest-1.6.0)
