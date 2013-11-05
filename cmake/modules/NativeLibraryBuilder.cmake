@@ -4,6 +4,8 @@
 # Please see distribution for license.
 #
 
+include(CMakeParseArguments)
+
 macro(set_platform_folder)
   if(APPLE)
     set(native_platform "mac")
@@ -41,4 +43,11 @@ macro(jar_native_library lib)
   add_custom_target(${_target} ALL DEPENDS ${_dest})
   list(APPEND jar_native_libraries ${_target})
   set(jar_native_libraries ${jar_native_libraries} CACHE INTERNAL "Native libraries to be built into the JAR")
+endmacro()
+
+macro(jar_native_multitarget_library lib)
+  cmake_parse_arguments(JNMTLIB "" "" "TARGETS" ${ARGN})
+  foreach(TARGET ${JNMTLIB_TARGETS})
+    jar_native_library(${lib}_${TARGET})
+  endforeach()
 endmacro()
