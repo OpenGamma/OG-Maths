@@ -43,21 +43,10 @@ set(longdog_VERSION
 # Append local module folder to module path
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
-# tweak flags
-set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
-# -funsafe-math-optimizations is missing as it messes with the FPU control word which can cause segfaults when running through the JNI interface
-# -ffinite-math-only is missing as it messes with NaN and Inf in ways that break comparison behaviours
 
+# Use C99 and C++11, other flags for preventing common errors. Also add thread libs.
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
-set(CMAKE_C_FLAGS_DEBUG "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_C_FLAGS_RELEASE "${FFAST_MATH_SAFE} -O2 -march=core2 -funroll-loops -DNDEBUG")
-set(CMAKE_C_FLAGS_RELWITHDEBINFO "${FFAST_MATH_SAFE} -march=core2 -funroll-loops ${CMAKE_C_FLAGS_RELWITHDEBINFO}")
-
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
-set(CMAKE_CXX_FLAGS_RELEASE "${FFAST_MATH_SAFE}-O2 -march=core2 -funroll-loops -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${FFAST_MATH_SAFE} -march=core2 -funroll-loops ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-
 
 # Add Java
 find_package(Java)
@@ -80,6 +69,25 @@ set(CMAKE_JAVA_INCLUDE_PATH $ENV{CLASSPATH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${longdog_BINARY_DIR}/bin)
 
 enable_testing()
+
+# Multi-target libraries need to be built
+include(MultiLib)
+set(TARGET_TYPES dbg std sse42 avx)
+
+# tweak flags
+set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
+# -funsafe-math-optimizations is missing as it messes with the FPU control word which can cause segfaults when running through the JNI interface
+# -ffinite-math-only is missing as it messes with NaN and Inf in ways that break comparison behaviours
+
+set(CMAKE_C_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
+set(CMAKE_C_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
+set(CMAKE_C_FLAGS_sse42 "${FFAST_MATH_SAFE} -O2 -march=corei7 -funroll-loops -DNDEBUG")
+set(CMAKE_C_FLAGS_avx "${FFAST_MATH_SAFE} -O2 -march=corei7-avx -funroll-loops -DNDEBUG")
+
+set(CMAKE_CXX_FLAGS_dbg "-DDEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
+set(CMAKE_CXX_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
+set(CMAKE_CXX_FLAGS_sse42 "${FFAST_MATH_SAFE} -O2 -march=corei7 -funroll-loops -DNDEBUG")
+set(CMAKE_CXX_FLAGS_avx "${FFAST_MATH_SAFE} -O2 -march=corei7-avx -funroll-loops -DNDEBUG")
 
 # Gtest
 add_subdirectory(external/gtest-1.6.0)
