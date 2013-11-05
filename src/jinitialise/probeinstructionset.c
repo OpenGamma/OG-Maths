@@ -57,12 +57,14 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_nativeloader_GetSupportedIn
   {
     case supports_STANDARD:
       return instrEnumAsjobj(env,jclass_instrEnum,"STANDARD");
+    case supports_SSE41:
+      return instrEnumAsjobj(env,jclass_instrEnum,"SSE41");
     case supports_SSE42:
-      return instrEnumAsjobj(env,jclass_instrEnum,"SSE42");;
+      return instrEnumAsjobj(env,jclass_instrEnum,"SSE42");
     case supports_AVX1:
-      return instrEnumAsjobj(env,jclass_instrEnum,"AVX1");;
+      return instrEnumAsjobj(env,jclass_instrEnum,"AVX1");
     case supports_AVX2:
-      return instrEnumAsjobj(env,jclass_instrEnum,"AVX2");;
+      return instrEnumAsjobj(env,jclass_instrEnum,"AVX2");
     default:
       DEBUG_PRINT("Failed to find supported instruction set, this is an error!\n");
       exit(-1);
@@ -125,6 +127,11 @@ instructions_available getSupportedInstructionSet() {
   {
     DEBUG_PRINT("SSE4.2 SUPPORTED\n");
     return supports_SSE42;
+  }
+  else if(supported & probe01_SSE_4_1) // we have at least SSE4.1
+  {
+    DEBUG_PRINT("SSE4.1 SUPPORTED\n");
+    return supports_SSE41;
   }
   else // we have nothing specifically useful!
   {

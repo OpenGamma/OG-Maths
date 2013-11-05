@@ -21,9 +21,14 @@ public enum SupportedInstructionSet {
   STANDARD("std"),
 
   /**
+   * Specifies build targeting SSE4.1 instructions.
+   */
+  SSE41("sse41"),
+
+  /**
    * Specifies build targeting SSE4.2 instructions.
    */
-  SSE42("sse42"),
+  SSE42("sse41"), // currently there's no differentiation specified between 4.1 and 4.2
 
   /**
    * Specifies build targeting AVX version 1 instructions.
