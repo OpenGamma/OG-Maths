@@ -39,5 +39,4 @@ add_multitarget_library(rdag
                         SOURCES ${RDAG_SOURCES}
                         TARGETS ${TARGET_TYPES})
 
-# FIXME: Add back in when working build of targets
-#jar_native_library(rdag)
+jar_native_multitarget_library(rdag TARGETS ${TARGET_TYPES})

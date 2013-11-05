@@ -4,6 +4,8 @@
 # Please see distribution for license.
 #
 
+include(CMakeParseArguments)
+
 set(gtests CACHE INTERNAL "GTest tests to run")
 
 set(GTEST_XML_DIR ${CMAKE_BINARY_DIR}/gtest-output)
@@ -19,6 +21,23 @@ macro(add_gtest TESTNAME)
   endif()
   list(APPEND gtests ${TESTNAME})
   set(gtests ${gtests} CACHE INTERNAL "GTest tests to run")
+endmacro()
+
+macro(add_multitarget_gtest TESTNAME)
+  cmake_parse_arguments(MTGTEST "" "" "SOURCES;LINK_LIBRARIES;COMPILE_DEFINITIONS" ${ARGN})
+  foreach(TARGET ${TARGET_TYPES})
+    set(TEST ${TESTNAME}_${TARGET})
+    add_executable(${TEST} ${MTGTEST_SOURCES})
+    set_target_properties(${TEST} PROPERTIES COMPILE_FLAGS ${CMAKE_CXX_FLAGS_${TARGET}})
+    target_link_libraries(${TEST} gtest gtest_main pthread)
+    foreach(LINK_LIBRARY ${MTGTEST_LINK_LIBRARIES})
+      target_link_libraries(${TEST} ${LINK_LIBRARY}_${TARGET})
+    endforeach()
+    foreach(COMPILE_DEFINITION ${MTGTEST_COMPILE_DEFINITIONS})
+      set_target_properties(${TEST} PROPERTIES COMPILE_DEFINITIONS ${COMPILE_DEFINITION})
+    endforeach()
+    add_gtest(${TEST})
+  endforeach()
 endmacro()
 
 # This must be run after you have added all your gtest tests

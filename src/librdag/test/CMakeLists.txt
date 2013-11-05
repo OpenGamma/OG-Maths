@@ -13,8 +13,8 @@ set(TESTS check_expressions check_containers check_execution check_rtti check_te
 
 # Compile and link each test and add to the list of tests
 foreach(TEST ${TESTS})
-  add_executable(${TEST} ${TEST}.cc)
-  target_link_libraries(${TEST} rdag gtest gtest_main pthread)
-  add_gtest(${TEST})
+  add_multitarget_gtest(${TEST}
+                        SOURCES ${TEST}.cc
+                        LINK_LIBRARIES rdag)
 endforeach()
 
