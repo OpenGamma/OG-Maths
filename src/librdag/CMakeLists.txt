@@ -33,9 +33,11 @@ add_custom_command(OUTPUT ${RUNNERS_CC}
 
 set(RDAG_SOURCES entrypt.cc expression.cc execution.cc terminal.cc containers.cc numeric.cc dispatch.cc equals.cc numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC})
 
-add_library(rdag SHARED ${RDAG_SOURCES})
+add_multitarget_library(rdag
+                        VERSION ${longdog_VERSION}
+                        SOVERSION ${longdog_VERSION_MAJOR}
+                        SOURCES ${RDAG_SOURCES}
+                        TARGETS ${TARGET_TYPES})
 
-set_target_properties(rdag PROPERTIES SOVERSION ${longdog_VERSION_MAJOR} VERSION ${longdog_VERSION})
-install(TARGETS rdag DESTINATION lib)
-
-jar_native_library(rdag)
+# FIXME: Add back in when working build of targets
+#jar_native_library(rdag)
