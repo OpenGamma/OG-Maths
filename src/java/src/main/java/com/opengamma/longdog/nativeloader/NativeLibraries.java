@@ -171,14 +171,14 @@ public final class NativeLibraries {
       String key = entry.getKey().toString();
       Matcher nlMatch = nlPattern.matcher(key);
       if (nlMatch.matches()) {
-        if (key.endsWith("libraries")) {
+        if (key.endsWith(s_instrSet + ".libraries")) {
           String value = (String) entry.getValue();
           String[] libs = value.split(",");
           for (String lib : libs) {
             s_libsToExtract.add(lib.trim());
           }
         }
-        if (key.endsWith("load")) {
+        if (key.endsWith(s_instrSet + ".load")) {
           String value = (String) entry.getValue();
           String[] libs = value.split(",");
           for (String lib : libs) {
