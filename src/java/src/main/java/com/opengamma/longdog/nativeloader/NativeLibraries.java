@@ -282,7 +282,9 @@ public final class NativeLibraries {
     }
 
     SupportedInstructionSet instructionSet = GetSupportedInstructionSet.getSupportedInstructionSet();
-    System.out.println("Probed instruction set is: " + instructionSet.toString());
+    if (s_debug) {
+      System.out.println("Probed instruction set is: " + instructionSet.toString());
+    }
 
     // load the libraries that do the heavy lifting
     for (String name : s_libsToLoad) {
