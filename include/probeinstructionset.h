@@ -13,6 +13,7 @@ extern "C" {
 typedef enum instructions_available_e
 {
   supports_STANDARD,
+  supports_SSE41,
   supports_SSE42,
   supports_AVX1,
   supports_AVX2
