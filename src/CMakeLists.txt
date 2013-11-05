@@ -4,7 +4,7 @@
 # Please see distribution for license.
 #
 
-add_subdirectory(ogrpath)
+add_subdirectory(jinitialise)
 add_subdirectory(librdag)
 add_subdirectory(jshim)
 add_subdirectory(java)
