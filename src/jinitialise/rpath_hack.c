@@ -15,15 +15,15 @@ extern "C"
 #endif
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void SUPPRESS_UNUSED *reserved)
 {
-     printf("OnLoad called for rpath_hack\n"); 
-     
+     printf("OnLoad called for rpath_hack\n");
+
      rpath_hack();
-    
+
      JNIEnv *env=NULL;
      if ((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_2)) {
          return JNI_ERR; /* JNI version not supported */
      }
-     return JNI_VERSION_1_2;    
+     return JNI_VERSION_1_2;
 }
 
 int varInThisLib = 0;
@@ -68,7 +68,7 @@ void rpath_hack() {
     if(!thislibname) {
 #ifdef _DEBUG
         printf("Failed to get handle for current module.\n");
-#endif // _DEBUG        
+#endif // _DEBUG
         exit(-1);
     }
     // get file name for the handle e.g. SOME_PATH\module.dll
@@ -76,20 +76,20 @@ void rpath_hack() {
     if(libpath_len<=0) {
 #ifdef _DEBUG
         printf("Failed to get module name from handle.\n");
-#endif // _DEBUG           
+#endif // _DEBUG
         exit(-1);
     }
     if(libpath_len+1>=FILENAME_MAX) { // catch potential buffer overflow
 #ifdef _DEBUG
         printf("NUL termination of libpath name will result in buffer overflow.\n");
-#endif // _DEBUG           
+#endif // _DEBUG
         exit(-1);
     }
 #ifdef _DEBUG
     libpathbuf[libpath_len] = '\0'; // nul terminate compound string
     libpath_len++; // for nul terminate
     printf("Got hmodule name as: %s.\n",libpathbuf);
-#endif // _DEBUG             
+#endif // _DEBUG
 
     // find last instance of the WINSLASH, this gives path to dir where currently executing lib is
     char * last = strrchr(libpathbuf, WINSLASH);
@@ -100,12 +100,12 @@ void rpath_hack() {
     if(!setdllret) {
 #ifdef _DEBUG
         printf("attempted to set lib dir as %s and failed.\n",libpathbuf);
-#endif // _DEBUG      
+#endif // _DEBUG
         exit(-1);
     } else {
 #ifdef _DEBUG
         printf("setdlldir() as %s\n",libpathbuf);
-#endif // _DEBUG            
+#endif // _DEBUG
     }
 }
 
