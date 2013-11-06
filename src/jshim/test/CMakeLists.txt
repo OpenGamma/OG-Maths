@@ -14,6 +14,7 @@ foreach(TEST ${TESTS})
   add_multitarget_gtest(${TEST}
                         SOURCES ${TEST}.cc
                         LINK_LIBRARIES jshimtest
+                        TARGETS ${TARGET_TYPES}
                         COMPILE_DEFINITIONS _FAKE_JNI_H=1)
 endforeach()
 
