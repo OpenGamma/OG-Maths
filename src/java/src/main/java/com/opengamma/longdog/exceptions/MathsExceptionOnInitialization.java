@@ -8,30 +8,30 @@ package com.opengamma.longdog.exceptions;
 /**
  * Exception thrown if native code initialisation fails.
  */
-public class LongdogInitializationException extends RuntimeException {
+public class MathsExceptionOnInitialization extends RuntimeException {
 
   /**
    * SID
    */
   private static final long serialVersionUID = 1L;
 
-  public LongdogInitializationException() {
+  public MathsExceptionOnInitialization() {
     super();
   }
 
-  public LongdogInitializationException(String message) {
+  public MathsExceptionOnInitialization(String message) {
     super(message);
   }
 
-  public LongdogInitializationException(Throwable cause) {
+  public MathsExceptionOnInitialization(Throwable cause) {
     super(cause);
   }
 
-  public LongdogInitializationException(String message, Throwable cause) {
+  public MathsExceptionOnInitialization(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public LongdogInitializationException(String message, Throwable cause,
+  public MathsExceptionOnInitialization(String message, Throwable cause,
       boolean enableSuppression, boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);
   }
