@@ -10,7 +10,11 @@
 #include <stdio.h>
 
 
-// The supported instruction set on this machine for use in other functions
+/**
+ * The supported instruction set on this machine for use in other functions.
+ *
+ * These must match up with the numbers used in MultiLib.cmake.
+ */
 typedef enum instructions_available_e
 {
   supports_STANDARD = 1,
