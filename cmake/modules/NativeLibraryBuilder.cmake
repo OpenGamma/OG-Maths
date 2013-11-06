@@ -18,6 +18,7 @@ endmacro()
 
 set(jar_native_libraries CACHE INTERNAL "Native libraries to be built into the JAR")
 
+# Adds a native library into the jar file.
 macro(jar_native_library lib)
   get_property(_soversion TARGET ${lib} PROPERTY SOVERSION)
   get_property(_location TARGET ${lib} PROPERTY LOCATION)
@@ -45,6 +46,7 @@ macro(jar_native_library lib)
   set(jar_native_libraries ${jar_native_libraries} CACHE INTERNAL "Native libraries to be built into the JAR")
 endmacro()
 
+# Adds the lib for each target into the final built jar file.
 macro(jar_native_multitarget_library lib)
   cmake_parse_arguments(JNMTLIB "" "" "TARGETS" ${ARGN})
   foreach(TARGET ${JNMTLIB_TARGETS})

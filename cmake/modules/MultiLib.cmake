@@ -14,6 +14,7 @@ include(CMakeParseArguments)
 # Create a library for multiple target instruction sets. Note that this is
 # specialised to its use in Nyqwk2 and does not fully provide all of the
 # functionality that can be provided by add_library and set_target_properties.
+# One instance of the library is created for each of the TARGETS.
 
 function(add_multitarget_library _TARGET_NAME)
   cmake_parse_arguments(MTLIB
@@ -44,6 +45,7 @@ try_run(CPUID_FLAG CPUID_COMPILE_RESULT
 set(SUPPORT_dbg TRUE)
 set(SUPPORT_std TRUE)
 
+# NOTE: These flags must match the numbers in cmcpuid.c
 if(${CPUID_FLAG} GREATER 1)
   set(SUPPORT_sse41 TRUE)
   message(STATUS "CPU supports SSE4.1")
