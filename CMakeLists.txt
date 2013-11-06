@@ -48,6 +48,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
 
+# Use the native assembler on Apple in order to be able to generate AVX instructions.
 if(APPLE)
   set(CMAKE_C_FLAGS "-Wa,-q ${CMAKE_C_FLAGS}")
   set(CMAKE_CXX_FLAGS "-Wa,-q ${CMAKE_CXX_FLAGS}")
@@ -79,20 +80,17 @@ enable_testing()
 include(MultiLib)
 set(TARGET_TYPES dbg std sse41 avx1)
 
-# tweak flags
+# Tweak flags. These flags are similar to --ffast-math, except:
+# -funsafe-math-optimizations is missing as it messes with the FPU control word
+# which can cause segfaults when running through the JNI interface.
+# -ffinite-math-only is missing as it messes with NaN and Inf in ways that
+# break comparison behaviours.
 set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
-# -funsafe-math-optimizations is missing as it messes with the FPU control word which can cause segfaults when running through the JNI interface
-# -ffinite-math-only is missing as it messes with NaN and Inf in ways that break comparison behaviours
 
-set(CMAKE_C_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_C_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
-set(CMAKE_C_FLAGS_sse41 "${FFAST_MATH_SAFE} -O2 -march=core2 -msse4.1 -funroll-loops -DNDEBUG")
-set(CMAKE_C_FLAGS_avx1 "${FFAST_MATH_SAFE} -O2 -march=corei7-avx -funroll-loops -DNDEBUG")
-
-set(CMAKE_CXX_FLAGS_dbg "-DDEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
-set(CMAKE_CXX_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
-set(CMAKE_CXX_FLAGS_sse41 "${FFAST_MATH_SAFE} -O2 -march=core2 -msse4.1 -funroll-loops -DNDEBUG")
-set(CMAKE_CXX_FLAGS_avx1 "${FFAST_MATH_SAFE} -O2 -march=corei7-avx -funroll-loops -DNDEBUG")
+set(OPT_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
+set(OPT_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
+set(OPT_FLAGS_sse41 "${OPT_FLAGS_std} -march=core2 -msse4.1")
+set(OPT_FLAGS_avx1 "${OPT_FLAGS_std}  -march=corei7-avx -mavx256-split-unaligned-load -mavx256-split-unaligned-store")
 
 # Gtest
 add_subdirectory(external/gtest-1.6.0)
