@@ -72,11 +72,7 @@ enable_testing()
 
 # Multi-target libraries need to be built
 include(MultiLib)
-if(APPLE)
-  set(TARGET_TYPES dbg std sse41)
-else()
-  set(TARGET_TYPES dbg std sse41 avx1)
-endif()
+set(TARGET_TYPES dbg std sse41 avx1)
 
 # tweak flags
 set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
