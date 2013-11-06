@@ -11,10 +11,10 @@ set(TESTS check_jvmmanager_fakejni)
 
 # Compile and link each test and add to the list of tests
 foreach(TEST ${TESTS})
-  add_executable(${TEST} ${TEST}.cc)
-  set_target_properties(${TEST} PROPERTIES COMPILE_DEFINITIONS _FAKE_JNI_H=1)
-  target_link_libraries(${TEST} jshimtest gtest gtest_main pthread)
-  get_target_property(TEST_LOC ${TEST} LOCATION)
-  add_gtest(${TEST})
+  add_multitarget_gtest(${TEST}
+                        SOURCES ${TEST}.cc
+                        LINK_LIBRARIES jshimtest
+                        TARGETS ${TARGET_TYPES}
+                        COMPILE_DEFINITIONS _FAKE_JNI_H=1)
 endforeach()
 

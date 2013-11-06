@@ -9,6 +9,13 @@ package com.opengamma.longdog.nativeloader;
 import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
 import com.opengamma.longdog.materialisers.Materialisers;
 
+/**
+ * Simple self-test class.
+ *
+ * This class is intended as the entry point for the JAR. Its puspose is so that the
+ * JAR can be run, and it will test extraction and linking of the libraries to
+ * make sure that all is well with the JAR and its environment.
+ */
 public class NativeLibrariesSelfTest {
 
   public static void main(String[] args) {
