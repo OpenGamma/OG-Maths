@@ -4,6 +4,11 @@
 # Please see distribution for license.
 #
 
+# Inclusion of this module sets the targets supported by the machine on which
+# CMake is running. SUPPORT_${TARGET} is set to TRUE or FALSE for each target in
+# dbg, std, sse41, sse42, avx1 and avx2. std and sbg require no special CPU
+# support and are always set.
+
 include(CMakeParseArguments)
 
 # Create a library for multiple target instruction sets. Note that this is
@@ -22,7 +27,7 @@ function(add_multitarget_library _TARGET_NAME)
     set_target_properties(${LIBNAME} PROPERTIES
                           VERSION ${MTLIB_VERSION}
                           SOVERSION ${MTLIB_SOVERSION}
-                          COMPILE_FLAGS ${CMAKE_C_FLAGS_${TARGET}})
+                          COMPILE_FLAGS ${OPT_FLAGS_${TARGET}})
     foreach(LINK_LIB ${MTLIB_LINK_LIBRARIES})
       target_link_libraries(${LIBNAME} ${LINK_LIB}_${TARGET})
     endforeach()
