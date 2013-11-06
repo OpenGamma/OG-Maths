@@ -49,8 +49,8 @@ set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
 
 if(APPLE)
-  set(CMAKE_C_FLAGS "-mvzeroupper ${CMAKE_C_FLAGS}")
-  set(CMAKE_CXX_FLAGS "-mvzeroupper ${CMAKE_CXX_FLAGS}")
+  set(CMAKE_C_FLAGS "-Wa,-q ${CMAKE_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "-Wa,-q ${CMAKE_CXX_FLAGS}")
 endif()
 
 # Add Java
