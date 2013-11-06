@@ -145,25 +145,28 @@ dispatch_header = """\
 #include "jvmmanager.hh"
 #include "exceptions.hh"
 #include "debug.h"
+#include "convertto.h"
 
 namespace librdag {
 
 %(dispatcher_definition)s
+
+%(dispatchop_definition)s
 
 %(dispatchunary_definition)s
 
 %(dispatchbinary_definition)s
 
 // typedef the void dispatches
-typedef DispatchUnaryOp<void> DispatchVoidUnaryOp;
-typedef DispatchBinaryOp<void> DispatchVoidBinaryOp;
+typedef DispatchUnaryOp<void*> DispatchVoidUnaryOp;
+typedef DispatchBinaryOp<void*> DispatchVoidBinaryOp;
 
 /**
  * Template instantiations
  */
 
-extern template class DispatchUnaryOp<void>;
-extern template class DispatchBinaryOp<void>;
+extern template class DispatchUnaryOp<void*>;
+extern template class DispatchBinaryOp<void*>;
 
 } // end namespace librdag
 
@@ -207,13 +210,27 @@ dispatcher_private_member = """\
     %(nodetype)sRunner* _%(nodetype)sRunner;
 """
 
+dispatchop_class = """\
+class DispatchOp
+{
+  public:
+    DispatchOp();
+    virtual ~DispatchOp();
+    const ConvertTo * getConvertTo() const;
+  private:
+    const ConvertTo * _convert;
+};
+"""
+
 dispatchunaryop_class = """\
 /**
  * For dispatching operations of the form "T foo(Register * register1, OGTerminal * arg)"
  */
-template<typename T> class  DispatchUnaryOp
+template<typename T> class DispatchUnaryOp: public DispatchOp
 {
+  static_assert(is_pointer<T>::value, "Type T must be a pointer");
   public:
+    using DispatchOp::getConvertTo;
     virtual ~DispatchUnaryOp();
 
     // will run the operation
@@ -234,9 +251,11 @@ dispatchbinaryop_class = """\
 /**
  * For dispatching operations of the form "T foo(Register * register1, OGTerminal * arg0, OGTerminal * arg1)"
  */
-template<typename T> class  DispatchBinaryOp
+template<typename T> class  DispatchBinaryOp: public DispatchOp
 {
+  static_assert(is_pointer<T>::value, "Type T must be a pointer");
   public:
+    using DispatchOp::getConvertTo;
     virtual ~DispatchBinaryOp();
     // will run the operation
     T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal const *arg1) const;
@@ -295,8 +314,8 @@ namespace librdag {
  * Template instantiations
  */
 
-template class DispatchUnaryOp<void>;
-template class DispatchBinaryOp<void>;
+template class DispatchUnaryOp<void*>;
+template class DispatchBinaryOp<void*>;
 
 } // namespace librdag
 """
@@ -443,26 +462,35 @@ T
 DispatchUnaryOp<T>::eval(RegContainer* reg, const OGTerminal* arg) const
 {
   ExprType_t argID = arg->getType();
+  T ret = nullptr;
   switch(argID)
   {
 %(eval_cases)s
     default:
         throw rdag_error("Unknown type in dispatch on arg");
   }
+  return ret;
 }
 """
 
 dispatchunaryop_eval_case = """\
     case %(nodeenumtype)s:
       DEBUG_PRINT("running with run(reg, arg->as%(nodetype)s);\\n");
-      run(reg, arg->as%(nodetype)s());
+      ret = run(reg, arg->as%(nodetype)s());
       break;
 """
 
+# FIXME: Need to pass in the correct type to convert to.
 dispatchunaryop_terminal_method = """\
 template<typename T>
 T
-DispatchUnaryOp<T>::run(RegContainer SUPPRESS_UNUSED * reg, %(nodetype)s const SUPPRESS_UNUSED * arg) const {}
+DispatchUnaryOp<T>::run(RegContainer* reg, const %(nodetype)s* arg) const
+{
+  %(typetoconvertto)s* conv = this->getConvertTo()->convertTo%(typetoconvertto)s(arg);
+  T ret = run(reg, conv);
+  delete conv;
+  return ret;
+}
 """
 
 # DispatchBinaryOp methods
@@ -487,6 +515,7 @@ DispatchBinaryOp<T>::eval(RegContainer* reg0, OGTerminal const *arg0, OGTerminal
 {
   ExprType_t arg0ID = arg0->getType();
   ExprType_t arg1ID = arg1->getType();
+  T ret = nullptr;
   // MASSIVE SWITCH TABLE
   switch(arg0ID)
   {
@@ -494,6 +523,7 @@ DispatchBinaryOp<T>::eval(RegContainer* reg0, OGTerminal const *arg0, OGTerminal
     default:
       throw rdag_error("Unknown type in dispatch on arg0");
   }
+  return ret;
 }
 """
 
@@ -511,14 +541,23 @@ dispatchbinaryop_eval_case_arg0 = """\
 dispatchbinaryop_eval_case_arg1 = """\
         case %(node1enumtype)s:
           DEBUG_PRINT("running with run(reg0, arg0->as%(node0type)s(), arg1->as%(node1type)s());\\n");
-          run(reg0, arg0->as%(node0type)s(), arg1->as%(node1type)s());
+          ret = run(reg0, arg0->as%(node0type)s(), arg1->as%(node1type)s());
           break;
 """
 
+# FIXME: Need to pass in correct type0toconvertto and type1toconvertto.
 dispatchbinaryop_terminal_method = """\
 template<typename T>
 T
-DispatchBinaryOp<T>::run(RegContainer SUPPRESS_UNUSED * reg0,
-                         %(node0type)s const SUPPRESS_UNUSED * arg0,
-                         %(node1type)s const SUPPRESS_UNUSED * arg1) const {}
+DispatchBinaryOp<T>::run(RegContainer* reg0,
+                         const %(node0type)s* arg0,
+                         const %(node1type)s* arg1) const
+{
+  %(type0toconvertto)s* conv0 = this->getConvertTo()->convertToOGRealMatrix(arg0);
+  %(type1toconvertto)s* conv1 = this->getConvertTo()->convertToOGRealMatrix(arg1);
+  T ret = run(reg0, conv0, conv1);
+  delete conv0;
+  delete conv1;
+  return ret;
+}
 """
