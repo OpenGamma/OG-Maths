@@ -162,12 +162,27 @@ set(LONGDOGJAR ${JARDIR}/${LONGDOG}.jar)
 set(LONGDOGTESTJAR ${JARDIR}/${LONGDOG}-tests.jar)
 
 if (WIN32)
-  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
   string(REPLACE ";" "\\;" CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH};${LONGDOGJAR};${LONGDOGTESTJAR}")
+  # Test each target
+  foreach(TARGET ${TARGET_TYPES})
+    if(SUPPORT_${TARGET})
+      add_test(${TESTNG_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+      set_tests_properties(${TESTNG_TEST}_${TARGET} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
+    endif()
+  endforeach()
+  # Test with no target specified
+  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
   set_tests_properties(${TESTNG_TEST} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
 else()
   set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR})
   set(JAVA_TESTNG_ARGS -Xcheck:jni -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  # Test each target
+  foreach(TARGET ${TARGET_TYPES})
+    if(SUPPORT_${TARGET})
+      add_test(${TESTNG_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET} ${JAVA_TESTNG_ARGS})
+    endif()
+  endforeach()
+  # Test with no target specified
   add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} ${JAVA_TESTNG_ARGS})
   set(JACOCOJAR $ENV{JACOCOJAR})
   add_custom_target(jacocorun
