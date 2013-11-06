@@ -134,13 +134,13 @@ public final class NativeLibraries {
     // get the properties file into memory
     getConfigFromProperties();
 
+    s_libsForInitialise = getValuesFromPropertiesFileAssociatedWithString("initialise");
+
     Path unzipdir = null;
     if (!s_configFileOnCommandline) {
       unzipdir = createExtractionDirectory();
       extract(unzipdir, s_libsForInitialise);
     } // end if(!s_commandlineconfig)
-
-    s_libsForInitialise = getValuesFromPropertiesFileAssociatedWithString("initialise");
 
     // load initialisation libraries
     for (String name : s_libsForInitialise) {
