@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -85,7 +86,7 @@ public final class NativeLibraries {
   /**
    * Holds the tagline for the instruction set used in computation. See {@link SupportedInstructionSet}.
    */
-  private static String s_instrSet;
+  private static SupportedInstructionSet s_instrSet;
 
   /**
    * True if the instruction set was specified on the command line.
@@ -150,7 +151,7 @@ public final class NativeLibraries {
     // instruction set was specified on command line
     SupportedInstructionSet instructionSet;
     if (s_instrSetOnCommandline) { // we know its valid, check was performed in getConfigFromProperties()
-      instructionSet = SupportedInstructionSet.valueOf(s_instrSet);
+      instructionSet = s_instrSet;
     } else {
       instructionSet = GetSupportedInstructionSet.getSupportedInstructionSet();
       if (s_debug) {
@@ -215,12 +216,18 @@ public final class NativeLibraries {
     String commandLineInstrSet = System.getProperty("instructionSet");
     if (commandLineInstrSet != null) { // specified instruction set given
       s_instrSetOnCommandline = true;
-      try {
-        SupportedInstructionSet.valueOf(commandLineInstrSet);
-      } catch (Exception e) {
-        throw new MathsExceptionOnInitialization("Invalid instruction set specified on command line (value given was):" + commandLineInstrSet);
+      HashMap<String, SupportedInstructionSet> instrSets = new HashMap<String, SupportedInstructionSet>();
+      instrSets.put("dbg", SupportedInstructionSet.DEBUG);
+      instrSets.put("std", SupportedInstructionSet.STANDARD);
+      instrSets.put("sse41", SupportedInstructionSet.SSE41);
+      instrSets.put("sse42", SupportedInstructionSet.SSE42);
+      instrSets.put("avx1", SupportedInstructionSet.AVX1);
+      instrSets.put("avx2", SupportedInstructionSet.AVX2);
+      s_instrSet = instrSets.get(commandLineInstrSet);
+      if (s_instrSet == null) {
+        throw new MathsExceptionOnInitialization("Invalid instruction set specified on command line (value given was): "
+                                                 + commandLineInstrSet);
       }
-      s_instrSet = commandLineInstrSet;
     }
 
     // Is the config file location overridden?
