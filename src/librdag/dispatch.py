@@ -17,7 +17,8 @@ from templates import dispatch_header, dispatcher_class, dispatcher_forward_decl
                       dispatchunaryop_eval_case, dispatchunaryop_terminal_method, \
                       dispatchbinaryop_methods, dispatchbinaryop_destructor, \
                       dispatchbinaryop_eval, dispatchbinaryop_eval_case_arg0, \
-                      dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method
+                      dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method \
+                      dispatchop_class
 
 class Dispatcher(object):
     """Generates the Dispatcher class definition and method implementations"""
@@ -184,6 +185,7 @@ class Dispatch(object):
     @property
     def header(self):
         d = { 'dispatcher_definition': self._dispatcher.class_definition,
+              'dispatchop_definition': dispatchop_class,
               'dispatchunary_definition': self._dispatchunaryop.class_definition,
               'dispatchbinary_definition': self._dispatchbinaryop.class_definition }
         return dispatch_header % d
