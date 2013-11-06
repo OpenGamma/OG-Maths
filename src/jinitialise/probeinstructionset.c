@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "debug.h"
 #include "warningmacros.h"
-#include "com_opengamma_longdog_nativeloader_GetSupportedInstructionSet.h"
+#include "com_opengamma_longdog_nativeloader_NativeLibraries.h"
 #include "probeinstructionset.h"
 
 #ifdef __cplusplus
@@ -38,11 +38,11 @@ jobject instrEnumAsjobj(JNIEnv * env, jclass containerClass, char * field)
 }
 
 /*
- * Class:     com_opengamma_longdog_nativeloader_GetSupportedInstructionSet
+ * Class:     com_opengamma_longdog_nativeloader_NativeLibraries
  * Method:    getSupportedInstructionSet
  * Signature: ()Lcom/opengamma/longdog/nativeloader/SupportedInstructionSet;
  */
-JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_nativeloader_GetSupportedInstructionSet_getSupportedInstructionSet
+JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_nativeloader_NativeLibraries_getSupportedInstructionSet
   (JNIEnv * env, jclass SUPPRESS_UNUSED clazz)
 {
 

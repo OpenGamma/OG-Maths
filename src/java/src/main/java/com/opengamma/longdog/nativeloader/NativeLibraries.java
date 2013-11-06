@@ -38,7 +38,7 @@ import com.opengamma.longdog.exceptions.MathsExceptionUnsupportedPlatform;
  * The correct libraries are extracted and loaded depending on the architecture
  * that we are running on. The instruction set used in the hardware is queried as part of the
  * initialisation process so that libraries closest to the maximum level of instruction support
- * are loaded. This also be specified manually with -DinstructionSet={SupportedInstructionSet.valueOf()}.
+ * are loaded. This also be specified manually with -DinstructionSet={One of the keys in {@code instrSets}}.
  */
 public final class NativeLibraries {
 
@@ -99,6 +99,27 @@ public final class NativeLibraries {
   private static Properties s_nativeLibrariesProperties = new Properties();
 
   /**
+   * Holds the map between command line requested instruction sets and the enum (this is so the builders are happy).
+   */
+  private static HashMap<String, SupportedInstructionSet> instrSets;
+  static {
+    instrSets = new HashMap<String, SupportedInstructionSet>();
+    instrSets.put("dbg", SupportedInstructionSet.DEBUG);
+    instrSets.put("std", SupportedInstructionSet.STANDARD);
+    instrSets.put("sse41", SupportedInstructionSet.SSE41);
+    instrSets.put("sse42", SupportedInstructionSet.SSE42);
+    instrSets.put("avx1", SupportedInstructionSet.AVX1);
+    instrSets.put("avx2", SupportedInstructionSet.AVX2);
+  }
+
+  /**
+   * Probes the CPU and gets the maximum supported instruction set.
+   * This function is implemented in the jinitialise library, which is extracted and loaded first.
+   * @return maximum supported instruction set.
+   */
+  public static native SupportedInstructionSet getSupportedInstructionSet();
+  
+  /**
    * Prepare for loading of native libraries.
    * 
    * Alg goes a bit like this:
@@ -110,7 +131,7 @@ public final class NativeLibraries {
    * *) From the properties configuration look for libraries which are slated for initalisation phase
    * *) if(!s_configFileOnCommandline) Extract libraries listed in the initialisation phase.
    * *) Load libraries listed in the initialisation phase.
-   * *) If an instruction set was specified on the command line with -DinstructionSet={SupportedInstructionSet.valueOf()} use it,
+   * *) If an instruction set was specified on the command line with -DinstructionSet={One of the keys in {@code instrSets}} use it,
    *    else use the now loaded jinitialise library to poke the CPUID and get the maximum supported instruction set.
    * *) if(!s_configFileOnCommandline) extract libraries listed in the "[INSTRUCTIONSET].libraries" part of the config file.
    * *) load libraries list in the "[INSTRUCTIONSET].load" part of the config file.
@@ -131,7 +152,7 @@ public final class NativeLibraries {
 
     // is the platform supported?
     checkPlatformSupported();
-    
+
     // get the properties file into memory
     getConfigFromProperties();
 
@@ -153,7 +174,7 @@ public final class NativeLibraries {
     if (s_instrSetOnCommandline) { // we know its valid, check was performed in getConfigFromProperties()
       instructionSet = s_instrSet;
     } else {
-      instructionSet = GetSupportedInstructionSet.getSupportedInstructionSet();
+      instructionSet = getSupportedInstructionSet();
       if (s_debug) {
         System.out.println("Probed instruction set is: " + instructionSet.toString());
       }
@@ -216,17 +237,10 @@ public final class NativeLibraries {
     String commandLineInstrSet = System.getProperty("instructionSet");
     if (commandLineInstrSet != null) { // specified instruction set given
       s_instrSetOnCommandline = true;
-      HashMap<String, SupportedInstructionSet> instrSets = new HashMap<String, SupportedInstructionSet>();
-      instrSets.put("dbg", SupportedInstructionSet.DEBUG);
-      instrSets.put("std", SupportedInstructionSet.STANDARD);
-      instrSets.put("sse41", SupportedInstructionSet.SSE41);
-      instrSets.put("sse42", SupportedInstructionSet.SSE42);
-      instrSets.put("avx1", SupportedInstructionSet.AVX1);
-      instrSets.put("avx2", SupportedInstructionSet.AVX2);
       s_instrSet = instrSets.get(commandLineInstrSet);
       if (s_instrSet == null) {
         throw new MathsExceptionOnInitialization("Invalid instruction set specified on command line (value given was): "
-                                                 + commandLineInstrSet);
+            + commandLineInstrSet);
       }
     }
 
