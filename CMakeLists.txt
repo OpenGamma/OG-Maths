@@ -43,21 +43,16 @@ set(longdog_VERSION
 # Append local module folder to module path
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
-# tweak flags
-set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
-# -funsafe-math-optimizations is missing as it messes with the FPU control word which can cause segfaults when running through the JNI interface
-# -ffinite-math-only is missing as it messes with NaN and Inf in ways that break comparison behaviours
 
+# Use C99 and C++11, other flags for preventing common errors. Also add thread libs.
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
-set(CMAKE_C_FLAGS_DEBUG "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_C_FLAGS_RELEASE "${FFAST_MATH_SAFE} -O2 -march=core2 -funroll-loops -DNDEBUG")
-set(CMAKE_C_FLAGS_RELWITHDEBINFO "${FFAST_MATH_SAFE} -march=core2 -funroll-loops ${CMAKE_C_FLAGS_RELWITHDEBINFO}")
-
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
-set(CMAKE_CXX_FLAGS_RELEASE "${FFAST_MATH_SAFE}-O2 -march=core2 -funroll-loops -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${FFAST_MATH_SAFE} -march=core2 -funroll-loops ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
 
+# Use the native assembler on Apple in order to be able to generate AVX instructions.
+if(APPLE)
+  set(CMAKE_C_FLAGS "-Wa,-q ${CMAKE_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "-Wa,-q ${CMAKE_CXX_FLAGS}")
+endif()
 
 # Add Java
 find_package(Java)
@@ -80,6 +75,22 @@ set(CMAKE_JAVA_INCLUDE_PATH $ENV{CLASSPATH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${longdog_BINARY_DIR}/bin)
 
 enable_testing()
+
+# Multi-target libraries need to be built
+include(MultiLib)
+set(TARGET_TYPES dbg std sse41 avx1)
+
+# Tweak flags. These flags are similar to --ffast-math, except:
+# -funsafe-math-optimizations is missing as it messes with the FPU control word
+# which can cause segfaults when running through the JNI interface.
+# -ffinite-math-only is missing as it messes with NaN and Inf in ways that
+# break comparison behaviours.
+set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
+
+set(OPT_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
+set(OPT_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
+set(OPT_FLAGS_sse41 "${OPT_FLAGS_std} -march=core2 -msse4.1")
+set(OPT_FLAGS_avx1 "${OPT_FLAGS_std}  -march=corei7-avx -mavx256-split-unaligned-load -mavx256-split-unaligned-store")
 
 # Gtest
 add_subdirectory(external/gtest-1.6.0)
@@ -149,12 +160,27 @@ set(LONGDOGJAR ${JARDIR}/${LONGDOG}.jar)
 set(LONGDOGTESTJAR ${JARDIR}/${LONGDOG}-tests.jar)
 
 if (WIN32)
-  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
   string(REPLACE ";" "\\;" CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH};${LONGDOGJAR};${LONGDOGTESTJAR}")
+  # Test each target
+  foreach(TARGET ${TARGET_TYPES})
+    if(SUPPORT_${TARGET})
+      add_test(${TESTNG_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+      set_tests_properties(${TESTNG_TEST}_${TARGET} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
+    endif()
+  endforeach()
+  # Test with no target specified
+  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
   set_tests_properties(${TESTNG_TEST} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
 else()
   set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR})
   set(JAVA_TESTNG_ARGS -Xcheck:jni -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  # Test each target
+  foreach(TARGET ${TARGET_TYPES})
+    if(SUPPORT_${TARGET})
+      add_test(${TESTNG_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET} ${JAVA_TESTNG_ARGS})
+    endif()
+  endforeach()
+  # Test with no target specified
   add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} ${JAVA_TESTNG_ARGS})
   set(JACOCOJAR $ENV{JACOCOJAR})
   add_custom_target(jacocorun
