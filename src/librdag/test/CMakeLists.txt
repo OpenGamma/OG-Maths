@@ -15,6 +15,7 @@ set(TESTS check_expressions check_containers check_execution check_rtti check_te
 foreach(TEST ${TESTS})
   add_multitarget_gtest(${TEST}
                         SOURCES ${TEST}.cc
-                        LINK_LIBRARIES rdag)
+                        LINK_LIBRARIES rdag
+                        TARGETS ${TARGET_TYPES})
 endforeach()
 
