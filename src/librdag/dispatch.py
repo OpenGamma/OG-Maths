@@ -17,7 +17,7 @@ from templates import dispatch_header, dispatcher_class, dispatcher_forward_decl
                       dispatchunaryop_eval_case, dispatchunaryop_terminal_method, \
                       dispatchbinaryop_methods, dispatchbinaryop_destructor, \
                       dispatchbinaryop_eval, dispatchbinaryop_eval_case_arg0, \
-                      dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method \
+                      dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method, \
                       dispatchop_class
 
 class Dispatcher(object):
@@ -118,7 +118,9 @@ class DispatchUnaryOp(object):
         eval_cases = ''
         terminal_methods = ''
         for t in self._terminals:
-            d = { 'nodetype': t.name, 'nodeenumtype': t.enumname }
+            d = { 'nodetype': t.name, 'nodeenumtype': t.enumname, \
+                  'typetoconvertto': 'OGComplexMatrix' }
+                  # FIXME: This is the dumbest possible choice.
             eval_cases += dispatchunaryop_eval_case % d
             if t.name not in self._backstop_terminals:
                 terminal_methods += dispatchunaryop_terminal_method % d
@@ -158,7 +160,10 @@ class DispatchBinaryOp(object):
             eval_arg1_cases = ''
             for t1 in self._terminals:
                 d = { 'node0type': t0.name, 'node0enumtype': t0.enumname,
-                      'node1type': t1.name, 'node1enumtype': t1.enumname }
+                      'node1type': t1.name, 'node1enumtype': t1.enumname,
+                      'type0toconvertto': 'OGComplexMatrix',
+                      'type1toconvertto': 'OGComplexMatrix' }
+                      # FIXME: Those types are the dumbest possible choices.
                 eval_arg1_cases += dispatchbinaryop_eval_case_arg1 % d
                 if t0.name not in self._backstop_terminals or t0 != t1:
                     terminal_methods += dispatchbinaryop_terminal_method %d

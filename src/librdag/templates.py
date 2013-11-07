@@ -145,7 +145,7 @@ dispatch_header = """\
 #include "jvmmanager.hh"
 #include "exceptions.hh"
 #include "debug.h"
-#include "convertto.h"
+#include "convertto.hh"
 
 namespace librdag {
 
@@ -553,8 +553,8 @@ DispatchBinaryOp<T>::run(RegContainer* reg0,
                          const %(node0type)s* arg0,
                          const %(node1type)s* arg1) const
 {
-  %(type0toconvertto)s* conv0 = this->getConvertTo()->convertToOGRealMatrix(arg0);
-  %(type1toconvertto)s* conv1 = this->getConvertTo()->convertToOGRealMatrix(arg1);
+  %(type0toconvertto)s* conv0 = this->getConvertTo()->convertTo%(type0toconvertto)s(arg0);
+  %(type1toconvertto)s* conv1 = this->getConvertTo()->convertTo%(type1toconvertto)s(arg1);
   T ret = run(reg0, conv0, conv1);
   delete conv0;
   delete conv1;
