@@ -4,7 +4,6 @@
 # Please see distribution for license.
 #
 
-set(BIN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 file(MAKE_DIRECTORY ${BIN_INCLUDE_DIR})
 
 include_directories (${NATIVE_HEADER_DIR} ${CMAKE_SOURCE_DIR}/include ${JNIDIR} ${JNI_INCLUDE_DIRS} ${BIN_INCLUDE_DIR})
