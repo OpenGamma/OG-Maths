@@ -553,11 +553,19 @@ DispatchBinaryOp<T>::run(RegContainer* reg0,
                          const %(node0type)s* arg0,
                          const %(node1type)s* arg1) const
 {
-  %(type0toconvertto)s* conv0 = this->getConvertTo()->convertTo%(type0toconvertto)s(arg0);
-  %(type1toconvertto)s* conv1 = this->getConvertTo()->convertTo%(type1toconvertto)s(arg1);
+%(conv0)s
+%(conv1)s
   T ret = run(reg0, conv0, conv1);
   delete conv0;
   delete conv1;
   return ret;
 }
+"""
+
+dispatchbinaryop_conv_arg = """\
+  %(typetoconvertto)s* conv%(argno)s = this->getConvertTo()->convertTo%(typetoconvertto)s(arg%(argno)s);
+"""
+
+dispatchbinaryop_noconv_arg = """\
+  const %(nodetype)s* conv%(argno)s = arg%(argno)s;
 """
