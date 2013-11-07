@@ -4,184 +4,26 @@
 # Please see distribution for license.
 #
 
-"""Generates the implementation of the runners."""
+"""Generates the implementation of the dispatcher and runners."""
 
-from templates import *
-
-class Function(object):
-    """A Function is used to generate the code for a single node."""
-    def __init__(self, nodename):
-        self._nodename = nodename
-
-    @property
-    def nodename(self):
-        return self._nodename
-
-class UnaryFunction(Function):
-    """A UnaryFunction is for a node that takes a single argument."""
-    def __init__(self, nodename):
-        super(UnaryFunction, self).__init__(nodename)
-        self._class_definition_template = unary_runner_class_definition
-
-    @property
-    def class_definition(self):
-        return self._class_definition_template % { 'nodename': self._nodename }
-
-    @property
-    def scalar_runner_function(self):
-        implementation = self.scalar_implementation
-        d = { 'implementation': implementation,
-              'nodename': self.nodename,
-              'argtype': 'OGRealScalar',
-              'returntype': 'OGRealScalar' }
-        return unary_runner_function % d
-
-    @property
-    def real_matrix_runner_function(self):
-        implementation = self.real_matrix_implementation
-        d = { 'implementation': implementation,
-              'nodename': self.nodename,
-              'argtype': 'OGRealMatrix',
-              'returntype': 'OGRealMatrix' }
-        return unary_runner_function % d
-
-    @property
-    def complex_matrix_runner_function(self):
-        implementation = self.complex_matrix_implementation
-        d = { 'implementation': implementation,
-              'nodename': self.nodename,
-              'argtype': 'OGComplexMatrix',
-              'returntype': 'OGComplexMatrix' }
-        return unary_runner_function % d
-
-class BinaryFunction(Function):
-    """A BinaryFunction is for a node that takes two arguments."""
-    def __init__(self, nodename):
-        super(BinaryFunction, self).__init__(nodename)
-        self._class_definition_template = binary_runner_class_definition
-
-    @property
-    def class_definition(self):
-        return self._class_definition_template % { 'nodename': self._nodename }
-
-    @property
-    def scalar_runner_function(self):
-        implementation = self.scalar_implementation
-        d = { 'implementation': implementation,
-              'nodename': self.nodename,
-              'arg0type': 'OGRealScalar',
-              'arg1type': 'OGRealScalar',
-              'returntype': 'OGRealScalar' }
-        return binary_runner_function % d
-
-    @property
-    def real_matrix_runner_function(self):
-        implementation = self.real_matrix_implementation
-        d = { 'implementation': implementation,
-              'nodename': self.nodename,
-              'arg0type': 'OGRealMatrix',
-              'arg1type': 'OGRealMatrix',
-              'returntype': 'OGRealMatrix' }
-        return binary_runner_function % d
-
-    @property
-    def complex_matrix_runner_function(self):
-        implementation = self.complex_matrix_implementation
-        d = { 'implementation': implementation,
-              'nodename': self.nodename,
-              'arg0type': 'OGComplexMatrix',
-              'arg1type': 'OGComplexMatrix',
-              'returntype': 'OGComplexMatrix' }
-        return binary_runner_function % d
-
-class InfixOp(BinaryFunction):
-    """An InfixOp is a BinaryFunction that has a particular symbol that is
-    placed infix in its two arguments in the generated code."""
-    def __init__(self, nodename, symbol):
-        super(InfixOp, self).__init__(nodename)
-        self._symbol = symbol
-
-    @property
-    def symbol(self):
-        return self._symbol
-
-    @property
-    def scalar_implementation(self):
-        d = { 'symbol':     self.symbol,
-              'arg0type':   'OGRealScalar',
-              'arg1type':   'OGRealScalar',
-              'returntype': 'OGRealScalar' }
-        return infix_scalar_runner_implementation % d
-
-    @property
-    def real_matrix_implementation(self):
-        return "  arg0->debug_print(); arg1->debug_print(); ret = arg0; // TBC"
-
-    @property
-    def complex_matrix_implementation(self):
-        return "  arg0->debug_print(); arg1->debug_print(); ret = arg0; // TBC"
-
-class PrefixOp(UnaryFunction):
-    """A PrefixOp is a UnaryFunction whose symbol is placed just before its
-    argument in the code."""
-    def __init__(self, nodename, symbol):
-        super(PrefixOp, self).__init__(nodename)
-        self._symbol = symbol
-
-    @property
-    def symbol(self):
-        return self._symbol
-
-    @property
-    def scalar_implementation(self):
-        d = { 'symbol':     self.symbol,
-              'returntype': 'OGRealScalar' }
-        return prefix_scalar_runner_implementation % d
-
-    @property
-    def real_matrix_implementation(self):
-        d = { 'symbol':     self.symbol,
-              'datatype':   'real16',
-              'returntype': 'OGOwningRealMatrix' }
-        return prefix_matrix_runner_implementation %d
-
-    @property
-    def complex_matrix_implementation(self):
-        d = { 'symbol':     self.symbol,
-              'datatype':   'complex16',
-              'returntype': 'OGOwningComplexMatrix' }
-        return prefix_matrix_runner_implementation %d
-
-class RunnersHeader(object):
-    """Generates the runners.hh file for a set of nodes."""
-    def __init__(self, nodes):
-        self._nodes = nodes
-
-    @property
-    def implementation(self):
-        class_definitions = ""
-        for node in nodes:
-            class_definitions += node.class_definition
-        d = { 'class_definitions': class_definitions }
-        return runners_header % d
-
-class Runners(object):
-    """Generates the runners.cc file for a set of nodes."""
-    def __init__(self, nodes):
-        self._nodes = nodes
-
-    @property
-    def implementation(self):
-        function_definitions = ""
-        for node in nodes:
-            function_definitions += node.scalar_runner_function
-            function_definitions += node.real_matrix_runner_function
-            function_definitions += node.complex_matrix_runner_function
-        d = { 'function_definitions': function_definitions }
-        return runners_cc % d
+from dispatch import Dispatch
+from runners import Runners, Runners, InfixOp, PrefixOp
+from terminals import Terminal
 
 # The list of nodes to generate
-nodes = [ InfixOp('Plus', '+'), PrefixOp('Negate', '-') ]
+nodes = [ InfixOp('PLUS', '+', 'PLUS_ENUM'), PrefixOp('NEGATE', '-', 'NEGATE_ENUM') ]
+
+# The list of terminals
+terminals = [ Terminal('OGRealScalar', 'REAL_SCALAR_ENUM'),
+              Terminal('OGComplexScalar', 'COMPLEX_SCALAR_ENUM'),
+              Terminal('OGIntegerScalar', 'INTEGER_SCALAR_ENUM'),
+              Terminal('OGRealMatrix', 'REAL_MATRIX_ENUM'),
+              Terminal('OGLogicalMatrix', 'LOGICAL_MATRIX_ENUM'),
+              Terminal('OGComplexMatrix', 'COMPLEX_MATRIX_ENUM'),
+              Terminal('OGRealDiagonalMatrix', 'REAL_DIAGONAL_MATRIX_ENUM'),
+              Terminal('OGComplexDiagonalMatrix', 'COMPLEX_DIAGONAL_MATRIX_ENUM'),
+              Terminal('OGRealSparseMatrix', 'REAL_SPARSE_MATRIX_ENUM'),
+              Terminal('OGComplexSparseMatrix', 'COMPLEX_SPARSE_MATRIX_ENUM') ]
 
 def get_parser():
     """Creates a suitable parser for the options to the generator."""
@@ -191,15 +33,21 @@ def get_parser():
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument('--runners-hh', action='store_true', help='Generate runners.hh')
     action.add_argument('--runners-cc', action='store_true', help='Generate runners.cc')
+    action.add_argument('--dispatch-hh', action='store_true', help='Generate dispatch.hh')
+    action.add_argument('--dispatch-cc', action='store_true', help='Generate dispatch.cc')
     return parser
 
 def main(args):
     """Entry point if run on the command line"""
     with open(args.output, 'w') as f:
         if args.runners_hh:
-            code = RunnersHeader(nodes).implementation
+            code = Runners(nodes).header
         elif args.runners_cc:
-            code = Runners(nodes).implementation
+            code = Runners(nodes).source
+        elif args.dispatch_hh:
+            code = Dispatch(terminals, nodes).header
+        elif args.dispatch_cc:
+            code = Dispatch(terminals, nodes).source
         f.writelines(code)
 
 if __name__ == '__main__':
