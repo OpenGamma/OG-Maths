@@ -3,7 +3,6 @@
 #
 # Please see distribution for license.
 #
-add_subdirectory(test)
 
 set(BIN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 file(MAKE_DIRECTORY ${BIN_INCLUDE_DIR})
@@ -13,30 +12,60 @@ SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,--no-undefined")
 SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
 
+# We maintain the list of generator files so that generated targets depend on them.
+# Then, when the generator changes, cmake knows to re-run the generator.
+set(GENERATOR ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generator.py)
+set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/templates.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/dispatch.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/runners.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/terminals.py)
+
+# Runners generation.
 
 set(RUNNERS_HH ${BIN_INCLUDE_DIR}/runners.hh)
 set(RUNNERS_CC ${CMAKE_BINARY_DIR}/src/librdag/runners.cc)
-set(RUNNERS_GENERATOR ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generator.py)
-
-set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
-                    ${CMAKE_CURRENT_SOURCE_DIR}/templates.py)
 
 add_custom_command(OUTPUT ${RUNNERS_HH}
-                   COMMAND ${RUNNERS_GENERATOR} -o ${RUNNERS_HH} --runners-hh
+                   COMMAND ${GENERATOR} -o ${RUNNERS_HH} --runners-hh
                    DEPENDS ${GENERATOR_FILES}
                    COMMENT "Generating runners.hh")
 
 add_custom_command(OUTPUT ${RUNNERS_CC}
                    DEPENDS ${RUNNERS_HH} ${GENERATOR_FILES}
-                   COMMAND ${RUNNERS_GENERATOR} -o ${RUNNERS_CC} --runners-cc
+                   COMMAND ${GENERATOR} -o ${RUNNERS_CC} --runners-cc
                    COMMENT "Generating runners.cc")
 
-set(RDAG_SOURCES entrypt.cc expression.cc execution.cc terminal.cc containers.cc numeric.cc dispatch.cc equals.cc numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC})
+# A custom_target is needed to act as the bottleneck for parallel builds
+# Otherwise, the generator is invoked multiple times concurrently.
+add_custom_target(runners_cc DEPENDS ${RUNNERS_CC})
+
+# Dispatch generation.
+
+set(DISPATCH_HH ${BIN_INCLUDE_DIR}/dispatch.hh)
+set(DISPATCH_CC ${CMAKE_BINARY_DIR}/src/librdag/dispatch.cc)
+
+add_custom_command(OUTPUT ${DISPATCH_HH}
+                   COMMAND ${GENERATOR} -o ${DISPATCH_HH} --dispatch-hh
+                   DEPENDS ${GENERATOR_FILES}
+                   COMMENT "Generating dispatch.hh")
+
+add_custom_command(OUTPUT ${DISPATCH_CC}
+                   DEPENDS ${DISPATCH_HH} ${GENERATOR_FILES}
+                   COMMAND ${GENERATOR} -o ${DISPATCH_CC} --dispatch-cc
+                   COMMENT "Generating dispatch.cc")
+
+add_custom_target(dispatch_cc DEPENDS ${DISPATCH_CC})
+
+set(RDAG_SOURCES entrypt.cc expression.cc execution.cc terminal.cc containers.cc numeric.cc equals.cc numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC})
 
 add_multitarget_library(rdag
                         VERSION ${longdog_VERSION}
                         SOVERSION ${longdog_VERSION_MAJOR}
                         SOURCES ${RDAG_SOURCES}
+                        DEPENDS runners_cc dispatch_cc
                         TARGETS ${TARGET_TYPES})
 
 jar_native_multitarget_library(rdag TARGETS ${TARGET_TYPES})
+
+add_subdirectory(test)
