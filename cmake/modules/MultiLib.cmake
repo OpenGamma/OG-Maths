@@ -20,7 +20,7 @@ function(add_multitarget_library _TARGET_NAME)
   cmake_parse_arguments(MTLIB
                         ""
                         "VERSION;SOVERSION"
-                        "SOURCES;TARGETS;LINK_LIBRARIES;COMPILE_DEFINITIONS"
+                        "SOURCES;TARGETS;LINK_LIBRARIES;COMPILE_DEFINITIONS;DEPENDS"
                         ${ARGN})
   foreach(TARGET ${MTLIB_TARGETS})
     set(LIBNAME ${_TARGET_NAME}_${TARGET})
@@ -34,6 +34,9 @@ function(add_multitarget_library _TARGET_NAME)
     endforeach()
     foreach(COMPILE_DEFINITION ${MTLIB_COMPILE_DEFINITIONS})
       set_target_properties(${LIBNAME} PROPERTIES COMPILE_DEFINITIONS ${COMPILE_DEFINITION})
+    endforeach()
+    foreach(DEPENDENCY ${MTLIB_DEPENDS})
+      add_dependencies(${LIBNAME} ${DEPENDENCY})
     endforeach()
   endforeach()
 endfunction()
