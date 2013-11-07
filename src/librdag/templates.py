@@ -299,6 +299,12 @@ namespace librdag {
 %(dispatcher_methods)s
 
 /**
+ * DispatchOp
+ */
+
+%(dispatchop_methods)s
+
+/**
  * DispatchUnaryOp
  */
 
@@ -439,6 +445,26 @@ dispatcher_unary_implementation = """\
     argt = (*(arg->asOGExpr()->getRegs()))[0]->asOGTerminal();
   }
   _%(nodetype)sRunner->eval(const_cast<RegContainer *>(regs), argt);
+"""
+
+# DispatchOp methods
+
+dispatchop_methods = """\
+DispatchOp::DispatchOp()
+{
+  _convert = new ConvertTo();
+}
+
+const ConvertTo *
+DispatchOp::getConvertTo() const
+{
+  return _convert;
+}
+
+DispatchOp::~DispatchOp()
+{
+  delete _convert;
+}
 """
 
 # DispatchUnaryOp methods
