@@ -56,9 +56,14 @@ add_custom_command(OUTPUT ${DISPATCH_CC}
                    COMMAND ${GENERATOR} -o ${DISPATCH_CC} --dispatch-cc
                    COMMENT "Generating dispatch.cc")
 
+# Custom target to create bottleneck on parallel builds.
 add_custom_target(dispatch_cc DEPENDS ${DISPATCH_CC})
 
-set(RDAG_SOURCES entrypt.cc expression.cc execution.cc terminal.cc containers.cc numeric.cc equals.cc numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC})
+# The RDAG library.
+
+set(RDAG_SOURCES entrypt.cc expression.cc expressionbase.cc execution.cc
+                 terminal.cc containers.cc numeric.cc equals.cc numerictypes.cc
+                 convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC})
 
 add_multitarget_library(rdag
                         VERSION ${longdog_VERSION}
