@@ -4,7 +4,7 @@
 # Please see distribution for license.
 #
 
-include_directories (${CMAKE_SOURCE_DIR}/include)
+include_directories (${CMAKE_SOURCE_DIR}/include ${BIN_INCLUDE_DIR})
 SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 
 set(TESTS check_jvmmanager_fakejni)
