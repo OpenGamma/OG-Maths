@@ -9,6 +9,7 @@
 from dispatch import Dispatch
 from runners import Runners, Runners, InfixOp, PrefixOp
 from terminals import Terminal
+from expression import Expressions
 
 # The list of nodes to generate
 nodes = [ InfixOp('PLUS', '+', 'PLUS_ENUM'), PrefixOp('NEGATE', '-', 'NEGATE_ENUM') ]
@@ -35,6 +36,8 @@ def get_parser():
     action.add_argument('--runners-cc', action='store_true', help='Generate runners.cc')
     action.add_argument('--dispatch-hh', action='store_true', help='Generate dispatch.hh')
     action.add_argument('--dispatch-cc', action='store_true', help='Generate dispatch.cc')
+    action.add_argument('--expression-hh', action='store_true', help='Generate expression.hh')
+    action.add_argument('--expression-cc', action='store_true', help='Generate expression.cc')
     return parser
 
 def main(args):
@@ -48,6 +51,10 @@ def main(args):
             code = Dispatch(terminals, nodes).header
         elif args.dispatch_cc:
             code = Dispatch(terminals, nodes).source
+        elif args.expression_hh:
+            code = Expressions(nodes).header
+        elif args.expression_cc:
+            code = Expressions(nodes).source
         f.writelines(code)
 
 if __name__ == '__main__':

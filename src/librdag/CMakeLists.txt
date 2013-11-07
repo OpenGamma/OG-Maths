@@ -18,8 +18,10 @@ set(GENERATOR ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generator.py)
 set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/runnertemplates.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/dispatchtemplates.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/exprtemplates.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/dispatch.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/runners.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/expression.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/terminals.py)
 
 # Runners generation.
@@ -59,11 +61,29 @@ add_custom_command(OUTPUT ${DISPATCH_CC}
 # Custom target to create bottleneck on parallel builds.
 add_custom_target(dispatch_cc DEPENDS ${DISPATCH_CC})
 
+# Expression generation.
+
+set(EXPRESSION_HH ${BIN_INCLUDE_DIR}/expression.hh)
+set(EXPRESSION_CC ${CMAKE_BINARY_DIR}/src/librdag/expression.cc)
+
+add_custom_command(OUTPUT ${EXPRESSION_HH}
+                   COMMAND ${GENERATOR} -o ${EXPRESSION_HH} --expression-hh
+                   DEPENDS ${GENERATOR_FILES}
+                   COMMENT "Generating expression.hh")
+
+add_custom_command(OUTPUT ${EXPRESSION_CC}
+                   COMMAND ${GENERATOR} -o ${EXPRESSION_CC} --expression-cc
+                   DEPENDS ${EXPRESSION_HH} ${GENERATOR_FILES}
+                   COMMENT "Generating expression.cc")
+
+# Custom target bottleneck.
+add_custom_target(expression_cc DEPENDS ${EXPRESSION_CC})
+
 # The RDAG library.
 
 set(RDAG_SOURCES entrypt.cc expression.cc expressionbase.cc execution.cc
                  terminal.cc containers.cc numeric.cc equals.cc numerictypes.cc
-                 convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC})
+                 convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC} ${EXPRESSION_CC})
 
 add_multitarget_library(rdag
                         VERSION ${longdog_VERSION}
