@@ -582,8 +582,7 @@ DispatchBinaryOp<T>::run(RegContainer* reg0,
 %(conv0)s
 %(conv1)s
   T ret = run(reg0, conv0, conv1);
-  delete conv0;
-  delete conv1;
+%(deletions)s
   return ret;
 }
 """
@@ -594,4 +593,8 @@ dispatchbinaryop_conv_arg = """\
 
 dispatchbinaryop_noconv_arg = """\
   const %(nodetype)s* conv%(argno)s = arg%(argno)s;
+"""
+
+dispatchbinaryop_deletion = """\
+  delete conv%(argno)s;
 """
