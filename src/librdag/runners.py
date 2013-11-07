@@ -1,7 +1,7 @@
-from templates import runners_header, runners_cc, binary_runner_class_definition, \
-                      binary_runner_function, infix_scalar_runner_implementation, \
-                      unary_runner_class_definition, unary_runner_function,       \
-                      prefix_scalar_runner_implementation, prefix_matrix_runner_implementation
+from runnertemplates import runners_header, runners_cc, binary_runner_class_definition, \
+                            binary_runner_function, infix_scalar_runner_implementation, \
+                            unary_runner_class_definition, unary_runner_function,       \
+                            prefix_scalar_runner_implementation, prefix_matrix_runner_implementation
 
 class Function(object):
     """A Function is used to generate the code for a single node."""

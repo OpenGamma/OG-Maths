@@ -16,7 +16,8 @@ SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
 # Then, when the generator changes, cmake knows to re-run the generator.
 set(GENERATOR ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generator.py)
 set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
-                    ${CMAKE_CURRENT_SOURCE_DIR}/templates.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/runnertemplates.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/dispatchtemplates.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/dispatch.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/runners.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/terminals.py)
