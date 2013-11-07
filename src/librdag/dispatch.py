@@ -18,7 +18,7 @@ from templates import dispatch_header, dispatcher_class, dispatcher_forward_decl
                       dispatchbinaryop_methods, dispatchbinaryop_destructor, \
                       dispatchbinaryop_eval, dispatchbinaryop_eval_case_arg0, \
                       dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method, \
-                      dispatchop_class, dispatchbinaryop_conv_arg, \
+                      dispatchop_class, dispatchbinaryop_conv_arg, dispatchop_methods, \
                       dispatchbinaryop_noconv_arg
 
 class Dispatcher(object):
@@ -211,6 +211,7 @@ class Dispatch(object):
     @property
     def source(self):
         d = { 'dispatcher_methods':       self._dispatcher.method_definitions,
+              'dispatchop_methods':       dispatchop_methods,
               'dispatchunaryop_methods':  self._dispatchunaryop.method_definitions,
               'dispatchbinaryop_methods': self._dispatchbinaryop.method_definitions }
         return dispatch_cc % d
