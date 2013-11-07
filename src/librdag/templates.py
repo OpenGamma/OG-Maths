@@ -388,7 +388,7 @@ Dispatcher::dispatch(OGNumeric const *thing) const
     {
 %(dispatch_terminal_cases)s
       default:
-        DEBUG_PRINT("NO SPECIFIC TYPE \\n");
+        throw rdag_error("Unknown terminal type in dispatch");
     }
   }
   else
@@ -397,7 +397,7 @@ Dispatcher::dispatch(OGNumeric const *thing) const
     {
 %(dispatch_expr_cases)s
       default:
-        DEBUG_PRINT("NO SPECIFIC TYPE \\n");
+        throw rdag_error("Unknown expression type in dispatch");
     }
   }
 }
