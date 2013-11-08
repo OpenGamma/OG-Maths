@@ -151,6 +151,9 @@ if (DEBUGMESSAGES)
   add_definitions(-DDEBUGMESSAGES)
 endif()
 
+# Where the generated include files live
+set(BIN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
+
 add_subdirectory(src)
 
 add_gtest_report()
