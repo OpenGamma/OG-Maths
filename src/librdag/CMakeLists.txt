@@ -21,7 +21,7 @@ set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/dispatch.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/runners.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/expression.py
-                    ${CMAKE_CURRENT_SOURCE_DIR}/terminals.py)
+                    ${CMAKE_CURRENT_SOURCE_DIR}/exprtree.py)
 
 # Runners generation.
 

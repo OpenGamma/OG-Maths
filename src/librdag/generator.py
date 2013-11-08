@@ -8,7 +8,7 @@
 
 from dispatch import Dispatch
 from runners import Runners, Runners, InfixOp, PrefixOp
-from terminals import Terminal
+from exprtree import Terminal
 from expression import Expressions, Numeric
 
 # The list of nodes to generate
