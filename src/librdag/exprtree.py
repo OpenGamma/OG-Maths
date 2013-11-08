@@ -4,18 +4,22 @@
 # Please see distribution for license.
 #
 
-class Terminal(object):
-    def __init__(self, name, enumname):
-        self._name = name
+class Numeric(object):
+    def __init__(self, typename, enumname):
+        self._typename = typename
         self._enumname = enumname
 
     @property
-    def name(self):
-        return self._name
+    def typename(self):
+        return self._typename
 
     @property
     def enumname(self):
         return self._enumname
 
     def __eq__(self, other):
-        return self.name == other.name
+        return self.typename == other.typename
+
+class Terminal(Numeric):
+    def __init__(self, typename, enumname):
+        super(Terminal, self).__init__(typename, enumname)

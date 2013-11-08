@@ -32,7 +32,7 @@ class Dispatcher(object):
     def class_definition(self):
         dispatcher_terminal_dispatches = ""
         for t in self._terminals:
-            d = { 'nodetype': t.name }
+            d = { 'nodetype': t.typename }
             dispatcher_terminal_dispatches += dispatcher_dispatch_prototype % d
 
         dispatcher_forward_decls = ""
@@ -66,7 +66,7 @@ class Dispatcher(object):
         # Dispatch method
         dispatch_terminal_cases = ''
         for t in self._terminals:
-            d = { 'nodetype': t.name, 'nodeenumtype': t.enumname }
+            d = { 'nodetype': t.typename, 'nodeenumtype': t.enumname }
             dispatch_terminal_cases += dispatcher_case % d
         dispatch_expr_cases = ''
         for n in self._nodes:
@@ -78,7 +78,7 @@ class Dispatcher(object):
         # Dispatch terminal methods
         dispatch_terminals = ""
         for t in self._terminals:
-            d = { 'nodetype': t.name, 'dispatch_implementation': '' }
+            d = { 'nodetype': t.typename, 'dispatch_implementation': '' }
             dispatch_terminals += dispatcher_dispatch % d
         # Dispatch node methods
         dispatch_exprs = ''
@@ -108,9 +108,9 @@ class DispatchUnaryOp(object):
     def class_definition(self):
         dispatchunaryop_terminal_methods = ""
         for t in self._terminals:
-            if t.name in self._backstop_terminals:
+            if t.typename in self._backstop_terminals:
                 continue
-            d = { 'nodetype': t.name }
+            d = { 'nodetype': t.typename }
             dispatchunaryop_terminal_methods += dispatchunaryop_run % d
         d = { 'dispatchunaryop_terminal_methods': dispatchunaryop_terminal_methods }
         return dispatchunaryop_class % d
@@ -120,11 +120,11 @@ class DispatchUnaryOp(object):
         eval_cases = ''
         terminal_methods = ''
         for t in self._terminals:
-            d = { 'nodetype': t.name, 'nodeenumtype': t.enumname, \
+            d = { 'nodetype': t.typename, 'nodeenumtype': t.enumname, \
                   'typetoconvertto': 'OGComplexMatrix' }
                   # FIXME: This is the dumbest possible choice.
             eval_cases += dispatchunaryop_eval_case % d
-            if t.name not in self._backstop_terminals:
+            if t.typename not in self._backstop_terminals:
                 terminal_methods += dispatchunaryop_terminal_method % d
         d = { 'eval_cases': eval_cases }
         eval_method = dispatchunaryop_eval % d
@@ -147,9 +147,9 @@ class DispatchBinaryOp(object):
         dispatchbinaryop_terminal_methods = ""
         for t0 in self._terminals:
             for t1 in self._terminals:
-                if t0.name in self._backstop_terminals and t0 == t1:
+                if t0.typename in self._backstop_terminals and t0 == t1:
                     continue
-                d = { 'node0type': t0.name, 'node1type': t1.name }
+                d = { 'node0type': t0.typename, 'node1type': t1.typename }
                 dispatchbinaryop_terminal_methods += dispatchbinaryop_run % d
         d = { 'dispatchbinaryop_terminal_methods': dispatchbinaryop_terminal_methods }
         return dispatchbinaryop_class %d
@@ -163,12 +163,12 @@ class DispatchBinaryOp(object):
             eval_arg1_cases = ''
             for t1 in self._terminals:
                 # Figure out which type we need to convert to
-                if complex_re.match(t0.name) or complex_re.match(t1.name):
+                if complex_re.match(t0.typename) or complex_re.match(t1.typename):
                     type_to_convert_to = 'OGComplexMatrix'
                 else:
                     type_to_convert_to = 'OGRealMatrix'
                 # Check if we need to convert arg0 at all and act accordingly
-                if t0.name == type_to_convert_to:
+                if t0.typename == type_to_convert_to:
                     d = { 'argno': '0', 'nodetype': type_to_convert_to }
                     conv0 = dispatchbinaryop_noconv_arg % d
                     deletions = ''
@@ -177,22 +177,22 @@ class DispatchBinaryOp(object):
                     conv0 = dispatchbinaryop_conv_arg %d
                     deletions = dispatchbinaryop_deletion % { 'argno': '0' }
                 # Check if we need to convert arg1 at all and act accordingly
-                if t1.name == type_to_convert_to:
+                if t1.typename == type_to_convert_to:
                     d = { 'argno': '1', 'nodetype': type_to_convert_to }
                     conv1 = dispatchbinaryop_noconv_arg % d
                 else:
                     d = { 'argno': '1', 'typetoconvertto': type_to_convert_to }
                     conv1 = dispatchbinaryop_conv_arg %d
                     deletions += dispatchbinaryop_deletion % { 'argno': '1' }
-                d = { 'node0type': t0.name, 'node0enumtype': t0.enumname,
-                      'node1type': t1.name, 'node1enumtype': t1.enumname,
+                d = { 'node0type': t0.typename, 'node0enumtype': t0.enumname,
+                      'node1type': t1.typename, 'node1enumtype': t1.enumname,
                       'conv0': conv0,
                       'conv1': conv1,
                       'deletions': deletions }
                 eval_arg1_cases += dispatchbinaryop_eval_case_arg1 % d
-                if t0.name not in self._backstop_terminals or t0 != t1:
+                if t0.typename not in self._backstop_terminals or t0 != t1:
                     terminal_methods += dispatchbinaryop_terminal_method %d
-            d = { 'node0type': t0.name, 'node0enumtype': t0.enumname,
+            d = { 'node0type': t0.typename, 'node0enumtype': t0.enumname,
                   'eval_arg1_cases': eval_arg1_cases }
             eval_cases += dispatchbinaryop_eval_case_arg0 % d
         d = { 'eval_cases': eval_cases }
