@@ -78,17 +78,36 @@ add_custom_command(OUTPUT ${EXPRESSION_CC}
 # Custom target bottleneck.
 add_custom_target(expression_cc DEPENDS ${EXPRESSION_CC})
 
+# Numeric generation.
+
+set(NUMERIC_HH ${BIN_INCLUDE_DIR}/numeric.hh)
+set(NUMERIC_CC ${CMAKE_BINARY_DIR}/src/librdag/numeric.cc)
+
+add_custom_command(OUTPUT ${NUMERIC_HH}
+                   COMMAND ${GENERATOR} -o ${NUMERIC_HH} --numeric-hh
+                   DEPENDS ${GENERATOR_FILES}
+                   COMMENT "Generating numeric.hh")
+
+add_custom_command(OUTPUT ${NUMERIC_CC}
+                   COMMAND ${GENERATOR} -o ${NUMERIC_CC} --numeric-cc
+                   DEPENDS ${NUMERIC_HH} ${GENERATOR_FILES}
+                   COMMENT "Generating numeric.cc")
+
+# Custom target bottleneck.
+add_custom_target(numeric_cc DEPENDS ${NUMERIC_CC})
+
 # The RDAG library.
 
 set(RDAG_SOURCES entrypt.cc expression.cc expressionbase.cc execution.cc
-                 terminal.cc containers.cc numeric.cc equals.cc numerictypes.cc
-                 convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC} ${EXPRESSION_CC})
+                 terminal.cc containers.cc numericbase.cc equals.cc
+                 numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC}
+                 ${EXPRESSION_CC} ${NUMERIC_CC})
 
 add_multitarget_library(rdag
                         VERSION ${longdog_VERSION}
                         SOVERSION ${longdog_VERSION_MAJOR}
                         SOURCES ${RDAG_SOURCES}
-                        DEPENDS runners_cc dispatch_cc
+                        DEPENDS runners_cc dispatch_cc expression_cc numeric_cc
                         TARGETS ${TARGET_TYPES})
 
 jar_native_multitarget_library(rdag TARGETS ${TARGET_TYPES})

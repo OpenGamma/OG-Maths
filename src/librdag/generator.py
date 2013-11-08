@@ -9,10 +9,12 @@
 from dispatch import Dispatch
 from runners import Runners, Runners, InfixOp, PrefixOp
 from terminals import Terminal
-from expression import Expressions
+from expression import Expressions, Numeric
 
 # The list of nodes to generate
-nodes = [ InfixOp('PLUS', '+', 'PLUS_ENUM'), PrefixOp('NEGATE', '-', 'NEGATE_ENUM') ]
+nodes = [ InfixOp('PLUS', '+', 'PLUS_ENUM'),
+          InfixOp('TIMES', '*', 'TIMES_ENUM'),
+          PrefixOp('NEGATE', '-', 'NEGATE_ENUM') ]
 
 # The list of terminals
 terminals = [ Terminal('OGRealScalar', 'REAL_SCALAR_ENUM'),
@@ -38,6 +40,8 @@ def get_parser():
     action.add_argument('--dispatch-cc', action='store_true', help='Generate dispatch.cc')
     action.add_argument('--expression-hh', action='store_true', help='Generate expression.hh')
     action.add_argument('--expression-cc', action='store_true', help='Generate expression.cc')
+    action.add_argument('--numeric-hh', action='store_true', help='Generate numeric.hh')
+    action.add_argument('--numeric-cc', action='store_true', help='Generate numeric.cc')
     return parser
 
 def main(args):
@@ -55,6 +59,10 @@ def main(args):
             code = Expressions(nodes).header
         elif args.expression_cc:
             code = Expressions(nodes).source
+        elif args.numeric_hh:
+            code = Numeric(nodes).header
+        elif args.numeric_cc:
+            code = Numeric(nodes).source
         f.writelines(code)
 
 if __name__ == '__main__':
