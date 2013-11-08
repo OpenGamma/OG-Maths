@@ -5,22 +5,22 @@
 #
 
 import re
-from templates import dispatch_header, dispatcher_class, dispatcher_forward_decl, \
-                      dispatcher_dispatch_prototype, dispatcher_private_member, \
-                      dispatchunaryop_class, dispatchunaryop_run, \
-                      dispatchbinaryop_class, dispatchbinaryop_run, \
-                      dispatcher_methods, dispatch_cc, dispatcher_member_initialiser, \
-                      dispatcher_member_deleter, dispatcher_constructor, \
-                      dispatcher_destructor, dispatcher_case, dispatcher_dispatch, \
-                      dispatcher_dispatch_numeric, dispatcher_unary_implementation, \
-                      dispatcher_binary_implementation, dispatchunaryop_methods, \
-                      dispatchunaryop_destructor, dispatchunaryop_eval, \
-                      dispatchunaryop_eval_case, dispatchunaryop_terminal_method, \
-                      dispatchbinaryop_methods, dispatchbinaryop_destructor, \
-                      dispatchbinaryop_eval, dispatchbinaryop_eval_case_arg0, \
-                      dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method, \
-                      dispatchop_class, dispatchbinaryop_conv_arg, dispatchop_methods, \
-                      dispatchbinaryop_noconv_arg, dispatchbinaryop_deletion
+from dispatchtemplates import dispatch_header, dispatcher_class, dispatcher_forward_decl, \
+                              dispatcher_dispatch_prototype, dispatcher_private_member, \
+                              dispatchunaryop_class, dispatchunaryop_run, \
+                              dispatchbinaryop_class, dispatchbinaryop_run, \
+                              dispatcher_methods, dispatch_cc, dispatcher_member_initialiser, \
+                              dispatcher_member_deleter, dispatcher_constructor, \
+                              dispatcher_destructor, dispatcher_case, dispatcher_dispatch, \
+                              dispatcher_dispatch_numeric, dispatcher_unary_implementation, \
+                              dispatcher_binary_implementation, dispatchunaryop_methods, \
+                              dispatchunaryop_destructor, dispatchunaryop_eval, \
+                              dispatchunaryop_eval_case, dispatchunaryop_terminal_method, \
+                              dispatchbinaryop_methods, dispatchbinaryop_destructor, \
+                              dispatchbinaryop_eval, dispatchbinaryop_eval_case_arg0, \
+                              dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method, \
+                              dispatchop_class, dispatchbinaryop_conv_arg, dispatchop_methods, \
+                              dispatchbinaryop_noconv_arg, dispatchbinaryop_deletion
 
 class Dispatcher(object):
     """Generates the Dispatcher class definition and method implementations"""

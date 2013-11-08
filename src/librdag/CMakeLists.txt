@@ -4,7 +4,6 @@
 # Please see distribution for license.
 #
 
-set(BIN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 file(MAKE_DIRECTORY ${BIN_INCLUDE_DIR})
 
 include_directories (${NATIVE_HEADER_DIR} ${CMAKE_SOURCE_DIR}/include ${JNIDIR} ${JNI_INCLUDE_DIRS} ${BIN_INCLUDE_DIR})
@@ -16,9 +15,12 @@ SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
 # Then, when the generator changes, cmake knows to re-run the generator.
 set(GENERATOR ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generator.py)
 set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
-                    ${CMAKE_CURRENT_SOURCE_DIR}/templates.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/runnertemplates.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/dispatchtemplates.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/exprtemplates.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/dispatch.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/runners.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/expression.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/terminals.py)
 
 # Runners generation.
@@ -55,15 +57,57 @@ add_custom_command(OUTPUT ${DISPATCH_CC}
                    COMMAND ${GENERATOR} -o ${DISPATCH_CC} --dispatch-cc
                    COMMENT "Generating dispatch.cc")
 
+# Custom target to create bottleneck on parallel builds.
 add_custom_target(dispatch_cc DEPENDS ${DISPATCH_CC})
 
-set(RDAG_SOURCES entrypt.cc expression.cc execution.cc terminal.cc containers.cc numeric.cc equals.cc numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC})
+# Expression generation.
+
+set(EXPRESSION_HH ${BIN_INCLUDE_DIR}/expression.hh)
+set(EXPRESSION_CC ${CMAKE_BINARY_DIR}/src/librdag/expression.cc)
+
+add_custom_command(OUTPUT ${EXPRESSION_HH}
+                   COMMAND ${GENERATOR} -o ${EXPRESSION_HH} --expression-hh
+                   DEPENDS ${GENERATOR_FILES}
+                   COMMENT "Generating expression.hh")
+
+add_custom_command(OUTPUT ${EXPRESSION_CC}
+                   COMMAND ${GENERATOR} -o ${EXPRESSION_CC} --expression-cc
+                   DEPENDS ${EXPRESSION_HH} ${GENERATOR_FILES}
+                   COMMENT "Generating expression.cc")
+
+# Custom target bottleneck.
+add_custom_target(expression_cc DEPENDS ${EXPRESSION_CC})
+
+# Numeric generation.
+
+set(NUMERIC_HH ${BIN_INCLUDE_DIR}/numeric.hh)
+set(NUMERIC_CC ${CMAKE_BINARY_DIR}/src/librdag/numeric.cc)
+
+add_custom_command(OUTPUT ${NUMERIC_HH}
+                   COMMAND ${GENERATOR} -o ${NUMERIC_HH} --numeric-hh
+                   DEPENDS ${GENERATOR_FILES}
+                   COMMENT "Generating numeric.hh")
+
+add_custom_command(OUTPUT ${NUMERIC_CC}
+                   COMMAND ${GENERATOR} -o ${NUMERIC_CC} --numeric-cc
+                   DEPENDS ${NUMERIC_HH} ${GENERATOR_FILES}
+                   COMMENT "Generating numeric.cc")
+
+# Custom target bottleneck.
+add_custom_target(numeric_cc DEPENDS ${NUMERIC_CC})
+
+# The RDAG library.
+
+set(RDAG_SOURCES entrypt.cc expression.cc expressionbase.cc execution.cc
+                 terminal.cc containers.cc numericbase.cc equals.cc
+                 numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC}
+                 ${EXPRESSION_CC} ${NUMERIC_CC})
 
 add_multitarget_library(rdag
                         VERSION ${longdog_VERSION}
                         SOVERSION ${longdog_VERSION_MAJOR}
                         SOURCES ${RDAG_SOURCES}
-                        DEPENDS runners_cc dispatch_cc
+                        DEPENDS runners_cc dispatch_cc expression_cc numeric_cc
                         TARGETS ${TARGET_TYPES})
 
 jar_native_multitarget_library(rdag TARGETS ${TARGET_TYPES})
