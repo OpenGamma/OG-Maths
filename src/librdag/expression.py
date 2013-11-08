@@ -4,7 +4,9 @@
 # Please see distribution for license.
 #
 
-from exprtemplates import expression_hh, expr_class, expression_cc, expr_methods
+from exprtemplates import expression_hh, expr_class, expression_cc, expr_methods, \
+                          numeric_hh, numeric_fwd_decl, numeric_cast_method, \
+                          numeric_cc, numeric_method
 from runners import InfixOp, PrefixOp
 
 class Expressions(object):
@@ -38,3 +40,31 @@ class Expressions(object):
             methods += expr_methods % d
         d = { 'expression_methods': methods }
         return expression_cc % d
+
+class Numeric(object):
+    def __init__(self, nodes):
+        self._nodes = nodes
+
+    @property
+    def nodes(self):
+        return self._nodes
+
+    @property
+    def header(self):
+        fwd_decls = ''
+        cast_methods = ''
+        for node in self.nodes:
+            d = { 'classname': node.nodename }
+            fwd_decls += numeric_fwd_decl % d
+            cast_methods += numeric_cast_method % d
+        d = { 'fwd_decls': fwd_decls, 'cast_methods': cast_methods }
+        return numeric_hh %d
+
+    @property
+    def source(self):
+        methods = ''
+        for node in self.nodes:
+            d = { 'classname': node.nodename }
+            methods += numeric_method % d
+        d = { 'numeric_methods': methods }
+        return numeric_cc % d
