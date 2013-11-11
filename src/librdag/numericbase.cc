@@ -28,12 +28,6 @@ OGNumeric::asCOPY() const
   return nullptr;
 }
 
-const SVD*
-OGNumeric::asSVD() const
-{
-  return nullptr;
-}
-
 const SELECTRESULT*
 OGNumeric::asSELECTRESULT() const
 {

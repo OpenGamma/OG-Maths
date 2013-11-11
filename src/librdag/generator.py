@@ -7,7 +7,8 @@
 """Generates the implementation of the dispatcher and runners."""
 
 from dispatch import Dispatch
-from runners import Runners, Runners, InfixOpRunner, PrefixOpRunner, UnaryFunctionRunner
+from runners import Runners, Runners, InfixOpRunner, PrefixOpRunner, UnaryFunctionRunner, \
+                    UnimplementedUnary, UnimplementedBinary
 from exprtree import Terminal
 from expression import Expressions, Numeric
 from enums import ExprEnums
@@ -15,10 +16,51 @@ from enums import ExprEnums
 # The list of nodes to generate.
 # These must be in the same order as in the Java ExprTypeEnum, otherwise the
 # enum values won't match up.
-nodes = [ InfixOpRunner('PLUS', 'PLUS_ENUM', '+'),
+nodes = [ UnimplementedUnary('ABS'),
+          UnimplementedUnary('ACOS'),
+          UnimplementedUnary('ACOSH'),
+          UnimplementedUnary('ANGLE'),
+          UnimplementedUnary('ASIN'),
+          UnimplementedUnary('ASINH'),
+          UnimplementedUnary('ATAN'),
+          UnimplementedUnary('ATANH'),
+          UnimplementedUnary('CONJ'),
+          UnimplementedUnary('COS'),
+          UnimplementedUnary('COSH'),
+          UnimplementedUnary('CTRANSPOSE'),
+          UnimplementedUnary('DIAG'),
+          UnimplementedUnary('EIG'),
+          UnimplementedUnary('ERF'),
+          UnimplementedUnary('ERFC'),
+          UnimplementedUnary('EXP'),
+          UnimplementedUnary('EYE'),
+          UnimplementedUnary('FLIPLR'),
+          UnimplementedUnary('FLIPUD'),
+          UnimplementedUnary('HILB'),
+          UnimplementedUnary('IMAG'),
+          UnimplementedUnary('INVHILB'),
+          UnimplementedUnary('LOG'),
+          UnimplementedUnary('LU'),
           PrefixOpRunner('NEGATE', 'NEGATE_ENUM', '-'),
+          UnimplementedUnary('NORMCDF'),
+          UnimplementedUnary('REAL'),
+          UnimplementedUnary('ROUND'),
+          UnaryFunctionRunner('SIN', 'SIN_ENUM', 'sin'),
+          UnimplementedUnary('SINH'),
+          UnimplementedUnary('SQRT'),
+          UnimplementedUnary('SVD'),
+          UnimplementedUnary('TAN'),
+          UnimplementedUnary('TRANSPOSE'),
+          UnimplementedUnary('WILKINSON'),
+          UnimplementedBinary('HORZCAT'),
+          UnimplementedBinary('MLDIVIDE'),
+          UnimplementedBinary('MTIMES'),
+          InfixOpRunner('PLUS', 'PLUS_ENUM', '+'),
+          UnimplementedBinary('POWER'),
+          UnimplementedBinary('RDIVIDE'),
           InfixOpRunner('TIMES', 'TIMES_ENUM', '*'),
-          UnaryFunctionRunner('SIN', 'SIN_ENUM', 'sin') ]
+          UnimplementedBinary('VERTCAT'),
+          UnimplementedBinary('DOT') ]
 
 # The list of terminals
 terminals = [ Terminal('Real', 'Scalar'),

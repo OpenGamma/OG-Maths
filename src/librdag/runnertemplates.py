@@ -139,3 +139,25 @@ unaryfunction_matrix_runner_implementation = """\
   }
   ret = new %(returntype)s(newData, arg->getRows(), arg->getCols());
 """
+
+# Unimplemented runners
+
+unimplementedunary_runner_function = """\
+void *
+%(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED * reg, %(argtype)s const SUPPRESS_UNUSED * arg) const
+{
+  throw rdag_error("Unimplemented unary expression node");
+  return nullptr;
+}
+"""
+
+unimplementedbinary_runner_function =  """\
+void *
+%(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED * reg0,
+                        %(arg0type)s const SUPPRESS_UNUSED * arg0,
+                        %(arg1type)s const SUPPRESS_UNUSED * arg1) const
+{
+  throw rdag_error("Unimplemented unary expression node");
+  return nullptr;
+}
+"""
