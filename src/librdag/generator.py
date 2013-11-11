@@ -7,14 +7,14 @@
 """Generates the implementation of the dispatcher and runners."""
 
 from dispatch import Dispatch
-from runners import Runners, Runners, InfixOp, PrefixOp
+from runners import Runners, Runners, InfixOpRunner, PrefixOpRunner
 from exprtree import Terminal
 from expression import Expressions, Numeric
 
 # The list of nodes to generate
-nodes = [ InfixOp('PLUS', '+', 'PLUS_ENUM'),
-          InfixOp('TIMES', '*', 'TIMES_ENUM'),
-          PrefixOp('NEGATE', '-', 'NEGATE_ENUM') ]
+nodes = [ InfixOpRunner('PLUS', '+', 'PLUS_ENUM'),
+          InfixOpRunner('TIMES', '*', 'TIMES_ENUM'),
+          PrefixOpRunner('NEGATE', '-', 'NEGATE_ENUM') ]
 
 # The list of terminals
 terminals = [ Terminal('Real', 'Scalar'),

@@ -7,7 +7,6 @@
 from exprtemplates import expression_hh, expr_class, expression_cc, expr_methods, \
                           numeric_hh, numeric_fwd_decl, numeric_cast_method, \
                           numeric_cc, numeric_method
-from runners import InfixOp, PrefixOp
 
 class Expressions(object):
     def __init__(self, nodes):
