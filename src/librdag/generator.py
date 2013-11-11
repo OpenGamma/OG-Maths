@@ -10,11 +10,14 @@ from dispatch import Dispatch
 from runners import Runners, Runners, InfixOpRunner, PrefixOpRunner, UnaryFunctionRunner
 from exprtree import Terminal
 from expression import Expressions, Numeric
+from enums import ExprEnums
 
-# The list of nodes to generate
+# The list of nodes to generate.
+# These must be in the same order as in the Java ExprTypeEnum, otherwise the
+# enum values won't match up.
 nodes = [ InfixOpRunner('PLUS', 'PLUS_ENUM', '+'),
-          InfixOpRunner('TIMES', 'TIMES_ENUM', '*'),
           PrefixOpRunner('NEGATE', 'NEGATE_ENUM', '-'),
+          InfixOpRunner('TIMES', 'TIMES_ENUM', '*'),
           UnaryFunctionRunner('SIN', 'SIN_ENUM', 'sin') ]
 
 # The list of terminals
@@ -43,6 +46,7 @@ def get_parser():
     action.add_argument('--expression-cc', action='store_true', help='Generate expression.cc')
     action.add_argument('--numeric-hh', action='store_true', help='Generate numeric.hh')
     action.add_argument('--numeric-cc', action='store_true', help='Generate numeric.cc')
+    action.add_argument('--exprenum-hh', action='store_true', help='Generate exprenum.hh')
     return parser
 
 def main(args):
@@ -64,6 +68,8 @@ def main(args):
             code = Numeric(nodes).header
         elif args.numeric_cc:
             code = Numeric(nodes).source
+        elif args.exprenum_hh:
+            code = ExprEnums(nodes).code
         f.writelines(code)
 
 if __name__ == '__main__':

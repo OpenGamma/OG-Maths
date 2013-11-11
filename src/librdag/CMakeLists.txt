@@ -21,7 +21,8 @@ set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/dispatch.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/runners.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/expression.py
-                    ${CMAKE_CURRENT_SOURCE_DIR}/exprtree.py)
+                    ${CMAKE_CURRENT_SOURCE_DIR}/exprtree.py
+                    ${CMAKE_BURRENT_SOURCE_DIR}/enums.py)
 
 # Runners generation.
 
@@ -96,6 +97,18 @@ add_custom_command(OUTPUT ${NUMERIC_CC}
 # Custom target bottleneck.
 add_custom_target(numeric_cc DEPENDS ${NUMERIC_CC})
 
+# Expression enum generation
+
+set(EXPRENUM_HH ${BIN_INCLUDE_DIR}/exprenum.hh)
+
+add_custom_command(OUTPUT ${EXPRENUM_HH}
+                   COMMAND ${GENERATOR} -o ${EXPRENUM_HH} --exprenum-hh
+                   DEPENDS ${GENERATOR_FILES}
+                   COMMENT "Generating exprenum.hh")
+
+# Custom target bottleneck
+add_custom_target(exprenum_hh DEPENDS ${EXPRENUM_HH})
+
 # The RDAG library.
 
 set(RDAG_SOURCES entrypt.cc expression.cc expressionbase.cc execution.cc
@@ -107,7 +120,7 @@ add_multitarget_library(rdag
                         VERSION ${longdog_VERSION}
                         SOVERSION ${longdog_VERSION_MAJOR}
                         SOURCES ${RDAG_SOURCES}
-                        DEPENDS runners_cc dispatch_cc expression_cc numeric_cc
+                        DEPENDS runners_cc dispatch_cc expression_cc numeric_cc exprenum_hh
                         TARGETS ${TARGET_TYPES})
 
 jar_native_multitarget_library(rdag TARGETS ${TARGET_TYPES})
