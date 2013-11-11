@@ -33,14 +33,15 @@ public enum ExprTypeEnum {
    * expr tokens for functions
    */  
   
-  PLUS         (0x0101L),
-  NEGATE       (0x0107L),
-  TIMES        (0x010DL),
-  LDIVIDE      (0x010FL),
-  MTIMES       (0x0115L),
-  COPY         (0x0119L),
-  SELECTRESULT (0x011BL),
-  SVD          (0x0125L);
+  LDIVIDE      (0x0101L),
+  MTIMES       (0x0107L),
+  COPY         (0x010DL),
+  SELECTRESULT (0x010FL),
+  SVD          (0x0115L),
+  PLUS         (0x0119L),
+  NEGATE       (0x011BL),
+  TIMES        (0x0125L),
+  SIN          (0x0133L);
 
   //CSON
   //@formatter:on
