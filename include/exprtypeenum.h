@@ -45,11 +45,7 @@ typedef enum
   COPY_ENUM            = 0X010DL ,
   SELECTRESULT_ENUM    = 0X010FL ,
   SVD_ENUM             = 0X0115L ,
-  PLUS_ENUM            = 0X0119L ,
-  NEGATE_ENUM          = 0X011BL ,
-  TIMES_ENUM           = 0X0125L ,
-  SIN_ENUM             = 0X0133L
-
+#include "exprenum.hh"
 } ExprType_t;
 
 #endif
