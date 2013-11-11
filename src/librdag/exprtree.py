@@ -4,6 +4,9 @@
 # Please see distribution for license.
 #
 
+import re
+from util import camel2underscore
+
 class Numeric(object):
     def __init__(self, typename, enumname):
         self._typename = typename
@@ -21,5 +24,17 @@ class Numeric(object):
         return self.typename == other.typename
 
 class Terminal(Numeric):
-    def __init__(self, typename, enumname):
+    def __init__(self, datatype, storagetype):
+        typename = "OG%s%s" % (datatype, storagetype)
+        enumname = '%s_%s_ENUM' % (datatype.upper(), camel2underscore(storagetype).upper())
         super(Terminal, self).__init__(typename, enumname)
+        self._datatype = datatype
+        self._storagetype = storagetype
+
+    @property
+    def datatype(self):
+        return self._datatype
+
+    @property
+    def storagetype(self):
+        return self._storagetype

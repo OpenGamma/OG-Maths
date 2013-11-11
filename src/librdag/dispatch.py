@@ -4,7 +4,6 @@
 # Please see distribution for license.
 #
 
-import re
 from dispatchtemplates import dispatch_header, dispatcher_class, dispatcher_forward_decl, \
                               dispatcher_dispatch_prototype, dispatcher_private_member, \
                               dispatchunaryop_class, dispatchunaryop_run, \
@@ -158,12 +157,11 @@ class DispatchBinaryOp(object):
     def method_definitions(self):
         eval_cases = ''
         terminal_methods = ''
-        complex_re = re.compile('.*Complex.*')
         for t0 in self._terminals:
             eval_arg1_cases = ''
             for t1 in self._terminals:
                 # Figure out which type we need to convert to
-                if complex_re.match(t0.typename) or complex_re.match(t1.typename):
+                if 'Complex' in (t0.datatype, t1.datatype):
                     type_to_convert_to = 'OGComplexMatrix'
                 else:
                     type_to_convert_to = 'OGRealMatrix'
