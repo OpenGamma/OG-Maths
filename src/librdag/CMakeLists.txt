@@ -22,7 +22,7 @@ set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/runners.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/expression.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/exprtree.py
-                    ${CMAKE_BURRENT_SOURCE_DIR}/enums.py)
+                    ${CMAKE_CURRENT_SOURCE_DIR}/enums.py)
 
 # Runners generation.
 
