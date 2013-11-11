@@ -1,7 +1,10 @@
 from runnertemplates import runners_header, runners_cc, binary_runner_class_definition, \
                             binary_runner_function, infix_scalar_runner_implementation, \
                             unary_runner_class_definition, unary_runner_function,       \
-                            prefix_scalar_runner_implementation, prefix_matrix_runner_implementation
+                            prefix_scalar_runner_implementation, \
+                            prefix_matrix_runner_implementation, \
+                            unaryfunction_scalar_runner_implementation, \
+                            unaryfunction_matrix_runner_implementation
 from exprtree import UnaryExpression, BinaryExpression
 
 class UnaryExpressionRunner(UnaryExpression):
@@ -88,7 +91,7 @@ class BinaryExpressionRunner(BinaryExpression):
 class InfixOpRunner(BinaryExpressionRunner):
     """An InfixOp is a BinaryExpression that has a particular symbol that is
     placed infix in its two arguments in the generated code."""
-    def __init__(self, nodename, symbol, enumname):
+    def __init__(self, nodename, enumname, symbol):
         super(InfixOpRunner, self).__init__(nodename, enumname)
         self._symbol = symbol
 
@@ -115,7 +118,7 @@ class InfixOpRunner(BinaryExpressionRunner):
 class PrefixOpRunner(UnaryExpressionRunner):
     """A PrefixOp is a UnaryFunction whose symbol is placed just before its
     argument in the code."""
-    def __init__(self, nodename, symbol, enumname):
+    def __init__(self, nodename, enumname, symbol):
         super(PrefixOpRunner, self).__init__(nodename, enumname)
         self._symbol = symbol
 
@@ -134,14 +137,46 @@ class PrefixOpRunner(UnaryExpressionRunner):
         d = { 'symbol':     self.symbol,
               'datatype':   'real16',
               'returntype': 'OGOwningRealMatrix' }
-        return prefix_matrix_runner_implementation %d
+        return prefix_matrix_runner_implementation % d
 
     @property
     def complex_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'complex16',
               'returntype': 'OGOwningComplexMatrix' }
-        return prefix_matrix_runner_implementation %d
+        return prefix_matrix_runner_implementation % d
+
+class UnaryFunctionRunner(UnaryExpressionRunner):
+    """A UnaryFunction is one that is implemented with a call to a function
+    that takes a single argument (e.g. cos, sin, etc)."""
+
+    def __init__(self, nodename, enumname, function):
+        super(UnaryFunctionRunner, self).__init__(nodename, enumname)
+        self._function = function
+
+    @property
+    def function(self):
+        return self._function
+
+    @property
+    def scalar_implementation(self):
+        d = { 'function': self.function,
+              'returntype': 'OGRealScalar' }
+        return unaryfunction_scalar_runner_implementation % d
+
+    @property
+    def real_matrix_implementation(self):
+        d = { 'function':    self.function,
+              'datatype':   'real16',
+              'returntype': 'OGOwningRealMatrix' }
+        return unaryfunction_matrix_runner_implementation % d
+
+    @property
+    def complex_matrix_implementation(self):
+        d = { 'function':   self.function,
+              'datatype':   'complex16',
+              'returntype': 'OGOwningComplexMatrix' }
+        return unaryfunction_matrix_runner_implementation % d
 
 class Runners(object):
     """Generates the runners.hh and .cc files for a set of nodes."""

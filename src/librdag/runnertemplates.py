@@ -118,7 +118,24 @@ prefix_matrix_runner_implementation = """\
   %(datatype)s* newData = new %(datatype)s[datalen];
   for (int i = 0; i < datalen; ++i)
   {
-    newData[i] = -data[i];
+    newData[i] = %(symbol)sdata[i];
+  }
+  ret = new %(returntype)s(newData, arg->getRows(), arg->getCols());
+"""
+
+# UnaryFunction runner
+
+unaryfunction_scalar_runner_implementation = """\
+  ret = new %(returntype)s(%(function)s(arg->getValue()));\
+"""
+
+unaryfunction_matrix_runner_implementation = """\
+  %(datatype)s* data = arg->getData();
+  int datalen = arg->getDatalen();
+  %(datatype)s* newData = new %(datatype)s[datalen];
+  for (int i = 0; i < datalen; ++i)
+  {
+    newData[i] = %(function)s(data[i]);
   }
   ret = new %(returntype)s(newData, arg->getRows(), arg->getCols());
 """
