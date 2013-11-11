@@ -8,7 +8,6 @@
 #include "entrypt.hh"
 #include "jvmmanager.hh"
 #include "expression.hh"
-#include "exprtypeenum.h"
 #include "exprfactory.hh"
 #include "warningmacros.h"
 #include "jdispatch.hh"
