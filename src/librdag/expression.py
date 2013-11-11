@@ -16,17 +16,11 @@ class Expressions(object):
     def nodes(self):
         return self._nodes
 
-    def parentclass(self, node):
-        if node.argcount == 1:
-            return 'OGUnaryExpr'
-        else:
-            return 'OGBinaryExpr'
-
     @property
     def header(self):
         classes = ''
         for node in self.nodes:
-            d = { 'classname': node.typename, 'parentclass': self.parentclass(node) }
+            d = { 'classname': node.typename, 'parentclass': node.parentclass }
             classes += expr_class % d
         d = { 'expression_classes': classes }
         return expression_hh % d
@@ -35,7 +29,7 @@ class Expressions(object):
     def source(self):
         methods = ''
         for node in self.nodes:
-            d = { 'classname': node.typename, 'parentclass': self.parentclass(node) }
+            d = { 'classname': node.typename, 'parentclass': node.parentclass }
             methods += expr_methods % d
         d = { 'expression_methods': methods }
         return expression_cc % d

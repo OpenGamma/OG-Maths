@@ -51,6 +51,10 @@ class Expression(Numeric):
     def argcount(self):
         raise NotImplementedError("argcount must be implemented by Expression subclasses.")
 
+    @property
+    def parentclass(self):
+        raise NotImplementedError("parentclass must be implemented by Expression subclasses.")
+
 class UnaryExpression(Expression):
     """A UnaryExpression is an Expression that takes one argument."""
 
@@ -58,9 +62,17 @@ class UnaryExpression(Expression):
     def argcount(self):
         return 1
 
+    @property
+    def parentclass(self):
+        return 'OGUnaryExpr'
+
 class BinaryExpression(Expression):
     """A BinaryExpression is an expression that takes two arguments."""
 
     @property
     def argcount(self):
         return 2
+
+    @property
+    def parentclass(self):
+        return 'OGBinaryExpr'
