@@ -47,7 +47,8 @@ typedef enum
   MTIMES_ENUM          = 0X0115L ,
   COPY_ENUM            = 0X0119L ,
   SELECTRESULT_ENUM    = 0X011BL ,
-  SVD_ENUM             = 0X0125L 
+  SVD_ENUM             = 0X0125L ,
+  SIN_ENUM             = 0X0133L
 
 } ExprType_t;
 
