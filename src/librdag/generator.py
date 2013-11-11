@@ -17,16 +17,16 @@ nodes = [ InfixOp('PLUS', '+', 'PLUS_ENUM'),
           PrefixOp('NEGATE', '-', 'NEGATE_ENUM') ]
 
 # The list of terminals
-terminals = [ Terminal('OGRealScalar', 'REAL_SCALAR_ENUM'),
-              Terminal('OGComplexScalar', 'COMPLEX_SCALAR_ENUM'),
-              Terminal('OGIntegerScalar', 'INTEGER_SCALAR_ENUM'),
-              Terminal('OGRealMatrix', 'REAL_MATRIX_ENUM'),
-              Terminal('OGLogicalMatrix', 'LOGICAL_MATRIX_ENUM'),
-              Terminal('OGComplexMatrix', 'COMPLEX_MATRIX_ENUM'),
-              Terminal('OGRealDiagonalMatrix', 'REAL_DIAGONAL_MATRIX_ENUM'),
-              Terminal('OGComplexDiagonalMatrix', 'COMPLEX_DIAGONAL_MATRIX_ENUM'),
-              Terminal('OGRealSparseMatrix', 'REAL_SPARSE_MATRIX_ENUM'),
-              Terminal('OGComplexSparseMatrix', 'COMPLEX_SPARSE_MATRIX_ENUM') ]
+terminals = [ Terminal('Real', 'Scalar'),
+              Terminal('Complex', 'Scalar'),
+              Terminal('Integer', 'Scalar'),
+              Terminal('Real', 'Matrix'),
+              Terminal('Logical', 'Matrix'),
+              Terminal('Complex', 'Matrix'),
+              Terminal('Real', 'DiagonalMatrix'),
+              Terminal('Complex', 'DiagonalMatrix'),
+              Terminal('Real', 'SparseMatrix'),
+              Terminal('Complex', 'SparseMatrix') ]
 
 def get_parser():
     """Creates a suitable parser for the options to the generator."""
