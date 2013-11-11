@@ -40,11 +40,8 @@ typedef enum
   * EXPR TOKENS FOR FUNCTIONS, set in bits higher than 8, min prime 257_d = 0x0101
   */
 
-  LDIVIDE_ENUM         = 0X0101L ,
-  MTIMES_ENUM          = 0X0107L ,
   COPY_ENUM            = 0X010DL ,
   SELECTRESULT_ENUM    = 0X010FL ,
-  SVD_ENUM             = 0X0115L ,
 #include "exprenum.hh"
 } ExprType_t;
 

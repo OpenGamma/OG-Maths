@@ -77,16 +77,6 @@ class COPY: public OGUnaryExpr
     virtual ExprType_t getType() const override;
 };
 
-class SVD: public OGUnaryExpr
-{
-  public:
-    SVD(ArgContainer *args);
-    virtual OGNumeric* copy() const override;
-    virtual const SVD* asSVD() const override;
-    virtual void debug_print() const override;
-    virtual ExprType_t getType() const override;
-};
-
 class SELECTRESULT: public OGBinaryExpr
 {
   public:

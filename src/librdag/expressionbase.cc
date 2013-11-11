@@ -124,35 +124,6 @@ COPY::getType() const
 }
 
 /**
- * SVD node
- */
-SVD::SVD(ArgContainer* args): OGUnaryExpr(args) {}
-
-OGNumeric*
-SVD::copy() const
-{
-  return new SVD(this->getArgs()->copy());
-}
-
-const SVD*
-SVD::asSVD() const
-{
-  return this;
-}
-
-void
-SVD::debug_print() const
-{
-        cout << "SVD base class" << endl;
-}
-
-ExprType_t
-SVD::getType() const
-{
-  return SVD_ENUM;
-}
-
-/**
  * SELECTRESULT node
  */
 SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {

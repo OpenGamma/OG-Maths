@@ -156,9 +156,8 @@ class ConvertTo;
 class Visitor;
 class OGExpr;
 class COPY;
-%(fwd_decls)s
-class SVD;
 class SELECTRESULT;
+%(fwd_decls)s
 
 /*
  * Base class for absolutely everything!
@@ -172,9 +171,8 @@ class OGNumeric: private Uncopyable
     virtual OGNumeric* copy() const = 0;
     virtual const OGExpr* asOGExpr() const;
     virtual const COPY* asCOPY() const;
-%(cast_methods)s
-    virtual const SVD* asSVD() const;
     virtual const SELECTRESULT* asSELECTRESULT() const;
+%(cast_methods)s
     virtual const OGTerminal* asOGTerminal() const;
     virtual const OGRealScalar* asOGRealScalar() const;
     virtual const OGComplexScalar* asOGComplexScalar() const;

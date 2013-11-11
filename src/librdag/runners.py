@@ -4,7 +4,8 @@ from runnertemplates import runners_header, runners_cc, binary_runner_class_defi
                             prefix_scalar_runner_implementation, \
                             prefix_matrix_runner_implementation, \
                             unaryfunction_scalar_runner_implementation, \
-                            unaryfunction_matrix_runner_implementation
+                            unaryfunction_matrix_runner_implementation, \
+                            unimplementedunary_runner_function, unimplementedbinary_runner_function
 from exprtree import UnaryExpression, BinaryExpression
 
 class UnaryExpressionRunner(UnaryExpression):
@@ -177,6 +178,65 @@ class UnaryFunctionRunner(UnaryExpressionRunner):
               'datatype':   'complex16',
               'returntype': 'OGOwningComplexMatrix' }
         return unaryfunction_matrix_runner_implementation % d
+
+class UnimplementedUnary(UnaryExpressionRunner):
+    """A unary expression node that we want to generate code for, but haven't yet
+    implemented."""
+    def __init__(self, nodename):
+        enumname = '%s_ENUM' % nodename
+        super(UnimplementedUnary, self).__init__(nodename, enumname)
+
+    @property
+    def scalar_runner_function(self):
+        d = { 'nodename': self.typename,
+              'argtype': 'OGRealScalar',
+              'returntype': 'OGRealScalar' }
+        return unimplementedunary_runner_function % d
+
+    @property
+    def real_matrix_runner_function(self):
+        d = { 'nodename': self.typename,
+              'argtype': 'OGRealMatrix',
+              'returntype': 'OGRealMatrix' }
+        return unimplementedunary_runner_function % d
+
+    @property
+    def complex_matrix_runner_function(self):
+        d = { 'nodename': self.typename,
+              'argtype': 'OGComplexMatrix',
+              'returntype': 'OGComplexMatrix' }
+        return unimplementedunary_runner_function % d
+
+class UnimplementedBinary(BinaryExpressionRunner):
+    """A binary expression node that we want to generate code for, but haven't yet
+    implemented."""
+    def __init__(self, nodename):
+        enumname = '%s_ENUM' % nodename
+        super(UnimplementedBinary, self).__init__(nodename, enumname)
+
+    @property
+    def scalar_runner_function(self):
+        d = { 'nodename': self.typename,
+              'arg0type': 'OGRealScalar',
+              'arg1type': 'OGRealScalar',
+              'returntype': 'OGRealScalar' }
+        return unimplementedbinary_runner_function % d
+
+    @property
+    def real_matrix_runner_function(self):
+        d = { 'nodename': self.typename,
+              'arg0type': 'OGRealMatrix',
+              'arg1type': 'OGRealMatrix',
+              'returntype': 'OGRealMatrix' }
+        return unimplementedbinary_runner_function % d
+
+    @property
+    def complex_matrix_runner_function(self):
+        d = { 'nodename': self.typename,
+              'arg0type': 'OGComplexMatrix',
+              'arg1type': 'OGComplexMatrix',
+              'returntype': 'OGComplexMatrix' }
+        return unimplementedbinary_runner_function % d
 
 class Runners(object):
     """Generates the runners.hh and .cc files for a set of nodes."""

@@ -17,7 +17,8 @@ class ExprEnums(object):
     @property
     def code(self):
         enums = []
-        g = primes_above(0x115)
+        # Start numbers at 0x175 to give some headroom
+        g = primes_above(0x174)
         for node in self.nodes:
             code = "%s = 0X%04XL" % (node.enumname, next(g))
             enums.append(code)
