@@ -2,12 +2,12 @@ from runnertemplates import runners_header, runners_cc, binary_runner_class_defi
                             binary_runner_function, infix_scalar_runner_implementation, \
                             unary_runner_class_definition, unary_runner_function,       \
                             prefix_scalar_runner_implementation, prefix_matrix_runner_implementation
-from exprtree import Expression
+from exprtree import UnaryExpression, BinaryExpression
 
-class UnaryFunction(Expression):
-    """A UnaryFunction is for a node that takes a single argument."""
+class UnaryExpressionRunner(UnaryExpression):
+    """For generating the runner code for a UnaryExpression."""
     def __init__(self, nodename, enumname):
-        super(UnaryFunction, self).__init__(nodename, enumname)
+        super(UnaryExpressionRunner, self).__init__(nodename, enumname)
         self._class_definition_template = unary_runner_class_definition
 
     @property
@@ -41,14 +41,10 @@ class UnaryFunction(Expression):
               'returntype': 'OGComplexMatrix' }
         return unary_runner_function % d
 
-    @property
-    def argcount(self):
-        return 1
-
-class BinaryFunction(Expression):
+class BinaryExpressionRunner(BinaryExpression):
     """A BinaryFunction is for a node that takes two arguments."""
     def __init__(self, nodename, enumname):
-        super(BinaryFunction, self).__init__(nodename, enumname)
+        super(BinaryExpressionRunner, self).__init__(nodename, enumname)
         self._class_definition_template = binary_runner_class_definition
 
     @property
@@ -89,11 +85,11 @@ class BinaryFunction(Expression):
     def argcount(self):
         return 2
 
-class InfixOp(BinaryFunction):
-    """An InfixOp is a BinaryFunction that has a particular symbol that is
+class InfixOpRunner(BinaryExpressionRunner):
+    """An InfixOp is a BinaryExpression that has a particular symbol that is
     placed infix in its two arguments in the generated code."""
     def __init__(self, nodename, symbol, enumname):
-        super(InfixOp, self).__init__(nodename, enumname)
+        super(InfixOpRunner, self).__init__(nodename, enumname)
         self._symbol = symbol
 
     @property
@@ -116,11 +112,11 @@ class InfixOp(BinaryFunction):
     def complex_matrix_implementation(self):
         return "  arg0->debug_print(); arg1->debug_print(); ret = arg0; // TBC"
 
-class PrefixOp(UnaryFunction):
+class PrefixOpRunner(UnaryExpressionRunner):
     """A PrefixOp is a UnaryFunction whose symbol is placed just before its
     argument in the code."""
     def __init__(self, nodename, symbol, enumname):
-        super(PrefixOp, self).__init__(nodename, enumname)
+        super(PrefixOpRunner, self).__init__(nodename, enumname)
         self._symbol = symbol
 
     @property

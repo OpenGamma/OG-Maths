@@ -46,5 +46,21 @@ class Terminal(Numeric):
 
 class Expression(Numeric):
     """A Function is used to generate the code for a single node."""
-    def __init__(self, typename, enumname):
-        super(Expression, self).__init__(typename, enumname)
+
+    @property
+    def argcount(self):
+        raise NotImplementedError("argcount must be implemented by Expression subclasses.")
+
+class UnaryExpression(Expression):
+    """A UnaryExpression is an Expression that takes one argument."""
+
+    @property
+    def argcount(self):
+        return 1
+
+class BinaryExpression(Expression):
+    """A BinaryExpression is an expression that takes two arguments."""
+
+    @property
+    def argcount(self):
+        return 2
