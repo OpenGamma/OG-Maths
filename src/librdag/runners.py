@@ -2,22 +2,9 @@ from runnertemplates import runners_header, runners_cc, binary_runner_class_defi
                             binary_runner_function, infix_scalar_runner_implementation, \
                             unary_runner_class_definition, unary_runner_function,       \
                             prefix_scalar_runner_implementation, prefix_matrix_runner_implementation
+from exprtree import Expression
 
-class Function(object):
-    """A Function is used to generate the code for a single node."""
-    def __init__(self, nodename, enumname):
-        self._nodename = nodename
-        self._enumname = enumname
-
-    @property
-    def nodename(self):
-        return self._nodename
-
-    @property
-    def enumname(self):
-        return self._enumname
-
-class UnaryFunction(Function):
+class UnaryFunction(Expression):
     """A UnaryFunction is for a node that takes a single argument."""
     def __init__(self, nodename, enumname):
         super(UnaryFunction, self).__init__(nodename, enumname)
@@ -25,13 +12,13 @@ class UnaryFunction(Function):
 
     @property
     def class_definition(self):
-        return self._class_definition_template % { 'nodename': self._nodename }
+        return self._class_definition_template % { 'nodename': self.typename }
 
     @property
     def scalar_runner_function(self):
         implementation = self.scalar_implementation
         d = { 'implementation': implementation,
-              'nodename': self.nodename,
+              'nodename': self.typename,
               'argtype': 'OGRealScalar',
               'returntype': 'OGRealScalar' }
         return unary_runner_function % d
@@ -40,7 +27,7 @@ class UnaryFunction(Function):
     def real_matrix_runner_function(self):
         implementation = self.real_matrix_implementation
         d = { 'implementation': implementation,
-              'nodename': self.nodename,
+              'nodename': self.typename,
               'argtype': 'OGRealMatrix',
               'returntype': 'OGRealMatrix' }
         return unary_runner_function % d
@@ -49,7 +36,7 @@ class UnaryFunction(Function):
     def complex_matrix_runner_function(self):
         implementation = self.complex_matrix_implementation
         d = { 'implementation': implementation,
-              'nodename': self.nodename,
+              'nodename': self.typename,
               'argtype': 'OGComplexMatrix',
               'returntype': 'OGComplexMatrix' }
         return unary_runner_function % d
@@ -58,7 +45,7 @@ class UnaryFunction(Function):
     def argcount(self):
         return 1
 
-class BinaryFunction(Function):
+class BinaryFunction(Expression):
     """A BinaryFunction is for a node that takes two arguments."""
     def __init__(self, nodename, enumname):
         super(BinaryFunction, self).__init__(nodename, enumname)
@@ -66,13 +53,13 @@ class BinaryFunction(Function):
 
     @property
     def class_definition(self):
-        return self._class_definition_template % { 'nodename': self._nodename }
+        return self._class_definition_template % { 'nodename': self.typename }
 
     @property
     def scalar_runner_function(self):
         implementation = self.scalar_implementation
         d = { 'implementation': implementation,
-              'nodename': self.nodename,
+              'nodename': self.typename,
               'arg0type': 'OGRealScalar',
               'arg1type': 'OGRealScalar',
               'returntype': 'OGRealScalar' }
@@ -82,7 +69,7 @@ class BinaryFunction(Function):
     def real_matrix_runner_function(self):
         implementation = self.real_matrix_implementation
         d = { 'implementation': implementation,
-              'nodename': self.nodename,
+              'nodename': self.typename,
               'arg0type': 'OGRealMatrix',
               'arg1type': 'OGRealMatrix',
               'returntype': 'OGRealMatrix' }
@@ -92,7 +79,7 @@ class BinaryFunction(Function):
     def complex_matrix_runner_function(self):
         implementation = self.complex_matrix_implementation
         d = { 'implementation': implementation,
-              'nodename': self.nodename,
+              'nodename': self.typename,
               'arg0type': 'OGComplexMatrix',
               'arg1type': 'OGComplexMatrix',
               'returntype': 'OGComplexMatrix' }

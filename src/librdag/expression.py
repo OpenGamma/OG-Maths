@@ -27,7 +27,7 @@ class Expressions(object):
     def header(self):
         classes = ''
         for node in self.nodes:
-            d = { 'classname': node.nodename, 'parentclass': self.parentclass(node) }
+            d = { 'classname': node.typename, 'parentclass': self.parentclass(node) }
             classes += expr_class % d
         d = { 'expression_classes': classes }
         return expression_hh % d
@@ -36,7 +36,7 @@ class Expressions(object):
     def source(self):
         methods = ''
         for node in self.nodes:
-            d = { 'classname': node.nodename, 'parentclass': self.parentclass(node) }
+            d = { 'classname': node.typename, 'parentclass': self.parentclass(node) }
             methods += expr_methods % d
         d = { 'expression_methods': methods }
         return expression_cc % d
@@ -54,7 +54,7 @@ class Numeric(object):
         fwd_decls = ''
         cast_methods = ''
         for node in self.nodes:
-            d = { 'classname': node.nodename }
+            d = { 'classname': node.typename }
             fwd_decls += numeric_fwd_decl % d
             cast_methods += numeric_cast_method % d
         d = { 'fwd_decls': fwd_decls, 'cast_methods': cast_methods }
@@ -64,7 +64,7 @@ class Numeric(object):
     def source(self):
         methods = ''
         for node in self.nodes:
-            d = { 'classname': node.nodename }
+            d = { 'classname': node.typename }
             methods += numeric_method % d
         d = { 'numeric_methods': methods }
         return numeric_cc % d

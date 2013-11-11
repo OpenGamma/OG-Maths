@@ -38,7 +38,7 @@ class Dispatcher(object):
         dispatcher_node_dispatches = ""
         dispatcher_private_members = ""
         for n in self._nodes:
-            d = { 'nodetype': n.nodename }
+            d = { 'nodetype': n.typename }
             dispatcher_forward_decls += dispatcher_forward_decl % d
             dispatcher_node_dispatches += dispatcher_dispatch_prototype % d
             dispatcher_private_members += dispatcher_private_member % d
@@ -55,7 +55,7 @@ class Dispatcher(object):
         initialisers = ''
         deleters = ''
         for n in self._nodes:
-            d = { 'nodetype': n.nodename }
+            d = { 'nodetype': n.typename }
             initialisers += dispatcher_member_initialiser % d
             deleters += dispatcher_member_deleter % d
         d = { 'member_initialisers': initialisers }
@@ -69,7 +69,7 @@ class Dispatcher(object):
             dispatch_terminal_cases += dispatcher_case % d
         dispatch_expr_cases = ''
         for n in self._nodes:
-            d = { 'nodetype': n.nodename, 'nodeenumtype': n.enumname }
+            d = { 'nodetype': n.typename, 'nodeenumtype': n.enumname }
             dispatch_expr_cases += dispatcher_case % d
         d = { 'dispatch_terminal_cases': dispatch_terminal_cases,
               'dispatch_expr_cases': dispatch_expr_cases }
@@ -82,7 +82,7 @@ class Dispatcher(object):
         # Dispatch node methods
         dispatch_exprs = ''
         for n in self._nodes:
-            d = { 'nodetype': n.nodename }
+            d = { 'nodetype': n.typename }
             if n.argcount == 1:
                 d['dispatch_implementation'] = dispatcher_unary_implementation % d
             elif n.argcount == 2:
