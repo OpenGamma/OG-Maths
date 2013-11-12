@@ -7,7 +7,6 @@
 from exprtemplates import expression_hh, expr_class, expression_cc, expr_methods, \
                           numeric_hh, numeric_fwd_decl, numeric_cast_method, \
                           numeric_cc, numeric_method
-from runners import InfixOp, PrefixOp
 
 class Expressions(object):
     def __init__(self, nodes):
@@ -17,17 +16,11 @@ class Expressions(object):
     def nodes(self):
         return self._nodes
 
-    def parentclass(self, node):
-        if node.argcount == 1:
-            return 'OGUnaryExpr'
-        else:
-            return 'OGBinaryExpr'
-
     @property
     def header(self):
         classes = ''
         for node in self.nodes:
-            d = { 'classname': node.nodename, 'parentclass': self.parentclass(node) }
+            d = { 'classname': node.typename, 'parentclass': node.parentclass }
             classes += expr_class % d
         d = { 'expression_classes': classes }
         return expression_hh % d
@@ -36,7 +29,7 @@ class Expressions(object):
     def source(self):
         methods = ''
         for node in self.nodes:
-            d = { 'classname': node.nodename, 'parentclass': self.parentclass(node) }
+            d = { 'classname': node.typename, 'parentclass': node.parentclass }
             methods += expr_methods % d
         d = { 'expression_methods': methods }
         return expression_cc % d
@@ -54,7 +47,7 @@ class Numeric(object):
         fwd_decls = ''
         cast_methods = ''
         for node in self.nodes:
-            d = { 'classname': node.nodename }
+            d = { 'classname': node.typename }
             fwd_decls += numeric_fwd_decl % d
             cast_methods += numeric_cast_method % d
         d = { 'fwd_decls': fwd_decls, 'cast_methods': cast_methods }
@@ -64,7 +57,7 @@ class Numeric(object):
     def source(self):
         methods = ''
         for node in self.nodes:
-            d = { 'classname': node.nodename }
+            d = { 'classname': node.typename }
             methods += numeric_method % d
         d = { 'numeric_methods': methods }
         return numeric_cc % d

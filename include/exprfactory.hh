@@ -4,13 +4,17 @@
  * Please see distribution for license.
  */
 
-#include "expression.hh"
+#include "expressionbase.hh"
+#include "containers.hh"
 #include "jvmmanager.hh"
 
 using librdag::OGNumeric;
+using librdag::ArgContainer;
 
 namespace convert {
 
+ArgContainer* generateArgs(jobject obj);
 OGNumeric* createExpression(jobject obj);
+OGNumeric* createExprWithID(jlong ID, jobject obj);
 
 } // namespace convert
