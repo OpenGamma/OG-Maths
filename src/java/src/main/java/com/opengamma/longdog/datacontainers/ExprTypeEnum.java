@@ -81,7 +81,7 @@ public enum ExprTypeEnum {
   RDIVIDE      (0X0277L),
   TIMES        (0X0281L),
   VERTCAT      (0X0283L),
-  DOT          (0X028aL);
+  DOT          (0X0287L);
   
 
   //CSON

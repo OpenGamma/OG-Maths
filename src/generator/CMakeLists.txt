@@ -17,7 +17,9 @@ set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/runners.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/expression.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/exprtree.py
-                    ${CMAKE_CURRENT_SOURCE_DIR}/enums.py)
+                    ${CMAKE_CURRENT_SOURCE_DIR}/enums.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/createexprtemplates.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/createexpressions.py)
 
 # Runners generation.
 
@@ -104,4 +106,17 @@ add_custom_command(OUTPUT ${EXPRENUM_HH}
 # Custom target bottleneck
 add_custom_target(exprenum_hh DEPENDS ${EXPRENUM_HH})
 
+# Createexpr generation
+
+set(CREATEEXPR_CC ${CMAKE_BINARY_DIR}/src/jshim/createexpr.cc)
+
+add_custom_command(OUTPUT ${CREATEEXPR_CC}
+                   COMMAND ${GENERATOR} -o ${CREATEEXPR_CC} --createexpr-cc
+                   DEPENDS ${GENERATOR_FILES}
+                   COMMENT "Generating createexpr.cc")
+
+# Custom target bottleneck
+add_custom_target(createexpr_cc DEPENDS ${CREATEEXPR_CC})
+
 set(RDAG_GENERATED ${RUNNERS_CC} ${DISPATCH_CC} ${EXPRESSION_CC} ${NUMERIC_CC} PARENT_SCOPE)
+set(JSHIM_GENERATED ${CREATEEXPR_CC} PARENT_SCOPE)
