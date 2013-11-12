@@ -51,6 +51,24 @@ class JOGComplexScalar: public OGComplexScalar
 };
 
 /*
+ * An OGIntegerScalar backed by data pinned from a Java based OGIntegerScalar.
+ * Note that _dataref is assigned on construction of the OGIntegerScalar base class,
+ * this is to keep JNI calls to a minimum by holding reference to the data pointer needed
+ * to free via the ReleasePrimitiveArrayCritical() function.
+ */
+class JOGIntegerScalar: public OGIntegerScalar
+{
+  public:
+    using OGIntegerScalar::OGIntegerScalar;
+    JOGIntegerScalar(jobject obj);
+    virtual ~JOGIntegerScalar() override;
+    virtual void debug_print() const override;
+  private:
+    jobject _backingObject = nullptr;
+    int * _dataRef = nullptr;
+};
+
+/*
  * An OGRealMatrix backed by data pinned from a Java based OGRealMatrix
  */
 class JOGRealMatrix: public OGRealMatrix
@@ -72,6 +90,20 @@ class JOGComplexMatrix: public OGComplexMatrix
   public:
     JOGComplexMatrix(jobject obj);
     virtual ~JOGComplexMatrix() override;
+    virtual void debug_print() const override;
+  private:
+    jobject _backingObject = nullptr;
+};
+
+/*
+ * An OGLogicalMatrix backed by data pinned from a Java based OGLogicalMatrix
+ */
+class JOGLogicalMatrix: public OGLogicalMatrix
+{
+  public:
+    using OGLogicalMatrix::OGLogicalMatrix;
+    JOGLogicalMatrix(jobject obj);
+    virtual ~JOGLogicalMatrix() override;
     virtual void debug_print() const override;
   private:
     jobject _backingObject = nullptr;

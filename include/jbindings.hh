@@ -34,6 +34,9 @@ unbindOGArrayData<real16>(real16* nativeData, jobject obj);
 extern template void
 unbindOGArrayData<complex16>(complex16* nativeData, jobject obj);
 
+extern template void
+unbindOGArrayData<int>(int* nativeData, jobject obj);
+
 /**
  * binds the data in an OGArray class to a T pointer
  * @param T the class of the underlying data
