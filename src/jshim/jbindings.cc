@@ -118,4 +118,7 @@ unbindOGArrayData<real16>(real16* nativeData, jobject obj);
 template void
 unbindOGArrayData<complex16>(complex16* nativeData, jobject obj);
 
+template void
+unbindOGArrayData<int>(int* nativeData, jobject obj);
+
 } //namespace convert

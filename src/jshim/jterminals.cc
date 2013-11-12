@@ -75,6 +75,32 @@ JOGComplexScalar::debug_print() const
 }
 
 /**
+ * JOGIntegerScalar
+ */
+
+JOGIntegerScalar::JOGIntegerScalar(jobject obj): OGIntegerScalar
+  (
+    static_cast<int *>(_dataRef = bindPrimitiveArrayData<int, jintArray>(obj, JVMManager::getOGTerminalClazz_getData()))[0]
+  )
+{
+  this->_backingObject = obj;
+}
+
+JOGIntegerScalar::~JOGIntegerScalar()
+{
+  unbindOGArrayData<int>(this->_dataRef, _backingObject);
+  this->_backingObject = nullptr;
+  this->_dataRef = nullptr;
+}
+
+void
+JOGIntegerScalar::debug_print() const
+{
+  printf("\nJava bound JOGIntegerScalar\n");
+  OGIntegerScalar::debug_print();
+}
+
+/**
  * JOGRealMatrix
  */
 
@@ -125,6 +151,33 @@ JOGComplexMatrix::debug_print() const
 {
   printf("\nJava bound OGComplexMatrix\n");
   OGComplexMatrix::debug_print();
+}
+
+/**
+ * JOGLogicalMatrix
+ */
+
+JOGLogicalMatrix::JOGLogicalMatrix(jobject obj): OGLogicalMatrix
+  (
+    static_cast<real16 *>(bindPrimitiveArrayData<real16, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj)),
+    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj))
+  )
+{
+  this->_backingObject = obj;
+}
+
+JOGLogicalMatrix::~JOGLogicalMatrix()
+{
+  unbindOGArrayData<real16>(this->getData(), _backingObject);
+  this->_backingObject = nullptr;
+}
+
+void
+JOGLogicalMatrix::debug_print() const
+{
+  printf("\nJava bound OGLogicalMatrix\n");
+  OGLogicalMatrix::debug_print();
 }
 
 /*
