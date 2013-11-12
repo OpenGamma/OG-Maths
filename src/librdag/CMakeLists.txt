@@ -9,14 +9,13 @@ SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,--no-undefined")
 SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
 
-set_source_files_properties(${RUNNERS_CC} ${DISPATCH_CC} ${EXPRESSION_CC} ${NUMERIC_CC} PROPERTIES GENERATED TRUE)
+set_source_files_properties(${RDAG_GENERATED} PROPERTIES GENERATED TRUE)
 
 # The RDAG library.
 
-set(RDAG_SOURCES entrypt.cc expression.cc expressionbase.cc execution.cc
+set(RDAG_SOURCES entrypt.cc expressionbase.cc execution.cc
                  terminal.cc containers.cc numericbase.cc equals.cc
-                 numerictypes.cc convertto.cc iss.cc ${RUNNERS_CC} ${DISPATCH_CC}
-                 ${EXPRESSION_CC} ${NUMERIC_CC})
+                 numerictypes.cc convertto.cc iss.cc ${RDAG_GENERATED})
 
 add_multitarget_library(rdag
                         VERSION ${longdog_VERSION}
