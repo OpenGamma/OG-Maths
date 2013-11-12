@@ -23,7 +23,6 @@ set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
 
 set(RUNNERS_HH ${BIN_INCLUDE_DIR}/runners.hh)
 set(RUNNERS_CC ${CMAKE_BINARY_DIR}/src/librdag/runners.cc)
-set(RUNNERS_CC ${RUNNERS_CC} PARENT_SCOPE)
 
 add_custom_command(OUTPUT ${RUNNERS_HH}
                    COMMAND ${GENERATOR} -o ${RUNNERS_HH} --runners-hh
@@ -43,7 +42,6 @@ add_custom_target(runners_cc DEPENDS ${RUNNERS_CC})
 
 set(DISPATCH_HH ${BIN_INCLUDE_DIR}/dispatch.hh)
 set(DISPATCH_CC ${CMAKE_BINARY_DIR}/src/librdag/dispatch.cc)
-set(DISPATCH_CC ${DISPATCH_CC} PARENT_SCOPE)
 
 add_custom_command(OUTPUT ${DISPATCH_HH}
                    COMMAND ${GENERATOR} -o ${DISPATCH_HH} --dispatch-hh
@@ -62,7 +60,6 @@ add_custom_target(dispatch_cc DEPENDS ${DISPATCH_CC})
 
 set(EXPRESSION_HH ${BIN_INCLUDE_DIR}/expression.hh)
 set(EXPRESSION_CC ${CMAKE_BINARY_DIR}/src/librdag/expression.cc)
-set(EXPRESSION_CC ${EXPRESSION_CC} PARENT_SCOPE)
 
 add_custom_command(OUTPUT ${EXPRESSION_HH}
                    COMMAND ${GENERATOR} -o ${EXPRESSION_HH} --expression-hh
@@ -81,7 +78,6 @@ add_custom_target(expression_cc DEPENDS ${EXPRESSION_CC})
 
 set(NUMERIC_HH ${BIN_INCLUDE_DIR}/numeric.hh)
 set(NUMERIC_CC ${CMAKE_BINARY_DIR}/src/librdag/numeric.cc)
-set(NUMERIC_CC ${NUMERIC_CC} PARENT_SCOPE)
 
 add_custom_command(OUTPUT ${NUMERIC_HH}
                    COMMAND ${GENERATOR} -o ${NUMERIC_HH} --numeric-hh
@@ -107,3 +103,5 @@ add_custom_command(OUTPUT ${EXPRENUM_HH}
 
 # Custom target bottleneck
 add_custom_target(exprenum_hh DEPENDS ${EXPRENUM_HH})
+
+set(RDAG_GENERATED ${RUNNERS_CC} ${DISPATCH_CC} ${EXPRESSION_CC} ${NUMERIC_CC} PARENT_SCOPE)
