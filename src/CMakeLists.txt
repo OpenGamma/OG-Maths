@@ -5,6 +5,7 @@
 #
 
 add_subdirectory(jinitialise)
+add_subdirectory(generator)
 add_subdirectory(librdag)
 add_subdirectory(jshim)
 add_subdirectory(java)
