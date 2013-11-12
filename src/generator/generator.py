@@ -12,6 +12,7 @@ from runners import Runners, Runners, InfixOpRunner, PrefixOpRunner, UnaryFuncti
 from exprtree import Terminal
 from expression import Expressions, Numeric
 from enums import ExprEnums
+from createexpressions import CreateExpressions
 
 # The list of nodes to generate.
 # These must be in the same order as in the Java ExprTypeEnum, otherwise the
@@ -89,6 +90,7 @@ def get_parser():
     action.add_argument('--numeric-hh', action='store_true', help='Generate numeric.hh')
     action.add_argument('--numeric-cc', action='store_true', help='Generate numeric.cc')
     action.add_argument('--exprenum-hh', action='store_true', help='Generate exprenum.hh')
+    action.add_argument('--createexpr-cc', action='store_true', help='Generate createexpr.cc')
     return parser
 
 def main(args):
@@ -112,6 +114,8 @@ def main(args):
             code = Numeric(nodes).source
         elif args.exprenum_hh:
             code = ExprEnums(nodes).code
+        elif args.createexpr_cc:
+            code = CreateExpressions(terminals + nodes).source
         f.writelines(code)
 
 if __name__ == '__main__':

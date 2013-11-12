@@ -23,6 +23,14 @@ class Numeric(object):
     def enumname(self):
         return self._enumname
 
+    @property
+    def is_terminal(self):
+        return False
+
+    @property
+    def is_expr(self):
+        return False
+
     def __eq__(self, other):
         """Two Numerics are equal if they have the same type."""
         return self.typename == other.typename
@@ -44,6 +52,10 @@ class Terminal(Numeric):
     def storagetype(self):
         return self._storagetype
 
+    @property
+    def is_terminal(self):
+        return True
+
 class Expression(Numeric):
     """A Function is used to generate the code for a single node."""
 
@@ -54,6 +66,10 @@ class Expression(Numeric):
     @property
     def parentclass(self):
         raise NotImplementedError("parentclass must be implemented by Expression subclasses.")
+
+    @property
+    def is_expr(self):
+        return True
 
 class UnaryExpression(Expression):
     """A UnaryExpression is an Expression that takes one argument."""
