@@ -10,7 +10,7 @@ SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,--no-undefined")
 SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
  
-set(JSHIM_SOURCES jshim.cc jterminals.cc jbindings.cc exprfactory.cc jdispatch.cc jvmmanager.cc)
+set(JSHIM_SOURCES jshim.cc jterminals.cc jbindings.cc exprfactory.cc createexpr.cc jdispatch.cc jvmmanager.cc)
 
 add_multitarget_library(jshim
                         VERSION ${longdog_VERSION}
