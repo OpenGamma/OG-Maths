@@ -114,15 +114,15 @@ endif(DOXYGEN_FOUND)
 set(TESTNG_TEST TestNG)
 set(NATIVE_SELF_TEST NativeLibrariesSelfTest)
 set(JAVA_TESTS_REGEX "\"(${TESTNG_TEST})|(${NATIVE_SELF_TEST})\"")
+set(DEBUG_TESTS_REGEX "\".*dbg$$\"")
 
 # Coverage - must build underneath the source dir for this to work.
 # This should be run before make test to avoid gathering coverage info
 # for code that was run as a result of calling it through the Java interface.
-if (CMAKE_BUILD_TYPE MATCHES "Debug" AND NOT WIN32)
-  set(CMAKE_C_FLAGS_DEBUG "--coverage ${CMAKE_C_FLAGS_DEBUG}")
-  set(CMAKE_CXX_FLAGS_DEBUG "--coverage ${CMAKE_CXX_FLAGS_DEBUG}")
+if (NOT WIN32)
+  set(OPT_FLAGS_dbg "--coverage ${OPT_FLAGS_dbg}")
   add_custom_target(gencovinfo
-                    COMMAND ${CMAKE_CTEST_COMMAND} --force-new-ctest-process -E ${JAVA_TESTS_REGEX}
+                    COMMAND ${CMAKE_CTEST_COMMAND} --force-new-ctest-process -R ${DEBUG_TESTS_REGEX} -E ${JAVA_TESTS_REGEX}
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                     COMMENT "Running tests to gather C++ coverage information")
   add_custom_target(coverageinfo
