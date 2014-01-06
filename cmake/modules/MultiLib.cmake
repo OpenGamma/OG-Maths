@@ -28,7 +28,8 @@ function(add_multitarget_library _TARGET_NAME)
     set_target_properties(${LIBNAME} PROPERTIES
                           VERSION ${MTLIB_VERSION}
                           SOVERSION ${MTLIB_SOVERSION}
-                          COMPILE_FLAGS ${OPT_FLAGS_${TARGET}})
+                          COMPILE_FLAGS ${OPT_FLAGS_${TARGET}}
+                          LINK_FLAGS ${OPT_FLAGS_${TARGET}})
     foreach(LINK_LIB ${MTLIB_LINK_LIBRARIES})
       target_link_libraries(${LIBNAME} ${LINK_LIB}_${TARGET})
     endforeach()
