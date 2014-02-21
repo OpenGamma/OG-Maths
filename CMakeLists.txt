@@ -17,6 +17,15 @@ endif(APPLE OR WIN32)
 
 project (longdog)
 
+# check command line is sensible
+if(LAPACK_EXPORT)
+  set(LAPACK_BUILDINFO ${LAPACK_EXPORT})
+else()
+#This is a temporary thing. Expect later to add in ExternalProject_add to get the code!!
+  message( FATAL_ERROR "LAPACK_EXPORT must be defined on the command line. e.g. -DLAPACK_EXPORT="/path/to/LAPACK_EXPORT.cmake"" )
+endif()
+
+
 enable_language(C)
 enable_language(Fortran)
 
