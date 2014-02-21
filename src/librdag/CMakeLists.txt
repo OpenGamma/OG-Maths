@@ -29,4 +29,10 @@ add_multitarget_library(rdag
 
 jar_native_multitarget_library(rdag TARGETS ${TARGET_TYPES})
 
+jar_native_multitarget_library(oglapack TARGETS ${TARGET_TYPES})
+
+jar_native_multitarget_library(ogblas TARGETS ${TARGET_TYPES})
+
+jar_native_multitarget_library(ogxerbla TARGETS ${TARGET_TYPES})
+
 add_subdirectory(test)
