@@ -21,16 +21,28 @@ set(jar_native_libraries CACHE INTERNAL "Native libraries to be built into the J
 # Adds a native library into the jar file.
 macro(jar_native_library lib)
   get_property(_soversion TARGET ${lib} PROPERTY SOVERSION)
+  get_property(_version TARGET ${lib} PROPERTY VERSION)
   get_property(_location TARGET ${lib} PROPERTY LOCATION)
+  get_property(_ncfg TARGET ${lib} PROPERTY IMPORTED_SONAME_NOCONFIG)
   set_platform_folder()
 
-  get_filename_component(_basename ${_location} NAME_WE)
+  # if the lib is imported, we know what it is called!
+  if(_ncfg)
+      set(_output_name ${_ncfg})
+  else()
+    get_filename_component(_basename ${_location} NAME_WE)
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+      set(_output_name ${_basename}.so.${_soversion})
+    elseif(APPLE)
+      set(_output_name ${_basename}.${_soversion}.dylib)
+    elseif(WIN32)
+      set(_output_name ${_basename}.dll)
+    endif()
+  endif()
+
+  # add rpath to linux flags
   if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(_output_name ${_basename}.so.${_soversion})
-  elseif(APPLE)
-    set(_output_name ${_basename}.${_soversion}.dylib)
-  elseif(WIN32)
-    set(_output_name ${_basename}.dll)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--rpath -Wl,\$ORIGIN")
   endif()
 
   set(_src ${_location})
