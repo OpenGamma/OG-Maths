@@ -13,6 +13,7 @@ macro(set_platform_folder)
     set(native_platform "win")
   elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(native_platform "lin")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--rpath -Wl,\$ORIGIN")
   endif()
 endmacro()
 
