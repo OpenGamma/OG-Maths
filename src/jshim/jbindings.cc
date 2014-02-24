@@ -25,13 +25,22 @@ template<typename nativeT = real16, typename javaT = jdoubleArray>
 real16* getArrayFromJava(JNIEnv *env, jdoubleArray arr)
 {
   real16* p = env->GetDoubleArrayElements(arr, NULL);
+  if (p == nullptr)
+  {
+    throw convert_error("Null pointer returned by GetDoubleArrayElements");
+  }
   return p;
 }
 
 template<typename nativeT = jint, typename javaT = jintArray>
 jint* getArrayFromJava(JNIEnv *env, jintArray arr)
 {
-  return env->GetIntArrayElements(arr, NULL);
+  jint* p = env->GetIntArrayElements(arr, NULL);
+  if (p == nullptr)
+  {
+    throw convert_error("Null pointer returned by GetDoubleArrayElements");
+  }
+  return p;
 }
 
 /**
