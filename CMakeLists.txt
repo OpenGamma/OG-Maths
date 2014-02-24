@@ -101,12 +101,6 @@ set(OPT_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
 set(OPT_FLAGS_sse41 "${OPT_FLAGS_std} -march=core2 -msse4.1")
 set(OPT_FLAGS_avx1 "${OPT_FLAGS_std}  -march=corei7-avx -mavx256-split-unaligned-load -mavx256-split-unaligned-store")
 
-# add rpath to linux flags
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--rpath -Wl,\$ORIGIN")
-endif()
-
 # Gtest
 add_subdirectory(external/gtest-1.6.0)
 include_directories(${gtest_SOURCE_DIR}/include)

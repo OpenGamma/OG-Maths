@@ -40,6 +40,11 @@ macro(jar_native_library lib)
     endif()
   endif()
 
+  # add rpath to linux flags
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--rpath -Wl,\$ORIGIN")
+  endif()
+
   set(_src ${_location})
   set(_dest ${CMAKE_BINARY_DIR}/lib/${native_platform}/${_output_name})
   add_custom_command(OUTPUT  ${_dest}
