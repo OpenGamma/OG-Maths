@@ -9,6 +9,7 @@
 #include "warningmacros.h"
 #include "terminal.hh"
 #include "expression.hh"
+#include "debug.h"
 
 namespace convert
 {
@@ -154,7 +155,7 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int> const SUPPRE
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<complex16> const *thing)
 {
-    printf("Visitor: librdag::OGMatrix<complex16> branch\n");
+    DEBUG_PRINT("Visitor: librdag::OGMatrix<complex16> branch\n");
     this->setData(thing->toComplex16ArrayOfArrays());
     this->setRows(thing->getRows());
     this->setCols(thing->getCols());
@@ -165,7 +166,7 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<real16> const SUP
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
 {
-    printf("Visitor: librdag::OGMatrix<complex16> branch\n");
+    DEBUG_PRINT("Visitor: librdag::OGMatrix<complex16> branch\n");
     this->setData(thing->toComplex16ArrayOfArrays());
     this->setRows(thing->getRows());
     this->setCols(thing->getCols());
@@ -176,7 +177,7 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16> c
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16> const *thing)
 {
-    printf("Visitor: librdag::OGMatrix<complex16> branch\n");
+    DEBUG_PRINT("Visitor: librdag::OGMatrix<complex16> branch\n");
     this->setData(thing->toComplex16ArrayOfArrays());
     this->setRows(thing->getRows());
     this->setCols(thing->getCols());
