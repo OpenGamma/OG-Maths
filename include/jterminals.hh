@@ -65,7 +65,7 @@ class JOGIntegerScalar: public OGIntegerScalar
     virtual void debug_print() const override;
   private:
     jobject _backingObject = nullptr;
-    int * _dataRef = nullptr;
+    jint* _dataRef = nullptr;
 };
 
 /*

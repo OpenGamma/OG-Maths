@@ -49,7 +49,6 @@ JOGRealScalar::~JOGRealScalar()
 void
 JOGRealScalar::debug_print() const
 {
-  printf("\nJava bound OGRealScalar\n");
   OGRealScalar::debug_print();
 }
 
@@ -80,7 +79,6 @@ JOGComplexScalar::~JOGComplexScalar()
 void
 JOGComplexScalar::debug_print() const
 {
-  printf("\nJava bound JOGComplexScalar\n");
   OGComplexScalar::debug_print();
 }
 
@@ -111,7 +109,6 @@ JOGIntegerScalar::~JOGIntegerScalar()
 void
 JOGIntegerScalar::debug_print() const
 {
-  printf("\nJava bound JOGIntegerScalar\n");
   OGIntegerScalar::debug_print();
 }
 
@@ -138,7 +135,6 @@ JOGRealMatrix::~JOGRealMatrix()
 void
 JOGRealMatrix::debug_print() const
 {
-  printf("\nJava bound OGRealMatrix\n");
   OGRealMatrix::debug_print();
 }
 
@@ -164,7 +160,6 @@ JOGComplexMatrix::~JOGComplexMatrix() {
 void
 JOGComplexMatrix::debug_print() const
 {
-  printf("\nJava bound OGComplexMatrix\n");
   OGComplexMatrix::debug_print();
 }
 
@@ -191,7 +186,6 @@ JOGLogicalMatrix::~JOGLogicalMatrix()
 void
 JOGLogicalMatrix::debug_print() const
 {
-  printf("\nJava bound OGLogicalMatrix\n");
   OGLogicalMatrix::debug_print();
 }
 
@@ -222,23 +216,22 @@ JOGRealSparseMatrix::~JOGRealSparseMatrix()
 void
 JOGRealSparseMatrix::debug_print() const
 {
-  printf("\nJava bound OGRealSparseMatrix\n");
   OGRealSparseMatrix::debug_print();
 }
 
 real16**
 JOGRealSparseMatrix::toReal16ArrayOfArrays() const
 {
+  // Returning null as no implementation yet.
   double ** foo = NULL;
-  printf("returning null as no impl yet!!!!\n");
   return foo;
 }
 
 complex16**
 JOGRealSparseMatrix::toComplex16ArrayOfArrays() const
 {
+  // Returning null as no implementation yet.
   complex16 ** foo = NULL;
-  printf("returning null as no impl yet!!!!\n");
   return foo;
 }
 
@@ -268,23 +261,22 @@ JOGComplexSparseMatrix::~JOGComplexSparseMatrix()
 void
 JOGComplexSparseMatrix::debug_print() const
 {
-  printf("\nJava bound OGComplexSparseMatrix\n");
   OGComplexSparseMatrix::debug_print();
 }
 
 real16**
 JOGComplexSparseMatrix::toReal16ArrayOfArrays() const
 {
+  // Returning null as no implementation yet.
   double ** foo = NULL;
-  printf("returning null as no impl yet!!!!\n");
   return foo;
 }
 
 complex16**
 JOGComplexSparseMatrix::toComplex16ArrayOfArrays() const
 {
+  // Returning null as no implementation yet.
   complex16 ** foo = NULL;
-  printf("returning null as no impl yet!!!!\n");
   return foo;
 }
 
@@ -311,7 +303,6 @@ JOGRealDiagonalMatrix::~JOGRealDiagonalMatrix()
 void
 JOGRealDiagonalMatrix::debug_print() const
 {
-  printf("\nJava bound JOGRealDiagonalMatrix\n");
   OGRealDiagonalMatrix::debug_print();
 }
 
@@ -338,7 +329,6 @@ JOGComplexDiagonalMatrix::~JOGComplexDiagonalMatrix()
 void
 JOGComplexDiagonalMatrix::debug_print() const
 {
-  printf("\nJava bound JOGComplexDiagonalMatrix\n");
   OGComplexDiagonalMatrix::debug_print();
 }
 
