@@ -20,32 +20,34 @@ template <typename T>
 T* bindOGArrayData(jobject obj);
 
 /**
- * free (unbind) the data in an OGArray class from a T pointer
- * @param T the class of the nativeData
+ * free (unbind) the data in an OGArray class from a nativeT pointer
+ * @param nativeT the class of the native copy of the data
+ * @param javaT the type of the java data
  * @param nativeData the native data to unbind
  * @param obj the java object from which the native data is pinned
  */
-template <typename T>
-void unbindOGArrayData(T* nativeData, jobject obj);
+template <typename nativeT, typename javaT>
+void unbindOGArrayData(nativeT* nativeData, jobject obj);
 
 extern template void
-unbindOGArrayData<real16>(real16* nativeData, jobject obj);
+unbindOGArrayData<real16, jdoubleArray>(real16* nativeData, jobject obj);
 
 extern template void
-unbindOGArrayData<complex16>(complex16* nativeData, jobject obj);
+unbindOGArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj);
 
 extern template void
-unbindOGArrayData<int>(int* nativeData, jobject obj);
+unbindOGArrayData<jint, jintArray>(jint* nativeData, jobject obj);
 
 /**
- * binds the data in an OGArray class to a T pointer
- * @param T the class of the underlying data
- * @param S the class representation in the pinning call
+ * binds the data in an OGArray class to a nativeT pointer
+ * @param nativeT the type of the native copy of the data
+ * @param javaT the type of the Java data
  * @param obj the object from which the data shall be extracted
  * @param method the method to "get" the native data reference
+ * @return a pointer to a native version of the data
  */
-template <typename T, typename S>
-T* bindPrimitiveArrayData(jobject obj, jmethodID method);
+template <typename nativeT, typename javaT>
+nativeT* bindPrimitiveArrayData(jobject obj, jmethodID method);
 
 extern template real16*
 bindPrimitiveArrayData<real16, jdoubleArray>(jobject obj, jmethodID method);
@@ -57,15 +59,15 @@ extern template int*
 bindPrimitiveArrayData<int, jintArray>(jobject obj, jmethodID method);
 
 /**
- * free (unbind) the data in an OGArray class from a T pointer
- * @param T the class of the nativeData
- * @param S the class representation in the pinning call
+ * free (unbind) the data in an OGArray class from a nativeT pointer
+ * @param nativeT the type of the native copy of the data
+ * @param javaT the type of the Java data
  * @param nativeData the native data to unbind
  * @param obj the java object from which the native data is pinned
  * @param method the method that refers to the pinned data
  */
-template <typename T, typename S>
-void unbindPrimitiveArrayData(T * nativeData, jobject obj, jmethodID method);
+template <typename nativeT, typename javaT>
+void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method);
 
 extern template void
 unbindPrimitiveArrayData<real16, jdoubleArray>(real16* nativeData, jobject obj, jmethodID method);
@@ -74,7 +76,7 @@ extern template void
 unbindPrimitiveArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj, jmethodID method);
 
 extern template void
-unbindPrimitiveArrayData<int, jintArray>(int* nativeData, jobject obj, jmethodID method);
+unbindPrimitiveArrayData<jint, jintArray>(jint* nativeData, jobject obj, jmethodID method);
 
 } // namespace convert
 

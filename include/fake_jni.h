@@ -159,6 +159,23 @@ class JNIEnv_
     {
       return nullptr;
     }
+    virtual double* GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy)
+    {
+      return nullptr;
+    }
+    virtual int* GetIntArrayElements(jintArray SUPPRESS_UNUSED arr, bool SUPPRESS_UNUSED *isCopy)
+    {
+      return nullptr;
+    }
+    virtual void ReleaseDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, double SUPPRESS_UNUSED *nativeArr, int SUPPRESS_UNUSED mode)
+    {
+
+    }
+    virtual void ReleaseIntArrayElements(jintArray SUPPRESS_UNUSED arr, int SUPPRESS_UNUSED *nativeArr, int SUPPRESS_UNUSED mode)
+    {
+
+    }
+
     virtual void ReleasePrimitiveArrayCritical(jarray SUPPRESS_UNUSED array, void SUPPRESS_UNUSED *carray, SUPPRESS_UNUSED jint mode)
     {
       
