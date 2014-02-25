@@ -44,4 +44,10 @@ jar_native_multitarget_library(ogblas TARGETS ${TARGET_TYPES})
 
 jar_native_multitarget_library(ogxerbla TARGETS ${TARGET_TYPES})
 
+if(WIN32)
+  windows_import_external_native_multitarget_library(oglapack TARGETS ${TARGET_TYPES})
+  windows_import_external_native_multitarget_library(ogblas TARGETS ${TARGET_TYPES})
+  windows_import_external_native_multitarget_library(ogxerbla TARGETS ${TARGET_TYPES})
+endif()
+
 add_subdirectory(test)
