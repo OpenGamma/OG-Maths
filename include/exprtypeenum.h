@@ -42,6 +42,7 @@ typedef enum
 
   COPY_ENUM            = 0X010DL ,
   SELECTRESULT_ENUM    = 0X010FL ,
+  NORM2_ENUM           = 0X0115L ,
 #include "exprenum.hh"
 } ExprType_t;
 

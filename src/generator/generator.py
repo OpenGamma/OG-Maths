@@ -97,12 +97,15 @@ def main(args):
     """Entry point if run on the command line"""
     with open(args.output, 'w') as f:
         if args.runners_hh:
+            nodes.append(UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2'))
             code = Runners(nodes).header
         elif args.runners_cc:
             code = Runners(nodes).source
         elif args.dispatch_hh:
+            nodes.append(UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2'))
             code = Dispatch(terminals, nodes).header
         elif args.dispatch_cc:
+            nodes.append(UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2'))
             code = Dispatch(terminals, nodes).source
         elif args.expression_hh:
             code = Expressions(nodes).header
@@ -115,6 +118,7 @@ def main(args):
         elif args.exprenum_hh:
             code = ExprEnums(nodes).code
         elif args.createexpr_cc:
+            nodes.append(UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2'))
             code = CreateExpressions(terminals + nodes).source
         f.writelines(code)
 

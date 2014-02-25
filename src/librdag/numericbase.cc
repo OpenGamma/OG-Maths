@@ -34,6 +34,12 @@ OGNumeric::asSELECTRESULT() const
   return nullptr;
 }
 
+const NORM2*
+OGNumeric::asNORM2() const
+{
+  return nullptr;
+}
+
 const OGExpr*
 OGNumeric::asOGExpr() const
 {
