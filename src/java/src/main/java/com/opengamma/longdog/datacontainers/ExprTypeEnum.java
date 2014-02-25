@@ -35,6 +35,8 @@ public enum ExprTypeEnum {
   // Non-generated nodes
   COPY         (0x0101L),
   SELECTRESULT (0x0107L),
+  NORM2        (0x0115L),
+
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
   ABS (0X0175L),
   ACOS (0X017BL),

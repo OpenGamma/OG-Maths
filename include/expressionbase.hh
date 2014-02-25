@@ -87,7 +87,15 @@ class SELECTRESULT: public OGBinaryExpr
     virtual ExprType_t getType() const override;
 };
 
-
+class NORM2: public OGUnaryExpr
+{
+  public:
+    NORM2(ArgContainer *args);
+    virtual OGNumeric* copy() const override;
+    virtual const NORM2* asNORM2() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+};
 
 } // namespace librdag
 
