@@ -4,7 +4,7 @@
  * Please see distribution for license.
  */
 
-package com.opengamma.longdog.materialisers;
+package com.opengamma.longdog.testnodes;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -14,13 +14,14 @@ import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
 import com.opengamma.longdog.exceptions.MathsException;
 import com.opengamma.longdog.helpers.FuzzyEquals;
+import com.opengamma.longdog.materialisers.Materialisers;
 import com.opengamma.longdog.nodes.NORM2;
 
 public class TestNorm2Materialise {
 
   @DataProvider
   public Object[][] dataContainer() {
-    Object[][] obj = new Object[5][2];
+    Object[][] obj = new Object[6][2];
 
     obj[0][0] = new NORM2(new OGRealScalar(1.0));
     obj[0][1] = new OGRealScalar(1.0);
@@ -36,6 +37,10 @@ public class TestNorm2Materialise {
 
     obj[4][0] = new NORM2(new OGRealDenseMatrix(new double[][] { { 1, 2, 3 } }));
     obj[4][1] = new OGRealScalar(3.74165738677394);
+
+    obj[5][0] = new NORM2(new OGRealDenseMatrix(new double[][] {{1,2,3},{4,5,6},{7,8,9},{10,11,12}}));
+    obj[5][1] = new OGRealScalar(25.4624074360364);
+
     return obj;
   };
 

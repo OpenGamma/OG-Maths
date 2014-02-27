@@ -14,7 +14,7 @@ from expression import Expressions, Numeric
 from enums import ExprEnums
 from createexpressions import CreateExpressions
 
-# The list of nodes to generate.
+# The list of nodes to generate FULLY.
 # These must be in the same order as in the Java ExprTypeEnum, otherwise the
 # enum values won't match up.
 nodes = [ UnimplementedUnary('ABS'),
@@ -63,6 +63,11 @@ nodes = [ UnimplementedUnary('ABS'),
           UnimplementedBinary('VERTCAT'),
           UnimplementedBinary('DOT') ]
 
+# The list of nodes to generate headers and wiring for, but not the implementations
+custom_nodes = [
+                UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2')
+               ]
+
 # The list of terminals
 terminals = [ Terminal('Real', 'Scalar'),
               Terminal('Complex', 'Scalar'),
@@ -97,16 +102,13 @@ def main(args):
     """Entry point if run on the command line"""
     with open(args.output, 'w') as f:
         if args.runners_hh:
-            nodes.append(UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2'))
-            code = Runners(nodes).header
+            code = Runners(nodes + custom_nodes).header
         elif args.runners_cc:
             code = Runners(nodes).source
         elif args.dispatch_hh:
-            nodes.append(UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2'))
-            code = Dispatch(terminals, nodes).header
+            code = Dispatch(terminals, nodes + custom_nodes).header
         elif args.dispatch_cc:
-            nodes.append(UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2'))
-            code = Dispatch(terminals, nodes).source
+            code = Dispatch(terminals, nodes + custom_nodes).source
         elif args.expression_hh:
             code = Expressions(nodes).header
         elif args.expression_cc:
@@ -118,8 +120,7 @@ def main(args):
         elif args.exprenum_hh:
             code = ExprEnums(nodes).code
         elif args.createexpr_cc:
-            nodes.append(UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2'))
-            code = CreateExpressions(terminals + nodes).source
+            code = CreateExpressions(terminals + nodes + custom_nodes).source
         f.writelines(code)
 
 if __name__ == '__main__':
