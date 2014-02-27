@@ -84,12 +84,12 @@ macro(windows_import_external_native_library lib)
     endif()
 
     set(_src ${_location})
-    set(_dest ${CMAKE_BINARY_DIR}/${_output_name})
+    set(_dest ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${_output_name})
     add_custom_command(OUTPUT  ${_dest}
                       COMMAND cmake -E copy_if_different
                       ARGS    ${_src} ${_dest}
                       DEPENDS ${lib}
-                      COMMENT "Installing ${_output_name} into ${CMAKE_BINARY_DIR} directory")
+                      COMMENT "Installing ${_output_name} into ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} directory")
     set(_target ${_output_name}_import_external_native_library)
     add_custom_target(${_target} ALL DEPENDS ${_dest})
     list(APPEND imported_external_native_library ${_target})
