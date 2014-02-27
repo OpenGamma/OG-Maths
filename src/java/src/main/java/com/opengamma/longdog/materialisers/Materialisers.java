@@ -68,7 +68,7 @@ public class Materialisers {
   }
 
   /**
-   * Naïvely print the tree associated with arg
+   * Naively print the tree associated with arg
    * @param arg the root of the tree
    * @param buf a buffer in which to hold the printed tree
    * @param level the level at which to start indents (usually 0)
