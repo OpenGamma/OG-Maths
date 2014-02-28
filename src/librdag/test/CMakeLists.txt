@@ -19,3 +19,4 @@ foreach(TEST ${TESTS})
                         TARGETS ${TARGET_TYPES})
 endforeach()
 
+add_subdirectory(nodes)
