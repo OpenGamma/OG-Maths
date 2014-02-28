@@ -17,6 +17,7 @@ add_multitarget_library(testhelper
                         VERSION ${longdog_VERSION}
                         SOVERSION ${longdog_VERSION_MAJOR}
                         SOURCES ${TEST_HELPER_SOURCES}
+                        LINK_MULTILIBRARIES rdag
                         TARGETS ${TARGET_TYPES})
 
 set(TESTS
@@ -27,6 +28,6 @@ set(TESTS
 foreach(TEST ${TESTS})
   add_multitarget_gtest(${TEST}
                         SOURCES ${TEST}.cc
-                        LINK_LIBRARIES rdag testhelper
+                        LINK_LIBRARIES testhelper rdag
                         TARGETS ${TARGET_TYPES})
 endforeach()
