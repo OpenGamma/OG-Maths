@@ -28,13 +28,28 @@ OGExpr::OGExpr(ArgContainer *args)
   this->_regs = new RegContainer();
 }
 
+OGExpr::OGExpr() {}
+
 OGExpr::~OGExpr()
 {
   delete this->_args;
   delete this->_regs;
 }
 
-const ArgContainer*
+void
+OGExpr::setArgContainer(ArgContainer * arg )
+{
+  this->_args = arg;
+}
+
+void
+OGExpr::setRegContainer(RegContainer * reg)
+{
+  this->_regs = reg;
+}
+
+
+ArgContainer*
 OGExpr::getArgs() const
 {
   return this->_args;
@@ -58,7 +73,7 @@ OGExpr::asOGExpr() const
   return this;
 }
 
-const RegContainer *
+RegContainer *
 OGExpr::getRegs() const
 {
   return this->_regs;
@@ -73,6 +88,8 @@ void OGExpr::debug_print() const
 /**
  * Things that extend OGExpr
  */
+
+OGUnaryExpr::OGUnaryExpr(): OGExpr() {}
 
 OGUnaryExpr::OGUnaryExpr(ArgContainer* args): OGExpr(args)
 {
@@ -97,8 +114,6 @@ OGBinaryExpr::OGBinaryExpr(ArgContainer* args): OGExpr(args)
 /**
  * COPY node
  */
-COPY::COPY(ArgContainer* args): OGUnaryExpr(args) {}
-
 OGNumeric*
 COPY::copy() const
 {
@@ -163,8 +178,6 @@ SELECTRESULT::getType() const
 /**
  * NORM2 node
  */
-NORM2::NORM2(ArgContainer* args): OGUnaryExpr(args) {}
-
 OGNumeric*
 NORM2::copy() const
 {
