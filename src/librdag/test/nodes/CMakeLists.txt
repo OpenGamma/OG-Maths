@@ -18,6 +18,7 @@ add_multitarget_library(testhelper
                         SOVERSION ${longdog_VERSION_MAJOR}
                         SOURCES ${TEST_HELPER_SOURCES}
                         LINK_MULTILIBRARIES rdag
+                        LINK_LIBRARIES gtest gtest_main pthread
                         TARGETS ${TARGET_TYPES})
 
 set(TESTS
