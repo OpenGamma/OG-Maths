@@ -8,6 +8,10 @@
 #define _TESTNODES_HH
 
 #include "terminal.hh"
+#include "expressionbase.hh"
+#include "execution.hh"
+#include "dispatch.hh"
+#include "containers.hh"
 
 using namespace std;
 using namespace librdag;
