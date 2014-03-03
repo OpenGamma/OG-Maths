@@ -20,21 +20,29 @@ function(add_multitarget_library _TARGET_NAME)
   cmake_parse_arguments(MTLIB
                         ""
                         "VERSION;SOVERSION"
-                        "SOURCES;TARGETS;LINK_LIBRARIES;COMPILE_DEFINITIONS;DEPENDS"
+                        "SOURCES;TARGETS;LINK_MULTILIBRARIES;LINK_LIBRARIES;COMPILE_DEFINITIONS;MULTI_DEPENDS;DEPENDS"
                         ${ARGN})
   foreach(TARGET ${MTLIB_TARGETS})
     set(LIBNAME ${_TARGET_NAME}_${TARGET})
     add_library(${LIBNAME} SHARED ${MTLIB_SOURCES})
-    set_target_properties(${LIBNAME} PROPERTIES
+    set_target_properties(
+                          ${LIBNAME} PROPERTIES
                           VERSION ${MTLIB_VERSION}
                           SOVERSION ${MTLIB_SOVERSION}
                           COMPILE_FLAGS ${OPT_FLAGS_${TARGET}}
-                          LINK_FLAGS ${OPT_FLAGS_${TARGET}})
-    foreach(LINK_LIB ${MTLIB_LINK_LIBRARIES})
+                          LINK_FLAGS ${OPT_FLAGS_${TARGET}}
+                          )
+    foreach(LINK_LIB ${MTLIB_LINK_MULTILIBRARIES})
       target_link_libraries(${LIBNAME} ${LINK_LIB}_${TARGET})
+    endforeach()
+    foreach(LINK_LIB ${MTLIB_LINK_LIBRARIES})
+      target_link_libraries(${LIBNAME} ${LINK_LIB})
     endforeach()
     foreach(COMPILE_DEFINITION ${MTLIB_COMPILE_DEFINITIONS})
       set_target_properties(${LIBNAME} PROPERTIES COMPILE_DEFINITIONS ${COMPILE_DEFINITION})
+    endforeach()
+    foreach(DEPENDENCY ${MTLIB_MULTI_DEPENDS})
+      add_dependencies(${LIBNAME} ${DEPENDENCY}_${TARGET})
     endforeach()
     foreach(DEPENDENCY ${MTLIB_DEPENDS})
       add_dependencies(${LIBNAME} ${DEPENDENCY})

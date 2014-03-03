@@ -30,6 +30,18 @@ bool isMatrix(const OGTerminal * terminal)
   return !isScalar(terminal);
 }
 
+// not sure whether is makes more sense for vectors to include scalar contexts or not
+// presently scalar is not a member of vector
+bool isVector(const OGTerminal * terminal)
+{
+  if(isScalar(terminal)) return false;
+  if((terminal->getRows()==1 && terminal->getCols() > 1) ||(terminal->getRows() > 1 && terminal->getCols() == 1))
+  {
+    return true;
+  }
+  return false;
+}
+
 bool isReal(const OGTerminal * terminal)
 {
   if(terminal->asOGRealScalar()!=nullptr)

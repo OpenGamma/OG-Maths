@@ -157,6 +157,7 @@ class Visitor;
 class OGExpr;
 class COPY;
 class SELECTRESULT;
+class NORM2;
 %(fwd_decls)s
 
 /*
@@ -172,6 +173,7 @@ class OGNumeric: private Uncopyable
     virtual const OGExpr* asOGExpr() const;
     virtual const COPY* asCOPY() const;
     virtual const SELECTRESULT* asSELECTRESULT() const;
+    virtual const NORM2* asNORM2() const;
 %(cast_methods)s
     virtual const OGTerminal* asOGTerminal() const;
     virtual const OGRealScalar* asOGRealScalar() const;
