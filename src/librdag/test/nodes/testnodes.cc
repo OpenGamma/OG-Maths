@@ -121,24 +121,13 @@ CheckUnary<T>::debug_print()
 
 template<typename T> UnaryOpTest<T>::UnaryOpTest(): ::testing::TestWithParam<CheckUnary<T> *>::TestWithParam() {}
 
-template<typename T> UnaryOpTest<T>::~UnaryOpTest()
-{
-  delete _checker;
-}
+template<typename T> UnaryOpTest<T>::~UnaryOpTest() {}
 
 template<typename T> void
-UnaryOpTest<T>::SetUp()
-{
-  _checker = this->::testing::TestWithParam<CheckUnary<T> *>::GetParam();
-  _checker->execute();
-}
+UnaryOpTest<T>::SetUp() {}
 
 template<typename T> void
-UnaryOpTest<T>::TearDown()
-{
-    delete _checker;
-    _checker = nullptr;
-}
+UnaryOpTest<T>::TearDown() {}
 
 template class CheckUnary<NORM2>;
 template class UnaryOpTest<NORM2>;

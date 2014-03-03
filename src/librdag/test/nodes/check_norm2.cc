@@ -25,7 +25,9 @@ class norm2Test: public UnaryOpTest<NORM2>{};
 
 TEST_P(norm2Test, SimpleAssertResultTrue) {
   CheckUnary<NORM2> * impl = GetParam();
+  impl->execute();
   ASSERT_TRUE(impl->resultCorrect());
+  delete impl;
 }
 
 INSTANTIATE_TEST_CASE_P(NORM2Tests,norm2Test,

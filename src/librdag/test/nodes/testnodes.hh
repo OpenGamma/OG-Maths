@@ -131,8 +131,6 @@ template <typename T> class UnaryOpTest : public ::testing::TestWithParam<CheckU
   virtual ~UnaryOpTest();
   virtual void SetUp();
   virtual void TearDown();
- protected:
-  CheckUnary<T> * _checker;
 };
 
 }
