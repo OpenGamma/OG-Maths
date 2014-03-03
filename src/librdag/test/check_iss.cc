@@ -30,6 +30,10 @@ class issTest : public ::testing::Test
     OGComplexSparseMatrix * _ogcomplexsparsematrix = nullptr;
     OGOwningRealMatrix * _ogowningrealmatrix = nullptr;
     OGOwningComplexMatrix * _ogowningcomplexmatrix = nullptr;
+    OGOwningRealMatrix * _ogrealvector1 = nullptr;
+    OGOwningRealMatrix * _ogrealvector2 = nullptr;
+    OGOwningComplexMatrix * _ogcomplexvector1 = nullptr;
+    OGOwningComplexMatrix * _ogcomplexvector2 = nullptr;
     real16 * r_data;
     complex16 * c_data;
     int * colPtr;
@@ -52,6 +56,10 @@ class issTest : public ::testing::Test
     _ogcomplexsparsematrix = new OGComplexSparseMatrix(colPtr,rowIdx,c_data,1,1);
     _ogowningrealmatrix = new OGOwningRealMatrix(new real16[1]{1},1,1);
     _ogowningcomplexmatrix = new OGOwningComplexMatrix(new complex16[1]{{1,2}},1,1);
+    _ogrealvector1 = new OGOwningRealMatrix(new real16[3]{1,2,3},1,3);
+    _ogrealvector2 = new OGOwningRealMatrix(new real16[3]{1,2,3},3,1);
+    _ogcomplexvector1 = new OGOwningComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},1,3);
+    _ogcomplexvector2 = new OGOwningComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},3,1);
   }
 
   virtual void TearDown()
@@ -72,6 +80,10 @@ class issTest : public ::testing::Test
     delete _ogcomplexsparsematrix;
     delete _ogowningrealmatrix;
     delete _ogowningcomplexmatrix;
+    delete _ogrealvector1;
+    delete _ogrealvector2;
+    delete _ogcomplexvector1;
+    delete _ogcomplexvector2;
   }
 };
 
@@ -123,6 +135,27 @@ TEST_F(issTest, isScalar)
   ASSERT_FALSE(isScalar(_ogowningrealmatrix));
   ASSERT_FALSE(isScalar(_ogowningcomplexmatrix));
 }
+
+TEST_F(issTest, isVector)
+{
+  ASSERT_FALSE(isVector(_ogrealscalar));
+  ASSERT_FALSE(isVector(_ogcomplexscalar));
+  ASSERT_FALSE(isVector(_ogintegerscalar));
+  ASSERT_FALSE(isVector(_ogrealmatrix));
+  ASSERT_FALSE(isVector(_ogcomplexmatrix));
+  ASSERT_FALSE(isVector(_oglogicalmatrix));
+  ASSERT_FALSE(isVector(_ogrealdiagonalmatrix));
+  ASSERT_FALSE(isVector(_ogcomplexdiagonalmatrix));
+  ASSERT_FALSE(isVector(_ogrealsparsematrix));
+  ASSERT_FALSE(isVector(_ogcomplexsparsematrix));
+  ASSERT_FALSE(isVector(_ogowningrealmatrix));
+  ASSERT_FALSE(isVector(_ogowningcomplexmatrix));
+  ASSERT_TRUE(isVector(_ogrealvector1));
+  ASSERT_TRUE(isVector(_ogrealvector2));
+  ASSERT_TRUE(isVector(_ogcomplexvector1));
+  ASSERT_TRUE(isVector(_ogcomplexvector2));
+}
+
 TEST_F(issTest, isMatrix)
 {
   ASSERT_FALSE(isMatrix(_ogrealscalar));

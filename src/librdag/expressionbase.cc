@@ -160,4 +160,34 @@ SELECTRESULT::getType() const
 }
 
 
+/**
+ * NORM2 node
+ */
+NORM2::NORM2(ArgContainer* args): OGUnaryExpr(args) {}
+
+OGNumeric*
+NORM2::copy() const
+{
+  return new NORM2(this->getArgs()->copy());
+}
+
+const NORM2*
+NORM2::asNORM2() const
+{
+  return this;
+}
+
+void
+NORM2::debug_print() const
+{
+        cout << "NORM2 base class" << endl;
+}
+
+ExprType_t
+NORM2::getType() const
+{
+  return NORM2_ENUM;
+}
+
+
 } // namespace librdag

@@ -13,6 +13,7 @@ namespace librdag {
 
 bool isScalar(const OGTerminal *);
 bool isMatrix(const OGTerminal *);
+bool isVector(const OGTerminal *);
 bool isReal(const OGTerminal *);
 bool isComplex(const OGTerminal *);
 
