@@ -16,9 +16,15 @@
 using namespace std;
 using namespace librdag;
 
+/**
+ * The namespace used for testing nodes
+ */
 namespace testnodes {
 
-#define NODE_TEST_SETUP(__NODE)\
+/**
+ * Use to set up a parameterised test for a unary node.
+ */
+#define UNARY_NODE_TEST_SETUP(__NODE)\
 class __NODE##TEST: public UnaryOpTest<__NODE>{};\
 TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
   CheckUnary<NORM2> * impl = GetParam();\
@@ -28,9 +34,14 @@ TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
 }
 
 
+/**
+ * Instantiate a set of parameterised noes tests (set up using the *_NODE_TEST_SETUP macro)
+ */
 #define INSTANTIATE_NODE_TEST_CASE_P(prefix, test_case_name, generator) INSTANTIATE_TEST_CASE_P(prefix, test_case_name##TEST, generator)
 
-
+/**
+ * Container for results
+ */
 typedef pair<const OGNumeric* , const OGNumeric* > ResultPair;
 
 /**
