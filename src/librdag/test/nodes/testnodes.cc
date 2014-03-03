@@ -126,7 +126,7 @@ template<typename T> UnaryOpTest<T>::~UnaryOpTest()
 template<typename T> void
 UnaryOpTest<T>::SetUp()
 {
-  _checker = this->GetParam();
+  _checker = this->::testing::TestWithParam<CheckUnary<T> *>::GetParam();
   _checker->execute();
 }
 
