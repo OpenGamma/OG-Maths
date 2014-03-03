@@ -21,16 +21,9 @@ using ::testing::Values;
  * Check NORM2 node behaves
  */
 
-class norm2Test: public UnaryOpTest<NORM2>{};
+NODE_TEST_SETUP(NORM2)
 
-TEST_P(norm2Test, SimpleAssertResultTrue) {
-  CheckUnary<NORM2> * impl = GetParam();
-  impl->execute();
-  ASSERT_TRUE(impl->resultCorrect());
-  delete impl;
-}
-
-INSTANTIATE_TEST_CASE_P(NORM2Tests,norm2Test,
+INSTANTIATE_NODE_TEST_CASE_P(NORM2Tests,NORM2,
   Values
   (
   new CheckUnary<NORM2>( new OGRealScalar(1.0), new OGRealScalar(1.0), MATHSEQUAL),

@@ -18,6 +18,19 @@ using namespace librdag;
 
 namespace testnodes {
 
+#define NODE_TEST_SETUP(__NODE)\
+class __NODE##TEST: public UnaryOpTest<__NODE>{};\
+TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
+  CheckUnary<NORM2> * impl = GetParam();\
+  impl->execute();\
+  ASSERT_TRUE(impl->resultCorrect());\
+  delete impl;\
+}
+
+
+#define INSTANTIATE_NODE_TEST_CASE_P(prefix, test_case_name, generator) INSTANTIATE_TEST_CASE_P(prefix, test_case_name##TEST, generator)
+
+
 typedef pair<const OGNumeric* , const OGNumeric* > ResultPair;
 
 /**
