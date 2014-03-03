@@ -34,30 +34,13 @@ class OGExpr: public OGNumeric
 {
   public:
     virtual ~OGExpr();
-    ArgContainer* getArgs() const;
+    const ArgContainer* getArgs() const;
     size_t getNArgs() const;
     virtual const OGExpr* asOGExpr() const override;
     virtual void debug_print() const override;
     virtual void accept(Visitor &v) const override;
-    virtual RegContainer * getRegs() const;
-    /**
-     * Construct an expression node only.
-     * NOTE: This merely constructs the object without wiring anything in.
-     * Users need to wire up the \a ArgContainer and \a RegContainer manually.
-     */
-    OGExpr();
-    /**
-     * Set the ArgContainer member of this class as \a arg.
-     */
-    void setArgContainer(ArgContainer * arg);
-    /**
-     * Set the ArgContainer member of this class as \a reg.
-     */
-    void setRegContainer(RegContainer * reg);
-    /**
-     * Construct an expression with args
-     * @param args the args
-     */
+    virtual const RegContainer * getRegs() const;
+  protected:
     OGExpr(ArgContainer* args);
   private:
     ArgContainer * _args;
@@ -70,8 +53,7 @@ class OGExpr: public OGNumeric
 
 class OGUnaryExpr: public OGExpr
 {
-  public:
-    OGUnaryExpr();
+  protected:
     OGUnaryExpr(ArgContainer* args);
 };
 
@@ -88,7 +70,7 @@ class OGBinaryExpr : public OGExpr
 class COPY: public OGUnaryExpr
 {
   public:
-    using OGUnaryExpr::OGUnaryExpr;
+    COPY(ArgContainer *args);
     virtual OGNumeric* copy() const override;
     virtual const COPY* asCOPY() const override;
     virtual void debug_print() const override;
@@ -108,7 +90,7 @@ class SELECTRESULT: public OGBinaryExpr
 class NORM2: public OGUnaryExpr
 {
   public:
-    using OGUnaryExpr::OGUnaryExpr;
+    NORM2(ArgContainer *args);
     virtual OGNumeric* copy() const override;
     virtual const NORM2* asNORM2() const override;
     virtual void debug_print() const override;
