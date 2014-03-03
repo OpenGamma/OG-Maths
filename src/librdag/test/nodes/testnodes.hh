@@ -127,6 +127,7 @@ template <typename T> class CheckUnary: public CheckNode<T>
 template <typename T> class UnaryOpTest : public ::testing::TestWithParam<CheckUnary<T> *>
 {
  public:
+  UnaryOpTest();
   virtual ~UnaryOpTest();
   virtual void SetUp();
   virtual void TearDown();

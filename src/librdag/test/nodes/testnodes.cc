@@ -118,6 +118,9 @@ CheckUnary<T>::debug_print()
 }
 
 // UnaryOpTest impls
+
+template<typename T> UnaryOpTest<T>::UnaryOpTest(): ::testing::TestWithParam<CheckUnary<T> *>::TestWithParam() {}
+
 template<typename T> UnaryOpTest<T>::~UnaryOpTest()
 {
   delete _checker;
