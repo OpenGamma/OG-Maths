@@ -18,32 +18,30 @@ using namespace librdag;
 namespace testnodes {
 
 // Check node impl
-CheckNode::CheckNode(OGExpr * node, OGNumeric * expected, CompareMethod comparisonMethod)
+template<typename T> CheckNode<T>::CheckNode(OGNumeric * expected, CompareMethod comparisonMethod)
 {
-  _node = node;
   _expected = expected;
   _comparisonMethod = comparisonMethod;
 }
 
-CheckNode::~CheckNode()
+template<typename T> CheckNode<T>::~CheckNode()
 {
-  delete this->_node;
   delete this->_expected;
 }
 
-OGExpr *
-CheckNode::getNode() const
+template<typename T> T *
+CheckNode<T>::getNode() const
 {
   return this->_node;
 }
 
-const OGNumeric *
-CheckNode::getExpected() const
+template<typename T> const OGNumeric *
+CheckNode<T>::getExpected() const
 {
   return this->_expected;
 }
 
-bool CheckNode::resultCorrect() const
+template<typename T> bool CheckNode<T>::resultCorrect() const
 {
   if(this->getComparisonMethod() == MATHSEQUAL)
   {
@@ -55,41 +53,37 @@ bool CheckNode::resultCorrect() const
   }
 }
 
-CompareMethod
-CheckNode::getComparisonMethod() const
+template<typename T> CompareMethod
+CheckNode<T>::getComparisonMethod() const
 {
     return this->_comparisonMethod;
 }
 
 
 // CheckUnary impls
-CheckUnary::CheckUnary(OGExpr * node, OGNumeric * input, OGNumeric * expected, CompareMethod comparisonMethod):CheckNode(node, expected, comparisonMethod)
+template<typename T> CheckUnary<T>::CheckUnary(OGNumeric * input, OGNumeric * expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
 {
   _input = input;
 }
 
-CheckUnary::~CheckUnary()
+template<typename T> CheckUnary<T>::~CheckUnary()
 {
+  delete this->_resultPair->first; // the first element is a copy of the "answer"
   delete this->_resultPair;
 }
 
-ResultPair *
-CheckUnary::getResultPair() const
+template<typename T> ResultPair *
+CheckUnary<T>::getResultPair() const
 {
   return this->_resultPair;
 }
 
-
-
-void
-CheckUnary::execute()
+template<typename T> void
+CheckUnary<T>::execute()
 {
   ArgContainer * args = new ArgContainer();
   args->push_back(_input);
-  OGExpr * node = this->getNode();
-  node->setArgContainer(args);
-  RegContainer * regs = new RegContainer();
-  node->setRegContainer(regs);
+  T * node = new T(args);
   ExecutionList * el1 = new ExecutionList(node);
   for (auto it = el1->begin(); it != el1->end(); ++it)
   {
@@ -97,46 +91,53 @@ CheckUnary::execute()
     v->dispatch(*it);
     delete v;
   }
+  const RegContainer * regs = node->getRegs();
   const OGNumeric * answer = (*regs)[0];
-  this->_resultPair = new ResultPair(answer, this->getExpected());
-  // regs and args cleaned up by CheckUnary base class dtor
+  // we take a copy of answer so node can be deleted
+  this->_resultPair = new ResultPair(answer->copy(), this->getExpected());
   delete el1;
+  delete node;
 }
 
-bool
-CheckUnary::comparesCorrectlyTypeInvariant() const
+template<typename T> bool
+CheckUnary<T>::comparesCorrectlyTypeInvariant() const
 {
   return (*(this->getResultPair()->first->asOGTerminal())%*(this->getResultPair()->second->asOGTerminal()));
 }
 
-bool
-CheckUnary::comparesCorrectly() const
+template<typename T> bool
+CheckUnary<T>::comparesCorrectly() const
 {
   return (*(this->getResultPair()->first->asOGTerminal())==~*(this->getResultPair()->second->asOGTerminal()));
 }
 
+template<typename T> void
+CheckUnary<T>::debug_print()
+{
+  _input->debug_print();
+}
+
 // UnaryOpTest impls
-UnaryOpTest::~UnaryOpTest()
+template<typename T> UnaryOpTest<T>::~UnaryOpTest()
 {
   delete _checker;
 }
 
-void
-UnaryOpTest::SetUp()
+template<typename T> void
+UnaryOpTest<T>::SetUp()
 {
-  _checker =  GetParam();
+  _checker = this->GetParam();
   _checker->execute();
 }
 
-void UnaryOpTest::TearDown()
+template<typename T> void
+UnaryOpTest<T>::TearDown()
 {
     delete _checker;
     _checker = nullptr;
 }
 
-TEST_P(UnaryOpTest, SimpleAssertResultTrue) {
-  CheckUnary * impl = GetParam();
-  ASSERT_TRUE(impl->resultCorrect());
-}
+template class CheckUnary<NORM2>;
+template class UnaryOpTest<NORM2>;
 
 }

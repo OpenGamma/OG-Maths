@@ -37,17 +37,17 @@ enum CompareMethod
 
 /**
  * Class used to compare node results, the class is just a view on memory.
+ * @param T the node to be checked.
  */
-class CheckNode
+template <typename T> class CheckNode
 {
   public:
       /**
        * Construct with test node.
-       * @param node the node to be checked.
        * @param expected the expected result.
        * @param comparisonMethod how the results should be compared.
        */
-      CheckNode(OGExpr * node, OGNumeric * expected, CompareMethod comparisonMethod);
+      CheckNode(OGNumeric * expected, CompareMethod comparisonMethod);
       /**
        * Standard destructor
        */
@@ -65,19 +65,19 @@ class CheckNode
       /**
        * Checks if the result is correct using the method as specified in \a comparisonMethod.
        */
-      bool resultCorrect() const;
+      virtual bool resultCorrect() const;
       /**
        * Gets the node.
        */
-      OGExpr * getNode() const;
+      virtual T * getNode() const;
       /**
        * Gets the expected value.
        */
-      const OGNumeric * getExpected() const;
+      virtual const OGNumeric * getExpected() const;
       /**
        * Gets the comparison method.
        */
-      CompareMethod getComparisonMethod() const;
+      virtual CompareMethod getComparisonMethod() const;
 
   protected:
     /**
@@ -85,34 +85,36 @@ class CheckNode
      */
     virtual void execute() = 0;
   private:
-    OGExpr * _node;
+    T * _node;
     const OGNumeric * _expected;
     CompareMethod _comparisonMethod;
 };
 
 /**
  * Class used for checking unary nodes execute as expected.
+ * @param T the node to be checked.
  */
-class CheckUnary: public CheckNode
+template <typename T> class CheckUnary: public CheckNode<T>
 {
   public:
     /**
      * Construct a unary node check.
-     * @param node the node to check.
      * @param input the input value.
      * @param expected the expected value.
      * @param comparisonMethod how the results should be compared.
      */
-    CheckUnary(OGExpr * node, OGNumeric * input, OGNumeric * expected, CompareMethod comparisonMethod);
+    CheckUnary(OGNumeric * input, OGNumeric * expected, CompareMethod comparisonMethod);
     ~CheckUnary();
-    bool comparesCorrectlyTypeInvariant() const override;
-    bool comparesCorrectly() const override;
+    virtual bool comparesCorrectlyTypeInvariant() const override;
+    virtual bool comparesCorrectly() const override;
 
     /**
      * Get the ResultPair
      */
     ResultPair * getResultPair() const;
-    void execute() override;
+    virtual void execute() override;
+
+    virtual void debug_print();
 
   private:
     ResultPair * _resultPair;
@@ -122,14 +124,14 @@ class CheckUnary: public CheckNode
 /**
  * Unary Operation test class
  */
-class UnaryOpTest : public ::testing::TestWithParam<CheckUnary *>
+template <typename T> class UnaryOpTest : public ::testing::TestWithParam<CheckUnary<T> *>
 {
  public:
   virtual ~UnaryOpTest();
   virtual void SetUp();
   virtual void TearDown();
  protected:
-  CheckUnary * _checker;
+  CheckUnary<T> * _checker;
 };
 
 }
