@@ -38,7 +38,7 @@ jint* getArrayFromJava(JNIEnv *env, jintArray arr)
   jint* p = env->GetIntArrayElements(arr, NULL);
   if (p == nullptr)
   {
-    throw convert_error("Null pointer returned by GetDoubleArrayElements");
+    throw convert_error("Null pointer returned by GetIntArrayElements");
   }
   return p;
 }
