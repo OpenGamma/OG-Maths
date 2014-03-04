@@ -117,6 +117,9 @@ TEST(JTerminals, Test_JOGRealScalar_ctor)
     JOGRealScalar * scalar = new JOGRealScalar(obj);
     ASSERT_TRUE(scalar->getValue()==value);
 
+    // debug print for coverage purposes
+    scalar->debug_print();
+
     delete scalar;
     delete obj;
     delete env;
@@ -135,6 +138,9 @@ TEST(JTerminals, Test_JOGComplexScalar_ctor)
     JOGComplexScalar * scalar = new JOGComplexScalar(obj);
     ASSERT_TRUE(scalar->getValue()==value);
 
+    // debug print for coverage purposes
+    scalar->debug_print();
+
     delete scalar;
     delete obj;
     delete env;
@@ -152,6 +158,9 @@ TEST(JTerminals, Test_JOGIntegerScalar_ctor)
     jobject obj =  new _jobject();
     JOGIntegerScalar * scalar = new JOGIntegerScalar(obj);
     ASSERT_TRUE(scalar->getValue()==value);
+
+    // debug print for coverage purposes
+    scalar->debug_print();
 
     delete scalar;
     delete obj;
