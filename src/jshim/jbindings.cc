@@ -79,11 +79,11 @@ void releaseArrayFromJava(JNIEnv* env, jint* nativeArr, jintArray arr)
 
 template <typename nativeT, typename javaT> nativeT * bindPrimitiveArrayData(jobject obj, jmethodID method)
 {
-  if(!obj)
+  if(obj == nullptr)
   {
     throw convert_error("bindPrimitiveArrayData: null obj");
   }
-  if(!method)
+  if(method == nullptr)
   {
     throw convert_error("bindPrimitiveArrayData: null method");
   }
@@ -97,7 +97,7 @@ template <typename nativeT, typename javaT> nativeT * bindPrimitiveArrayData(job
   }
   jobject dataobj = NULL;
   dataobj = env->CallObjectMethod(obj, method);
-  if(!dataobj)
+  if(dataobj == nullptr)
   {
     throw convert_error("CallObjectMethod failed");
   }
@@ -121,15 +121,15 @@ bindPrimitiveArrayData<jint, jintArray>(jobject obj, jmethodID method);
 
 template <typename nativeT, typename javaT> void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method)
 {
-  if(!nativeData)
+  if(nativeData == nullptr)
   {
     throw convert_error("unbindPrimitiveArrayData: null nativeData");
   }
-  if(!obj)
+  if(obj == nullptr)
   {
     throw convert_error("unbindPrimitiveArrayData: null obj");
   }
-  if(!method)
+  if(method == nullptr)
   {
     throw convert_error("unbindPrimitiveArrayData: null method");
   }
@@ -142,6 +142,10 @@ template <typename nativeT, typename javaT> void unbindPrimitiveArrayData(native
     throw convert_error("Thread attach failed");
   }
   jobject dataobj = env->CallObjectMethod(obj, method);
+  if(dataobj == nullptr)
+  {
+    throw convert_error("CallObjectMethod failed");
+  }
   javaT * array = reinterpret_cast<javaT *>(&dataobj);
   releaseArrayFromJava<nativeT, javaT>(env, nativeData, *array);
 }
@@ -161,17 +165,7 @@ unbindPrimitiveArrayData<jint, jintArray>(jint* nativeData, jobject obj, jmethod
 
 template <typename nativeT, typename javaT> void unbindOGArrayData(nativeT * nativeData, jobject obj)
 {
-  JNIEnv *env = NULL;
-  jint jStatus = 0;
-  VAL64BIT_PRINT("Unbinding for OGArrayData", obj);
-  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
-  {
-    throw convert_error("Thread attach failed");
-  }
-  jobject dataobj = env->CallObjectMethod(obj, JVMManager::getOGTerminalClazz_getData());
-  javaT * array = reinterpret_cast<javaT *>(&dataobj);
-  releaseArrayFromJava<nativeT, javaT>(env, nativeData, *array);
+  unbindPrimitiveArrayData<nativeT, javaT>(nativeData, obj, JVMManager::getOGTerminalClazz_getData());
 }
 
 template void

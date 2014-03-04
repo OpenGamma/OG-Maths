@@ -206,36 +206,3 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetIntArrayElements)
     delete env;
     delete jvm;
 }
-
-TEST(JTerminals, Test_bindPrimitiveArrayData_bad_obj)
-{
-    real16 value = 1234;
-    Fake_JavaVM * jvm = new Fake_JavaVM();
-    Fake_JNIEnv * env  = new Fake_JNIEnv_for_binding<real16>(value);
-    jvm->setEnv(env);
-    JVMManager::initialize(jvm);
-
-    jobject obj =  nullptr;
-    ASSERT_ANY_THROW(new JOGRealScalar(obj));
-
-    delete obj;
-    delete env;
-    delete jvm;
-}
-
-TEST(JTerminals, Test_bindPrimitiveArrayData_bad_method)
-{
-    jobject obj = new _jobject();
-    class pointless
-    {
-      public:
-        void run(jobject obj)
-        {
-          bindPrimitiveArrayData<real16, jdoubleArray>(obj, nullptr);
-        }
-    };
-    pointless * clazz = new pointless();
-    ASSERT_ANY_THROW(clazz->run(obj));
-    delete obj;
-    delete clazz;
-}
