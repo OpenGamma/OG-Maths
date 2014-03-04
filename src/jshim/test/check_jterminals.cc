@@ -453,7 +453,10 @@ TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
     ASSERT_TRUE(ArrayBitEquals(mat->getColPtr(), idx, 4));
     ASSERT_TRUE(ArrayBitEquals(mat->getRowIdx(), idx, 4));
 
-    // not debug printing as the data pattern is invalid
+    mat->debug_print();
+
+    ASSERT_ANY_THROW(mat->toReal16ArrayOfArrays());
+    ASSERT_ANY_THROW(mat->toComplex16ArrayOfArrays());
 
     delete[] datav;
     delete[] idx;
@@ -482,7 +485,10 @@ TEST(JTerminals, Test_JOGComplexSparseMatrix_ctor)
     ASSERT_TRUE(ArrayBitEquals(mat->getColPtr(), idx, 4));
     ASSERT_TRUE(ArrayBitEquals(mat->getRowIdx(), idx, 4));
 
-    // not debug printing as the data pattern is invalid
+    mat->debug_print();
+
+    ASSERT_ANY_THROW(mat->toReal16ArrayOfArrays());
+    ASSERT_ANY_THROW(mat->toComplex16ArrayOfArrays());
 
     delete[] datav;
     delete[] idx;
