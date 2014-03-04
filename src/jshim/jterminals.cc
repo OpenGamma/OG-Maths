@@ -7,6 +7,7 @@
 #include "jvmmanager.hh"
 #include "jterminals.hh"
 #include "jbindings.hh"
+#include "exceptions.hh"
 
 namespace convert {
 
@@ -15,8 +16,20 @@ namespace convert {
  */
 jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 {
-  JNIEnv *env = NULL;
+  if(id==nullptr)
+  {
+    throw convert_error("Null pointer for method id.");
+  }
+  if(obj==nullptr)
+  {
+    throw convert_error("Null pointer for jobject obj.");
+  }
+  JNIEnv *env = nullptr;
   JVMManager::getEnv((void **)&env);
+  if(env==nullptr)
+  {
+    throw convert_error("Null pointer for env from JVMManager::getEnv.");
+  }
   jint data = 0x7ff00000;
   data = env->CallIntMethod(obj, id);
   return data;

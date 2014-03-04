@@ -13,6 +13,7 @@
 #include <iostream>
 #include "jvmmanager.hh"
 #include "debug.h"
+#include "equals.hh"
 
 using namespace std;
 using namespace convert;
@@ -71,10 +72,9 @@ class Fake_JNIEnv: public JNIEnv
       return _someNonFieldID;
     }
     using JNIEnv::CallIntMethod;
-    virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
-    {
-      return nullptr;
-    }
+    using JNIEnv::CallObjectMethod;
+    using JNIEnv::GetIntArrayElements;
+    using JNIEnv::GetDoubleArrayElements;
 private:
     jclass _someNonClass;
     jmethodID _someNonMethodID;
@@ -211,6 +211,105 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetIntArrayElements)
     jobject obj =  new _jobject();
     ASSERT_ANY_THROW(new JOGIntegerScalar(obj));
 
+    delete obj;
+    delete env;
+    delete jvm;
+}
+
+template<typename T>class Fake_JNIEnv_for_OGMatrix_T: public Fake_JNIEnv
+{
+  public:
+    Fake_JNIEnv_for_OGMatrix_T(int rows, T * value):Fake_JNIEnv()
+    {
+      _rows = rows;
+      _value = value;
+    }
+    virtual jint CallIntMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) {
+      return _rows;
+    }
+    virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
+    {
+        return obj;
+    }
+    virtual real16 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
+    {
+      return reinterpret_cast<real16 *>(_value);
+    }
+  private:
+    int _rows;
+    T * _value;
+};
+
+TEST(JTerminals, Test_JOGRealMatrix_ctor)
+{
+    int rval = 2;
+    real16 * datav = new real16[4]{1,2,3,4};
+    Fake_JavaVM * jvm = new Fake_JavaVM();
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real16>(rval, datav);
+    jvm->setEnv(env);
+    JVMManager::initialize(jvm);
+
+    jobject obj =  new _jobject();
+    JOGRealMatrix * mat = new JOGRealMatrix(obj);
+    ASSERT_TRUE(mat->getRows()==rval);
+    ASSERT_TRUE(mat->getCols()==rval);
+    ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
+
+    // debug print for coverage purposes
+    mat->debug_print();
+
+    delete[] datav;
+    delete mat;
+    delete obj;
+    delete env;
+    delete jvm;
+}
+
+TEST(JTerminals, Test_JOGLogicalMatrix_ctor)
+{
+    int rval = 2;
+    real16 * datav = new real16[4]{1,2,3,4};
+    Fake_JavaVM * jvm = new Fake_JavaVM();
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real16>(rval, datav);
+    jvm->setEnv(env);
+    JVMManager::initialize(jvm);
+
+    jobject obj =  new _jobject();
+    JOGLogicalMatrix * mat = new JOGLogicalMatrix(obj);
+    ASSERT_TRUE(mat->getRows()==rval);
+    ASSERT_TRUE(mat->getCols()==rval);
+    ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
+
+    // debug print for coverage purposes
+    mat->debug_print();
+
+    delete[] datav;
+    delete mat;
+    delete obj;
+    delete env;
+    delete jvm;
+}
+
+TEST(JTerminals, Test_JOGComplexMatrix_ctor)
+{
+    int rval = 2;
+    complex16 * datav = new complex16[4]{{1,10},{2,20},{3,30},{4,40}};
+    Fake_JavaVM * jvm = new Fake_JavaVM();
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<complex16>(rval, datav);
+    jvm->setEnv(env);
+    JVMManager::initialize(jvm);
+
+    jobject obj =  new _jobject();
+    JOGComplexMatrix * mat = new JOGComplexMatrix(obj);
+    ASSERT_TRUE(mat->getRows()==rval);
+    ASSERT_TRUE(mat->getCols()==rval);
+    ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
+
+    // debug print for coverage purposes
+    mat->debug_print();
+
+    delete[] datav;
+    delete mat;
     delete obj;
     delete env;
     delete jvm;
