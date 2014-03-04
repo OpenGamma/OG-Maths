@@ -10,6 +10,7 @@ SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 set(TESTS
          check_jvmmanager_fakejni
          check_jterminals
+         check_jbindings
          )
 
 # Compile and link each test and add to the list of tests
