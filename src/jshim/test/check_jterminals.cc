@@ -18,6 +18,7 @@
 using namespace std;
 using namespace convert;
 
+
 // mock JVM
 class Fake_JavaVM: public JavaVM
 {
@@ -80,6 +81,44 @@ private:
     jmethodID _someNonMethodID;
     jfieldID _someNonFieldID;
 };
+
+
+TEST(JTerminals, Test_getIntFromVoidJMethod_null_meth)
+{
+  jobject obj = new _jobject();
+  ASSERT_ANY_THROW(getIntFromVoidJMethod(nullptr,obj));
+  delete obj;
+}
+
+TEST(JTerminals, Test_getIntFromVoidJMethod_null_obj)
+{
+  jmethodID meth = new _jmethodID();
+  ASSERT_ANY_THROW(getIntFromVoidJMethod(meth,nullptr));
+  delete meth;
+}
+
+TEST(JTerminals, Test_getIntFromVoidJMethod_null_envptr)
+{
+  class Fake_JavaVM_bad_attach: public Fake_JavaVM
+  {
+    virtual jint AttachCurrentThread(void SUPPRESS_UNUSED **penv, void SUPPRESS_UNUSED *args) override
+    {
+      *penv = nullptr;
+      return JNI_OK;
+    }
+  };
+  Fake_JavaVM * jvm = new Fake_JavaVM_bad_attach();
+  Fake_JNIEnv * env  = new Fake_JNIEnv();
+  jvm->setEnv(env);
+  JVMManager::initialize(jvm);
+  jmethodID meth = new _jmethodID();
+  jobject obj = new _jobject();
+  ASSERT_ANY_THROW(getIntFromVoidJMethod(meth,obj));
+  delete env;
+  delete jvm;
+  delete meth;
+  delete obj;
+}
 
 template<typename T> class Fake_JNIEnv_for_binding: public Fake_JNIEnv
 {

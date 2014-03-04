@@ -14,6 +14,12 @@ namespace convert {
 
 using namespace librdag;
 
+/**
+ * helper function to get ints from int getFOO() in java
+ */
+jint getIntFromVoidJMethod(jmethodID id, jobject obj);
+
+
 /*
  * An OGRealScalar backed by data pinned from a Java based OGRealScalar.
  * Note that _dataref is assigned on construction of the OGRealScalar base class,

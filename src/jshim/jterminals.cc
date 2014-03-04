@@ -235,17 +235,13 @@ JOGRealSparseMatrix::debug_print() const
 real16**
 JOGRealSparseMatrix::toReal16ArrayOfArrays() const
 {
-  // Returning null as no implementation yet.
-  double ** foo = NULL;
-  return foo;
+  throw convert_error("Not implemented");
 }
 
 complex16**
 JOGRealSparseMatrix::toComplex16ArrayOfArrays() const
 {
-  // Returning null as no implementation yet.
-  complex16 ** foo = NULL;
-  return foo;
+  throw convert_error("Not implemented");
 }
 
 /*
@@ -280,17 +276,13 @@ JOGComplexSparseMatrix::debug_print() const
 real16**
 JOGComplexSparseMatrix::toReal16ArrayOfArrays() const
 {
-  // Returning null as no implementation yet.
-  double ** foo = NULL;
-  return foo;
+  throw convert_error("Not implemented");
 }
 
 complex16**
 JOGComplexSparseMatrix::toComplex16ArrayOfArrays() const
 {
-  // Returning null as no implementation yet.
-  complex16 ** foo = NULL;
-  return foo;
+  throw convert_error("Not implemented");
 }
 
 /**
