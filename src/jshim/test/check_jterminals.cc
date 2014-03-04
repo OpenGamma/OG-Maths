@@ -274,7 +274,7 @@ template<typename T>class Fake_JNIEnv_for_OGMatrix_T: public Fake_JNIEnv
     {
       return reinterpret_cast<real16 *>(_value);
     }
-  private:
+  protected:
     int _rows;
     T * _value;
 };
@@ -398,6 +398,94 @@ TEST(JTerminals, Test_JOGComplexDiagonalMatrix_ctor)
     mat->debug_print();
 
     delete[] datav;
+    delete mat;
+    delete obj;
+    delete env;
+    delete jvm;
+}
+
+
+template<typename T>class Fake_JNIEnv_for_OGSparseMatrix_T: public Fake_JNIEnv_for_OGMatrix_T<T>
+{
+  public:
+    Fake_JNIEnv_for_OGSparseMatrix_T(int rows, T * value, int * idx):Fake_JNIEnv_for_OGMatrix_T<T>(rows,value)
+    {
+      _idx = idx;
+    }
+    virtual jint CallIntMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) {
+      return this->_rows;
+    }
+    virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
+    {
+        return obj;
+    }
+    virtual real16 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
+    {
+      return reinterpret_cast<real16 *>(this->_value);
+    }
+    virtual jint * GetIntArrayElements(jintArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
+    {
+      return reinterpret_cast<jint *>(_idx);
+    }
+  private:
+    int * _idx;
+};
+
+// The data for these two JOG*SparseMatrix tests is utter nonsense and totally invalid
+// the mechanism opposed to the answer is tested
+
+TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
+{
+    int rval = 2;
+    real16 * datav = new real16[4]{1,2,3,4};
+    int * idx = new int[4]{1,2,2,2};
+
+    Fake_JavaVM * jvm = new Fake_JavaVM();
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGSparseMatrix_T<real16>(rval, datav, idx);
+    jvm->setEnv(env);
+    JVMManager::initialize(jvm);
+
+    jobject obj =  new _jobject();
+    JOGRealSparseMatrix * mat = new JOGRealSparseMatrix(obj);
+    ASSERT_TRUE(mat->getRows()==rval);
+    ASSERT_TRUE(mat->getCols()==rval);
+    ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
+    ASSERT_TRUE(ArrayBitEquals(mat->getColPtr(), idx, 4));
+    ASSERT_TRUE(ArrayBitEquals(mat->getRowIdx(), idx, 4));
+
+    // not debug printing as the data pattern is invalid
+
+    delete[] datav;
+    delete[] idx;
+    delete mat;
+    delete obj;
+    delete env;
+    delete jvm;
+}
+
+TEST(JTerminals, Test_JOGComplexSparseMatrix_ctor)
+{
+    int rval = 2;
+    complex16 * datav = new complex16[4]{{1,10},{2,20},{3,30},{4,40}};
+    int * idx = new int[4]{1,2,2,2};
+
+    Fake_JavaVM * jvm = new Fake_JavaVM();
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGSparseMatrix_T<complex16>(rval, datav, idx);
+    jvm->setEnv(env);
+    JVMManager::initialize(jvm);
+
+    jobject obj =  new _jobject();
+    JOGComplexSparseMatrix * mat = new JOGComplexSparseMatrix(obj);
+    ASSERT_TRUE(mat->getRows()==rval);
+    ASSERT_TRUE(mat->getCols()==rval);
+    ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
+    ASSERT_TRUE(ArrayBitEquals(mat->getColPtr(), idx, 4));
+    ASSERT_TRUE(ArrayBitEquals(mat->getRowIdx(), idx, 4));
+
+    // not debug printing as the data pattern is invalid
+
+    delete[] datav;
+    delete[] idx;
     delete mat;
     delete obj;
     delete env;
