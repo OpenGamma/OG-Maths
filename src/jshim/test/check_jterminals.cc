@@ -353,3 +353,53 @@ TEST(JTerminals, Test_JOGComplexMatrix_ctor)
     delete env;
     delete jvm;
 }
+
+TEST(JTerminals, Test_JOGRealDiagonalMatrix_ctor)
+{
+    int rval = 2;
+    real16 * datav = new real16[2]{10,20};
+    Fake_JavaVM * jvm = new Fake_JavaVM();
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real16>(rval, datav);
+    jvm->setEnv(env);
+    JVMManager::initialize(jvm);
+
+    jobject obj =  new _jobject();
+    JOGRealDiagonalMatrix * mat = new JOGRealDiagonalMatrix(obj);
+    ASSERT_TRUE(mat->getRows()==rval);
+    ASSERT_TRUE(mat->getCols()==rval);
+    ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 2));
+
+    // debug print for coverage purposes
+    mat->debug_print();
+
+    delete[] datav;
+    delete mat;
+    delete obj;
+    delete env;
+    delete jvm;
+}
+
+TEST(JTerminals, Test_JOGComplexDiagonalMatrix_ctor)
+{
+    int rval = 2;
+    complex16 * datav = new complex16[2]{{1,10},{2,20}};
+    Fake_JavaVM * jvm = new Fake_JavaVM();
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<complex16>(rval, datav);
+    jvm->setEnv(env);
+    JVMManager::initialize(jvm);
+
+    jobject obj =  new _jobject();
+    JOGComplexDiagonalMatrix * mat = new JOGComplexDiagonalMatrix(obj);
+    ASSERT_TRUE(mat->getRows()==rval);
+    ASSERT_TRUE(mat->getCols()==rval);
+    ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 2));
+
+    // debug print for coverage purposes
+    mat->debug_print();
+
+    delete[] datav;
+    delete mat;
+    delete obj;
+    delete env;
+    delete jvm;
+}
