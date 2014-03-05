@@ -13,6 +13,7 @@
 #include "warningmacros.h"
 #include "exceptions.hh"
 #include "jvmmanager.hh"
+#include "modifiermacros.h"
 
 namespace convert {
 
@@ -22,7 +23,7 @@ jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inpu
 jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols);
 jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols);
 
-class DispatchToReal16ArrayOfArrays: public librdag::Visitor
+class DLLEXPORT_C DispatchToReal16ArrayOfArrays: public librdag::Visitor
 {
   public:
     virtual ~DispatchToReal16ArrayOfArrays();
@@ -51,7 +52,7 @@ class DispatchToReal16ArrayOfArrays: public librdag::Visitor
 
 
 
-class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
+class DLLEXPORT_C DispatchToComplex16ArrayOfArrays: public librdag::Visitor
 {
   public:
     virtual ~DispatchToComplex16ArrayOfArrays();
@@ -77,7 +78,7 @@ class DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     int cols;    
 };
   
-class DispatchToOGTerminal: public librdag::Visitor
+class DLLEXPORT_C DispatchToOGTerminal: public librdag::Visitor
 {
   public:
     DispatchToOGTerminal(JNIEnv* env);
