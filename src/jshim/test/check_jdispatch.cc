@@ -77,7 +77,7 @@ private:
     jfieldID _someNonFieldID;
 };
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_ctor_dtor)
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealMatrix)
 {
   DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
   const int rows = 3;
@@ -101,7 +101,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_ctor_dtor)
   delete mat;
 }
 
-TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_ctor_dtor)
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
 {
   DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
   const int rows = 3;
@@ -123,4 +123,27 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_ctor_dtor)
   delete [] dataAoA;
   delete d;
   delete mat;
+}
+
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealScalar)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  real16 value = 1234;
+  OGRealScalar * scal = new OGRealScalar(value);
+  d->visit(scal);
+  ASSERT_TRUE(d->getRows()==1);
+  ASSERT_TRUE(d->getCols()==1);
+  ASSERT_TRUE(SingleValueFuzzyEquals(d->getData()[0][0],value));
+  delete d;
+  delete scal;
+}
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexScalar)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  OGComplexScalar * scal = new OGComplexScalar({1,2});
+  ASSERT_ANY_THROW(d->visit(scal));
+  delete d;
+  delete scal;
 }
