@@ -247,6 +247,49 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexSparseMatrix)
 
 // test dispatch to complex AoA
 
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGExpr)
+{
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  OGRealScalar * scal = new OGRealScalar(10);
+  ArgContainer * args = new ArgContainer();
+  args->push_back(scal);
+  OGExpr * expr = new NORM2(args);
+  ASSERT_ANY_THROW(d->visit(expr));
+  delete d;
+  delete expr;
+}
+
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexScalar)
+{
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  complex16 value = {1234,5678};
+  OGComplexScalar * scal = new OGComplexScalar(value);
+  d->visit(scal);
+  ASSERT_TRUE(d->getRows()==1);
+  ASSERT_TRUE(d->getCols()==1);
+  ASSERT_TRUE(SingleValueFuzzyEquals(d->getData()[0][0],value));
+  delete d;
+  delete scal;
+}
+
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealScalar)
+{
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  OGRealScalar * scal = new OGRealScalar(1234);
+  ASSERT_ANY_THROW(d->visit(scal));
+  delete d;
+  delete scal;
+}
+
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGIntegerScalar)
+{
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  OGIntegerScalar * scal = new OGIntegerScalar(10);
+  ASSERT_ANY_THROW(d->visit(scal));
+  delete d;
+  delete scal;
+}
+
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
 {
   DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
