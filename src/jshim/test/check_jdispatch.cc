@@ -77,6 +77,50 @@ private:
     jfieldID _someNonFieldID;
 };
 
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGExpr)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  OGRealScalar * scal = new OGRealScalar(10);
+  ArgContainer * args = new ArgContainer();
+  args->push_back(scal);
+  OGExpr * expr = new NORM2(args);
+  ASSERT_ANY_THROW(d->visit(expr));
+  delete d;
+  delete expr;
+}
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealScalar)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  real16 value = 1234;
+  OGRealScalar * scal = new OGRealScalar(value);
+  d->visit(scal);
+  ASSERT_TRUE(d->getRows()==1);
+  ASSERT_TRUE(d->getCols()==1);
+  ASSERT_TRUE(SingleValueFuzzyEquals(d->getData()[0][0],value));
+  delete d;
+  delete scal;
+}
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexScalar)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  OGComplexScalar * scal = new OGComplexScalar({1,2});
+  ASSERT_ANY_THROW(d->visit(scal));
+  delete d;
+  delete scal;
+}
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGIntegerScalar)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  OGIntegerScalar * scal = new OGIntegerScalar(12);
+  ASSERT_ANY_THROW(d->visit(scal));
+  delete d;
+  delete scal;
+}
+
+
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealMatrix)
 {
   DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
@@ -101,6 +145,52 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealMatrix)
   delete mat;
 }
 
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexMatrix)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  OGOwningComplexMatrix * mat = new OGOwningComplexMatrix(new complex16[1]{12},1,1);
+  ASSERT_ANY_THROW(d->visit(mat));
+  delete d;
+  delete mat;
+}
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealDiagonalMatrix)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  const int rows = 3;
+  const int cols = 2;
+  const int dlen = rows > cols ? cols:rows;
+  real16 * data = new real16[dlen]{10,20};
+  real16 ** dataAoA = new real16 * [rows];
+  dataAoA[0] = new real16[cols]{10,0};
+  dataAoA[1] = new real16[cols]{0,20};
+  dataAoA[2] = new real16[cols]{0,0};
+  OGRealDiagonalMatrix * mat = new OGRealDiagonalMatrix(data,rows,cols);
+  d->visit(mat);
+  ASSERT_TRUE(d->getRows()==rows);
+  ASSERT_TRUE(d->getCols()==cols);
+  for(int k = 0; k < rows; k++)
+  {
+    ASSERT_TRUE(ArrayFuzzyEquals(d->getData()[k],dataAoA[k],cols));
+    delete[] dataAoA[k];
+  }
+  delete [] dataAoA;
+  delete [] data;
+  delete d;
+  delete mat;
+}
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexDiagonalMatrix)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  complex16 * data = new complex16[1]{12};
+  OGComplexDiagonalMatrix * mat = new OGComplexDiagonalMatrix(data,1,1);
+  ASSERT_ANY_THROW(d->visit(mat));
+  delete d;
+  delete mat;
+  delete [] data;
+}
+
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
 {
   DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
@@ -123,27 +213,4 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
   delete [] dataAoA;
   delete d;
   delete mat;
-}
-
-
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealScalar)
-{
-  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
-  real16 value = 1234;
-  OGRealScalar * scal = new OGRealScalar(value);
-  d->visit(scal);
-  ASSERT_TRUE(d->getRows()==1);
-  ASSERT_TRUE(d->getCols()==1);
-  ASSERT_TRUE(SingleValueFuzzyEquals(d->getData()[0][0],value));
-  delete d;
-  delete scal;
-}
-
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexScalar)
-{
-  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
-  OGComplexScalar * scal = new OGComplexScalar({1,2});
-  ASSERT_ANY_THROW(d->visit(scal));
-  delete d;
-  delete scal;
 }
