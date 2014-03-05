@@ -350,7 +350,7 @@ void
 JVMManager::getEnv(void **penv)
 {
   jint status = _jvm->AttachCurrentThread(penv, nullptr);
-  if (status)
+  if (status!=JNI_OK)
   {
     throw convert_error("Error attaching current thread.");
   }
@@ -377,7 +377,12 @@ JVMManager::callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...)
 jobject
 JVMManager::newDouble(JNIEnv* env, jdouble v)
 {
-  return env->NewObject(_DoubleClazz, _DoubleClazz_init, v);
+  jobject ret = env->NewObject(_DoubleClazz, _DoubleClazz_init, v);
+  if (!ret)
+  {
+    throw convert_error("newDouble call failed.");
+  }
+  return ret;
 }
 
 } // namespace convert

@@ -677,3 +677,78 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_checkEx_noexfound)
   delete jvm;
   delete env;
 }
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewIntArray_fail)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  jsize sz = 10;
+  ASSERT_ANY_THROW(jvm_manager->newIntArray(env,sz));
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewIntArray_success)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  class Fake_JNIEnv_testRegister_noex: public Fake_JNIEnv_testRegister
+  {
+    virtual jintArray NewIntArray(jsize SUPPRESS_UNUSED len)
+    {
+      return new _jintArray();
+    }
+  };
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister_noex();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  jsize sz = 10;
+  jobject ret = nullptr;
+  ASSERT_NO_THROW(ret = jvm_manager->newIntArray(env,sz));
+  delete ret;
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
+
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewDouble_fail)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  jdouble value = 10;
+  ASSERT_ANY_THROW(jvm_manager->newDouble(env,value));
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewnewDouble_success)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  class Fake_JNIEnv_testRegister_noex: public Fake_JNIEnv_testRegister
+  {
+    virtual jobject NewObject(jclass SUPPRESS_UNUSED clazz, jmethodID SUPPRESS_UNUSED methodID, ...)
+    {
+      return new _jobject();
+    }
+  };
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister_noex();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  jdouble value = 10;
+  jobject ret = nullptr;
+  ASSERT_NO_THROW(ret = jvm_manager->newDouble(env,value));
+  delete ret;
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
