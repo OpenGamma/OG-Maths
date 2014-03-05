@@ -5,6 +5,7 @@
  */
 
 #include "debug.h"
+#include "modifiermacros.h"
 #include "jbindings.hh"
 #include "jvmmanager.hh"
 #include "exceptions.hh"
@@ -77,7 +78,7 @@ void releaseArrayFromJava(JNIEnv* env, jint* nativeArr, jintArray arr)
  * bindPrimitiveArrayData
  */
 
-template <typename nativeT, typename javaT> nativeT * bindPrimitiveArrayData(jobject obj, jmethodID method)
+template <typename nativeT, typename javaT> DLLEXPORT_C nativeT * bindPrimitiveArrayData(jobject obj, jmethodID method)
 {
   if(obj == nullptr)
   {
@@ -119,7 +120,7 @@ bindPrimitiveArrayData<jint, jintArray>(jobject obj, jmethodID method);
  * unbindPrimitiveArrayData
  */
 
-template <typename nativeT, typename javaT> void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method)
+template <typename nativeT, typename javaT> DLLEXPORT_C void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method)
 {
   if(nativeData == nullptr)
   {
