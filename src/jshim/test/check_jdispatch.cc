@@ -77,6 +77,8 @@ private:
     jfieldID _someNonFieldID;
 };
 
+// test dispatch to real AoA
+
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGExpr)
 {
   DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
@@ -190,6 +192,60 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexDiagonalMatrix)
   delete mat;
   delete [] data;
 }
+
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealSparseMatrix)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  const int rows = 4;
+  const int cols = 3;
+  real16 ** dataAoA = new real16 * [rows];
+  dataAoA[0] = new real16[cols]{ 1, 2, 0 };
+  dataAoA[1] = new real16[cols]{ 0, 3, 0 };
+  dataAoA[2] = new real16[cols]{ 4, 0, 0 };
+  dataAoA[3] = new real16[cols]{ 0, 0, 5 };
+
+  real16 * data= new real16[5]{1.0, 4.0, 2.0, 3.0, 5.0};
+  int * rowInd=new int[5]{0, 2, 0, 1, 3};
+  int * colPtr=new int[4]{0, 2, 4, 5};
+
+  OGRealSparseMatrix * mat = new OGRealSparseMatrix(colPtr, rowInd, data, rows, cols);
+  d->visit(mat);
+  ASSERT_TRUE(d->getRows()==rows);
+  ASSERT_TRUE(d->getCols()==cols);
+  for(int k = 0; k < rows; k++)
+  {
+    ASSERT_TRUE(ArrayFuzzyEquals(d->getData()[k],dataAoA[k],cols));
+    delete[] dataAoA[k];
+  }
+  delete [] dataAoA;
+  delete d;
+  delete mat;
+  delete[] data;
+  delete[] rowInd;
+  delete[] colPtr;
+}
+
+TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexSparseMatrix)
+{
+  DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
+  const int rows = 4;
+  const int cols = 3;
+  complex16 * data= new complex16[5]{{1.0,10}, {4.0,40}, {2.0,20}, {3.0,30}, {5.0,50}};
+  int * rowInd=new int[5]{0, 2, 0, 1, 3};
+  int * colPtr=new int[4]{0, 2, 4, 5};
+
+  OGComplexSparseMatrix * mat = new OGComplexSparseMatrix(colPtr, rowInd, data, rows, cols);
+  ASSERT_ANY_THROW(d->visit(mat));
+  delete d;
+  delete mat;
+  delete[] data;
+  delete[] rowInd;
+  delete[] colPtr;
+}
+
+
+// test dispatch to complex AoA
 
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
 {
