@@ -28,9 +28,9 @@ DispatchToReal16ArrayOfArrays::~DispatchToReal16ArrayOfArrays()
 
         for(int i=0; i<this->getRows(); i++)
         {
-            delete arr[i];
+            delete[] arr[i];
         }
-        delete arr;
+        delete[] arr;
     }
 }
 
@@ -127,12 +127,11 @@ DispatchToComplex16ArrayOfArrays::~DispatchToComplex16ArrayOfArrays()
     complex16 ** arr = this->getData();
     if(arr)
     {
-
         for(int i=0; i<this->getRows(); i++)
         {
-            delete arr[i];
+            delete[] arr[i];
         }
-        delete arr;
+        delete[] arr;
     }
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGExpr const SUPPRESS_UNUSED *thing)
