@@ -146,7 +146,7 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<complex16> const 
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16> const SUPPRESS_UNUSED  *thing)
 {
-    throw std::runtime_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16>)");
+    throw std::runtime_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int>)");
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int> const SUPPRESS_UNUSED *thing)
 {
