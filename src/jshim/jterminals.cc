@@ -8,13 +8,14 @@
 #include "jterminals.hh"
 #include "jbindings.hh"
 #include "exceptions.hh"
+#include "modifiermacros.h"
 
 namespace convert {
 
 /**
  * helper function to get ints from int getFOO() in java
  */
-jint getIntFromVoidJMethod(jmethodID id, jobject obj)
+DLLEXPORT_C jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 {
   if(id==nullptr)
   {
