@@ -313,3 +313,100 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
   delete d;
   delete mat;
 }
+
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
+{
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  OGRealMatrix * mat = new OGOwningRealMatrix(new real16[4]{1,2,3,4},2,2);
+  ASSERT_ANY_THROW(d->visit(mat));
+  delete d;
+  delete mat;
+}
+
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexDiagonalMatrix)
+{
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  const int rows = 3;
+  const int cols = 2;
+  const int dlen = rows > cols ? cols:rows;
+  complex16 * data = new complex16[dlen]{10,20};
+  complex16 ** dataAoA = new complex16 * [rows];
+  dataAoA[0] = new complex16[cols]{10,0};
+  dataAoA[1] = new complex16[cols]{0,20};
+  dataAoA[2] = new complex16[cols]{0,0};
+  OGComplexDiagonalMatrix * mat = new OGComplexDiagonalMatrix(data,rows,cols);
+  d->visit(mat);
+  ASSERT_TRUE(d->getRows()==rows);
+  ASSERT_TRUE(d->getCols()==cols);
+  for(int k = 0; k < rows; k++)
+  {
+    ASSERT_TRUE(ArrayFuzzyEquals(d->getData()[k],dataAoA[k],cols));
+    delete[] dataAoA[k];
+  }
+  delete [] dataAoA;
+  delete [] data;
+  delete d;
+  delete mat;
+}
+
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealDiagonalMatrix)
+{
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  real16 * data = new real16[1]{12};
+  OGRealDiagonalMatrix * mat = new OGRealDiagonalMatrix(data,1,1);
+  ASSERT_ANY_THROW(d->visit(mat));
+  delete d;
+  delete mat;
+  delete [] data;
+}
+
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexSparseMatrix)
+{
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  const int rows = 4;
+  const int cols = 3;
+  complex16 ** dataAoA = new complex16 * [rows];
+  dataAoA[0] = new complex16[cols]{ {1,10}, {2,20}, {0,0} };
+  dataAoA[1] = new complex16[cols]{ {0,0} , {3,30}, {0,0} };
+  dataAoA[2] = new complex16[cols]{ {4,40}, {0,0} , {0,0} };
+  dataAoA[3] = new complex16[cols]{ {0,0} , {0,0} , {5,50} };
+
+  complex16 * data= new complex16[5]{{1.0,10.0}, {4.0,40}, {2.0,20}, {3.0,30}, {5.0,50}};
+  int * rowInd=new int[5]{0, 2, 0, 1, 3};
+  int * colPtr=new int[4]{0, 2, 4, 5};
+
+  OGComplexSparseMatrix * mat = new OGComplexSparseMatrix(colPtr, rowInd, data, rows, cols);
+  d->visit(mat);
+  ASSERT_TRUE(d->getRows()==rows);
+  ASSERT_TRUE(d->getCols()==cols);
+  for(int k = 0; k < rows; k++)
+  {
+    ASSERT_TRUE(ArrayFuzzyEquals(d->getData()[k],dataAoA[k],cols));
+    delete[] dataAoA[k];
+  }
+  delete [] dataAoA;
+  delete d;
+  delete mat;
+  delete[] data;
+  delete[] rowInd;
+  delete[] colPtr;
+}
+
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealSparseMatrix)
+{
+
+  DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
+  const int rows = 4;
+  const int cols = 3;
+  real16 * data= new real16[5]{1,4,2,3,5};
+  int * rowInd=new int[5]{0, 2, 0, 1, 3};
+  int * colPtr=new int[4]{0, 2, 4, 5};
+
+  OGRealSparseMatrix * mat = new OGRealSparseMatrix(colPtr, rowInd, data, rows, cols);
+  ASSERT_ANY_THROW(d->visit(mat));
+  delete d;
+  delete mat;
+  delete[] data;
+  delete[] rowInd;
+  delete[] colPtr;
+}
