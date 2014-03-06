@@ -49,6 +49,12 @@ set(longdog_VERSION_PATCH 1)
 set(longdog_VERSION
   ${longdog_VERSION_MAJOR}.${longdog_VERSION_MINOR}.${longdog_VERSION_PATCH})
 
+set(maven_VERSION_MAJOR 0)
+set(maven_VERSION_MINOR 1)
+set(maven_VERSION_PATCH 0)
+set(maven_VERSION
+  ${maven_VERSION_MAJOR}.${maven_VERSION_MINOR}.${maven_VERSION_PATCH})
+
 # Append local module folder to module path
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
@@ -208,6 +214,18 @@ else()
                     COMMENT "Generating Java test coverage report")
 endif()
 
+
+# Installation to local maven repository
+add_custom_target(maven_install
+                  COMMAND mvn install:install-file
+                          -Dfile=${LONGDOG}.jar
+                          -DgroupId=com.opengamma.maths
+                          -DartifactId=og-maths
+                          -Dversion=${maven_VERSION}-SNAPSHOT
+                          -Dpackaging=jar
+                          #-Djavadoc=og-maths-${longdog_VERSION}-javadoc.jar
+                          -Dsources=${LONGDOG}-sources.jar
+                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/jars)
 
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
