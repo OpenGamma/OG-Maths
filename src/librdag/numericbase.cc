@@ -46,6 +46,12 @@ OGNumeric::asSVD() const
   return nullptr;
 }
 
+const MTIMES*
+OGNumeric::asMTIMES() const
+{
+  return nullptr;
+}
+
 const OGExpr*
 OGNumeric::asOGExpr() const
 {

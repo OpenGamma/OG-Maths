@@ -208,7 +208,6 @@ SVD::asSVD() const
   return this;
 }
 
-void
 SVD::debug_print() const
 {
   cout << "SVD node (functionality not yet implemented)" << endl;
@@ -218,6 +217,35 @@ ExprType_t
 SVD::getType() const
 {
   return SVD_ENUM;
+}
+
+/**
+ * MTIMES node
+ */
+MTIMES::MTIMES(ArgContainer* args): OGBinaryExpr(args) {}
+
+OGNumeric*
+MTIMES::copy() const
+{
+  return new MTIMES(this->getArgs()->copy());
+}
+
+const MTIMES*
+MTIMES::asMTIMES() const
+{
+  return this;
+}
+
+void
+MTIMES::debug_print() const
+{
+        cout << "MTIMES base class" << endl;
+}
+
+ExprType_t
+MTIMES::getType() const
+{
+  return MTIMES_ENUM;
 }
 
 } // namespace librdag
