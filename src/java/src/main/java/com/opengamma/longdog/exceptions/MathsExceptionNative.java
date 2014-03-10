@@ -1,11 +1,5 @@
 package com.opengamma.longdog.exceptions;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Set;
-
 /**
  * Base class for any exceptions that get thrown during the native code execution.
  */
