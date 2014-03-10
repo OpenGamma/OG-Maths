@@ -30,5 +30,6 @@ foreach(TEST ${TESTS})
   add_multitarget_gtest(${TEST}
                         SOURCES ${TEST}.cc
                         LINK_LIBRARIES testhelper rdag
-                        TARGETS ${TARGET_TYPES})
+                        TARGETS ${TARGET_TYPES}
+                        SUPPRESSIONS ${CMAKE_CURRENT_SOURCE_DIR}/../valgrind.supp)
 endforeach()

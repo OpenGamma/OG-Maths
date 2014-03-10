@@ -17,11 +17,11 @@ file(MAKE_DIRECTORY ${GTEST_XML_DIR})
 # Appropriate flags are added so that GTest outputs JUnit XML for later
 # processing. The target is appended to the list of tests that is used in the
 # add_gtest_report macro.
-macro(add_gtest TESTNAME)
+macro(add_gtest TESTNAME SUPPRESSIONS)
   get_target_property(TEST_LOC ${TESTNAME} LOCATION)
   add_test(${TESTNAME} ${TEST_LOC} --gtest_output=xml:${CMAKE_BINARY_DIR}/gtest-output/${TESTNAME}.xml)
   if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    add_test(${TESTNAME}_valgrind valgrind --leak-check=full --error-exitcode=1 ${TEST_LOC})
+    add_test(${TESTNAME}_valgrind valgrind --leak-check=full --error-exitcode=1 --suppressions=${SUPPRESSIONS} ${TEST_LOC})
   endif()
   list(APPEND gtests ${TESTNAME})
   set(gtests ${gtests} CACHE INTERNAL "GTest tests to run")
@@ -30,10 +30,11 @@ endmacro()
 # Builds a test executable that uses Gtest from the specified SOURCES and links
 # it to any additional LINK_LIBRARIES. LINK_LIBRARIES does not need to include
 # the GTest libraries - these are added automatically. The sources are also
-# compiled with the specified COMPILE_DEFINITIONS.
+# compiled with the specified COMPILE_DEFINITIONS. Valgrinf is run on each test,
+# with the suppressions file SUPPRESSIONS.
 macro(add_multitarget_gtest TESTNAME)
   cmake_parse_arguments(MTGTEST "" ""
-                        "SOURCES;LINK_LIBRARIES;COMPILE_DEFINITIONS;TARGETS"
+                        "SOURCES;LINK_LIBRARIES;COMPILE_DEFINITIONS;TARGETS;SUPPRESSIONS"
                         ${ARGN})
   foreach(TARGET ${MTGTEST_TARGETS})
     if(SUPPORT_${TARGET})
@@ -47,7 +48,7 @@ macro(add_multitarget_gtest TESTNAME)
       foreach(COMPILE_DEFINITION ${MTGTEST_COMPILE_DEFINITIONS})
         set_target_properties(${TEST} PROPERTIES COMPILE_DEFINITIONS ${COMPILE_DEFINITION})
       endforeach()
-      add_gtest(${TEST})
+      add_gtest(${TEST} ${MTGTEST_SUPPRESSIONS})
     endif()
   endforeach()
 endmacro()
