@@ -187,6 +187,18 @@ TEST(TerminalsTest, OGRealScalarTest) {
   ASSERT_EQ(tmp->getValue(),copy->asOGRealScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGRealScalar());
 
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  OGComplexScalar * cmplx_tmp = new OGComplexScalar(value);
+  ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
+  delete cmplx_tmp;
+  delete owningComplexCopy;
+
   // Check debug string
   copy->debug_print();
 
@@ -258,6 +270,16 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   ASSERT_EQ(tmp->getValue(),copy->asOGComplexScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGComplexScalar());
 
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningComplexCopy);
+  delete owningComplexCopy;
+
   // Check debug string
   copy->debug_print();
 
@@ -304,6 +326,18 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
   OGNumeric * copy = tmp->copy();
   ASSERT_EQ(tmp->getValue(),copy->asOGIntegerScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGIntegerScalar());
+
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  OGComplexScalar * cmplx_tmp = new OGComplexScalar(value);
+  ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
+  delete cmplx_tmp;
+  delete owningComplexCopy;
 
   // Check debug string
   copy->debug_print();
@@ -396,6 +430,19 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   ASSERT_EQ(tmp->getRows(),copy->asOGRealMatrix()->getRows());
   ASSERT_EQ(tmp->getCols(),copy->asOGRealMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGRealMatrix());
+
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGRealMatrix()->getData()); // make sure the data is unique
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  OGComplexMatrix * cmplx_tmp = new OGOwningComplexMatrix(data, rows, cols);
+  ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
+  delete cmplx_tmp;
+  delete owningComplexCopy;
 
   // Check debug string
   copy->debug_print();
@@ -531,6 +578,18 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_EQ(tmp->getRows(),copy->asOGComplexMatrix()->getRows());
   ASSERT_EQ(tmp->getCols(),copy->asOGComplexMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGComplexMatrix());
+
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexMatrix()->getData()); // make sure the data is unique
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningComplexCopy);
+  ASSERT_FALSE(tmp->getData()==owningComplexCopy->asOGComplexMatrix()->getData());
+  delete owningComplexCopy;
 
   // Check debug string
   copy->debug_print();
@@ -677,6 +736,21 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   ASSERT_EQ(tmp->getRows(),copy->asOGRealDiagonalMatrix()->getRows());
   ASSERT_EQ(tmp->getCols(),copy->asOGRealDiagonalMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGRealDiagonalMatrix());
+
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGRealDiagonalMatrix()->getData()); // make sure the data is unique
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  complex16 * cmplx_data = new complex16[tmp->getDatalen()];
+  std::copy(data, data+tmp->getDatalen(), cmplx_data);
+  OGComplexDiagonalMatrix * cmplx_tmp = new OGOwningComplexDiagonalMatrix(cmplx_data, rows, cols);
+  ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
+  delete cmplx_tmp;
+  delete owningComplexCopy;
 
   // Check debug string
   copy->debug_print();
@@ -829,6 +903,18 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   ASSERT_EQ(tmp->getRows(),copy->asOGComplexDiagonalMatrix()->getRows());
   ASSERT_EQ(tmp->getCols(),copy->asOGComplexDiagonalMatrix()->getCols());
   ASSERT_EQ(copy,copy->asOGComplexDiagonalMatrix());
+
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexDiagonalMatrix()->getData()); // make sure the data is unique
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningComplexCopy);
+  ASSERT_FALSE(tmp->getData()==owningComplexCopy->asOGComplexDiagonalMatrix()->getData());
+  delete owningComplexCopy;
 
   // Check debug string
   copy->debug_print();
@@ -1001,6 +1087,22 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   ASSERT_EQ(tmp->getColPtr(),copy->asOGRealSparseMatrix()->getColPtr());
   ASSERT_TRUE(ArrayEquals(tmp->getColPtr(),copy->asOGRealSparseMatrix()->getColPtr(),6));
   ASSERT_EQ(copy,copy->asOGRealSparseMatrix());
+
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGRealSparseMatrix()->getData()); // make sure the data is unique
+  ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getColPtr()==owningCopy->asOGRealSparseMatrix()->getColPtr()); // make sure the colptr data is unique
+  ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getRowIdx()==owningCopy->asOGRealSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()%*owningComplexCopy);
+  ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexSparseMatrix()->getData())); // make sure the data is unique
+  ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getColPtr()==owningComplexCopy->asOGComplexSparseMatrix()->getColPtr()); // make sure the colptr data is unique
+  ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getRowIdx()==owningComplexCopy->asOGComplexSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
+  delete owningComplexCopy;
 
   // Check debug string
   copy->debug_print();
@@ -1190,6 +1292,22 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_TRUE(ArrayEquals(tmp->getColPtr(),copy->asOGComplexSparseMatrix()->getColPtr(),6));
   ASSERT_EQ(copy,copy->asOGComplexSparseMatrix());
 
+  // check createOwningCopy
+  OGTerminal * owningCopy = tmp->createOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexSparseMatrix()->getData()); // make sure the data is unique
+  ASSERT_FALSE(tmp->asOGComplexSparseMatrix()->getColPtr()==owningCopy->asOGComplexSparseMatrix()->getColPtr()); // make sure the colptr data is unique
+  ASSERT_FALSE(tmp->asOGComplexSparseMatrix()->getRowIdx()==owningCopy->asOGComplexSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
+  delete owningCopy;
+
+  // check createComplexOwningCopy
+  OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
+  ASSERT_TRUE(*tmp->asOGTerminal()%*owningComplexCopy);
+  ASSERT_FALSE(tmp->getData()==(owningComplexCopy->asOGComplexSparseMatrix()->getData())); // make sure the data is unique
+  ASSERT_FALSE(tmp->asOGComplexSparseMatrix()->getColPtr()==owningComplexCopy->asOGComplexSparseMatrix()->getColPtr()); // make sure the colptr data is unique
+  ASSERT_FALSE(tmp->asOGComplexSparseMatrix()->getRowIdx()==owningComplexCopy->asOGComplexSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
+  delete owningComplexCopy;
+
   // Check debug string
   copy->debug_print();
 
@@ -1268,6 +1386,8 @@ public:
     virtual OGNumeric* copy() const override { return nullptr; }
     virtual OGOwningRealMatrix * asFullOGRealMatrix() const override { return nullptr; }
     virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override { return nullptr; }
+    virtual OGTerminal * createOwningCopy() const override { return nullptr; }
+    virtual OGTerminal * createComplexOwningCopy() const override { return nullptr;}
 };
 
 TEST(OGArrayTest, NegativeDatalen)
