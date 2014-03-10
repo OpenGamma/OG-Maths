@@ -13,10 +13,6 @@ public class MathsExceptionNative extends MathsException {
 
   private static final long serialVersionUID = 1L;
 
-  public MathsExceptionNative() {
-    super();
-  }
-
   /**
    * This form of the constructor is used by the native code for generating the mixed-language backtrace.
    * Frames are represented by 4 strings, containing the class name, method name, file name and line no.
@@ -54,17 +50,5 @@ public class MathsExceptionNative extends MathsException {
     }
 
     setStackTrace(combinedStackTrace);
-  }
-
-  public MathsExceptionNative(final String s) {
-    super(s);
-  }
-
-  public MathsExceptionNative(String s, Throwable cause) {
-    super(s, cause);
-  }
-
-  public MathsExceptionNative(Throwable cause) {
-    super(cause);
   }
 }
