@@ -18,6 +18,7 @@ set(RDAG_SOURCES containers.cc
                  customrunners.cc
                  entrypt.cc
                  equals.cc
+                 exceptions.cc
                  execution.cc
                  expressionbase.cc
                  iss.cc
