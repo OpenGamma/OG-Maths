@@ -10,6 +10,11 @@
 #include <exception>
 #include <stdexcept>
 
+/**
+ * Maximum number of frames to retrieve for a stack trace. A somewhat arbitrary
+ * choice, but probably more than 50 stack frames implies you have worse problems
+ * than needing to know what was going on in the 51st frame.
+ */
 #define FRAMEBUF_SIZE 50
 
 using namespace std;
