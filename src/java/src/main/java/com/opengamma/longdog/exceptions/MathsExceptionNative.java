@@ -13,9 +13,6 @@ public class MathsExceptionNative extends MathsException {
 
   private static final long serialVersionUID = 1L;
 
-  private String _nativeMsg;
-  private StackTraceElement[] _nativeStackTrace;
-
   public MathsExceptionNative() {
     super();
   }
