@@ -212,6 +212,18 @@ class JNIEnv_
     {
       return nullptr;
     }
+    virtual jstring NewStringUTF(const char SUPPRESS_UNUSED *bytes)
+    {
+      return nullptr;
+    }
+    virtual jint ThrowNew(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *msg)
+    {
+      return 0;
+    }
+    virtual jint Throw(jthrowable SUPPRESS_UNUSED throwable)
+    {
+      return 0;
+    }
     virtual jintArray NewIntArray(jsize SUPPRESS_UNUSED len)
     {
       return nullptr;
