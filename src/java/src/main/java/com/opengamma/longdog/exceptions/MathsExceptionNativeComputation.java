@@ -12,20 +12,4 @@ public class MathsExceptionNativeComputation extends MathsExceptionNative {
   public MathsExceptionNativeComputation(String msg, String[] backtraceInfo) {
     super(msg, backtraceInfo);
   }
-
-  public MathsExceptionNativeComputation() {
-    super();
-  }
-
-  public MathsExceptionNativeComputation(final String s) {
-    super(s);
-  }
-
-  public MathsExceptionNativeComputation(final String s, final Throwable cause) {
-    super(s, cause);
-  }
-
-  public MathsExceptionNativeComputation(final Throwable cause) {
-    super(cause);
-  }
 }
