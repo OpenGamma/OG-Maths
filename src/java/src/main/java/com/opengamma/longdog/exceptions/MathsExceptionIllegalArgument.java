@@ -9,7 +9,11 @@ package com.opengamma.longdog.exceptions;
  * Provides a manner in which maths exceptions relating illegal arguments can be thrown
  */
 public class MathsExceptionIllegalArgument extends MathsException {
-  private static final long serialVersionUID = 1L;
+
+  /**
+   * Serial ID
+   */
+  private static final long serialVersionUID = -5130462724654601466L;
 
   public MathsExceptionIllegalArgument() {
     super();
