@@ -55,6 +55,26 @@ set(maven_VERSION_PATCH 0)
 set(maven_VERSION
   ${maven_VERSION_MAJOR}.${maven_VERSION_MINOR}.${maven_VERSION_PATCH})
 
+# JAR VARIABLES
+set(JARDIR ${CMAKE_BINARY_DIR}/jars)
+
+set(JAR_VERSION "${PROJECT_NAME}-${maven_VERSION}-SNAPSHOT")
+
+set(JAR_NAME_NO_EXTN "${JAR_VERSION}" )
+set(JAR_SOURCES_NAME_NO_EXTN "${JAR_VERSION}-sources" )
+set(JAR_TEST_NAME_NO_EXTN "${JAR_VERSION}-tests" )
+
+set(JAR_EXT ".jar")
+
+set(JAR_NAME "${JAR_NAME_NO_EXTN}${JAR_EXT}" )
+set(JAR_SOURCES_NAME "${JAR_SOURCES_NAME_NO_EXTN}${JAR_EXT}" )
+set(JAR_TEST_NAME "${JAR_TEST_NAME_NO_EXTN}${JAR_EXT}" )
+
+set(PATH_AND_JAR_NAME "${JARDIR}/${JAR_NAME}" )
+set(PATH_AND_JAR_SOURCES_NAME "${JARDIR}/${JAR_SOURCES_NAME}" )
+set(PATH_AND_JAR_TEST_NAME "${JARDIR}/${JAR_TEST_NAME}" )
+
+
 # Append local module folder to module path
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
@@ -80,7 +100,6 @@ include(NativeLibraryBuilder)
 # build types for it in CMake as far as I am aware.
 set(CMAKE_Java_COMPILE_FLAGS "${CMAKE_Java_COMPILE_FLAGS} -g")
 
-set(JARDIR ${CMAKE_BINARY_DIR}/jars)
 # "Backwards compatibility" for javadoc jar creation
 set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${JARDIR})
 
@@ -173,25 +192,21 @@ add_subdirectory(src)
 
 add_gtest_report()
 
-set(LONGDOG ${PROJECT_NAME}-${longdog_VERSION})
-set(LONGDOGJAR ${JARDIR}/${LONGDOG}.jar)
-set(LONGDOGTESTJAR ${JARDIR}/${LONGDOG}-tests.jar)
-
 if (WIN32)
-  string(REPLACE ";" "\\;" CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH};${LONGDOGJAR};${LONGDOGTESTJAR}")
+  string(REPLACE ";" "\\;" CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH};${PATH_AND_JAR_NAME};${PATH_AND_JAR_TEST_NAME}")
   # Test each target
   foreach(TARGET ${TARGET_TYPES})
     if(SUPPORT_${TARGET})
-      add_test(${TESTNG_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -Xcheck:jni -DinstructionSet=${TARGET} -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+      add_test(${TESTNG_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -Xcheck:jni -DinstructionSet=${TARGET} -verbose org.testng.TestNG -testjar ${PATH_AND_JAR_TEST_NAME})
       set_tests_properties(${TESTNG_TEST}_${TARGET} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
     endif()
   endforeach()
   # Test with no target specified
-  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -Xcheck:jni -verbose org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -Xcheck:jni -verbose org.testng.TestNG -testjar ${PATH_AND_JAR_TEST_NAME})
   set_tests_properties(${TESTNG_TEST} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
 else()
-  set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${LONGDOGJAR}:${LONGDOGTESTJAR})
-  set(JAVA_TESTNG_ARGS -Xcheck:jni -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar jars/${LONGDOG}-tests.jar)
+  set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${PATH_AND_JAR_NAME}:${PATH_AND_JAR_TEST_NAME})
+  set(JAVA_TESTNG_ARGS -Xcheck:jni -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar ${PATH_AND_JAR_TEST_NAME})
   # Test each target
   foreach(TARGET ${TARGET_TYPES})
     if(SUPPORT_${TARGET})
@@ -207,7 +222,7 @@ else()
                     COMMENT "Gathering Java test coverage information")
   add_custom_target(jacoco
                     COMMAND ${Java_JAVA_EXECUTABLE} com.opengamma.jacocoreporter.ReportGenerator jacoco.exec
-                            ${JARDIR}/CMakeFiles/${LONGDOG}.dir ${CMAKE_SOURCE_DIR}/src/java/src/main/java
+                            ${JARDIR}/CMakeFiles/${JAR_VERSION}.dir ${CMAKE_SOURCE_DIR}/src/java/src/main/java
                             coveragereport
                     DEPENDS jacocorun
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -218,13 +233,13 @@ endif()
 # Installation to local maven repository
 add_custom_target(maven_install
                   COMMAND mvn install:install-file
-                          -Dfile=${LONGDOG}.jar
+                          -Dfile=${JAR_VERSION}.jar
                           -DgroupId=com.opengamma.maths
                           -DartifactId=og-maths
-                          -Dversion=${maven_VERSION}-SNAPSHOT
+                          -Dversion=${JAR_VERSION}
                           -Dpackaging=jar
                           #-Djavadoc=og-maths-${longdog_VERSION}-javadoc.jar
-                          -Dsources=${LONGDOG}-sources.jar
+                          -Dsources=${PATH_AND_JAR_SOURCES_NAME}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/jars)
 
 message("Build type: " ${CMAKE_BUILD_TYPE})
