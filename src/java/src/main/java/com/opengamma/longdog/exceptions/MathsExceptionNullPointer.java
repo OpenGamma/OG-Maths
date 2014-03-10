@@ -9,7 +9,11 @@ package com.opengamma.longdog.exceptions;
  * Provides a manner in which maths exceptions relating to null pointer access can be thrown
  */
 public class MathsExceptionNullPointer extends MathsException {
-  private static final long serialVersionUID = 1L;
+
+  /**
+   * Serial ID
+   */
+  private static final long serialVersionUID = 192180225138562639L;
 
   public MathsExceptionNullPointer() {
     super();

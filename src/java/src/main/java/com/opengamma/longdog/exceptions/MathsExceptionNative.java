@@ -5,7 +5,10 @@ package com.opengamma.longdog.exceptions;
  */
 public class MathsExceptionNative extends MathsException {
 
-  private static final long serialVersionUID = 1L;
+  /**
+   * Serial ID
+   */
+  private static final long serialVersionUID = 2689725471014028060L;
 
   /**
    * This form of the constructor is used by the native code for generating the mixed-language backtrace.
