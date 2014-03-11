@@ -36,7 +36,7 @@ DispatchToReal16ArrayOfArrays::~DispatchToReal16ArrayOfArrays()
 
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr const SUPPRESS_UNUSED *thing)
 {
-    throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
+    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
 }
 
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<real16> const  *thing)
@@ -48,11 +48,11 @@ void DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<real16> const  *thin
 
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16> const SUPPRESS_UNUSED  *thing)
 {
-    throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16>)");
+    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16>)");
 }
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int> const SUPPRESS_UNUSED  *thing)
 {
-    throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
+    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
 }
 
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<real16> const *thing)
@@ -64,7 +64,7 @@ void DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<real16> const *thing
 
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16> const SUPPRESS_UNUSED *thing)
 {
-    throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16>)");
+    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16>)");
 }
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16> const *thing)
 {
@@ -74,7 +74,7 @@ void DispatchToReal16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16> cons
 }
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16> const SUPPRESS_UNUSED  *thing)
 {
-    throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16>)");
+    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16>)");
 }
 
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGSparseMatrix<real16> const *thing)
@@ -85,7 +85,7 @@ void DispatchToReal16ArrayOfArrays::visit(librdag::OGSparseMatrix<real16> const 
 }
 void DispatchToReal16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16> const SUPPRESS_UNUSED  *thing)
 {
-    throw std::runtime_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16>)");
+    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16>)");
 }
 
 void DispatchToReal16ArrayOfArrays::setData(real16 ** data)
@@ -136,7 +136,7 @@ DispatchToComplex16ArrayOfArrays::~DispatchToComplex16ArrayOfArrays()
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGExpr const SUPPRESS_UNUSED *thing)
 {
-    throw std::runtime_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGExpr)");
+    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGExpr)");
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<complex16> const *thing)
 {
@@ -146,11 +146,11 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<complex16> const 
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16> const SUPPRESS_UNUSED  *thing)
 {
-    throw std::runtime_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int>)");
+    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16>)");
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int> const SUPPRESS_UNUSED *thing)
 {
-    throw std::runtime_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int>)");
+    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int>)");
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<complex16> const *thing)
 {
@@ -161,7 +161,7 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<complex16> const 
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<real16> const SUPPRESS_UNUSED *thing)
 {
-    throw std::runtime_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<real16>)");
+    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<real16>)");
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
 {
@@ -172,7 +172,7 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16> const SUPPRESS_UNUSED *thing)
 {
-    throw std::runtime_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16>)");
+    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16>)");
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16> const *thing)
 {
@@ -183,7 +183,7 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16> 
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<real16> const SUPPRESS_UNUSED *thing)
 {
-    throw std::runtime_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<real16>)");
+    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<real16>)");
 }
 void DispatchToComplex16ArrayOfArrays::setData(complex16 ** data)
 {
