@@ -35,7 +35,7 @@ class Fake_JavaVM: public JavaVM
     {
         return this->_env;
     }
-    virtual jint AttachCurrentThread(void SUPPRESS_UNUSED **penv, void SUPPRESS_UNUSED *args)
+    virtual jint AttachCurrentThread(void **penv, void SUPPRESS_UNUSED *args)
     {
       *penv = this->_env;
       return JNI_OK;
@@ -118,7 +118,7 @@ TEST(JBindings, Test_bindPrimitiveArrayData_bad_env)
 {
     class Fake_JavaVM_bad_env: public Fake_JavaVM
     {
-      virtual jint AttachCurrentThread(void SUPPRESS_UNUSED **penv, void SUPPRESS_UNUSED *args) override
+      virtual jint AttachCurrentThread(void **penv, void SUPPRESS_UNUSED *args) override
       {
         *penv = this->_env;
         return JNI_ERR;
@@ -143,9 +143,9 @@ TEST(JBindings, Test_bindPrimitiveArrayData_bad_callobjmethod)
 {
     class Fake_JNIEnv_bad_com: public Fake_JNIEnv
     {
-      virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
+      virtual jboolean ExceptionCheck() override
       {
-        return nullptr;
+        return JNI_TRUE;
       }
     };
     Fake_JavaVM * jvm = new Fake_JavaVM();
@@ -203,7 +203,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_env)
 {
     class Fake_JavaVM_bad_env: public Fake_JavaVM
     {
-      virtual jint AttachCurrentThread(void SUPPRESS_UNUSED **penv, void SUPPRESS_UNUSED *args) override
+      virtual jint AttachCurrentThread(void **penv, void SUPPRESS_UNUSED *args) override
       {
         *penv = this->_env;
         return JNI_ERR;
@@ -230,9 +230,9 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_callobjmethod)
 {
     class Fake_JNIEnv_bad_com: public Fake_JNIEnv
     {
-      virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
+      virtual jboolean ExceptionCheck() override
       {
-        return nullptr;
+        return JNI_TRUE;
       }
     };
     Fake_JavaVM * jvm = new Fake_JavaVM();
