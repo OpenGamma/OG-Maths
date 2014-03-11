@@ -86,10 +86,8 @@ class DogmaErrorTest: public ::testing::Test
 
 TEST_F(DogmaErrorTest, Constructor)
 {
-  // The number of stack frames may vary with GTest versions - hence this may need
-  // updating from time to time.
-  //constexpr int NUM_FRAMES = 14;
-  //EXPECT_EQ(_error->getTraceSize(), NUM_FRAMES);
+  // The number of stack frames varies often depending on platform/versions,
+  // so we just check the what() method here.
   EXPECT_STREQ(_error->what(), "An error");
 }
 
