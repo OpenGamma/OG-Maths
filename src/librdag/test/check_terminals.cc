@@ -441,6 +441,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
   OGComplexMatrix * cmplx_tmp = new OGOwningComplexMatrix(data, rows, cols);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
+  ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexMatrix()->getData())); // make sure the data is unique
   delete cmplx_tmp;
   delete owningComplexCopy;
 
@@ -749,6 +750,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   std::copy(data, data+tmp->getDatalen(), cmplx_data);
   OGComplexDiagonalMatrix * cmplx_tmp = new OGOwningComplexDiagonalMatrix(cmplx_data, rows, cols);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
+  ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexDiagonalMatrix()->getData())); // make sure the data is unique
   delete cmplx_tmp;
   delete owningComplexCopy;
 
@@ -1099,6 +1101,7 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   // check createComplexOwningCopy
   OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
   ASSERT_TRUE(*tmp->asOGTerminal()%*owningComplexCopy);
+  ASSERT_TRUE(owningComplexCopy->asOGComplexSparseMatrix()!=nullptr); // check type is correct as % was used to compare
   ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexSparseMatrix()->getData())); // make sure the data is unique
   ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getColPtr()==owningComplexCopy->asOGComplexSparseMatrix()->getColPtr()); // make sure the colptr data is unique
   ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getRowIdx()==owningComplexCopy->asOGComplexSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
@@ -1303,6 +1306,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   // check createComplexOwningCopy
   OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
   ASSERT_TRUE(*tmp->asOGTerminal()%*owningComplexCopy);
+  ASSERT_TRUE(owningComplexCopy->asOGComplexSparseMatrix()!=nullptr); // check type is correct as % was used to compare
   ASSERT_FALSE(tmp->getData()==(owningComplexCopy->asOGComplexSparseMatrix()->getData())); // make sure the data is unique
   ASSERT_FALSE(tmp->asOGComplexSparseMatrix()->getColPtr()==owningComplexCopy->asOGComplexSparseMatrix()->getColPtr()); // make sure the colptr data is unique
   ASSERT_FALSE(tmp->asOGComplexSparseMatrix()->getRowIdx()==owningComplexCopy->asOGComplexSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
