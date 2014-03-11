@@ -128,7 +128,7 @@ template<typename T> class Fake_JNIEnv_for_binding: public Fake_JNIEnv
       _value = value;
     }
     // fake object call returns obj
-    virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
+    virtual jobject CallObjectMethod(jobject obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
     {
         return obj;
     }
@@ -214,9 +214,9 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetDoubleArrayElements)
     class Fake_JNIEnv_for_binding_bad: public Fake_JNIEnv_for_binding<real16>
     {
       using Fake_JNIEnv_for_binding<real16>::Fake_JNIEnv_for_binding;
-      virtual real16 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
+      virtual jboolean ExceptionCheck() override
       {
-        return nullptr;
+        return JNI_TRUE;
       }
     };
     Fake_JNIEnv * env  = new Fake_JNIEnv_for_binding_bad(value);
@@ -238,9 +238,9 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetIntArrayElements)
     class Fake_JNIEnv_for_binding_bad: public Fake_JNIEnv_for_binding<real16>
     {
       using Fake_JNIEnv_for_binding<real16>::Fake_JNIEnv_for_binding;
-      virtual int * GetIntArrayElements(jintArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
+      virtual jboolean ExceptionCheck() override
       {
-        return nullptr;
+        return JNI_TRUE;
       }
     };
     Fake_JNIEnv * env  = new Fake_JNIEnv_for_binding_bad(value);
@@ -266,7 +266,7 @@ template<typename T>class Fake_JNIEnv_for_OGMatrix_T: public Fake_JNIEnv
     virtual jint CallIntMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) {
       return _rows;
     }
-    virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
+    virtual jobject CallObjectMethod(jobject obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
     {
         return obj;
     }
@@ -415,7 +415,7 @@ template<typename T>class Fake_JNIEnv_for_OGSparseMatrix_T: public Fake_JNIEnv_f
     virtual jint CallIntMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) {
       return this->_rows;
     }
-    virtual jobject CallObjectMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
+    virtual jobject CallObjectMethod(jobject obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
     {
         return obj;
     }

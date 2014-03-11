@@ -220,6 +220,14 @@ class JNIEnv_
     {
       return &allClasses;
     }
+    virtual jboolean ExceptionCheck()
+    {
+      return JNI_FALSE;
+    }
+    virtual void ExceptionClear()
+    {
+
+    }
     virtual ~JNIEnv_()
     {
       

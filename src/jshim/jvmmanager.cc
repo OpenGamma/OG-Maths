@@ -19,10 +19,14 @@ namespace convert {
  */
 void checkEx(JNIEnv* env)
 {
-  jthrowable e = env->ExceptionOccurred();
-  if (e)
+  // Is there an exception pending?
+  if(env->ExceptionCheck()==JNI_TRUE)
   {
+    // describe it
     env->ExceptionDescribe();
+    // clear it
+    env->ExceptionClear();
+    // throw C++ exception so stack gets a chance to unwind
     throw convert_error("Java exception thrown in JNI.");
   }
 }

@@ -26,10 +26,7 @@ template<typename nativeT = real16, typename javaT = jdoubleArray>
 real16* getArrayFromJava(JNIEnv *env, jdoubleArray arr)
 {
   real16* p = env->GetDoubleArrayElements(arr, NULL);
-  if (p == nullptr)
-  {
-    throw convert_error("Null pointer returned by GetDoubleArrayElements");
-  }
+  checkEx(env);
   return p;
 }
 
@@ -37,10 +34,7 @@ template<typename nativeT = jint, typename javaT = jintArray>
 jint* getArrayFromJava(JNIEnv *env, jintArray arr)
 {
   jint* p = env->GetIntArrayElements(arr, NULL);
-  if (p == nullptr)
-  {
-    throw convert_error("Null pointer returned by GetIntArrayElements");
-  }
+  checkEx(env);
   return p;
 }
 
@@ -98,10 +92,7 @@ template <typename nativeT, typename javaT> DLLEXPORT_C nativeT * bindPrimitiveA
   }
   jobject dataobj = NULL;
   dataobj = env->CallObjectMethod(obj, method);
-  if(dataobj == nullptr)
-  {
-    throw convert_error("CallObjectMethod failed");
-  }
+  checkEx(env);
   javaT * array = reinterpret_cast<javaT *>(&dataobj);
   nativeT * _dataptr = (nativeT*) getArrayFromJava<nativeT, javaT>(env, *array);
   return _dataptr;
@@ -143,10 +134,7 @@ template <typename nativeT, typename javaT> DLLEXPORT_C void unbindPrimitiveArra
     throw convert_error("Thread attach failed");
   }
   jobject dataobj = env->CallObjectMethod(obj, method);
-  if(dataobj == nullptr)
-  {
-    throw convert_error("CallObjectMethod failed");
-  }
+  checkEx(env);
   javaT * array = reinterpret_cast<javaT *>(&dataobj);
   releaseArrayFromJava<nativeT, javaT>(env, nativeData, *array);
 }

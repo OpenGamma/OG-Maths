@@ -647,9 +647,17 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_bad_JNI_OnLoad)
 
 TEST(JVMManagerFakeJNITest, Test_JVMManager_checkEx_exfound)
 {
+  class Fake_JNIEnv_will_throw: public Fake_JNIEnv_testRegister
+  {
+    public:
+      virtual jboolean ExceptionCheck() override
+      {
+        return JNI_TRUE;
+      }
+  };
   JVMManager * jvm_manager = new JVMManager();
   Fake_JavaVM * jvm = new Fake_JavaVM();
-  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister();
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_will_throw();
   jvm->setEnv(env);
   jvm_manager->initialize(jvm);
   ASSERT_ANY_THROW(checkEx(env));
