@@ -12,30 +12,10 @@
 #include <iostream>
 #include "jvmmanager.hh"
 #include "debug.h"
+#include "test/fake_jvm.hh"
 
 using namespace std;
 using namespace convert;
-
-// Fake VM
-class Fake_JavaVM: public JavaVM
-{
-  public:   
-    virtual ~Fake_JavaVM(){};
-    virtual int GetEnv(void SUPPRESS_UNUSED ** env, int SUPPRESS_UNUSED version) override
-    {
-     *env = _env;
-     return JNI_OK;
-    }
-    void setEnv(JNIEnv * env)
-    {
-        this->_env = env;
-    }
-    JNIEnv * getEnv()
-    {
-        return this->_env;
-    }        
-    virtual jint AttachCurrentThread(void SUPPRESS_UNUSED **penv, void SUPPRESS_UNUSED *args) { return JNI_OK; }
-};
 
 // Test bad JVM (GetEnv() env ptr returns JNI_ERR)
 TEST(JVMManagerFakeJNITest, Test_JVMManager_initialize_badversion)
@@ -133,7 +113,23 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_test_registerReferences)
     ASSERT_TRUE(jvm_manager->getOGSparseMatrixClazz_getRowIdx()!=nullptr);
     ASSERT_TRUE(jvm_manager->getComplexArrayContainerClazz_ctor_DAoA_DAoA()!=nullptr);
     ASSERT_TRUE(jvm_manager-> getOGExprTypeEnumClazz__hashdefined()!=nullptr);
-    
+    ASSERT_TRUE(jvm_manager->getOGRealScalarClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGComplexScalarClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGRealDenseMatrixClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGComplexDenseMatrixClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGRealDiagonalMatrixClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGComplexDiagonalMatrixClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGRealSparseMatrixClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGComplexSparseMatrixClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGRealScalarClazz_init()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGComplexScalarClazz_init()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGRealDenseMatrixClazz_init()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGComplexDenseMatrixClazz_init()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGRealDiagonalMatrixClazz_init()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGComplexDiagonalMatrixClazz_init()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGRealSparseMatrixClazz_init()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGComplexSparseMatrixClazz_init()!=nullptr);
+
     delete env;
     delete jvm;
     delete jvm_manager;
@@ -627,4 +623,120 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_bad_JNI_OnLoad)
   ASSERT_TRUE(JNI_OnLoad(jvm, nullptr)==JNI_ERR);
   delete jvm;
   delete env;    
+}
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checkEx_exfound)
+{
+  class Fake_JNIEnv_will_throw: public Fake_JNIEnv_testRegister
+  {
+    public:
+      virtual jboolean ExceptionCheck() override
+      {
+        return JNI_TRUE;
+      }
+  };
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_will_throw();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  ASSERT_ANY_THROW(checkEx(env));
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checkEx_noexfound)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  class Fake_JNIEnv_testRegister_noex: public Fake_JNIEnv_testRegister
+  {
+    virtual jthrowable ExceptionOccurred() override
+    {
+      return nullptr;
+    }
+  };
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister_noex();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  ASSERT_NO_THROW(checkEx(env));
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewIntArray_fail)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  jsize sz = 10;
+  ASSERT_ANY_THROW(jvm_manager->newIntArray(env,sz));
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewIntArray_success)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  class Fake_JNIEnv_testRegister_noex: public Fake_JNIEnv_testRegister
+  {
+    virtual jintArray NewIntArray(jsize SUPPRESS_UNUSED len)
+    {
+      return new _jintArray();
+    }
+  };
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister_noex();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  jsize sz = 10;
+  jobject ret = nullptr;
+  ASSERT_NO_THROW(ret = jvm_manager->newIntArray(env,sz));
+  delete ret;
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
+
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewDouble_fail)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  jdouble value = 10;
+  ASSERT_ANY_THROW(jvm_manager->newDouble(env,value));
+  delete jvm_manager;
+  delete jvm;
+  delete env;
+}
+
+TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewnewDouble_success)
+{
+  JVMManager * jvm_manager = new JVMManager();
+  Fake_JavaVM * jvm = new Fake_JavaVM();
+  class Fake_JNIEnv_testRegister_noex: public Fake_JNIEnv_testRegister
+  {
+    virtual jobject NewObject(jclass SUPPRESS_UNUSED clazz, jmethodID SUPPRESS_UNUSED methodID, ...)
+    {
+      return new _jobject();
+    }
+  };
+  Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_testRegister_noex();
+  jvm->setEnv(env);
+  jvm_manager->initialize(jvm);
+  jdouble value = 10;
+  jobject ret = nullptr;
+  ASSERT_NO_THROW(ret = jvm_manager->newDouble(env,value));
+  delete ret;
+  delete jvm_manager;
+  delete jvm;
+  delete env;
 }

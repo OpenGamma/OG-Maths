@@ -14,13 +14,19 @@ namespace convert {
 
 using namespace librdag;
 
+/**
+ * helper function to get ints from int getFOO() in java
+ */
+DLLEXPORT_C jint getIntFromVoidJMethod(jmethodID id, jobject obj);
+
+
 /*
  * An OGRealScalar backed by data pinned from a Java based OGRealScalar.
  * Note that _dataref is assigned on construction of the OGRealScalar base class,
  * this is to keep JNI calls to a minimum by holding reference to the data pointer needed
  * to free via the ReleasePrimitiveArrayCritical() function.
  */
-class JOGRealScalar: public OGRealScalar
+class DLLEXPORT_C JOGRealScalar: public OGRealScalar
 {
   public:
     using OGRealScalar::OGRealScalar;
@@ -38,7 +44,7 @@ class JOGRealScalar: public OGRealScalar
  * this is to keep JNI calls to a minimum by holding reference to the data pointer needed
  * to free via the ReleasePrimitiveArrayCritical() function.
  */
-class JOGComplexScalar: public OGComplexScalar
+class DLLEXPORT_C JOGComplexScalar: public OGComplexScalar
 {
   public:
     using OGComplexScalar::OGComplexScalar;
@@ -56,7 +62,7 @@ class JOGComplexScalar: public OGComplexScalar
  * this is to keep JNI calls to a minimum by holding reference to the data pointer needed
  * to free via the ReleasePrimitiveArrayCritical() function.
  */
-class JOGIntegerScalar: public OGIntegerScalar
+class DLLEXPORT_C JOGIntegerScalar: public OGIntegerScalar
 {
   public:
     using OGIntegerScalar::OGIntegerScalar;
@@ -71,7 +77,7 @@ class JOGIntegerScalar: public OGIntegerScalar
 /*
  * An OGRealMatrix backed by data pinned from a Java based OGRealMatrix
  */
-class JOGRealMatrix: public OGRealMatrix
+class DLLEXPORT_C JOGRealMatrix: public OGRealMatrix
 {
   public:
     using OGRealMatrix::OGRealMatrix;
@@ -85,7 +91,7 @@ class JOGRealMatrix: public OGRealMatrix
 /*
  * An OGComplexMatrix backed by data pinned from a Java based OGComplexMatrix
  */
-class JOGComplexMatrix: public OGComplexMatrix
+class DLLEXPORT_C JOGComplexMatrix: public OGComplexMatrix
 {
   public:
     JOGComplexMatrix(jobject obj);
@@ -98,7 +104,7 @@ class JOGComplexMatrix: public OGComplexMatrix
 /*
  * An OGLogicalMatrix backed by data pinned from a Java based OGLogicalMatrix
  */
-class JOGLogicalMatrix: public OGLogicalMatrix
+class DLLEXPORT_C JOGLogicalMatrix: public OGLogicalMatrix
 {
   public:
     using OGLogicalMatrix::OGLogicalMatrix;
@@ -112,7 +118,7 @@ class JOGLogicalMatrix: public OGLogicalMatrix
 /*
  * An OGRealSparseMatrix backed by data pinned from a Java based OGRealSparseMatrix
  */
-class JOGRealSparseMatrix: public OGRealSparseMatrix
+class DLLEXPORT_C JOGRealSparseMatrix: public OGRealSparseMatrix
 {
   public:
     JOGRealSparseMatrix(jobject obj);
@@ -127,7 +133,7 @@ class JOGRealSparseMatrix: public OGRealSparseMatrix
 /*
  * An OGComplexSparseMatrix backed by data pinned from a Java based OGComplexSparseMatrix
  */
-class JOGComplexSparseMatrix: public OGComplexSparseMatrix
+class DLLEXPORT_C JOGComplexSparseMatrix: public OGComplexSparseMatrix
 {
   public:
     JOGComplexSparseMatrix(jobject obj);
@@ -142,7 +148,7 @@ class JOGComplexSparseMatrix: public OGComplexSparseMatrix
 /*
  * An OGRealDiagonalMatrix backed by data pinned from a Java based OGRealDiagonalMatrix
  */
-class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
+class DLLEXPORT_C JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 {
   public:
     JOGRealDiagonalMatrix(jobject obj);
@@ -155,7 +161,7 @@ class JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 /*
  * An OGComplexDiagonalMatrix backed by data pinned from a Java based OGComplexDiagonalMatrix
  */
-class JOGComplexDiagonalMatrix: public OGComplexDiagonalMatrix
+class DLLEXPORT_C JOGComplexDiagonalMatrix: public OGComplexDiagonalMatrix
 {
   public:
     JOGComplexDiagonalMatrix(jobject obj);

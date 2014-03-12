@@ -5,6 +5,7 @@
  */
 
 #include "debug.h"
+#include "modifiermacros.h"
 #include "jbindings.hh"
 #include "jvmmanager.hh"
 #include "exceptions.hh"
@@ -25,10 +26,7 @@ template<typename nativeT = real16, typename javaT = jdoubleArray>
 real16* getArrayFromJava(JNIEnv *env, jdoubleArray arr)
 {
   real16* p = env->GetDoubleArrayElements(arr, NULL);
-  if (p == nullptr)
-  {
-    throw convert_error("Null pointer returned by GetDoubleArrayElements");
-  }
+  checkEx(env);
   return p;
 }
 
@@ -36,10 +34,7 @@ template<typename nativeT = jint, typename javaT = jintArray>
 jint* getArrayFromJava(JNIEnv *env, jintArray arr)
 {
   jint* p = env->GetIntArrayElements(arr, NULL);
-  if (p == nullptr)
-  {
-    throw convert_error("Null pointer returned by GetDoubleArrayElements");
-  }
+  checkEx(env);
   return p;
 }
 
@@ -77,13 +72,13 @@ void releaseArrayFromJava(JNIEnv* env, jint* nativeArr, jintArray arr)
  * bindPrimitiveArrayData
  */
 
-template <typename nativeT, typename javaT> nativeT * bindPrimitiveArrayData(jobject obj, jmethodID method)
+template <typename nativeT, typename javaT> DLLEXPORT_C nativeT * bindPrimitiveArrayData(jobject obj, jmethodID method)
 {
-  if(!obj)
+  if(obj == nullptr)
   {
     throw convert_error("bindPrimitiveArrayData: null obj");
   }
-  if(!method)
+  if(method == nullptr)
   {
     throw convert_error("bindPrimitiveArrayData: null method");
   }
@@ -97,10 +92,7 @@ template <typename nativeT, typename javaT> nativeT * bindPrimitiveArrayData(job
   }
   jobject dataobj = NULL;
   dataobj = env->CallObjectMethod(obj, method);
-  if(!dataobj)
-  {
-    throw convert_error("CallObjectMethod failed");
-  }
+  checkEx(env);
   javaT * array = reinterpret_cast<javaT *>(&dataobj);
   nativeT * _dataptr = (nativeT*) getArrayFromJava<nativeT, javaT>(env, *array);
   return _dataptr;
@@ -119,17 +111,17 @@ bindPrimitiveArrayData<jint, jintArray>(jobject obj, jmethodID method);
  * unbindPrimitiveArrayData
  */
 
-template <typename nativeT, typename javaT> void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method)
+template <typename nativeT, typename javaT> DLLEXPORT_C void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method)
 {
-  if(!nativeData)
+  if(nativeData == nullptr)
   {
     throw convert_error("unbindPrimitiveArrayData: null nativeData");
   }
-  if(!obj)
+  if(obj == nullptr)
   {
     throw convert_error("unbindPrimitiveArrayData: null obj");
   }
-  if(!method)
+  if(method == nullptr)
   {
     throw convert_error("unbindPrimitiveArrayData: null method");
   }
@@ -142,6 +134,7 @@ template <typename nativeT, typename javaT> void unbindPrimitiveArrayData(native
     throw convert_error("Thread attach failed");
   }
   jobject dataobj = env->CallObjectMethod(obj, method);
+  checkEx(env);
   javaT * array = reinterpret_cast<javaT *>(&dataobj);
   releaseArrayFromJava<nativeT, javaT>(env, nativeData, *array);
 }
@@ -161,17 +154,7 @@ unbindPrimitiveArrayData<jint, jintArray>(jint* nativeData, jobject obj, jmethod
 
 template <typename nativeT, typename javaT> void unbindOGArrayData(nativeT * nativeData, jobject obj)
 {
-  JNIEnv *env = NULL;
-  jint jStatus = 0;
-  VAL64BIT_PRINT("Unbinding for OGArrayData", obj);
-  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
-  if(jStatus)
-  {
-    throw convert_error("Thread attach failed");
-  }
-  jobject dataobj = env->CallObjectMethod(obj, JVMManager::getOGTerminalClazz_getData());
-  javaT * array = reinterpret_cast<javaT *>(&dataobj);
-  releaseArrayFromJava<nativeT, javaT>(env, nativeData, *array);
+  unbindPrimitiveArrayData<nativeT, javaT>(nativeData, obj, JVMManager::getOGTerminalClazz_getData());
 }
 
 template void
