@@ -22,7 +22,7 @@ if(LAPACK_EXPORT)
   set(LAPACK_BUILDINFO ${LAPACK_EXPORT})
 else()
 #This is a temporary thing. Expect later to add in ExternalProject_add to get the code!!
-  message( FATAL_ERROR "LAPACK_EXPORT must be defined on the command line. e.g. -DLAPACK_EXPORT="/path/to/LAPACK_EXPORT.cmake"" )
+  message( FATAL_ERROR "LAPACK_EXPORT must be defined on the command line. e.g. -DLAPACK_EXPORT=\"/path/to/LAPACK_EXPORT.cmake\"" )
 endif()
 
 
@@ -83,6 +83,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
 
+# On Linux, add -rdynamic for stack traces
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set(CMAKE_C_FLAGS"${CMAKE_C_FLAGS} -rdynamic")
+  set(CMAKE_CXX_FLAGS"${CMAKE_CXX_FLAGS} -rdynamic")
+endif()
+
 # Use the native assembler on Apple in order to be able to generate AVX instructions.
 if(APPLE)
   set(CMAKE_C_FLAGS "-Wa,-q ${CMAKE_C_FLAGS}")
@@ -122,9 +128,9 @@ set(TARGET_TYPES dbg std sse41 avx1)
 set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
 
 set(OPT_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
-set(OPT_FLAGS_std "${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
-set(OPT_FLAGS_sse41 "${OPT_FLAGS_std} -march=core2 -msse4.1")
-set(OPT_FLAGS_avx1 "${OPT_FLAGS_std}  -march=corei7-avx -mavx256-split-unaligned-load -mavx256-split-unaligned-store")
+set(OPT_FLAGS_std "-g ${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
+set(OPT_FLAGS_sse41 "-g ${OPT_FLAGS_std} -march=core2 -msse4.1")
+set(OPT_FLAGS_avx1 "-g ${OPT_FLAGS_std}  -march=corei7-avx -mavx256-split-unaligned-load -mavx256-split-unaligned-store")
 
 # Gtest
 add_subdirectory(external/gtest-1.6.0)

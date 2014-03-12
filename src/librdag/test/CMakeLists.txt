@@ -11,12 +11,17 @@ link_directories(${longdog_BINARY_DIR}/src/librdag)
 
 set(TESTS check_expressions check_containers check_execution check_rtti check_terminals check_entrypt check_dispatch check_equals check_numerictypes check_convertto check_iss)
 
+if(NOT WIN32)
+  set(TESTS ${TESTS} check_exceptions)
+endif()
+
 # Compile and link each test and add to the list of tests
 foreach(TEST ${TESTS})
   add_multitarget_gtest(${TEST}
                         SOURCES ${TEST}.cc
                         LINK_LIBRARIES rdag
-                        TARGETS ${TARGET_TYPES})
+                        TARGETS ${TARGET_TYPES}
+                        SUPPRESSIONS ${CMAKE_CURRENT_SOURCE_DIR}/valgrind.supp)
 endforeach()
 
 add_subdirectory(nodes)

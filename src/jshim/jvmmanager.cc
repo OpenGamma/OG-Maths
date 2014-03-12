@@ -101,6 +101,8 @@ JVMManager::registerReferences()
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexDiagonalMatrix", &_OGComplexDiagonalMatrixClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealSparseMatrix", &_OGRealSparseMatrixClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexSparseMatrix", &_OGComplexSparseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/longdog/exceptions/MathsExceptionNativeConversion", &_MathsExceptionNativeConversionClazz);
+  registerGlobalClassReference("com/opengamma/longdog/exceptions/MathsExceptionNativeComputation", &_MathsExceptionNativeComputationClazz);
 
   //
   // REGISTER METHOD REFERENCES
@@ -234,6 +236,10 @@ jclass JVMManager::getOGComplexSparseMatrixClazz()
 { return _OGComplexSparseMatrixClazz; }
 jclass JVMManager::getOGExprTypeEnumClazz()
 { return _OGExprTypeEnumClazz; }
+jclass JVMManager::getMathsExceptionNativeConversionClazz()
+{ return _MathsExceptionNativeConversionClazz; }
+jclass JVMManager::getMathsExceptionNativeComputationClazz()
+{ return _MathsExceptionNativeComputationClazz; }
 jmethodID JVMManager::getOGRealScalarClazz_init()
 { return _OGRealScalarClazz_init; }
 jmethodID JVMManager::getOGComplexScalarClazz_init()
@@ -294,6 +300,8 @@ jclass JVMManager::_OGRealDiagonalMatrixClazz = nullptr;
 jclass JVMManager::_OGComplexDiagonalMatrixClazz = nullptr;
 jclass JVMManager::_OGRealSparseMatrixClazz = nullptr;
 jclass JVMManager::_OGComplexSparseMatrixClazz = nullptr;
+jclass JVMManager::_MathsExceptionNativeConversionClazz = nullptr;
+jclass JVMManager::_MathsExceptionNativeComputationClazz = nullptr;
 jmethodID JVMManager::_DoubleClazz_init = nullptr;
 jmethodID JVMManager::_OGRealScalarClazz_init = nullptr;
 jmethodID JVMManager::_OGComplexScalarClazz_init = nullptr;
@@ -387,6 +395,13 @@ JVMManager::newDouble(JNIEnv* env, jdouble v)
     throw convert_error("newDouble call failed.");
   }
   return ret;
+}
+
+
+jint
+JVMManager::throwNew(JNIEnv* env, jclass exClass, const char* msg)
+{
+  return env->ThrowNew(exClass, msg);
 }
 
 } // namespace convert

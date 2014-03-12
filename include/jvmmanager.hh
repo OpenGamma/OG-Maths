@@ -51,6 +51,8 @@ class JVMManager {
     DLLEXPORT_C static jclass getOGComplexDiagonalMatrixClazz();
     DLLEXPORT_C static jclass getOGRealSparseMatrixClazz();
     DLLEXPORT_C static jclass getOGComplexSparseMatrixClazz();
+    DLLEXPORT_C static jclass getMathsExceptionNativeConversionClazz();
+    DLLEXPORT_C static jclass getMathsExceptionNativeComputationClazz();
     DLLEXPORT_C static jmethodID getOGRealScalarClazz_init();
     DLLEXPORT_C static jmethodID getOGComplexScalarClazz_init();
     DLLEXPORT_C static jmethodID getOGRealDenseMatrixClazz_init();
@@ -74,6 +76,7 @@ class JVMManager {
     DLLEXPORT_C static jintArray newIntArray(JNIEnv *env, jsize len);
     DLLEXPORT_C static jdoubleArray newDoubleArray(JNIEnv *env, jsize len);
     DLLEXPORT_C static jobject newDouble(JNIEnv* env, jdouble v);
+    DLLEXPORT_C static jint throwNew(JNIEnv* env, jclass exClass, const char* msg);
     DLLEXPORT_C static void getEnv(void **penv);
     DLLEXPORT_C static jobject callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...);
   private:
@@ -102,6 +105,8 @@ class JVMManager {
     static jclass _OGComplexDiagonalMatrixClazz;
     static jclass _OGRealSparseMatrixClazz;
     static jclass _OGComplexSparseMatrixClazz;
+    static jclass _MathsExceptionNativeConversionClazz;
+    static jclass _MathsExceptionNativeComputationClazz;
     static jmethodID _DoubleClazz_init;
     static jmethodID _OGRealScalarClazz_init;
     static jmethodID _OGComplexScalarClazz_init;

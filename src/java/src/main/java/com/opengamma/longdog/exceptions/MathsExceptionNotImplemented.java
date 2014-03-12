@@ -9,7 +9,11 @@ package com.opengamma.longdog.exceptions;
  * Provides a manner in which maths exceptions relating to not implemented features can be thrown
  */
 public class MathsExceptionNotImplemented extends MathsException {
-  private static final long serialVersionUID = 1L;
+
+  /**
+   * Serial ID
+   */
+  private static final long serialVersionUID = -4513146658517029099L;
 
   public MathsExceptionNotImplemented() {
     super();

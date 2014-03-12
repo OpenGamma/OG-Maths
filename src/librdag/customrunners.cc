@@ -80,6 +80,21 @@ NORM2Runner::run(RegContainer * reg, OGRealMatrix const * arg) const
 
     // finally, the call
     F77FUNC(dgesvd)(&optN, &optN, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, WORK, &lwork, &info);
+
+    if(info!=0)
+    {
+      if(info < 0)
+      {
+        stringstream message;
+        message << "Input to LAPACK::dgesvd call incorrect at arg: " << info;
+        throw rdag_error(message.str());
+      }
+      else
+      {
+        throw rdag_error("LAPACK::dgesvd, internal call to dbdsqr did not converge.");
+      }
+    }
+
     ret = new OGRealScalar(S[0]);
     delete[] tmp;
     delete[] A;
@@ -102,14 +117,14 @@ NORM2Runner::run(RegContainer * reg, OGComplexMatrix const * arg) const
   {
     ret = new OGRealScalar(std::abs(arg->getData()[0]));
   }
-  else if(isVector(arg)) // Matrix is a vector, norm2 computed via BLAS cnrm2
+  else if(isVector(arg)) // Matrix is a vector, norm2 computed via BLAS dznrm2
   {
     int one = 1;
     int len = arg->getRows() > arg->getCols() ? arg->getRows(): arg->getCols();
     real16 value = F77FUNC(dznrm2)(&len, arg->getData(), &one);
     ret = new OGRealScalar(value);
   }
-  else // Matrix is a full matrix, norm2 computed via LAPACK dgesvd
+  else // Matrix is a full matrix, norm2 computed via LAPACK zgesvd
   {
     int m = arg->getRows();
     int n = arg->getCols();

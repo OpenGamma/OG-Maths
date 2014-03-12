@@ -145,6 +145,9 @@ class JNIEnv_
     {
       
     }
+    virtual jint EnsureLocalCapacity(jint SUPPRESS_UNUSED capacity) {
+      return 0;
+    }
     virtual jobject NewObject(jclass SUPPRESS_UNUSED clazz, jmethodID SUPPRESS_UNUSED methodID, ...) {
       return nullptr;
     }
@@ -211,6 +214,18 @@ class JNIEnv_
     virtual jdoubleArray NewDoubleArray(jsize SUPPRESS_UNUSED len)
     {
       return nullptr;
+    }
+    virtual jstring NewStringUTF(const char SUPPRESS_UNUSED *bytes)
+    {
+      return nullptr;
+    }
+    virtual jint ThrowNew(jclass SUPPRESS_UNUSED clazz, const char SUPPRESS_UNUSED *msg)
+    {
+      return 0;
+    }
+    virtual jint Throw(jthrowable SUPPRESS_UNUSED throwable)
+    {
+      return 0;
     }
     virtual jintArray NewIntArray(jsize SUPPRESS_UNUSED len)
     {
