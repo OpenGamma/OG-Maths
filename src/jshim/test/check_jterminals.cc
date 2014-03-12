@@ -38,7 +38,7 @@ TEST(JTerminals, Test_getIntFromVoidJMethod_null_envptr)
 {
   class Fake_JavaVM_bad_attach: public Fake_JavaVM
   {
-    virtual jint AttachCurrentThread(void SUPPRESS_UNUSED **penv, void SUPPRESS_UNUSED *args) override
+    virtual jint AttachCurrentThread(void **penv, void SUPPRESS_UNUSED *args) override
     {
       *penv = nullptr;
       return JNI_OK;
