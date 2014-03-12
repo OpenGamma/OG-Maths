@@ -9,7 +9,11 @@ package com.opengamma.longdog.exceptions;
  * Provides a manner in which maths exceptions relating to data non conformance can be thrown
  */
 public class MathsExceptionNonConformance extends MathsException {
-  private static final long serialVersionUID = 1L;
+
+  /**
+   * Serial ID
+   */
+  private static final long serialVersionUID = 1918921932804868986L;
 
   public MathsExceptionNonConformance() {
     super();

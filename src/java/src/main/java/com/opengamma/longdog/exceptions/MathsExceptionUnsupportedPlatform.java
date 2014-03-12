@@ -12,9 +12,9 @@ package com.opengamma.longdog.exceptions;
 public class MathsExceptionUnsupportedPlatform extends RuntimeException {
 
   /**
-   * SID
+   * Serial ID
    */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -1105413990531662184L;
 
   public MathsExceptionUnsupportedPlatform() {
     super();

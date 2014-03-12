@@ -11,9 +11,9 @@ package com.opengamma.longdog.exceptions;
 public class MathsExceptionOnInitialization extends RuntimeException {
 
   /**
-   * SID
+   * Serial ID
    */
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -8519882973848004168L;
 
   public MathsExceptionOnInitialization() {
     super();
