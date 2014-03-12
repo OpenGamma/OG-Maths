@@ -145,6 +145,9 @@ class JNIEnv_
     {
       
     }
+    virtual jint EnsureLocalCapacity(jint SUPPRESS_UNUSED capacity) {
+      return 0;
+    }
     virtual jobject NewObject(jclass SUPPRESS_UNUSED clazz, jmethodID SUPPRESS_UNUSED methodID, ...) {
       return nullptr;
     }
