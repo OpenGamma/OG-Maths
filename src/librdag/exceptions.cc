@@ -154,10 +154,9 @@ BacktraceElement::BacktraceElement(const BacktraceElement& other)
 BacktraceElement::BacktraceElement(const string& backtrace_symbol, const void* address)
 {
   _address = address;
-  _object_file = get_file(backtrace_symbol);
+  _object_file = asciiOnly(get_file(backtrace_symbol));
   int status = 0;
-  _function = demangle_fname(get_fname(backtrace_symbol), &status);
-  _object_file = get_file(backtrace_symbol);
+  _function = asciiOnly(demangle_fname(get_fname(backtrace_symbol), &status));
 }
 
 const void*
@@ -176,6 +175,20 @@ const string
 BacktraceElement::getFunction() const
 {
   return _function;
+}
+
+string
+BacktraceElement::asciiOnly(string s)
+{
+  char* c = (char*) malloc(sizeof(char) * s.size()+1);
+  for (size_t i = 0; i < s.size(); i++)
+  {
+    c[i] = s[i] & 0x7F;
+  }
+  c[s.size()] = 0;
+  string s1 = string(c);
+  free(c);
+  return s1;
 }
 
 /**

@@ -57,6 +57,10 @@ class BacktraceElement
      */
     const string getFunction() const;
   private:
+    /**
+     * Converts any non-ascii characters to ascii characters
+     */
+    string asciiOnly(string s);
     const void* _address;
     string _object_file;
     string _function;
