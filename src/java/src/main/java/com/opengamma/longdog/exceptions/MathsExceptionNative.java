@@ -6,6 +6,14 @@ package com.opengamma.longdog.exceptions;
 public class MathsExceptionNative extends MathsException {
 
   /**
+   * This form of the constructor is used on Windows, where no native stack trace is provided.
+   * @param msg the error message
+   */
+  public MathsExceptionNative(String msg) {
+	super(msg);
+  }
+
+  /**
    * Serial ID
    */
   private static final long serialVersionUID = 2689725471014028060L;
