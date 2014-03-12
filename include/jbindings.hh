@@ -27,15 +27,15 @@ T* bindOGArrayData(jobject obj);
  * @param obj the java object from which the native data is pinned
  */
 template <typename nativeT, typename javaT>
-void unbindOGArrayData(nativeT* nativeData, jobject obj);
+DLLEXPORT_C void unbindOGArrayData(nativeT* nativeData, jobject obj);
 
-extern template void
+extern template DLLEXPORT_C  void
 unbindOGArrayData<real16, jdoubleArray>(real16* nativeData, jobject obj);
 
-extern template void
+extern template DLLEXPORT_C  void
 unbindOGArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj);
 
-extern template void
+extern template DLLEXPORT_C  void
 unbindOGArrayData<jint, jintArray>(jint* nativeData, jobject obj);
 
 /**
@@ -47,15 +47,15 @@ unbindOGArrayData<jint, jintArray>(jint* nativeData, jobject obj);
  * @return a pointer to a native version of the data
  */
 template <typename nativeT, typename javaT>
-nativeT* bindPrimitiveArrayData(jobject obj, jmethodID method);
+DLLEXPORT_C nativeT* bindPrimitiveArrayData(jobject obj, jmethodID method);
 
-extern template real16*
+extern template DLLEXPORT_C real16*
 bindPrimitiveArrayData<real16, jdoubleArray>(jobject obj, jmethodID method);
 
-extern template complex16*
+extern template DLLEXPORT_C complex16*
 bindPrimitiveArrayData<complex16, jdoubleArray>(jobject obj, jmethodID method);
 
-extern template int*
+extern template DLLEXPORT_C int*
 bindPrimitiveArrayData<int, jintArray>(jobject obj, jmethodID method);
 
 /**
@@ -67,15 +67,15 @@ bindPrimitiveArrayData<int, jintArray>(jobject obj, jmethodID method);
  * @param method the method that refers to the pinned data
  */
 template <typename nativeT, typename javaT>
-void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method);
+DLLEXPORT_C void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method);
 
-extern template void
+extern template DLLEXPORT_C void
 unbindPrimitiveArrayData<real16, jdoubleArray>(real16* nativeData, jobject obj, jmethodID method);
 
-extern template void
+extern template DLLEXPORT_C void
 unbindPrimitiveArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj, jmethodID method);
 
-extern template void
+extern template DLLEXPORT_C void
 unbindPrimitiveArrayData<jint, jintArray>(jint* nativeData, jobject obj, jmethodID method);
 
 } // namespace convert

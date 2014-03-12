@@ -7,16 +7,30 @@
 #include "jvmmanager.hh"
 #include "jterminals.hh"
 #include "jbindings.hh"
+#include "exceptions.hh"
+#include "modifiermacros.h"
 
 namespace convert {
 
 /**
  * helper function to get ints from int getFOO() in java
  */
-jint getIntFromVoidJMethod(jmethodID id, jobject obj)
+DLLEXPORT_C jint getIntFromVoidJMethod(jmethodID id, jobject obj)
 {
-  JNIEnv *env = NULL;
+  if(id==nullptr)
+  {
+    throw convert_error("Null pointer for method id.");
+  }
+  if(obj==nullptr)
+  {
+    throw convert_error("Null pointer for jobject obj.");
+  }
+  JNIEnv *env = nullptr;
   JVMManager::getEnv((void **)&env);
+  if(env==nullptr)
+  {
+    throw convert_error("Null pointer for env from JVMManager::getEnv.");
+  }
   jint data = 0x7ff00000;
   data = env->CallIntMethod(obj, id);
   return data;
@@ -222,17 +236,13 @@ JOGRealSparseMatrix::debug_print() const
 real16**
 JOGRealSparseMatrix::toReal16ArrayOfArrays() const
 {
-  // Returning null as no implementation yet.
-  double ** foo = NULL;
-  return foo;
+  throw convert_error("Not implemented");
 }
 
 complex16**
 JOGRealSparseMatrix::toComplex16ArrayOfArrays() const
 {
-  // Returning null as no implementation yet.
-  complex16 ** foo = NULL;
-  return foo;
+  throw convert_error("Not implemented");
 }
 
 /*
@@ -267,17 +277,13 @@ JOGComplexSparseMatrix::debug_print() const
 real16**
 JOGComplexSparseMatrix::toReal16ArrayOfArrays() const
 {
-  // Returning null as no implementation yet.
-  double ** foo = NULL;
-  return foo;
+  throw convert_error("Not implemented");
 }
 
 complex16**
 JOGComplexSparseMatrix::toComplex16ArrayOfArrays() const
 {
-  // Returning null as no implementation yet.
-  complex16 ** foo = NULL;
-  return foo;
+  throw convert_error("Not implemented");
 }
 
 /**

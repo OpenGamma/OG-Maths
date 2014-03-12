@@ -7,7 +7,12 @@
 include_directories (${CMAKE_SOURCE_DIR}/include ${BIN_INCLUDE_DIR})
 SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 
-set(TESTS check_jvmmanager_fakejni)
+set(TESTS
+         check_jbindings
+         check_jdispatch
+         check_jterminals
+         check_jvmmanager_fakejni
+         )
 
 # Compile and link each test and add to the list of tests
 foreach(TEST ${TESTS})

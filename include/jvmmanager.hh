@@ -23,7 +23,7 @@ namespace convert {
 /*
  * Check for exception
  */
-void checkEx(JNIEnv* env);
+DLLEXPORT_C void checkEx(JNIEnv* env);
 
 /*
  * Caches static classes methods, fields and the JVM pointer.
