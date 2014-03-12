@@ -114,6 +114,7 @@ TEST_F(DogmaErrorTest, Copy)
   ASSERT_EQ(_error->getTraceSize(), e2.getTraceSize());
   const BacktraceElement* trace1 = _error->getBacktrace();
   const BacktraceElement* trace2 = e2.getBacktrace();
+  EXPECT_NE(trace1, trace2);
 
   for (size_t i = 0; i < e2.getTraceSize(); i++)
   {
@@ -134,6 +135,7 @@ TEST_F(DogmaErrorTest, Assign)
   ASSERT_EQ(_error->getTraceSize(), e2.getTraceSize());
   const BacktraceElement* trace1 = _error->getBacktrace();
   const BacktraceElement* trace2 = e2.getBacktrace();
+  EXPECT_NE(trace1, trace2);
 
   for (size_t i = 0; i < e2.getTraceSize(); i++)
   {
