@@ -9,6 +9,15 @@ package com.opengamma.longdog.exceptions;
  * Provides a manner in which maths exceptions relating to execution in native code can be thrown.
  */
 public class MathsExceptionNativeComputation extends MathsExceptionNative {
+  
+  /**
+   * This form of the constructor is used on Windows, where no native stack trace is provided.
+   * @param msg the error message
+   */
+  public MathsExceptionNativeComputation(String msg) {
+	super(msg);
+  }
+
   /**
    * Serial ID
    */
