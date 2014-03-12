@@ -97,13 +97,13 @@ jobjectArray javaBacktrace(JNIEnv* env, const BacktraceElement* backtrace, size_
     JNI_RETONFAIL(fileName = env->NewStringUTF(ss.str().c_str()));
     JNI_RETONFAIL(lineNo = env->NewStringUTF("1"));
     env->SetObjectArrayElement(btArray, ((i * 4) + 0), className);
-    checkEx(env);
+    if(env->ExceptionCheck() == JNI_TRUE) return nullptr;
     env->SetObjectArrayElement(btArray, ((i * 4) + 1), methodName);
-    checkEx(env);
+    if(env->ExceptionCheck() == JNI_TRUE) return nullptr;
     env->SetObjectArrayElement(btArray, ((i * 4) + 2), fileName);
-    checkEx(env);
+    if(env->ExceptionCheck() == JNI_TRUE) return nullptr;
     env->SetObjectArrayElement(btArray, ((i * 4) + 3), lineNo);
-    checkEx(env);
+    if(env->ExceptionCheck() == JNI_TRUE) return nullptr;
   }
 
   return btArray;
