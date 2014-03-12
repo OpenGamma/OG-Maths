@@ -89,6 +89,21 @@ public class FuzzyEqualsTest {
   }
 
   @Test
+  public void EqualsTest_ArrayOfArraysFuzzyEqualsDouble() {
+
+    double data[][] = {{ 1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0, 8.e0},{9.e0, 10.e0, 11.e0, 12.e0}};
+    double same[][] = {{ 1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0, 8.e0},{9.e0, 10.e0, 11.e0, 12.e0}};
+    double diffvalue[][] = {{ -1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0, 8.e0},{9.e0, 10.e0, 11.e0, 12.e0}};
+    double diffrowlen[][] = {{ 1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0},{9.e0, 10.e0, 11.e0, 12.e0}};
+    double diffrowcount[][] = {{ 1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0, 8.e0}};
+
+    assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffvalue));
+    assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffrowlen));
+    assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffrowcount));
+    assertTrue(FuzzyEquals.ArrayFuzzyEquals(data, same));
+  }
+
+  @Test
   public void EqualsTest_CheckEPSIsAppropriatelySmall()
   {
     assertTrue(FuzzyEquals.getEps() < 5e-16);

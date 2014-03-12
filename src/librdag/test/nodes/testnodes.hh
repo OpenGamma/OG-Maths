@@ -119,7 +119,6 @@ template <typename T> class CheckNode
   private:
     const OGNumeric * _expected;
     CompareMethod _comparisonMethod;
-    T * _node;
 };
 
 /**

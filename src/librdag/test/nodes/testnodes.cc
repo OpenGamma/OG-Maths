@@ -27,7 +27,6 @@ template<typename T> CheckNode<T>::CheckNode(OGNumeric * expected, CompareMethod
 template<typename T> CheckNode<T>::~CheckNode()
 {
   delete this->_expected;
-  delete this->_node;
 }
 
 template<typename T> const OGNumeric *
@@ -63,6 +62,7 @@ template<typename T> CheckUnary<T>::CheckUnary(OGNumeric * input, OGNumeric * ex
 
 template<typename T> CheckUnary<T>::~CheckUnary()
 {
+  delete this->_resultPair->first; // this is the owning copy
   delete this->_resultPair;
 }
 
@@ -87,7 +87,8 @@ CheckUnary<T>::execute()
   }
   const RegContainer * regs = node->getRegs();
   const OGNumeric * answer = (*regs)[0];
-  this->_resultPair = new ResultPair(answer, this->getExpected());
+  this->_resultPair = new ResultPair(answer->asOGTerminal()->createOwningCopy(), this->getExpected());
+  delete node;
   delete el1;
 }
 
@@ -129,6 +130,7 @@ template<typename T> CheckBinary<T>::CheckBinary(OGNumeric * first_input, OGNume
 
 template<typename T> CheckBinary<T>::~CheckBinary()
 {
+  delete this->_resultPair->first; // this is the owning copy
   delete this->_resultPair;
 }
 
@@ -145,7 +147,6 @@ CheckBinary<T>::execute()
   args->push_back(_first_input);
   args->push_back(_second_input);
   T * node = new T(args);
-  this->_node = node;
   ExecutionList * el1 = new ExecutionList(node);
   for (auto it = el1->begin(); it != el1->end(); ++it)
   {
@@ -155,17 +156,14 @@ CheckBinary<T>::execute()
   }
   const RegContainer * regs = node->getRegs();
   const OGNumeric * answer = (*regs)[0];
-  this->_resultPair = new ResultPair(answer, this->getExpected());
+  this->_resultPair = new ResultPair(answer->asOGTerminal()->createOwningCopy(), this->getExpected());
+  delete node;
   delete el1;
 }
 
 template<typename T> bool
 CheckBinary<T>::comparesCorrectlyTypeInvariant() const
 {
-  cout << "first";
-  this->getResultPair()->first->asOGTerminal()->debug_print();
-  cout << "second";
-  this->getResultPair()->second->asOGTerminal()->debug_print();
   return (*(this->getResultPair()->first->asOGTerminal())%*(this->getResultPair()->second->asOGTerminal()));
 }
 
