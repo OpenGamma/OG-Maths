@@ -12,30 +12,10 @@
 #include <iostream>
 #include "jvmmanager.hh"
 #include "debug.h"
+#include "test/fake_jvm.hh"
 
 using namespace std;
 using namespace convert;
-
-// Fake VM
-class Fake_JavaVM: public JavaVM
-{
-  public:   
-    virtual ~Fake_JavaVM(){};
-    virtual int GetEnv(void SUPPRESS_UNUSED ** env, int SUPPRESS_UNUSED version) override
-    {
-     *env = _env;
-     return JNI_OK;
-    }
-    void setEnv(JNIEnv * env)
-    {
-        this->_env = env;
-    }
-    JNIEnv * getEnv()
-    {
-        return this->_env;
-    }        
-    virtual jint AttachCurrentThread(void SUPPRESS_UNUSED **penv, void SUPPRESS_UNUSED *args) { return JNI_OK; }
-};
 
 // Test bad JVM (GetEnv() env ptr returns JNI_ERR)
 TEST(JVMManagerFakeJNITest, Test_JVMManager_initialize_badversion)
