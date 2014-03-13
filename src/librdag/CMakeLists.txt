@@ -22,6 +22,7 @@ set(RDAG_SOURCES containers.cc
                  execution.cc
                  expressionbase.cc
                  iss.cc
+                 lapack.cc
                  numericbase.cc
                  numerictypes.cc
                  terminal.cc

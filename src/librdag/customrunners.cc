@@ -185,6 +185,68 @@ NORM2Runner::run(RegContainer * reg, OGComplexMatrix const * arg) const
   return nullptr;
 }
 
+template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* arg0, const OGMatrix<T>* arg1)
+{
+  int colsArray1 = arg0->getCols();
+  int colsArray2 = arg1->getCols();
+  int rowsArray1 = arg0->getRows();
+  int rowsArray2 = arg1->getRows();
+  T * data1 = arg0->getData();
+  T * data2 = arg1->getData();
+
+  T * tmp = nullptr;
+
+  // Fortran vars
+  int one = 1;
+  char N = 'N';
+  T real_one = 1.e0;
+
+  OGTerminal * ret = nullptr;
+
+  if (colsArray1 == 1 && rowsArray1 == 1) { // We have scalar * matrix
+    T deref = data1[0];
+    int n = rowsArray2 * colsArray2;
+    tmp = new T[n];
+    memcpy(tmp,data2,n*sizeof(T));
+    lapack::xscal(&n,&deref,tmp,&one);
+    ret = new OGOwningRealMatrix(tmp, rowsArray2, colsArray2);
+  } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
+    T deref = data2[0];
+    int n = rowsArray1 * colsArray1;
+    tmp = new T[n];
+    memcpy(tmp,data1,n*sizeof(T));
+    lapack::xscal(&n,&deref,tmp,&one);
+    ret = new OGOwningRealMatrix(tmp, rowsArray1, colsArray1);
+  } else {
+    if(colsArray1!=rowsArray2)
+    {
+      stringstream message;
+      message << "Matrices do not commute. First is: " << rowsArray1 <<"x"<< colsArray1 <<". Second is: " << rowsArray2 <<"x"<< colsArray2;
+      throw rdag_error(message.str());
+    }
+    if (colsArray2 == 1) { // A*x
+      tmp = new T[rowsArray1]();
+      lapack::xgemv(&N, &rowsArray1, &colsArray1, &real_one, data1, &rowsArray1, data2, &one, &real_one, tmp, &one);
+      ret = new OGOwningRealMatrix(tmp, rowsArray1, 1);
+    } else {
+      int fm = rowsArray1;
+      int fn = colsArray2;
+      int fk = colsArray1;
+      T alpha = 1.e0;
+      int lda = fm;
+      int ldb = fk;
+      T beta = 0.e0;
+      tmp = new T[fm * fn];
+      int ldc = fm;
+      lapack::xgemm(&N, &N, &fm, &fn, &fk, &alpha, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
+      ret = new OGOwningRealMatrix(tmp, fm, fn);
+    }
+  }
+  // shove ret into register
+  reg0->push_back(ret);
+  return nullptr;
+}
+
 
 // MTIMES runner:
 void * MTIMESRunner::run(RegContainer * reg0, const OGComplexMatrix * arg0, const OGComplexMatrix * arg1) const
@@ -210,14 +272,14 @@ void * MTIMESRunner::run(RegContainer * reg0, const OGComplexMatrix * arg0, cons
     int n = rowsArray2 * colsArray2;
     tmp = new complex16[n];
     memcpy(tmp,data2,n*sizeof(complex16));
-    F77FUNC(zscal)(&n,&deref,tmp,&one);
+    lapack::xscal(&n,&deref,tmp,&one);
     ret = new OGOwningComplexMatrix(tmp, rowsArray2, colsArray2);
   } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
     complex16 deref = data2[0];
     int n = rowsArray1 * colsArray1;
     tmp = new complex16[n];
     memcpy(tmp,data1,n*sizeof(complex16));
-    F77FUNC(zscal)(&n,&deref,tmp,&one);
+    lapack::xscal(&n,&deref,tmp,&one);
     ret = new OGOwningComplexMatrix(tmp, rowsArray1, colsArray1);
   } else {
     if(colsArray1!=rowsArray2)
@@ -228,7 +290,7 @@ void * MTIMESRunner::run(RegContainer * reg0, const OGComplexMatrix * arg0, cons
     }
     if (colsArray2 == 1) { // A*x
       tmp = new complex16[rowsArray1]();
-      F77FUNC(zgemv)(&N, &rowsArray1, &colsArray1, &cmplx_one, data1, &rowsArray1, data2, &one, &cmplx_one, tmp, &one);
+      lapack::xgemv(&N, &rowsArray1, &colsArray1, &cmplx_one, data1, &rowsArray1, data2, &one, &cmplx_one, tmp, &one);
       ret = new OGOwningComplexMatrix(tmp, rowsArray1, 1);
     } else {
       int fm = rowsArray1;
@@ -240,7 +302,7 @@ void * MTIMESRunner::run(RegContainer * reg0, const OGComplexMatrix * arg0, cons
       complex16 beta = 0.e0;
       tmp = new complex16[fm * fn];
       int ldc = fm;
-      F77FUNC(zgemm)(&N, &N, &fm, &fn, &fk, &alpha, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
+      lapack::xgemm(&N, &N, &fm, &fn, &fk, &alpha, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
       ret = new OGOwningComplexMatrix(tmp, fm, fn);
     }
   }
@@ -249,65 +311,10 @@ void * MTIMESRunner::run(RegContainer * reg0, const OGComplexMatrix * arg0, cons
   return nullptr;
 }
 
+
 void * MTIMESRunner::run(RegContainer* reg0, const OGRealMatrix*    arg0, const OGRealMatrix*    arg1) const
 {
-  int colsArray1 = arg0->getCols();
-  int colsArray2 = arg1->getCols();
-  int rowsArray1 = arg0->getRows();
-  int rowsArray2 = arg1->getRows();
-  real16 * data1 = arg0->getData();
-  real16 * data2 = arg1->getData();
-
-  real16 * tmp = nullptr;
-
-  // Fortran vars
-  int one = 1;
-  char N = 'N';
-  real16 real_one = 1.e0;
-
-  OGTerminal * ret = nullptr;
-
-  if (colsArray1 == 1 && rowsArray1 == 1) { // We have scalar * matrix
-    real16 deref = data1[0];
-    int n = rowsArray2 * colsArray2;
-    tmp = new real16[n];
-    memcpy(tmp,data2,n*sizeof(real16));
-    F77FUNC(dscal)(&n,&deref,tmp,&one);
-    ret = new OGOwningRealMatrix(tmp, rowsArray2, colsArray2);
-  } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
-    real16 deref = data2[0];
-    int n = rowsArray1 * colsArray1;
-    tmp = new real16[n];
-    memcpy(tmp,data1,n*sizeof(real16));
-    F77FUNC(dscal)(&n,&deref,tmp,&one);
-    ret = new OGOwningRealMatrix(tmp, rowsArray1, colsArray1);
-  } else {
-    if(colsArray1!=rowsArray2)
-    {
-      stringstream message;
-      message << "Matrices do not commute. First is: " << rowsArray1 <<"x"<< colsArray1 <<". Second is: " << rowsArray2 <<"x"<< colsArray2;
-      throw rdag_error(message.str());
-    }
-    if (colsArray2 == 1) { // A*x
-      tmp = new real16[rowsArray1]();
-      F77FUNC(dgemv)(&N, &rowsArray1, &colsArray1, &real_one, data1, &rowsArray1, data2, &one, &real_one, tmp, &one);
-      ret = new OGOwningRealMatrix(tmp, rowsArray1, 1);
-    } else {
-      int fm = rowsArray1;
-      int fn = colsArray2;
-      int fk = colsArray1;
-      real16 alpha = 1.e0;
-      int lda = fm;
-      int ldb = fk;
-      real16 beta = 0.e0;
-      tmp = new real16[fm * fn];
-      int ldc = fm;
-      F77FUNC(dgemm)(&N, &N, &fm, &fn, &fk, &alpha, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
-      ret = new OGOwningRealMatrix(tmp, fm, fn);
-    }
-  }
-  // shove ret into register
-  reg0->push_back(ret);
+  dense_runner(reg0, arg0, arg1);
   return nullptr;
 }
 

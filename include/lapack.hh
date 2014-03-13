@@ -13,7 +13,6 @@
 
 // these lurk in global namespace
 
-
 // BLAS
 // Standard xSCAL
 extern "C" void F77FUNC(dscal)(int * N, real16 * DA, real16* DX, int * INCX);
@@ -37,5 +36,27 @@ extern "C" real16 F77FUNC(dznrm2)(int * N, complex16 * X, int * INCX);
 // Standard SVD implementations.
 extern "C" void F77FUNC(dgesvd)(char * JOBU, char * JOBVT, int * M, int * N, real16 * A, int * LDA, real16 * S, real16 * U, int * LDU, real16 * VT, int * LDVT, real16 * WORK, int * LWORK, int * INFO);
 extern "C" void F77FUNC(zgesvd)(char * JOBU, char * JOBVT, int * M, int * N, complex16 * A, int * LDA, real16 * S, complex16 * U, int * LDU, complex16 * VT, int * LDVT, complex16 * WORK, int * LWORK, real16 * RWORK, int * INFO);
+
+// The lapack namespace contains templated variants of functions that vary only on <real16,complex16> in their signature.
+namespace lapack
+{
+
+/**
+ * xscal general vector scaling
+ */
+template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
+
+/**
+ * xgemv general matrix vector multiplication.
+ */
+template<typename T> void xgemv(char * TRANS, int * M, int * N, T * ALPHA, T * A, int * LDA, T * X, int * INCX, T * BETA, T * Y, int * INCY );
+
+/**
+ * xgemm general matrix matrix multiplication.
+ */
+template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, T * ALPHA, T * A, int * LDA, T * B, int * LDB, T * BETA, T * C, int * LDC );
+
+}
+
 
 #endif // _LAPACK_HH
