@@ -423,7 +423,7 @@ TEST(EqualsTest, OGRealSparseMatrix) {
   OGRealSparseMatrix * r_comparable_sparse = new OGOwningRealSparseMatrix(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new real16[7] {1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 }, 5, 4);
   OGRealMatrix * r_notcomparable = new OGRealMatrix(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexSparseMatrix * c_comparable_sparse = new OGOwningComplexSparseMatrix(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new complex16[7] {{1.0e0,0.e0}, {3.0e0,0.e0}, {2.0e0,0.e0}, {5.0e0,0.e0}, {4.0e0,0.e0}, {6.0e0,0.e0}, {7.0e0,0.e0}}, 5, 4);
-  OGComplexDiagonalMatrix * c_notcomparable = new OGOwningComplexDiagonalMatrix(new complex16[4]{1.e0,2.e0,3.e0,5.e0},5,4);
+  OGComplexDiagonalMatrix * c_notcomparable = new OGComplexDiagonalMatrix(new complex16[4]{1.e0,2.e0,3.e0,5.e0},5,4, OWNER);
 
   ASSERT_TRUE(matrix->equals(same));
   ASSERT_TRUE(*matrix==*same);
@@ -505,7 +505,7 @@ TEST(EqualsTest, OGComplexSparseMatrix) {
   OGRealScalar * badtype = new OGRealScalar(1.0e0);
   OGRealMatrix * r_notcomparable = new OGRealMatrix(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexSparseMatrix * c_comparable_sparse = new OGOwningComplexSparseMatrix(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new complex16[7] {{1.0e0,10.0e0}, {3.0e0,30.0e0}, {2.0e0,20.0e0}, {5.0e0,50.0e0}, {4.0e0,40.0e0}, {6.0e0,60.0e0}, {7.0e0,70.0e0} }, 5, 4);
-  OGComplexDiagonalMatrix * c_notcomparable = new OGOwningComplexDiagonalMatrix(new complex16[4]{1.e0,2.e0,3.e0,5.e0},5,4);
+  OGComplexDiagonalMatrix * c_notcomparable = new OGComplexDiagonalMatrix(new complex16[4]{1.e0,2.e0,3.e0,5.e0},5,4, OWNER);
 
 
   ASSERT_TRUE(matrix->equals(same));
@@ -580,8 +580,8 @@ TEST(EqualsTest, OGRealDiagonalMatrix) {
   OGComplexMatrix * badtype = new OGComplexMatrix(c_data1,2,2);
   OGRealSparseMatrix * r_comparable_sparse = new OGOwningRealSparseMatrix(new int[5] {0, 1, 2, 3, 4}, new int[4] {0, 1, 2, 3}, new real16[7] {1.0e0, 2.0e0, 3.0e0, 4.0e0}, 4, 4);
   OGRealMatrix * r_notcomparable = new OGRealMatrix(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
-  OGComplexDiagonalMatrix * c_comparable_diag = new OGOwningComplexDiagonalMatrix(new complex16[4] {{1.0e0,0.e0}, {2.0e0,0.e0}, {3.0e0,0.e0}, {4.0e0,0.e0}},4, 4);
-  OGComplexDiagonalMatrix * c_notcomparable = new OGOwningComplexDiagonalMatrix(new complex16[4]{1.e0,2.e0,3.e0,5.e0},4,4);
+  OGComplexDiagonalMatrix * c_comparable_diag = new OGComplexDiagonalMatrix(new complex16[4] {{1.0e0,0.e0}, {2.0e0,0.e0}, {3.0e0,0.e0}, {4.0e0,0.e0}},4, 4, OWNER);
+  OGComplexDiagonalMatrix * c_notcomparable = new OGComplexDiagonalMatrix(new complex16[4]{1.e0,2.e0,3.e0,5.e0},4,4, OWNER);
 
 
   ASSERT_TRUE(matrix->equals(same));
@@ -649,8 +649,8 @@ TEST(EqualsTest, OGComplexDiagonalMatrix) {
   OGComplexDiagonalMatrix * baddata = new OGComplexDiagonalMatrix(c_data2,4,4);
   OGRealMatrix * badtype = new OGRealMatrix(r_data1,2,2);
   OGRealMatrix * r_notcomparable = new OGRealMatrix(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
-  OGComplexDiagonalMatrix * c_comparable_diag = new OGOwningComplexDiagonalMatrix(new complex16[4] {{1.0e0,10.e0}, {2.0e0,20.e0}, {3.0e0,30.e0}, {4.0e0,40.e0}},4, 4);
-  OGComplexDiagonalMatrix * c_notcomparable = new OGOwningComplexDiagonalMatrix(new complex16[4]{1.e0,2.e0,3.e0,5.e0},4,4);
+  OGComplexDiagonalMatrix * c_comparable_diag = new OGComplexDiagonalMatrix(new complex16[4] {{1.0e0,10.e0}, {2.0e0,20.e0}, {3.0e0,30.e0}, {4.0e0,40.e0}},4, 4, OWNER);
+  OGComplexDiagonalMatrix * c_notcomparable = new OGComplexDiagonalMatrix(new complex16[4]{1.e0,2.e0,3.e0,5.e0},4,4, OWNER);
 
   ASSERT_TRUE(matrix->equals(same));
   ASSERT_TRUE(*matrix==*same);
