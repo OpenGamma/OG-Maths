@@ -1061,6 +1061,22 @@ OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows,
 }
 
 template<typename T>
+OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows, int cols, DATA_ACCESS access_spec):OGSparseMatrix(colPtr, rowIdx, data, rows, cols)
+{
+  this->setDataAccess(access_spec);
+}
+
+template<typename T>
+OGSparseMatrix<T>::~OGSparseMatrix()
+{
+  if(this->getDataAccess() == OWNER)
+  {
+    delete[] this->getColPtr();
+    delete[] this->getRowIdx();
+  }
+}
+
+template<typename T>
 void
 OGSparseMatrix<T>::accept(Visitor &v) const
 {
@@ -1242,7 +1258,7 @@ OGRealSparseMatrix::createOwningCopy() const
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
   int * newRowIdx = new int[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
-  return new OGOwningRealSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols());
+  return new OGRealSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 OGTerminal *
@@ -1254,19 +1270,8 @@ OGRealSparseMatrix::createComplexOwningCopy() const
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
   int * newRowIdx = new int[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
-  return new OGOwningComplexSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols());
+  return new OGComplexSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }
-
-/**
- * OGOwningRealSparseMatrix
- */
-OGOwningRealSparseMatrix::~OGOwningRealSparseMatrix()
-{
-  delete [] this->getColPtr();
-  delete [] this->getRowIdx();
-  delete [] this->getData();
-}
-
 
 /**
  * OGComplexSparseMatrix
@@ -1340,25 +1345,13 @@ OGComplexSparseMatrix::createOwningCopy() const
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
   int * newRowIdx = new int[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
-  return new OGOwningComplexSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols());
+  return new OGComplexSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 OGTerminal *
 OGComplexSparseMatrix::createComplexOwningCopy() const
 {
   return this->createOwningCopy();
-}
-
-
-
-/**
- * OGOwningComplexSparseMatrix
- */
-OGOwningComplexSparseMatrix::~OGOwningComplexSparseMatrix()
-{
-  delete [] this->getColPtr();
-  delete [] this->getRowIdx();
-  delete [] this->getData();
 }
 
 } // namespace librdag

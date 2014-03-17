@@ -962,57 +962,6 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
 
 
 /*
- * Test OGOwningRealSparseMatrix
- */
-TEST(TerminalsTest, OGOwningRealSparseMatrix) {
-  // data
-  real16 data [7] = { 1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
-  int colPtr [6] = { 0, 2, 4, 7, 7, 7 };
-  int rowIdx [7] = { 0, 1, 0, 2, 1, 2, 3 };
-  int rows = 5;
-  int cols = 4;
-
-  // attempt construct from ok values
-  real16 * owned_data = new real16[7];
-  memcpy(owned_data,data, 7 * sizeof(real16));
-  int * owned_colPtr = new int[6];
-  memcpy(owned_colPtr,colPtr, 6 * sizeof(int));
-  int * owned_rowIdx = new int[7];
-  memcpy(owned_rowIdx,rowIdx, 7 * sizeof(int));
-
-
-  OGOwningRealSparseMatrix * tmp = new OGOwningRealSparseMatrix(owned_colPtr, owned_rowIdx,owned_data,rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), colPtr[cols]);
-
-  // check getData
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getColPtr
-  ASSERT_TRUE(ArrayEquals(tmp->getColPtr(),colPtr,6));
-
-  // check getRowIdx
-  ASSERT_TRUE(ArrayEquals(tmp->getRowIdx(),rowIdx,7));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), REAL_SPARSE_MATRIX_ENUM);
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
-
-
-/*
  * Test OGComplexSparseMatrix
  */
 TEST(TerminalsTest, OGComplexSparseMatrix) {
@@ -1162,56 +1111,6 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
 
   // clean up
   delete copy;
-  delete tmp;
-}
-
-/*
- * Test OGOwningComplexSparseMatrix
- */
-TEST(TerminalsTest, OGOwningComplexSparseMatrix) {
-  // data
-  complex16 data [12] = { {1, 10}, {5, 0}, {0, 90}, {2, 20}, {0, 60}, {10, 100}, {0, 30}, {7, 70}, {11, 0}, {15, 0}, {0, 120}, {0, 160} };
-  int colPtr [6] = { 0, 3, 6, 10, 12, 12 };
-  int rowIdx [12] = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 };
-  int rows = 5;
-  int cols = 4;
-
-  // attempt construct from ok values
-  complex16 * owned_data = new complex16[12];
-  memcpy(owned_data,data, 12 * sizeof(complex16));
-  int * owned_colPtr = new int[6];
-  memcpy(owned_colPtr,colPtr, 6 * sizeof(int));
-  int * owned_rowIdx = new int[12];
-  memcpy(owned_rowIdx,rowIdx, 12 * sizeof(int));
-
-
-  OGOwningComplexSparseMatrix * tmp = new OGOwningComplexSparseMatrix(owned_colPtr, owned_rowIdx,owned_data,rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), colPtr[cols]);
-
-  // check getData
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getColPtr
-  ASSERT_TRUE(ArrayEquals(tmp->getColPtr(),colPtr,6));
-
-  // check getRowIdx
-  ASSERT_TRUE(ArrayEquals(tmp->getRowIdx(),rowIdx,7));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), COMPLEX_SPARSE_MATRIX_ENUM);
-
-  // delete should free, valgrind should be happy
   delete tmp;
 }
 

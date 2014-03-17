@@ -345,6 +345,8 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
 {
   public:
     OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols);
+    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols, DATA_ACCESS access_spec);
+    virtual ~OGSparseMatrix();
     virtual void accept(Visitor &v) const override;
     int* getColPtr() const;
     int* getRowIdx() const;
@@ -378,12 +380,6 @@ class OGRealSparseMatrix: public OGSparseMatrix<real16>
     virtual OGTerminal * createComplexOwningCopy() const override;
 };
 
-class OGOwningRealSparseMatrix: public OGRealSparseMatrix
-{
-  public:
-    virtual ~OGOwningRealSparseMatrix() override;
-    using OGRealSparseMatrix::OGRealSparseMatrix;
-};
 
 class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
 {
@@ -399,13 +395,6 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
     virtual OGTerminal * createOwningCopy() const override;
     virtual OGTerminal * createComplexOwningCopy() const override;
-};
-
-class OGOwningComplexSparseMatrix: public OGComplexSparseMatrix
-{
-  public:
-    virtual ~OGOwningComplexSparseMatrix() override;
-    using OGComplexSparseMatrix::OGComplexSparseMatrix;
 };
 
 } // end namespace librdag
