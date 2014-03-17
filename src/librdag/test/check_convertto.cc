@@ -22,7 +22,7 @@ TEST(ConvertToTest, OGRealScalarConvertToOGRealMatrix) {
   data[0]=value;
   OGRealMatrix * expected = new OGRealMatrix(data,1,1);
   ConvertTo * c = new ConvertTo();
-  OGOwningRealMatrix * answer = c->convertToOGRealMatrix(scalar);
+  OGRealMatrix * answer = c->convertToOGRealMatrix(scalar);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -42,7 +42,7 @@ TEST(ConvertToTest, OGIntegerScalarConvertToOGRealMatrix) {
   data[0]=value;
   OGRealMatrix * expected = new OGRealMatrix(data,1,1);
   ConvertTo * c = new ConvertTo();
-  OGOwningRealMatrix * answer = c->convertToOGRealMatrix(scalar);
+  OGRealMatrix * answer = c->convertToOGRealMatrix(scalar);
   ASSERT_TRUE(*expected==~*answer);
 
   delete c;
@@ -60,7 +60,7 @@ TEST(ConvertToTest, OGLogicalMatrixConvertToOGRealMatrix) {
   real16 * expected_values = new real16[12]{1,0,1,0,1,0,1,0,1,0,1,0};
   OGRealMatrix * expected = new OGRealMatrix(expected_values,3,4);
   ConvertTo * c = new ConvertTo();
-  OGOwningRealMatrix * answer = c->convertToOGRealMatrix(input);
+  OGRealMatrix * answer = c->convertToOGRealMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
   delete c;
@@ -79,7 +79,7 @@ TEST(ConvertToTest, OGRealDiagonalMatrixConvertToOGRealMatrix) {
   OGRealDiagonalMatrix * input = new OGRealDiagonalMatrix(input_values,4,6);
   OGRealMatrix * expected = new OGRealMatrix(expected_values,4,6);
   ConvertTo * c = new ConvertTo();
-  OGOwningRealMatrix * answer = c->convertToOGRealMatrix(input);
+  OGRealMatrix * answer = c->convertToOGRealMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -101,7 +101,7 @@ TEST(ConvertToTest, OGRealSparseMatrixConvertToOGRealMatrix) {
   OGRealSparseMatrix * input = new OGRealSparseMatrix(input_colPtr, input_rowIdx, input_values,4,3);
   OGRealMatrix * expected = new OGRealMatrix(expected_values,4,3);
   ConvertTo * c = new ConvertTo();
-  OGOwningRealMatrix * answer = c->convertToOGRealMatrix(input);
+  OGRealMatrix * answer = c->convertToOGRealMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -125,7 +125,7 @@ TEST(ConvertToTest, OGRealScalarConvertToOGComplexMatrix) {
   data[0]=value;
   OGComplexMatrix * expected = new OGComplexMatrix(data,1,1);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(scalar);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(scalar);
   ASSERT_TRUE(*expected==~*answer);
 
   delete c;
@@ -144,7 +144,7 @@ TEST(ConvertToTest, OGIntegerScalarConvertToOGComplexMatrix) {
   data[0]=value;
   OGComplexMatrix * expected = new OGComplexMatrix(data,1,1);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(scalar);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(scalar);
   ASSERT_TRUE(*expected==~*answer);
 
   delete c;
@@ -163,7 +163,7 @@ TEST(ConvertToTest, OGComplexScalarConvertToOGComplexMatrix) {
   data[0]=value;
   OGComplexMatrix * expected = new OGComplexMatrix(data,1,1);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(scalar);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(scalar);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -183,7 +183,7 @@ TEST(ConvertToTest, OGRealDiagonalMatrixConvertToOGComplexMatrix) {
   OGRealDiagonalMatrix * input = new OGRealDiagonalMatrix(input_values,4,6);
   OGComplexMatrix * expected = new OGComplexMatrix(expected_values,4,6);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(input);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -204,7 +204,7 @@ TEST(ConvertToTest, OGComplexDiagonalMatrixConvertToOGComplexMatrix) {
   OGComplexDiagonalMatrix * input = new OGComplexDiagonalMatrix(input_values,4,6);
   OGComplexMatrix * expected = new OGComplexMatrix(expected_values,4,6);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(input);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -226,7 +226,7 @@ TEST(ConvertToTest, OGRealSparseMatrixConvertToOGComplexMatrix) {
   OGRealSparseMatrix * input = new OGRealSparseMatrix(input_colPtr, input_rowIdx, input_values,4,3);
   OGComplexMatrix * expected = new OGComplexMatrix(expected_values,4,3);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(input);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -251,7 +251,7 @@ TEST(ConvertToTest, OGComplexSparseMatrixConvertToOGComplexMatrix) {
   OGComplexSparseMatrix * input = new OGComplexSparseMatrix(input_colPtr, input_rowIdx, input_values,4,3);
   OGComplexMatrix * expected = new OGComplexMatrix(expected_values,4,3);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(input);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -274,7 +274,7 @@ TEST(ConvertToTest, OGRealMatrixConvertToOGComplexMatrix) {
   OGRealMatrix * input = new OGRealMatrix(input_values,4,3);
   OGComplexMatrix * expected = new OGComplexMatrix(expected_values,4,3);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(input);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
 
@@ -295,7 +295,7 @@ TEST(ConvertToTest, OGRealMatrixConvertToOGLogicalMatrix) {
   OGLogicalMatrix * input = new OGLogicalMatrix(input_values,4,3);
   OGComplexMatrix * expected = new OGComplexMatrix(expected_values,4,3);
   ConvertTo * c = new ConvertTo();
-  OGOwningComplexMatrix * answer = c->convertToOGComplexMatrix(input);
+  OGComplexMatrix * answer = c->convertToOGComplexMatrix(input);
   ASSERT_TRUE(*expected==~*answer);
 
   delete c;

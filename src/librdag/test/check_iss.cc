@@ -28,12 +28,12 @@ class issTest : public ::testing::Test
     OGComplexDiagonalMatrix * _ogcomplexdiagonalmatrix = nullptr;
     OGRealSparseMatrix * _ogrealsparsematrix = nullptr;
     OGComplexSparseMatrix * _ogcomplexsparsematrix = nullptr;
-    OGOwningRealMatrix * _ogowningrealmatrix = nullptr;
-    OGOwningComplexMatrix * _ogowningcomplexmatrix = nullptr;
-    OGOwningRealMatrix * _ogrealvector1 = nullptr;
-    OGOwningRealMatrix * _ogrealvector2 = nullptr;
-    OGOwningComplexMatrix * _ogcomplexvector1 = nullptr;
-    OGOwningComplexMatrix * _ogcomplexvector2 = nullptr;
+    OGRealMatrix * _ogowningrealmatrix = nullptr;
+    OGComplexMatrix * _ogowningcomplexmatrix = nullptr;
+    OGRealMatrix * _ogrealvector1 = nullptr;
+    OGRealMatrix * _ogrealvector2 = nullptr;
+    OGComplexMatrix * _ogcomplexvector1 = nullptr;
+    OGComplexMatrix * _ogcomplexvector2 = nullptr;
     real16 * r_data;
     complex16 * c_data;
     int * colPtr;
@@ -54,12 +54,12 @@ class issTest : public ::testing::Test
     _ogcomplexdiagonalmatrix = new OGComplexDiagonalMatrix(c_data,1,1);
     _ogrealsparsematrix = new OGRealSparseMatrix(colPtr,rowIdx,r_data,1,1);
     _ogcomplexsparsematrix = new OGComplexSparseMatrix(colPtr,rowIdx,c_data,1,1);
-    _ogowningrealmatrix = new OGOwningRealMatrix(new real16[1]{1},1,1);
-    _ogowningcomplexmatrix = new OGOwningComplexMatrix(new complex16[1]{{1,2}},1,1);
-    _ogrealvector1 = new OGOwningRealMatrix(new real16[3]{1,2,3},1,3);
-    _ogrealvector2 = new OGOwningRealMatrix(new real16[3]{1,2,3},3,1);
-    _ogcomplexvector1 = new OGOwningComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},1,3);
-    _ogcomplexvector2 = new OGOwningComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},3,1);
+    _ogowningrealmatrix = new OGRealMatrix(new real16[1]{1},1,1, OWNER);
+    _ogowningcomplexmatrix = new OGComplexMatrix(new complex16[1]{{1,2}},1,1, OWNER);
+    _ogrealvector1 = new OGRealMatrix(new real16[3]{1,2,3},1,3, OWNER);
+    _ogrealvector2 = new OGRealMatrix(new real16[3]{1,2,3},3,1, OWNER);
+    _ogcomplexvector1 = new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER);
+    _ogcomplexvector2 = new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER);
   }
 
   virtual void TearDown()
