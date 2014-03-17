@@ -75,7 +75,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealMatrix)
   dataAoA[0] = new real16[cols]{1,2};
   dataAoA[1] = new real16[cols]{3,4};
   dataAoA[2] = new real16[cols]{5,6};
-  OGRealMatrix * mat = new OGOwningRealMatrix(data,rows,cols);
+  OGRealMatrix * mat = new OGRealMatrix(data,rows,cols, OWNER);
   d->visit(mat);
   ASSERT_TRUE(d->getRows()==rows);
   ASSERT_TRUE(d->getCols()==cols);
@@ -92,7 +92,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealMatrix)
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexMatrix)
 {
   DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
-  OGOwningComplexMatrix * mat = new OGOwningComplexMatrix(new complex16[1]{12},1,1);
+  OGComplexMatrix * mat = new OGComplexMatrix(new complex16[1]{12},1,1, OWNER);
   ASSERT_ANY_THROW(d->visit(mat));
   delete d;
   delete mat;
@@ -242,7 +242,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
   dataAoA[0] = new complex16[cols]{{1,10},{2,20}};
   dataAoA[1] = new complex16[cols]{{3,30},{4,40}};
   dataAoA[2] = new complex16[cols]{{5,50},{6,60}};
-  OGComplexMatrix * mat = new OGOwningComplexMatrix(data,rows,cols);
+  OGComplexMatrix * mat = new OGComplexMatrix(data,rows,cols,OWNER);
   d->visit(mat);
   ASSERT_TRUE(d->getRows()==rows);
   ASSERT_TRUE(d->getCols()==cols);
@@ -259,7 +259,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
 {
   DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
-  OGRealMatrix * mat = new OGOwningRealMatrix(new real16[4]{1,2,3,4},2,2);
+  OGRealMatrix * mat = new OGRealMatrix(new real16[4]{1,2,3,4},2,2, OWNER);
   ASSERT_ANY_THROW(d->visit(mat));
   delete d;
   delete mat;

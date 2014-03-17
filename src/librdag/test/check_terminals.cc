@@ -439,7 +439,9 @@ TEST(TerminalsTest, OGRealMatrixTest) {
 
   // check createComplexOwningCopy
   OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
-  OGComplexMatrix * cmplx_tmp = new OGOwningComplexMatrix(data, rows, cols);
+  complex16 * cdata = new complex16[rows*cols]();
+  std::copy(data,data+(rows*cols),cdata);
+  OGComplexMatrix * cmplx_tmp = new OGComplexMatrix(cdata, rows, cols, OWNER);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
   ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexMatrix()->getData())); // make sure the data is unique
   delete cmplx_tmp;
@@ -453,45 +455,6 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   delete tmp;
 }
 
-
-/*
- * Test OGOwningRealMatrix
- */
-TEST(TerminalsTest, OGOwningRealMatrix) {
-  // data
-  real16 data [12] = {1e0,2e0,3e0,4e0,5e0,6e0,7e0,8e0,9e0,10e0,11e0,12e0};
-  real16 zeros [12] = {0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0};
-  int rows = 3;
-  int cols = 4;
-
-  // attempt construct from ok values
-  OGOwningRealMatrix * tmp = new OGOwningRealMatrix(rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), rows*cols);
-
-  // check data is zerod
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),zeros,tmp->getDatalen()));
-
-  // set data then check
-  memcpy(data,tmp->getData(),tmp->getDatalen()*sizeof(real16));
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), REAL_MATRIX_ENUM);
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
 
 /*
  * Test OGComplexMatrix
@@ -597,46 +560,6 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 
   // clean up
   delete copy;
-  delete tmp;
-}
-
-
-/*
- * Test OGOwningComplexMatrix
- */
-TEST(TerminalsTest, OGOwningComplexMatrix) {
-  // data
-  complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
-  complex16 zeros [12] = {{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0}};
-  int rows = 3;
-  int cols = 4;
-
-  // attempt construct from ok values
-  OGOwningComplexMatrix * tmp = new OGOwningComplexMatrix(rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), rows*cols);
-
-  // check data is zerod
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),zeros,tmp->getDatalen()));
-
-  // set data then check
-  memcpy(tmp->getData(),data,tmp->getDatalen()*sizeof(complex16));
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), COMPLEX_MATRIX_ENUM);
-
-  // delete should free, valgrind should be happy
   delete tmp;
 }
 
@@ -1388,8 +1311,8 @@ public:
     virtual void debug_print() const override {}
     virtual void accept(Visitor SUPPRESS_UNUSED &v) const override {}
     virtual OGNumeric* copy() const override { return nullptr; }
-    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override { return nullptr; }
-    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override { return nullptr; }
+    virtual OGRealMatrix * asFullOGRealMatrix() const override { return nullptr; }
+    virtual OGComplexMatrix * asFullOGComplexMatrix() const override { return nullptr; }
     virtual OGTerminal * createOwningCopy() const override { return nullptr; }
     virtual OGTerminal * createComplexOwningCopy() const override { return nullptr;}
 };
