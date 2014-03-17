@@ -215,6 +215,10 @@ template <typename T> class OGArray: public OGTerminal
     virtual DATA_ACCESS getDataAccess() const;
     virtual bool equals(const OGTerminal *)const override;
     virtual bool fuzzyequals(const OGTerminal * ) const override;
+    virtual OGRealMatrix * asFullOGRealMatrix() const override;
+    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
+    virtual OGTerminal * createOwningCopy() const override;
+    virtual OGTerminal * createComplexOwningCopy() const override;
   protected:
     void setData(T * data);
     void setRows(int rows);
@@ -241,6 +245,7 @@ template <typename T> class OGMatrix: public OGArray<T>
     OGMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec);
     virtual ~OGMatrix();
     virtual void accept(Visitor &v) const override;
+    virtual void debug_print() const override;
     T** toArrayOfArrays() const;
 };
 
@@ -251,7 +256,6 @@ class OGRealMatrix: public OGMatrix<real16>
 {
   public:
     using OGMatrix::OGMatrix;
-    virtual void debug_print() const override;
     virtual real16 ** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealMatrix* asOGRealMatrix() const override;
@@ -267,7 +271,6 @@ class OGComplexMatrix: public OGMatrix<complex16>
 {
   public:
     using OGMatrix::OGMatrix;
-    virtual void debug_print() const override;
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGComplexMatrix* asOGComplexMatrix() const override;
