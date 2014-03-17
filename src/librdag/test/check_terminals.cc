@@ -671,7 +671,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
   complex16 * cmplx_data = new complex16[tmp->getDatalen()];
   std::copy(data, data+tmp->getDatalen(), cmplx_data);
-  OGComplexDiagonalMatrix * cmplx_tmp = new OGOwningComplexDiagonalMatrix(cmplx_data, rows, cols);
+  OGComplexDiagonalMatrix * cmplx_tmp = new OGComplexDiagonalMatrix(cmplx_data, rows, cols, OWNER);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
   ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexDiagonalMatrix()->getData())); // make sure the data is unique
   delete cmplx_tmp;
@@ -686,45 +686,6 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
 
   // clean up
   delete copy;
-  delete tmp;
-}
-
-/*
- * Test OGOwningRealDiagonalMatrix
- */
-TEST(TerminalsTest, OGOwningRealDiagonalMatrix) {
-  // data
-  real16 data [3] = {1e0,2e0,3e0};
-  int rows = 3;
-  int cols = 4;
-
-  // attempt construct from ok values
-  real16 * owned_data = new real16[3];
-  memcpy(owned_data,data, 3 * sizeof(real16));
-  OGOwningRealDiagonalMatrix * tmp = new OGOwningRealDiagonalMatrix(owned_data,rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), rows>cols?cols:rows);
-
-  // check getData
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), REAL_DIAGONAL_MATRIX_ENUM);
-
-  // check data
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // delete should free, valgrind should be happy
   delete tmp;
 }
 
@@ -853,45 +814,6 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   delete tmp;
 }
 
-
-/*
- * Test OGOwningComplexDiagonalMatrix
- */
-TEST(TerminalsTest, OGOwningComplexDiagonalMatrix) {
-  // data
-  complex16 data [3] = {{1e0,10e0},{2e0,20e0},{3e0,30e0}};
-  int rows = 3;
-  int cols = 4;
-
-  // attempt construct from ok values
-  complex16 * owned_data = new complex16[3];
-  memcpy(owned_data,data, 3 * sizeof(complex16));
-  OGOwningComplexDiagonalMatrix * tmp = new OGOwningComplexDiagonalMatrix(owned_data,rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), rows>cols?cols:rows);
-
-  // check getData
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), COMPLEX_DIAGONAL_MATRIX_ENUM);
-
-  // check data
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
 
 /*
  * Test OGRealSparseMatrix

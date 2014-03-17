@@ -206,6 +206,7 @@ class OGIntegerScalar: public OGScalar<int>
 template <typename T> class OGArray: public OGTerminal
 {
   public:
+    virtual ~OGArray() override;
     T * getData() const; // Returns a pointer to the underlying data
     T * toArray() const; // Returns a pointer to a copy of the underlying data
     virtual int getRows() const override;
@@ -293,6 +294,8 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
 {
   public:
     OGDiagonalMatrix(T * data, int rows, int cols);
+    OGDiagonalMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec);
+    virtual ~OGDiagonalMatrix() override;
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
 };
@@ -316,12 +319,6 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
     virtual OGTerminal * createComplexOwningCopy() const override;
 };
 
-class OGOwningRealDiagonalMatrix: public OGRealDiagonalMatrix
-{
-  public:
-    virtual ~OGOwningRealDiagonalMatrix() override;
-    using OGRealDiagonalMatrix::OGRealDiagonalMatrix;
-};
 
 class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 {
@@ -339,12 +336,6 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
     virtual OGTerminal * createComplexOwningCopy() const override;
 };
 
-class OGOwningComplexDiagonalMatrix: public OGComplexDiagonalMatrix
-{
-  public:
-    virtual ~OGOwningComplexDiagonalMatrix() override;
-    using OGComplexDiagonalMatrix::OGComplexDiagonalMatrix;
-};
 
 /**
  * Things that extend OGSparseMatrix
