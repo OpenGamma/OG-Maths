@@ -12,6 +12,9 @@
 #define DEBUG_PRINT(...) do {} while(0)
 #endif
 
+// default precision used in debug output
+#define __DEBUG_PRECISION 10
+
 // Used by VAL64BIT_PRINT
 #define INT64HIGHLOW(val,high,low) \
     low = (long long unsigned int)val & 0x00000000FFFFFFFFULL; \

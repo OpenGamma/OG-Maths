@@ -11,8 +11,11 @@
 #include "warningmacros.h"
 #include "equals.hh"
 #include "iss.hh"
+#include "debug.h"
 #include "convertto.hh"
 #include <iostream>
+#include <iostream>
+#include <iomanip>
 
 namespace librdag {
 
@@ -571,6 +574,41 @@ OGArray<T>::setDataAccess(DATA_ACCESS access_spec)
   _data_access = access_spec;
 }
 
+template<typename T>
+OGRealMatrix *
+OGArray<T>::
+asFullOGRealMatrix() const
+{
+  // this is a default backstop impl whilst waiting for a traited version
+  throw rdag_error("Cannot convert asFullOGRealMatrix(), concrete implementation class required for operation.");
+}
+
+template<typename T>
+OGComplexMatrix *
+OGArray<T>::
+asFullOGComplexMatrix() const
+{
+  // this is a default backstop impl whilst waiting for a traited version
+  throw rdag_error("Cannot convert asFullOGComplexMatrix(), concrete implementation class required for operation.");
+}
+
+template<typename T>
+OGTerminal *
+OGArray<T>::
+createOwningCopy() const
+{
+  // this is a default backstop impl whilst waiting for a traited version
+  throw rdag_error("Cannot createOwningCopy(), concrete implementation class required for operation.");
+}
+
+template<typename T>
+OGTerminal *
+OGArray<T>::
+createComplexOwningCopy() const
+{
+  // this is a default backstop impl whilst waiting for a traited version
+  throw rdag_error("Cannot createComplexOwningCopy(), concrete implementation class required for operation.");
+}
 
 template class OGArray<real16>;
 template class OGArray<complex16>;
@@ -630,25 +668,27 @@ OGMatrix<T>::~OGMatrix(){}
 template class OGMatrix<real16>;
 template class OGMatrix<complex16>;
 
-/**
- * OGRealMatrix
- */
-
+template<typename T>
 void
-OGRealMatrix::debug_print() const
+OGMatrix<T>::debug_print() const
 {
-  printf("\n");
+  cout << std::endl;
   int lim = (this->getCols()-1);
   int rows = this->getRows();
   for(int i = 0 ; i < rows; i++)
   {
-    for(int j = 0 ; j < lim; j++)
+    for(int j = 0 ; j < lim-1; j++)
     {
-      printf("%6.4f, ",this->getData()[j*rows+i]);
+      cout << setprecision(__DEBUG_PRECISION) << this->getData()[j*rows+i] << ", ";
     }
-    printf("%6.4f\n",this->getData()[lim*rows+i]);
+    cout << this->getData()[lim*rows+i] << std::endl;
   }
 }
+
+
+/**
+ * OGRealMatrix
+ */
 
 real16**
 OGRealMatrix::toReal16ArrayOfArrays() const
@@ -717,23 +757,6 @@ OGLogicalMatrix::asOGLogicalMatrix() const
 /**
  * OGComplexMatrix
  */
-
-void
-OGComplexMatrix::debug_print() const
-{
-  printf("\n");
-  int lim = (this->getCols()-1);
-  int rows = this->getRows();
-  for(int i = 0 ; i < rows; i++)
-  {
-    for(int j = 0 ; j < lim; j++)
-    {
-      printf("%6.4f + %6.4fi, ",this->getData()[j*rows+i].real(),this->getData()[j*rows+i].imag());
-    }
-      printf("%6.4f + %6.4fi, ",this->getData()[lim*rows+i].real(),this->getData()[lim*rows+i].imag());
-  }
-
-}
 
 complex16**
 OGComplexMatrix::toComplex16ArrayOfArrays() const
