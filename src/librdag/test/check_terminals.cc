@@ -141,6 +141,10 @@ TEST(TerminalsTest, OGScalarTest) {
   ASSERT_ANY_THROW(tmp->asFullOGComplexMatrix());
   ASSERT_ANY_THROW(tmp->createOwningCopy());
   ASSERT_ANY_THROW(tmp->createComplexOwningCopy());
+
+  // print for test completeness
+  tmp->debug_print();
+
   delete tmp;
 }
 
