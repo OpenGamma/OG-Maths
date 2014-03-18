@@ -407,11 +407,22 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   tmp = nullptr;
   ASSERT_ANY_THROW(tmp = new OGRealMatrix(data,rows,-1));
 
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGRealMatrix(new real16[2]{10,20},1,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
+
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGRealMatrix(data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -516,11 +527,21 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   tmp = nullptr;
   ASSERT_ANY_THROW(tmp = new OGComplexMatrix(data,rows,-1));
 
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGComplexMatrix(new complex16[2]{{10,20},{30,40}},1,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
+
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGComplexMatrix(data,rows,cols);
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -624,11 +645,22 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   tmp = nullptr;
   ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(data,rows,-1));
 
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGRealDiagonalMatrix(new real16[2]{10,20},2,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
+
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGRealDiagonalMatrix(data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -750,11 +782,22 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   tmp = nullptr;
   ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(data,rows,-1));
 
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGComplexDiagonalMatrix(new complex16[2]{{10,20},{30,40}},2,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
+
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGComplexDiagonalMatrix(data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -889,11 +932,22 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   tmp = nullptr;
   ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,rows,-1));
 
+    // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGRealSparseMatrix(new int[3]{0,2,2}, new int[2]{0,1},new real16[2]{10,20},2,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
+
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -1034,11 +1088,22 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   tmp = nullptr;
   ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,-1));
 
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGComplexSparseMatrix(new int[3]{0,2,2}, new int[2]{0,1},new complex16[2]{{10,20},{30,40}},2,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
+
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
