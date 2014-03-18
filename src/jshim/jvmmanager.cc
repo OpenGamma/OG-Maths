@@ -95,6 +95,7 @@ JVMManager::registerReferences()
 
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGRealScalar", &_OGRealScalarClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGComplexScalar", &_OGComplexScalarClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGIntegerScalar", &_OGIntegerScalarClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealDenseMatrix", &_OGRealDenseMatrixClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexDenseMatrix", &_OGComplexDenseMatrixClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealDiagonalMatrix", &_OGRealDiagonalMatrixClazz);
@@ -111,6 +112,7 @@ JVMManager::registerReferences()
   registerGlobalMethodReference(&_DoubleClazz, &_DoubleClazz_init, "<init>", "(D)V");
   registerGlobalMethodReference(&_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/longdog/datacontainers/ExprTypeEnum;");
   registerGlobalMethodReference(&_OGTerminalClazz, &_OGTerminalClazz_getData, "getData",  "()[D");
+  registerGlobalMethodReference(&_OGIntegerScalarClazz, &_OGIntegerScalarClazz_getValue, "getValue",  "()I");
   registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getRows, "getRows",  "()I");
   registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getCols, "getCols",  "()I");
   registerGlobalMethodReference(&_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getColPtr, "getColPtr",  "()[I");
@@ -222,6 +224,8 @@ jclass JVMManager::getOGRealScalarClazz()
 { return _OGRealScalarClazz; }
 jclass JVMManager::getOGComplexScalarClazz()
 { return _OGComplexScalarClazz; }
+jclass JVMManager::getOGIntegerScalarClazz()
+{ return _OGIntegerScalarClazz; }
 jclass JVMManager::getOGRealDenseMatrixClazz()
 { return _OGRealDenseMatrixClazz; }
 jclass JVMManager::getOGComplexDenseMatrixClazz()
@@ -258,6 +262,8 @@ jmethodID JVMManager::getOGComplexSparseMatrixClazz_init()
 { return _OGComplexSparseMatrixClazz_init; }
 jmethodID JVMManager::getOGTerminalClazz_getData()
 { return _OGTerminalClazz_getData; }
+jmethodID JVMManager::getOGIntegerScalarClazz_getValue()
+{ return _OGIntegerScalarClazz_getValue; }
 jmethodID JVMManager::getOGNumericClazz_getType()
 { return _OGNumericClazz_getType; }
 jmethodID JVMManager::getOGExprClazz_getExprs()
@@ -294,6 +300,7 @@ jclass JVMManager::_ComplexArrayContainerClazz = nullptr;
 jclass JVMManager::_OGExprTypeEnumClazz = nullptr;
 jclass JVMManager::_OGRealScalarClazz = nullptr;
 jclass JVMManager::_OGComplexScalarClazz= nullptr;
+jclass JVMManager::_OGIntegerScalarClazz= nullptr;
 jclass JVMManager::_OGRealDenseMatrixClazz = nullptr;
 jclass JVMManager::_OGComplexDenseMatrixClazz = nullptr;
 jclass JVMManager::_OGRealDiagonalMatrixClazz = nullptr;
@@ -312,6 +319,7 @@ jmethodID JVMManager::_OGComplexDiagonalMatrixClazz_init = nullptr;
 jmethodID JVMManager::_OGRealSparseMatrixClazz_init = nullptr;
 jmethodID JVMManager::_OGComplexSparseMatrixClazz_init = nullptr;
 jmethodID JVMManager::_OGTerminalClazz_getData = nullptr;
+jmethodID JVMManager::_OGIntegerScalarClazz_getValue = nullptr;
 jmethodID JVMManager::_OGNumericClazz_getType = nullptr;
 jmethodID JVMManager::_OGExprClazz_getExprs = nullptr;
 jmethodID JVMManager::_OGExprClazz_getNExprs = nullptr;

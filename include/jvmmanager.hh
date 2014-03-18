@@ -45,6 +45,7 @@ class JVMManager {
     DLLEXPORT_C static jclass getOGExprTypeEnumClazz();
     DLLEXPORT_C static jclass getOGRealScalarClazz();
     DLLEXPORT_C static jclass getOGComplexScalarClazz();
+    DLLEXPORT_C static jclass getOGIntegerScalarClazz();
     DLLEXPORT_C static jclass getOGRealDenseMatrixClazz();
     DLLEXPORT_C static jclass getOGComplexDenseMatrixClazz();
     DLLEXPORT_C static jclass getOGRealDiagonalMatrixClazz();
@@ -62,6 +63,7 @@ class JVMManager {
     DLLEXPORT_C static jmethodID getOGRealSparseMatrixClazz_init();
     DLLEXPORT_C static jmethodID getOGComplexSparseMatrixClazz_init();
     DLLEXPORT_C static jmethodID getOGTerminalClazz_getData();
+    DLLEXPORT_C static jmethodID getOGIntegerScalarClazz_getValue();
     DLLEXPORT_C static jmethodID getOGNumericClazz_getType();
     DLLEXPORT_C static jmethodID getOGExprClazz_getExprs();
     DLLEXPORT_C static jmethodID getOGExprClazz_getNExprs();
@@ -99,6 +101,7 @@ class JVMManager {
     static jclass _OGExprTypeEnumClazz;
     static jclass _OGRealScalarClazz;
     static jclass _OGComplexScalarClazz;
+    static jclass _OGIntegerScalarClazz;
     static jclass _OGRealDenseMatrixClazz;
     static jclass _OGComplexDenseMatrixClazz;
     static jclass _OGRealDiagonalMatrixClazz;
@@ -117,6 +120,7 @@ class JVMManager {
     static jmethodID _OGRealSparseMatrixClazz_init;
     static jmethodID _OGComplexSparseMatrixClazz_init;
     static jmethodID _OGTerminalClazz_getData;
+    static jmethodID _OGIntegerScalarClazz_getValue;
     static jmethodID _OGNumericClazz_getType;
     static jmethodID _OGExprClazz_getExprs;
     static jmethodID _OGExprClazz_getNExprs;
