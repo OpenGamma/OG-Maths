@@ -109,7 +109,7 @@ class SelectResultRunner(BinaryExpression):
               'nodename': self.typename,
               'arg0type': 'OGRealScalar',
               'arg1type': 'OGIntegerScalar',
-              'returntype': 'OGRealScalar' }
+              'returntype': 'OGTerminal' }
         return binary_runner_function % d
 
     @property
@@ -119,7 +119,7 @@ class SelectResultRunner(BinaryExpression):
               'nodename': self.typename,
               'arg0type': 'OGRealMatrix',
               'arg1type': 'OGIntegerScalar',
-              'returntype': 'OGRealMatrix' }
+              'returntype': 'OGTerminal' }
         return binary_runner_function % d
 
     @property
@@ -129,7 +129,7 @@ class SelectResultRunner(BinaryExpression):
               'nodename': self.typename,
               'arg0type': 'OGComplexMatrix',
               'arg1type': 'OGIntegerScalar',
-              'returntype': 'OGComplexMatrix' }
+              'returntype': 'OGTerminal' }
         return binary_runner_function % d
 
     @property
