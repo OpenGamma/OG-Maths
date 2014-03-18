@@ -21,20 +21,31 @@
  */
 namespace librdag {
 
-void *
-SVDRunner::run(RegContainer SUPPRESS_UNUSED *reg, OGRealScalar const SUPPRESS_UNUSED *arg) const
+void
+dummy_svd_run(RegContainer* reg)
 {
+  reg->push_back(new OGRealScalar(1.0));
+  reg->push_back(new OGRealScalar(2.0));
+  reg->push_back(new OGRealScalar(3.0));
+}
+
+void *
+SVDRunner::run(RegContainer *reg, OGRealScalar const SUPPRESS_UNUSED *arg) const
+{
+  dummy_svd_run(reg);
   return nullptr;
 }
 void *
-SVDRunner::run(RegContainer SUPPRESS_UNUSED *reg, OGRealMatrix const SUPPRESS_UNUSED *arg) const
+SVDRunner::run(RegContainer *reg, OGRealMatrix const SUPPRESS_UNUSED *arg) const
 {
+  dummy_svd_run(reg);
   return nullptr;
 }
 
 void *
-SVDRunner::run(RegContainer SUPPRESS_UNUSED *reg, OGComplexMatrix const SUPPRESS_UNUSED *arg) const
+SVDRunner::run(RegContainer *reg, OGComplexMatrix const SUPPRESS_UNUSED *arg) const
 {
+  dummy_svd_run(reg);
   return nullptr;
 }
 
