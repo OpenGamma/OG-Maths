@@ -26,4 +26,16 @@ public class SVD extends OGExprVariadicReturn {
     super(arg0, s_nPossibleResults);
   }
 
+  public OGNumeric getU() {
+    return new SELECTRESULT(this, 0);
+  }
+
+  public OGNumeric getS() {
+    return new SELECTRESULT(this, 1);
+  }
+
+  public OGNumeric getV() {
+    return new SELECTRESULT(this, 2);
+  }
+
 }

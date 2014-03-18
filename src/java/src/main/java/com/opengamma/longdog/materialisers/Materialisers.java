@@ -82,10 +82,6 @@ public class Materialisers {
     while (!(OGArray.class.isAssignableFrom(arg.getClass()) || OGScalar.class.isAssignableFrom(arg.getClass()))) {
       OGExpr expr = (OGExpr) arg;
       buf.append(new String(new char[level]).replace("\0", tab) + arg.getClass());
-      if (expr instanceof SELECTRESULT) {
-        SELECTRESULT tmp = (SELECTRESULT) expr;
-        buf.append(". Result requested at position: " + tmp.getEntry());
-      }
       buf.append("\n");
       for (int i = 0; i < expr.getExprs().length; i++) {
         printTree(expr.getExprs()[i], buf, level);
