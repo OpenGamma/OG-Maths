@@ -18,7 +18,7 @@ public class SELECTRESULT extends OGExpr {
 
   @Override
   public ExprTypeEnum getType() {
-    return ExprTypeEnum.SELECTRESULT;
+    return ExprTypeEnum.SELECTRESULT_ENUM;
   }
 
   public SELECTRESULT(OGNumeric arg0, int index) {

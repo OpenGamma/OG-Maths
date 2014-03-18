@@ -17,7 +17,7 @@ public class NORM2 extends OGExpr {
 
   @Override
   public ExprTypeEnum getType() {
-    return ExprTypeEnum.NORM2;
+    return ExprTypeEnum.NORM2_ENUM;
   }
 
   public NORM2(OGNumeric arg) {
