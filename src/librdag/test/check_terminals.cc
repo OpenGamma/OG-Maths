@@ -130,6 +130,21 @@ TEST(TerminalsTest, OGTerminalTest) {
 }
 
 /*
+ * Test OGScalar<T>
+ */
+TEST(TerminalsTest, OGScalarTest) {
+
+  OGScalar<real16> * tmp = new OGScalar<real16>(10);
+
+  ASSERT_ANY_THROW(tmp->copy());
+  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_ANY_THROW(tmp->asFullOGComplexMatrix());
+  ASSERT_ANY_THROW(tmp->createOwningCopy());
+  ASSERT_ANY_THROW(tmp->createComplexOwningCopy());
+  delete tmp;
+}
+
+/*
  * Test OGRealScalar
  */
 TEST(TerminalsTest, OGRealScalarTest) {
