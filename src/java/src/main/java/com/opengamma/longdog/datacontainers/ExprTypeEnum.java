@@ -14,9 +14,9 @@ public enum ExprTypeEnum {
   //@formatter:off
   //CSOFF
   UNKNOWNEXPR(0x0000L),
-  
+
   /*
-   * Data container tokens 
+   * Data container tokens
    */
   OGRealScalar            (0x0002L),
   OGComplexScalar         (0x0003L),
@@ -27,15 +27,17 @@ public enum ExprTypeEnum {
   OGRealDiagonalMatrix    (0x0011L),
   OGComplexDiagonalMatrix (0x0013L),
   OGLogicalMatrix         (0x0017L),
+  OGIntegerScalar         (0x001DL),
 
- 
+
   /*
    * expr tokens for functions
-   */  
+   */
   // Non-generated nodes
-  COPY         (0x0101L),
-  SELECTRESULT (0x0107L),
+  COPY         (0x010DL),
+  SELECTRESULT (0x010FL),
   NORM2        (0x0115L),
+  SVD          (0x0119L),
 
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
   ABS (0X0175L),
@@ -70,21 +72,20 @@ public enum ExprTypeEnum {
   SIN (0X0233L),
   SINH (0X0239L),
   SQRT (0X023BL),
-  SVD (0X0241L),
-  TAN (0X024BL),
-  TRANSPOSE (0X0251L),
-  WILKINSON (0X0257L),
+  TAN (0X0241L),
+  TRANSPOSE (0X024BL),
+  WILKINSON (0X0251L),
   // Binary Expression nodes
-  HORZCAT      (0X0259L),
-  MLDIVIDE     (0X025FL),
-  MTIMES       (0X0265L),
-  PLUS         (0X0269L),
-  POWER        (0X026BL),
-  RDIVIDE      (0X0277L),
-  TIMES        (0X0281L),
-  VERTCAT      (0X0283L),
-  DOT          (0X0287L);
-  
+  HORZCAT      (0X0257L),
+  MLDIVIDE     (0X0259L),
+  MTIMES       (0X025FL),
+  PLUS         (0X0265L),
+  POWER        (0X0269L),
+  RDIVIDE      (0X026BL),
+  TIMES        (0X0277L),
+  VERTCAT      (0X0281L),
+  DOT          (0X0283L);
+
 
   //CSON
   //@formatter:on

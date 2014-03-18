@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
 import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
+import com.opengamma.longdog.datacontainers.scalar.OGIntegerScalar;
 import com.opengamma.longdog.exceptions.MathsException;
 import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
 import com.opengamma.longdog.nodes.SELECTRESULT;
@@ -46,13 +47,13 @@ public class OGResultTest {
     OGResult tmp = new OGResult(svdobj);
     assertTrue(tmp.get(0) instanceof SELECTRESULT);
     assertTrue(tmp.get(0).getType().equals(ExprTypeEnum.SELECTRESULT));
-    assertTrue(((SELECTRESULT) tmp.get(0)).getEntry() == 0);
+    assertTrue(((OGIntegerScalar) ((SELECTRESULT) tmp.get(0)).getArg(1)).getValue() == 0);
     assertTrue(tmp.get(1) instanceof SELECTRESULT);
     assertTrue(tmp.get(1).getType().equals(ExprTypeEnum.SELECTRESULT));
-    assertTrue(((SELECTRESULT) tmp.get(1)).getEntry() == 1);
+    assertTrue(((OGIntegerScalar) ((SELECTRESULT) tmp.get(1)).getArg(1)).getValue() == 1);
     assertTrue(tmp.get(2) instanceof SELECTRESULT);
     assertTrue(tmp.get(2).getType().equals(ExprTypeEnum.SELECTRESULT));
-    assertTrue(((SELECTRESULT) tmp.get(2)).getEntry() == 2);    
+    assertTrue(((OGIntegerScalar) ((SELECTRESULT) tmp.get(2)).getArg(1)).getValue() == 2);
   }
 
 }

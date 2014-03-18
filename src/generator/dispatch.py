@@ -19,7 +19,8 @@ from dispatchtemplates import dispatch_header, dispatcher_class, dispatcher_forw
                               dispatchbinaryop_eval, dispatchbinaryop_eval_case_arg0, \
                               dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method, \
                               dispatchop_class, dispatchbinaryop_conv_arg, dispatchop_methods, \
-                              dispatchbinaryop_noconv_arg, dispatchbinaryop_deletion
+                              dispatchbinaryop_noconv_arg, dispatchbinaryop_deletion, \
+                              dispatcher_select_implementation
 
 class Dispatcher(object):
     """Generates the Dispatcher class definition and method implementations"""
@@ -87,6 +88,8 @@ class Dispatcher(object):
                 d['dispatch_implementation'] = dispatcher_unary_implementation % d
             elif n.argcount == 2:
                 d['dispatch_implementation'] = dispatcher_binary_implementation % d
+            elif n.argcount == -1: # Flag for SELECTRESULT
+                d['dispatch_implementation'] = dispatcher_select_implementation % d
             dispatch_exprs += dispatcher_dispatch % d
         # Dispatcher methods
         d = { 'dispatcher_constructor':         constructor,
