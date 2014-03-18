@@ -35,9 +35,6 @@ public class OGIntegerScalar extends OGScalar {
     return s_type;
   }
 
-  /**
-   * FIXME: getData should not always return double, probably.
-   */
   @Override
   public double[] getData() {
     return new double[] { _data[0] };
