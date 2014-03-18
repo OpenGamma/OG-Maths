@@ -58,6 +58,6 @@ public class TestNegateMaterialise {
 
   @Test(dataProvider = "dataContainer", expectedExceptions = MathsExceptionIllegalArgument.class)
   public void outsideArgBound(OGExpr input, OGRealScalar expected) {
-    OGNumeric n = input.getArg(3);
+    OGNumeric n = input.getArg(1);
   }
 }
