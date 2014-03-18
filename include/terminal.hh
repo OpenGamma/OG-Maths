@@ -256,9 +256,7 @@ template <typename T> class OGArray: public OGTerminal
 template <typename T> class OGMatrix: public OGArray<T>
 {
   public:
-    OGMatrix(T * data, int rows, int cols);
-    OGMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec);
-    virtual ~OGMatrix();
+    OGMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void accept(Visitor &v) const override;
     virtual void debug_print() const override;
     T** toArrayOfArrays() const;
@@ -311,9 +309,7 @@ class OGLogicalMatrix: public OGRealMatrix
 template <typename T> class OGDiagonalMatrix: public OGArray<T>
 {
   public:
-    OGDiagonalMatrix(T * data, int rows, int cols);
-    OGDiagonalMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec);
-    virtual ~OGDiagonalMatrix() override;
+    OGDiagonalMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
 };
@@ -362,8 +358,7 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 template <typename T> class OGSparseMatrix: public OGArray<T>
 {
   public:
-    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols);
-    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols, DATA_ACCESS access_spec);
+    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual ~OGSparseMatrix();
     virtual void accept(Visitor &v) const override;
     int* getColPtr() const;
