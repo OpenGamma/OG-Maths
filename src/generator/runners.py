@@ -137,14 +137,14 @@ class PrefixOpRunner(UnaryExpressionRunner):
     def real_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'real16',
-              'returntype': 'OGOwningRealMatrix' }
+              'returntype': 'OGRealMatrix' }
         return prefix_matrix_runner_implementation % d
 
     @property
     def complex_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'complex16',
-              'returntype': 'OGOwningComplexMatrix' }
+              'returntype': 'OGComplexMatrix' }
         return prefix_matrix_runner_implementation % d
 
 class UnaryFunctionRunner(UnaryExpressionRunner):
@@ -169,14 +169,14 @@ class UnaryFunctionRunner(UnaryExpressionRunner):
     def real_matrix_implementation(self):
         d = { 'function':    self.function,
               'datatype':   'real16',
-              'returntype': 'OGOwningRealMatrix' }
+              'returntype': 'OGRealMatrix' }
         return unaryfunction_matrix_runner_implementation % d
 
     @property
     def complex_matrix_implementation(self):
         d = { 'function':   self.function,
               'datatype':   'complex16',
-              'returntype': 'OGOwningComplexMatrix' }
+              'returntype': 'OGComplexMatrix' }
         return unaryfunction_matrix_runner_implementation % d
 
 class UnimplementedUnary(UnaryExpressionRunner):

@@ -120,7 +120,7 @@ prefix_matrix_runner_implementation = """\
   {
     newData[i] = %(symbol)sdata[i];
   }
-  ret = new %(returntype)s(newData, arg->getRows(), arg->getCols());
+  ret = new %(returntype)s(newData, arg->getRows(), arg->getCols(), OWNER);
 """
 
 # UnaryFunction runner
@@ -137,7 +137,7 @@ unaryfunction_matrix_runner_implementation = """\
   {
     newData[i] = %(function)s(data[i]);
   }
-  ret = new %(returntype)s(newData, arg->getRows(), arg->getCols());
+  ret = new %(returntype)s(newData, arg->getRows(), arg->getCols(), OWNER);
 """
 
 # Unimplemented runners
