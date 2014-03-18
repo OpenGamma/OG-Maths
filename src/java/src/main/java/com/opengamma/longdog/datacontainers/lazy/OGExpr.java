@@ -47,7 +47,7 @@ public abstract class OGExpr implements NODE {
   }
 
   public OGNumeric getArg(int index) {
-    int lastarg = _args.length;
+    int lastarg = _args.length - 1;
     if (index > lastarg) {
       throw new MathsExceptionIllegalArgument("Index " + index + " exceeds index of last arg " + lastarg);
     }
