@@ -360,8 +360,10 @@ TEST(TerminalsTest, OGArrayTest) {
   ASSERT_ANY_THROW(tmp->asFullOGComplexMatrix());
   ASSERT_ANY_THROW(tmp->createOwningCopy());
   ASSERT_ANY_THROW(tmp->createComplexOwningCopy());
-
+  Visitor * v = new FakeVisitor();
+  ASSERT_ANY_THROW(tmp->accept(*v));
   delete tmp;
+  delete v;
 }
 
 /*
