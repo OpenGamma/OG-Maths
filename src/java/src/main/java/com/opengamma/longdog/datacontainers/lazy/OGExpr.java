@@ -45,4 +45,8 @@ public abstract class OGExpr implements NODE {
     return this.getClass().getName();
   }
 
+  public OGNumeric getArg(int index) {
+    return _args[index];
+  }
+
 }
