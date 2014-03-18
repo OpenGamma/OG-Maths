@@ -81,7 +81,7 @@ public class TestSVDMaterialise {
   }
 
   @Test(dataProvider = "dataContainer", expectedExceptions = MathsExceptionIllegalArgument.class)
-  public void outsideArgBound(OGExpr input, OGRealScalar expected) {
+  public void outsideArgBound(OGExpr input, OGRealScalar expectedU, OGRealScalar expectedS, OGRealScalar expectedV) {
     OGNumeric n = input.getArg(3);
   }
 
