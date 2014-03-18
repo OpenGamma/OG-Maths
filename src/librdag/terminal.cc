@@ -684,7 +684,7 @@ template class OGArray<complex16>;
  */
 
 template<typename T>
-OGMatrix<T>::OGMatrix(T* data, int rows, int cols)
+OGMatrix<T>::OGMatrix(T* data, int rows, int cols, DATA_ACCESS access_spec)
 {
   if (data == nullptr)
   {
@@ -694,11 +694,6 @@ OGMatrix<T>::OGMatrix(T* data, int rows, int cols)
   this->setRows(rows);
   this->setCols(cols);
   this->setDatalen(rows*cols);
-}
-
-template<typename T>
-OGMatrix<T>::OGMatrix(T* data, int rows, int cols, DATA_ACCESS access_spec):OGMatrix(data,rows,cols)
-{
   this->setDataAccess(access_spec);
 }
 
@@ -727,9 +722,6 @@ OGMatrix<T>::toArrayOfArrays() const
   }
   return tmp;
 }
-
-template<typename T>
-OGMatrix<T>::~OGMatrix(){}
 
 template class OGMatrix<real16>;
 template class OGMatrix<complex16>;
@@ -882,9 +874,8 @@ OGComplexMatrix::createComplexOwningCopy() const
  * OGDiagonalMatrix
  */
 
-
 template<typename T>
-OGDiagonalMatrix<T>::OGDiagonalMatrix(T* data, int rows, int cols)
+OGDiagonalMatrix<T>::OGDiagonalMatrix(T* data, int rows, int cols, DATA_ACCESS access_spec)
 {
   if (data == nullptr)
   {
@@ -894,17 +885,8 @@ OGDiagonalMatrix<T>::OGDiagonalMatrix(T* data, int rows, int cols)
   this->setRows(rows);
   this->setCols(cols);
   this->setDatalen(rows>cols?cols:rows);
-}
-
-template<typename T>
-OGDiagonalMatrix<T>::OGDiagonalMatrix(T* data, int rows, int cols, DATA_ACCESS access_spec):OGDiagonalMatrix(data,rows,cols)
-{
   this->setDataAccess(access_spec);
 }
-
-template<typename T>
-OGDiagonalMatrix<T>::~OGDiagonalMatrix()
-{}
 
 template<typename T>
 void
@@ -1117,7 +1099,7 @@ OGComplexDiagonalMatrix::asFullOGComplexMatrix() const
 OGTerminal *
 OGComplexDiagonalMatrix::createOwningCopy() const
 {
-  complex16 * newdata =  new complex16[this->getDatalen()]();
+  complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
   return new OGComplexDiagonalMatrix(newdata, this->getRows(), this->getCols(), OWNER);
 }
@@ -1135,7 +1117,7 @@ OGComplexDiagonalMatrix::createComplexOwningCopy() const
  */
 
 template<typename T>
-OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows, int cols)
+OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows, int cols, DATA_ACCESS access_spec)
 {
   if (data == nullptr)
   {
@@ -1146,12 +1128,7 @@ OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows,
   this->setCols(cols);
   this->setColPtr(colPtr);
   this->setRowIdx(rowIdx);
-  this->setDatalen(colPtr[cols]); // must go last to catch null on colptr happens  
-}
-
-template<typename T>
-OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows, int cols, DATA_ACCESS access_spec):OGSparseMatrix(colPtr, rowIdx, data, rows, cols)
-{
+  this->setDatalen(colPtr[cols]); // must go last to catch null on colptr happens
   this->setDataAccess(access_spec);
 }
 
