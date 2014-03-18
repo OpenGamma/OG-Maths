@@ -1021,7 +1021,7 @@ OGRealDiagonalMatrix::asFullOGComplexMatrix() const
 OGTerminal *
 OGRealDiagonalMatrix::createOwningCopy() const
 {
-  real16 * newdata =  new real16[this->getDatalen()]();
+  real16 * newdata =  new real16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
   return new OGRealDiagonalMatrix(newdata, this->getRows(), this->getCols(), OWNER);
 }
@@ -1029,7 +1029,7 @@ OGRealDiagonalMatrix::createOwningCopy() const
 OGTerminal *
 OGRealDiagonalMatrix::createComplexOwningCopy() const
 {
-  complex16 * newdata =  new complex16[this->getDatalen()]();
+  complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
   return new OGComplexDiagonalMatrix(newdata, this->getRows(), this->getCols(), OWNER);
 }
