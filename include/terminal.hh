@@ -149,6 +149,7 @@ class OGScalar: public OGTerminal
     T ** toArrayOfArrays() const;
     virtual bool equals(const OGTerminal * ) const override;
     virtual bool fuzzyequals(const OGTerminal * ) const override;
+    virtual void debug_print() const override;
     /*
      * The following will throw.
      */
@@ -156,7 +157,6 @@ class OGScalar: public OGTerminal
     virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
     virtual OGTerminal * createOwningCopy() const override;
     virtual OGTerminal * createComplexOwningCopy() const override;
-    virtual void debug_print() const override;
     virtual OGNumeric* copy() const override;
   protected:
     T _value;
