@@ -130,6 +130,25 @@ TEST(TerminalsTest, OGTerminalTest) {
 }
 
 /*
+ * Test OGScalar<T>
+ */
+TEST(TerminalsTest, OGScalarTest) {
+
+  OGScalar<real16> * tmp = new OGScalar<real16>(10);
+
+  ASSERT_THROW(tmp->copy(), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
+  ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
+  ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
+
+  // print for test completeness
+  tmp->debug_print();
+
+  delete tmp;
+}
+
+/*
  * Test OGRealScalar
  */
 TEST(TerminalsTest, OGRealScalarTest) {
@@ -173,7 +192,7 @@ TEST(TerminalsTest, OGRealScalarTest) {
   delete [] computed;
 
   // check toComplex16ArrayOfArrays, should throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -237,7 +256,7 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   ASSERT_EQ(tmp->getType(), COMPLEX_SCALAR_ENUM);
 
   // check can't promote as real
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[1] = {{3.14e0, 0.00159e0}};
@@ -257,7 +276,7 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   delete [] computed;
 
   // check toReal16ArrayOfArrays, should throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -317,10 +336,10 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
   ASSERT_EQ(tmp->getType(), INTEGER_SCALAR_ENUM);  
 
   // check toReal16ArrayOfArrays, should throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check toComplex16ArrayOfArrays, should throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check copy and asOGIntegerScalar
   OGNumeric * copy = tmp->copy();
@@ -348,6 +367,25 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
 }
 
 /*
+ * Test OGArray
+ */
+TEST(TerminalsTest, OGArrayTest) {
+
+  OGArray<real16> * tmp = new OGArray<real16>();
+
+  ASSERT_THROW((tmp->copy()), rdag_error);
+  ASSERT_THROW((tmp->debug_print()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
+  ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
+  ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
+  Visitor * v = new FakeVisitor();
+  ASSERT_THROW((tmp->accept(*v)), rdag_error);
+  delete tmp;
+  delete v;
+}
+
+/*
  * Test OGRealMatrix
  */
 TEST(TerminalsTest, OGRealMatrixTest) {
@@ -359,21 +397,32 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   // attempt construct from nullptr, should throw
   real16 * null = nullptr;
   OGRealMatrix * tmp;
-  ASSERT_ANY_THROW(tmp = new OGRealMatrix(null,rows,cols));
+  ASSERT_THROW((tmp = new OGRealMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealMatrix(data,-1,cols));
+  ASSERT_THROW((tmp = new OGRealMatrix(data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealMatrix(data,rows,-1));
+  ASSERT_THROW((tmp = new OGRealMatrix(data,rows,-1)), rdag_error);
+
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGRealMatrix(new real16[2]{10,20},1,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
 
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGRealMatrix(data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -415,7 +464,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   delete [] expected;  
 
   // check toComplex16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -439,7 +488,9 @@ TEST(TerminalsTest, OGRealMatrixTest) {
 
   // check createComplexOwningCopy
   OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
-  OGComplexMatrix * cmplx_tmp = new OGOwningComplexMatrix(data, rows, cols);
+  complex16 * cdata = new complex16[rows*cols]();
+  std::copy(data,data+(rows*cols),cdata);
+  OGComplexMatrix * cmplx_tmp = new OGComplexMatrix(cdata, rows, cols, OWNER);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
   ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexMatrix()->getData())); // make sure the data is unique
   delete cmplx_tmp;
@@ -455,45 +506,6 @@ TEST(TerminalsTest, OGRealMatrixTest) {
 
 
 /*
- * Test OGOwningRealMatrix
- */
-TEST(TerminalsTest, OGOwningRealMatrix) {
-  // data
-  real16 data [12] = {1e0,2e0,3e0,4e0,5e0,6e0,7e0,8e0,9e0,10e0,11e0,12e0};
-  real16 zeros [12] = {0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0,0e0};
-  int rows = 3;
-  int cols = 4;
-
-  // attempt construct from ok values
-  OGOwningRealMatrix * tmp = new OGOwningRealMatrix(rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), rows*cols);
-
-  // check data is zerod
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),zeros,tmp->getDatalen()));
-
-  // set data then check
-  memcpy(data,tmp->getData(),tmp->getDatalen()*sizeof(real16));
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), REAL_MATRIX_ENUM);
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
-
-/*
  * Test OGComplexMatrix
  */
 TEST(TerminalsTest, OGComplexMatrixTest) {
@@ -505,21 +517,31 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
   OGComplexMatrix * tmp;
-  ASSERT_ANY_THROW(tmp = new OGComplexMatrix(null,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexMatrix(data,-1,cols));
+  ASSERT_THROW((tmp = new OGComplexMatrix(data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexMatrix(data,rows,-1));
+  ASSERT_THROW((tmp = new OGComplexMatrix(data,rows,-1)), rdag_error);
+
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGComplexMatrix(new complex16[2]{{10,20},{30,40}},1,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
 
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGComplexMatrix(data,rows,cols);
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -537,7 +559,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_EQ(tmp->getType(), COMPLEX_MATRIX_ENUM);    
 
   // check can't promote as real
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0},{2e0,20e0},{5e0,50e0},{8e0,80e0},{11e0,110e0},{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}};
@@ -564,7 +586,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   delete [] expected;  
 
   // check toReal16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -602,46 +624,6 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 
 
 /*
- * Test OGOwningComplexMatrix
- */
-TEST(TerminalsTest, OGOwningComplexMatrix) {
-  // data
-  complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
-  complex16 zeros [12] = {{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0}};
-  int rows = 3;
-  int cols = 4;
-
-  // attempt construct from ok values
-  OGOwningComplexMatrix * tmp = new OGOwningComplexMatrix(rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), rows*cols);
-
-  // check data is zerod
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),zeros,tmp->getDatalen()));
-
-  // set data then check
-  memcpy(tmp->getData(),data,tmp->getDatalen()*sizeof(complex16));
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), COMPLEX_MATRIX_ENUM);
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
-
-
-/*
  * Test OGRealDiagonalMatrix
  */
 TEST(TerminalsTest, OGRealDiagonalMatrix) {
@@ -653,21 +635,32 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   // attempt construct from nullptr, should throw
   real16 * null = nullptr;
   OGRealDiagonalMatrix * tmp;
-  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(null,rows,cols));
+  ASSERT_THROW((tmp = new OGRealDiagonalMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(data,-1,cols));
+  ASSERT_THROW((tmp = new OGRealDiagonalMatrix(data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(data,rows,-1));
+  ASSERT_THROW((tmp = new OGRealDiagonalMatrix(data,rows,-1)), rdag_error);
+
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGRealDiagonalMatrix(new real16[2]{10,20},2,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
 
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGRealDiagonalMatrix(data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -722,7 +715,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   delete [] expected;  
 
   // check toComplex16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -748,7 +741,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   OGTerminal * owningComplexCopy = tmp->createComplexOwningCopy();
   complex16 * cmplx_data = new complex16[tmp->getDatalen()];
   std::copy(data, data+tmp->getDatalen(), cmplx_data);
-  OGComplexDiagonalMatrix * cmplx_tmp = new OGOwningComplexDiagonalMatrix(cmplx_data, rows, cols);
+  OGComplexDiagonalMatrix * cmplx_tmp = new OGComplexDiagonalMatrix(cmplx_data, rows, cols, OWNER);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
   ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexDiagonalMatrix()->getData())); // make sure the data is unique
   delete cmplx_tmp;
@@ -766,45 +759,6 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   delete tmp;
 }
 
-/*
- * Test OGOwningRealDiagonalMatrix
- */
-TEST(TerminalsTest, OGOwningRealDiagonalMatrix) {
-  // data
-  real16 data [3] = {1e0,2e0,3e0};
-  int rows = 3;
-  int cols = 4;
-
-  // attempt construct from ok values
-  real16 * owned_data = new real16[3];
-  memcpy(owned_data,data, 3 * sizeof(real16));
-  OGOwningRealDiagonalMatrix * tmp = new OGOwningRealDiagonalMatrix(owned_data,rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), rows>cols?cols:rows);
-
-  // check getData
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), REAL_DIAGONAL_MATRIX_ENUM);
-
-  // check data
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
-
 
 /*
  * Test OGComplexDiagonalMatrix
@@ -818,21 +772,32 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
   OGComplexDiagonalMatrix * tmp;
-  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(null,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexDiagonalMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(data,-1,cols));
+  ASSERT_THROW((tmp = new OGComplexDiagonalMatrix(data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(data,rows,-1));
+  ASSERT_THROW((tmp = new OGComplexDiagonalMatrix(data,rows,-1)), rdag_error);
+
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGComplexDiagonalMatrix(new complex16[2]{{10,20},{30,40}},2,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
 
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGComplexDiagonalMatrix(data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -850,7 +815,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   ASSERT_EQ(tmp->getType(), COMPLEX_DIAGONAL_MATRIX_ENUM);  
 
   // check can't promote as real
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{2e0,20e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{3e0,30e0},{0e0,0e0}};
@@ -890,7 +855,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   delete [] expected;  
 
   // check toReal16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -932,45 +897,6 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
 
 
 /*
- * Test OGOwningComplexDiagonalMatrix
- */
-TEST(TerminalsTest, OGOwningComplexDiagonalMatrix) {
-  // data
-  complex16 data [3] = {{1e0,10e0},{2e0,20e0},{3e0,30e0}};
-  int rows = 3;
-  int cols = 4;
-
-  // attempt construct from ok values
-  complex16 * owned_data = new complex16[3];
-  memcpy(owned_data,data, 3 * sizeof(complex16));
-  OGOwningComplexDiagonalMatrix * tmp = new OGOwningComplexDiagonalMatrix(owned_data,rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), rows>cols?cols:rows);
-
-  // check getData
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), COMPLEX_DIAGONAL_MATRIX_ENUM);
-
-  // check data
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
-
-/*
  * Test OGRealSparseMatrix
  */
 TEST(TerminalsTest, OGRealSparseMatrix) {
@@ -987,30 +913,41 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
 
   // attempt construct from colptr as null, should throw
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(nullintptr,rowIdx,data,rows,cols));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(nullintptr,rowIdx,data,rows,cols)), rdag_error);
 
   // attempt construct from rowidx as null, should throw
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,nullintptr,data,rows,cols));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(colPtr,nullintptr,data,rows,cols)), rdag_error);
 
   // attempt construct from data nullptr, should throw
   real16 * nulldata = nullptr;
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,rowIdx,nulldata,rows,cols));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(colPtr,rowIdx,nulldata,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,-1,cols));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,rows,-1));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,rows,-1)), rdag_error);
+
+    // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGRealSparseMatrix(new int[3]{0,2,2}, new int[2]{0,1},new real16[2]{10,20},2,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
 
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -1070,7 +1007,7 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   delete [] expected;
 
   // check toComplex16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -1117,57 +1054,6 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
 
 
 /*
- * Test OGOwningRealSparseMatrix
- */
-TEST(TerminalsTest, OGOwningRealSparseMatrix) {
-  // data
-  real16 data [7] = { 1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
-  int colPtr [6] = { 0, 2, 4, 7, 7, 7 };
-  int rowIdx [7] = { 0, 1, 0, 2, 1, 2, 3 };
-  int rows = 5;
-  int cols = 4;
-
-  // attempt construct from ok values
-  real16 * owned_data = new real16[7];
-  memcpy(owned_data,data, 7 * sizeof(real16));
-  int * owned_colPtr = new int[6];
-  memcpy(owned_colPtr,colPtr, 6 * sizeof(int));
-  int * owned_rowIdx = new int[7];
-  memcpy(owned_rowIdx,rowIdx, 7 * sizeof(int));
-
-
-  OGOwningRealSparseMatrix * tmp = new OGOwningRealSparseMatrix(owned_colPtr, owned_rowIdx,owned_data,rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), colPtr[cols]);
-
-  // check getData
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getColPtr
-  ASSERT_TRUE(ArrayEquals(tmp->getColPtr(),colPtr,6));
-
-  // check getRowIdx
-  ASSERT_TRUE(ArrayEquals(tmp->getRowIdx(),rowIdx,7));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), REAL_SPARSE_MATRIX_ENUM);
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
-
-
-/*
  * Test OGComplexSparseMatrix
  */
 TEST(TerminalsTest, OGComplexSparseMatrix) {
@@ -1183,30 +1069,41 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
 
   // attempt construct from colptr as null, should throw
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(nullintptr,rowIdx,data,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(nullintptr,rowIdx,data,rows,cols)), rdag_error);
 
   // attempt construct from rowidx as null, should throw
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,nullintptr,data,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(colPtr,nullintptr,data,rows,cols)), rdag_error);
 
   // attempt construct from data nullptr, should throw
   complex16 * nulldata = nullptr;
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,rowIdx,nulldata,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(colPtr,rowIdx,nulldata,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,-1,cols));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,-1));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,-1)), rdag_error);
+
+  // attempt construct from ok data, own the data and delete it
+  tmp = nullptr;
+  tmp = new OGComplexSparseMatrix(new int[3]{0,2,2}, new int[2]{0,1},new complex16[2]{{10,20},{30,40}},2,2, OWNER);
+  ASSERT_NE(tmp, nullptr);
+  ASSERT_TRUE(tmp->getDataAccess()==OWNER);
+  delete tmp;
 
   // attempt construct from ok data
   tmp = nullptr;
   tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,cols);
+
   // check ctor worked
   ASSERT_NE(tmp, nullptr);
+
+  // check it's a view context
+  ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
 
   // check getRows
   ASSERT_EQ(tmp->getRows(), rows);
@@ -1230,7 +1127,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_EQ(tmp->getType(), COMPLEX_SPARSE_MATRIX_ENUM);  
 
   // check can't promote as real
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[20] = {
@@ -1275,7 +1172,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   delete [] expected;
 
   // check toReal16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -1320,56 +1217,6 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   delete tmp;
 }
 
-/*
- * Test OGOwningComplexSparseMatrix
- */
-TEST(TerminalsTest, OGOwningComplexSparseMatrix) {
-  // data
-  complex16 data [12] = { {1, 10}, {5, 0}, {0, 90}, {2, 20}, {0, 60}, {10, 100}, {0, 30}, {7, 70}, {11, 0}, {15, 0}, {0, 120}, {0, 160} };
-  int colPtr [6] = { 0, 3, 6, 10, 12, 12 };
-  int rowIdx [12] = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 };
-  int rows = 5;
-  int cols = 4;
-
-  // attempt construct from ok values
-  complex16 * owned_data = new complex16[12];
-  memcpy(owned_data,data, 12 * sizeof(complex16));
-  int * owned_colPtr = new int[6];
-  memcpy(owned_colPtr,colPtr, 6 * sizeof(int));
-  int * owned_rowIdx = new int[12];
-  memcpy(owned_rowIdx,rowIdx, 12 * sizeof(int));
-
-
-  OGOwningComplexSparseMatrix * tmp = new OGOwningComplexSparseMatrix(owned_colPtr, owned_rowIdx,owned_data,rows, cols);
-
-  // check ctor worked
-  ASSERT_NE(tmp, nullptr);
-
-  // check getRows
-  ASSERT_EQ(tmp->getRows(), rows);
-
-  // check getCols
-  ASSERT_EQ(tmp->getCols(), cols);
-
-  // check getDatalen
-  ASSERT_EQ(tmp->getDatalen(), colPtr[cols]);
-
-  // check getData
-  ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
-
-  // check getColPtr
-  ASSERT_TRUE(ArrayEquals(tmp->getColPtr(),colPtr,6));
-
-  // check getRowIdx
-  ASSERT_TRUE(ArrayEquals(tmp->getRowIdx(),rowIdx,7));
-
-  // check getType() is ok
-  ASSERT_EQ(tmp->getType(), COMPLEX_SPARSE_MATRIX_ENUM);
-
-  // delete should free, valgrind should be happy
-  delete tmp;
-}
-
 
 /**
  * Check OGArray methods not tested otherwise
@@ -1388,8 +1235,8 @@ public:
     virtual void debug_print() const override {}
     virtual void accept(Visitor SUPPRESS_UNUSED &v) const override {}
     virtual OGNumeric* copy() const override { return nullptr; }
-    virtual OGOwningRealMatrix * asFullOGRealMatrix() const override { return nullptr; }
-    virtual OGOwningComplexMatrix * asFullOGComplexMatrix() const override { return nullptr; }
+    virtual OGRealMatrix * asFullOGRealMatrix() const override { return nullptr; }
+    virtual OGComplexMatrix * asFullOGComplexMatrix() const override { return nullptr; }
     virtual OGTerminal * createOwningCopy() const override { return nullptr; }
     virtual OGTerminal * createComplexOwningCopy() const override { return nullptr;}
 };

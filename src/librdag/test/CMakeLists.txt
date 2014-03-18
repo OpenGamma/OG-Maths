@@ -9,7 +9,20 @@ SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 
 link_directories(${longdog_BINARY_DIR}/src/librdag)
 
-set(TESTS check_expressions check_containers check_execution check_rtti check_terminals check_entrypt check_dispatch check_equals check_numerictypes check_convertto check_iss)
+set(TESTS
+  check_containers
+  check_convertto
+  check_dispatch
+  check_entrypt
+  check_equals
+  check_execution
+  check_expressions
+  check_iss
+  check_numerictypes
+  check_rtti
+  check_terminals
+  check_terminals_abstract_regression
+  )
 
 if(NOT WIN32)
   set(TESTS ${TESTS} check_exceptions)
