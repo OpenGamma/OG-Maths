@@ -158,6 +158,7 @@ class OGExpr;
 class COPY;
 class SELECTRESULT;
 class NORM2;
+class SVD;
 %(fwd_decls)s
 
 /*
@@ -174,6 +175,7 @@ class OGNumeric: private Uncopyable
     virtual const COPY* asCOPY() const;
     virtual const SELECTRESULT* asSELECTRESULT() const;
     virtual const NORM2* asNORM2() const;
+    virtual const SVD* asSVD() const;
 %(cast_methods)s
     virtual const OGTerminal* asOGTerminal() const;
     virtual const OGRealScalar* asOGRealScalar() const;

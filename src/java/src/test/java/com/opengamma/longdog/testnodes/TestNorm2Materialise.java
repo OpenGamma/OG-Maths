@@ -10,12 +10,13 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.opengamma.longdog.datacontainers.OGNumeric;
+import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.matrix.OGComplexDenseMatrix;
-import com.opengamma.longdog.datacontainers.matrix.OGComplexMatrixTest;
 import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.longdog.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
 import com.opengamma.longdog.exceptions.MathsException;
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.FuzzyEquals;
 import com.opengamma.longdog.materialisers.Materialisers;
 import com.opengamma.longdog.nodes.NORM2;
@@ -85,6 +86,11 @@ public class TestNorm2Materialise {
     if (!FuzzyEquals.SingleValueFuzzyEquals(answer.getData()[0], expected.getData()[0])) {
       throw new MathsException("Arrays not equal. Got: " + answer.toString() + " Expected: " + expected.getData()[0]);
     }
+  }
+
+  @Test(dataProvider = "dataContainer", expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void outsideArgBound(OGExpr input, OGRealScalar expected) {
+    OGNumeric n = input.getArg(1);
   }
 
 }

@@ -57,6 +57,12 @@ TEST(JTerminals, Test_getIntFromVoidJMethod_null_envptr)
   delete obj;
 }
 
+// Required to allow a single FakeJNIEnv_for_binding for all types
+template<typename T> jint toJint(T v);
+template<> jint toJint<jint>(jint v) { return v; }
+template<> jint toJint<real16>(real16 v) { return v; }
+template<> jint toJint<complex16>(complex16 v) { return v.real(); }
+
 template<typename T> class Fake_JNIEnv_for_binding: public Fake_JNIEnv
 {
   public:
@@ -76,6 +82,10 @@ template<typename T> class Fake_JNIEnv_for_binding: public Fake_JNIEnv
     virtual int * GetIntArrayElements(jintArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
     {
       return reinterpret_cast<int *>(&_value);
+    }
+    virtual jint CallIntMethod(jobject SUPPRESS_UNUSED obj, jmethodID SUPPRESS_UNUSED methodID, ...) override
+    {
+      return toJint<T>(_value);
     }
   private:
     T _value;

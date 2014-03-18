@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "expressionbase.hh"
+#include "expression.hh"
 #include "terminal.hh"
 #include "exceptions.hh"
 
@@ -189,5 +190,34 @@ NORM2::getType() const
   return NORM2_ENUM;
 }
 
+/**
+ * SVD node
+ */
+
+SVD::SVD(ArgContainer* args): OGUnaryExpr(args) { }
+
+OGNumeric*
+SVD::copy() const
+{
+  return new SVD(this->getArgs()->copy());
+}
+
+const SVD*
+SVD::asSVD() const
+{
+  return this;
+}
+
+void
+SVD::debug_print() const
+{
+  cout << "SVD node (functionality not yet implemented)" << endl;
+}
+
+ExprType_t
+SVD::getType() const
+{
+  return SVD_ENUM;
+}
 
 } // namespace librdag

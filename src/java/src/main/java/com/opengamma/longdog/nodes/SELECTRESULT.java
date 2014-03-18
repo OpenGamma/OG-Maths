@@ -9,13 +9,12 @@ package com.opengamma.longdog.nodes;
 import com.opengamma.longdog.datacontainers.ExprTypeEnum;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
+import com.opengamma.longdog.datacontainers.scalar.OGIntegerScalar;
 
 /**
  * Select result class.
  */
 public class SELECTRESULT extends OGExpr {
-
-  private int _entry;
 
   @Override
   public ExprTypeEnum getType() {
@@ -23,16 +22,7 @@ public class SELECTRESULT extends OGExpr {
   }
 
   public SELECTRESULT(OGNumeric arg0, int index) {
-    super(arg0);
-    _entry = index;
-  }
-
-  /**
-   * Gets the entry.
-   * @return the entry
-   */
-  public int getEntry() {
-    return _entry;
+    super(arg0, new OGIntegerScalar(index));
   }
 
 }

@@ -4,6 +4,8 @@
  * Please see distribution for license.
  */
 
+#include <iostream>
+
 #include "jvmmanager.hh"
 #include "jterminals.hh"
 #include "jbindings.hh"
@@ -102,20 +104,29 @@ JOGComplexScalar::debug_print() const
 
 JOGIntegerScalar::JOGIntegerScalar(jobject obj): OGIntegerScalar(0)
 {
-  // We can't initialise OGIntegerScalar in its constructor expression list because we will lose the
-  // pointer to the raw data in doing that. So we have to first initialise the OGIntegerScalar to 0.
+  // We can't initialise OGIntegerScalar in its constructor expression list because we need to
+  // get the current env first.
+  JNIEnv *env = NULL;
+  jint jStatus = 0;
+  jStatus=JVMManager::getJVM()->AttachCurrentThread((void **)&env, NULL);  // NOP to get env ptr
+  if(jStatus)
+  {
+    throw convert_error("Thread attach failed");
+  }
 
-  // Then, we grab the data reference
-  _dataRef = bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGTerminalClazz_getData());
+  // There is no data reference for integer scalars.
+  _dataRef = nullptr;
 
-  // So that now we can update the OGIntegeRScalar with the true value.
-  _value = reinterpret_cast<int *>(_dataRef)[0];
+
+  // Now we can update the OGIntegeRScalar with the true value.
+  jmethodID meth = JVMManager::getOGIntegerScalarClazz_getValue();
+  _value = env->CallIntMethod(obj, meth);
+  checkEx(env);
   this->_backingObject = obj;
 }
 
 JOGIntegerScalar::~JOGIntegerScalar()
 {
-  unbindOGArrayData<jint, jintArray>(this->_dataRef, _backingObject);
   this->_backingObject = nullptr;
   this->_dataRef = nullptr;
 }

@@ -10,8 +10,10 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.opengamma.longdog.datacontainers.OGNumeric;
+import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
 import com.opengamma.longdog.exceptions.MathsException;
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.materialisers.Materialisers;
 import com.opengamma.longdog.nodes.PLUS;
 import com.opengamma.longdog.testhelpers.ArraysHelpers;
@@ -31,7 +33,7 @@ public class TestPlusMaterialise {
 
     OGNumeric bigtree = new OGRealScalar(0.0);
     double sum = 0.0;
-    for (int i = 1; i < 2500; i++) {
+    for (int i = 1; i < 500; i++) {
       if (i%2 == 0) {
         bigtree = new PLUS(new OGRealScalar(i), bigtree);
       }
@@ -61,6 +63,11 @@ public class TestPlusMaterialise {
     if (answer.getData()[0] != expected.getData()[0]) {
       throw new MathsException("Arrays not equal");
     }
+  }
+
+  @Test(dataProvider = "dataContainer", expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void outsideArgBound(OGExpr input, OGRealScalar expected) {
+    OGNumeric n = input.getArg(2);
   }
 
 }

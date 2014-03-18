@@ -40,6 +40,12 @@ OGNumeric::asNORM2() const
   return nullptr;
 }
 
+const SVD*
+OGNumeric::asSVD() const
+{
+  return nullptr;
+}
+
 const OGExpr*
 OGNumeric::asOGExpr() const
 {

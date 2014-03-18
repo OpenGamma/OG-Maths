@@ -8,7 +8,8 @@
 
 from dispatch import Dispatch
 from runners import Runners, Runners, InfixOpRunner, PrefixOpRunner, UnaryFunctionRunner, \
-                    UnimplementedUnary, UnimplementedBinary
+                    UnimplementedUnary, UnimplementedBinary, UnaryExpressionRunner, \
+                    SelectResultRunner
 from exprtree import Terminal
 from expression import Expressions, Numeric
 from enums import ExprEnums
@@ -49,7 +50,6 @@ nodes = [ UnimplementedUnary('ABS'),
           UnaryFunctionRunner('SIN', 'SIN_ENUM', 'sin'),
           UnimplementedUnary('SINH'),
           UnimplementedUnary('SQRT'),
-          UnimplementedUnary('SVD'),
           UnimplementedUnary('TAN'),
           UnimplementedUnary('TRANSPOSE'),
           UnimplementedUnary('WILKINSON'),
@@ -65,7 +65,9 @@ nodes = [ UnimplementedUnary('ABS'),
 
 # The list of nodes to generate headers and wiring for, but not the implementations
 custom_nodes = [
-                UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2')
+                UnaryExpressionRunner('NORM2', 'NORM2_ENUM'),
+                UnaryExpressionRunner('SVD', 'SVD_ENUM'),
+                SelectResultRunner('SELECTRESULT', 'SELECTRESULT_ENUM')
                ]
 
 # The list of terminals

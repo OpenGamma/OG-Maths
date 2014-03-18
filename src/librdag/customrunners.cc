@@ -6,7 +6,7 @@
  */
 
 #include "dispatch.hh"
-#include "customrunners.hh"
+#include "runners.hh"
 #include "expression.hh"
 #include "iss.hh"
 #include "terminal.hh"
