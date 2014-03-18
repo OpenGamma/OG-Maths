@@ -42,9 +42,9 @@ class OGExpr: public OGNumeric
     virtual const RegContainer * getRegs() const;
   protected:
     OGExpr(ArgContainer* args);
+    RegContainer * _regs;
   private:
     ArgContainer * _args;
-    RegContainer * _regs;
 };
 
 /**
@@ -93,6 +93,16 @@ class NORM2: public OGUnaryExpr
     NORM2(ArgContainer *args);
     virtual OGNumeric* copy() const override;
     virtual const NORM2* asNORM2() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+};
+
+class SVD: public OGUnaryExpr
+{
+  public:
+    SVD(ArgContainer* args);
+    virtual OGNumeric* copy() const override;
+    virtual const SVD* asSVD() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
 };

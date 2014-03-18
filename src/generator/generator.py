@@ -49,7 +49,6 @@ nodes = [ UnimplementedUnary('ABS'),
           UnaryFunctionRunner('SIN', 'SIN_ENUM', 'sin'),
           UnimplementedUnary('SINH'),
           UnimplementedUnary('SQRT'),
-          UnimplementedUnary('SVD'),
           UnimplementedUnary('TAN'),
           UnimplementedUnary('TRANSPOSE'),
           UnimplementedUnary('WILKINSON'),
@@ -66,6 +65,7 @@ nodes = [ UnimplementedUnary('ABS'),
 # The list of nodes to generate headers and wiring for, but not the implementations
 custom_nodes = [
                 UnaryFunctionRunner('NORM2', 'NORM2_ENUM', 'dnrm2')
+                UnaryExpressionRunner('SVD', 'SVD_ENUM'),
                ]
 
 # The list of terminals
