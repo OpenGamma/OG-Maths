@@ -31,7 +31,7 @@ public class TestPlusMaterialise {
 
     OGNumeric bigtree = new OGRealScalar(0.0);
     double sum = 0.0;
-    for (int i = 1; i < 2500; i++) {
+    for (int i = 1; i < 500; i++) {
       if (i%2 == 0) {
         bigtree = new PLUS(new OGRealScalar(i), bigtree);
       }
