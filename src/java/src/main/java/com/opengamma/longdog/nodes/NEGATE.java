@@ -17,7 +17,7 @@ public class NEGATE extends OGExpr {
 
   @Override
   public ExprTypeEnum getType() {
-    return ExprTypeEnum.NEGATE;
+    return ExprTypeEnum.NEGATE_ENUM;
   }
 
   public NEGATE(OGNumeric arg) {

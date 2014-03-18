@@ -17,7 +17,7 @@ public class PLUS extends OGExpr {
 
   @Override
   public ExprTypeEnum getType() {
-    return ExprTypeEnum.PLUS;
+    return ExprTypeEnum.PLUS_ENUM;
   }
 
   public PLUS(OGNumeric arg0, OGNumeric arg1) {

@@ -19,7 +19,7 @@ public class SVD extends OGExprVariadicReturn {
 
   @Override
   public ExprTypeEnum getType() {
-    return ExprTypeEnum.SVD;
+    return ExprTypeEnum.SVD_ENUM;
   }
 
   public SVD(OGNumeric arg0) {

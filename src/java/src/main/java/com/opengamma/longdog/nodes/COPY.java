@@ -17,7 +17,7 @@ public class COPY extends OGExpr {
 
   @Override
   public ExprTypeEnum getType() {
-    return ExprTypeEnum.COPY;
+    return ExprTypeEnum.COPY_ENUM;
   }
 
   public COPY(OGNumeric arg0) {
