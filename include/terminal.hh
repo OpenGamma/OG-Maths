@@ -215,10 +215,16 @@ template <typename T> class OGArray: public OGTerminal
     virtual DATA_ACCESS getDataAccess() const;
     virtual bool equals(const OGTerminal *)const override;
     virtual bool fuzzyequals(const OGTerminal * ) const override;
+    /*
+     * The following will throw.
+     */
     virtual OGRealMatrix * asFullOGRealMatrix() const override;
     virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
     virtual OGTerminal * createOwningCopy() const override;
     virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual void debug_print() const override;
+    virtual OGNumeric* copy() const override;
+    virtual void accept(Visitor &v) const override;
   protected:
     void setData(T * data);
     void setRows(int rows);

@@ -348,6 +348,23 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
 }
 
 /*
+ * Test OGArray
+ */
+TEST(TerminalsTest, OGArrayTest) {
+
+  OGArray<real16> * tmp = new OGArray<real16>();
+
+  ASSERT_ANY_THROW(tmp->copy());
+  ASSERT_ANY_THROW(tmp->debug_print());
+  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_ANY_THROW(tmp->asFullOGComplexMatrix());
+  ASSERT_ANY_THROW(tmp->createOwningCopy());
+  ASSERT_ANY_THROW(tmp->createComplexOwningCopy());
+
+  delete tmp;
+}
+
+/*
  * Test OGRealMatrix
  */
 TEST(TerminalsTest, OGRealMatrixTest) {

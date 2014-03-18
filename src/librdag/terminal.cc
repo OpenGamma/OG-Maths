@@ -575,6 +575,30 @@ OGArray<T>::setDataAccess(DATA_ACCESS access_spec)
 }
 
 template<typename T>
+void
+OGArray<T>::
+debug_print() const
+{
+  throw rdag_error("Cannot debug_print abstract OGArray<T> class.");
+}
+
+template<typename T>
+OGNumeric *
+OGArray<T>::
+copy() const
+{
+  throw rdag_error("Cannot copy abstract OGArray<T> class.");
+}
+
+template<typename T>
+void
+OGArray<T>::
+accept(Visitor SUPPRESS_UNUSED &v) const
+{
+  throw rdag_error("Cannot visit abstract OGArray<T> class.");
+}
+
+template<typename T>
 OGRealMatrix *
 OGArray<T>::
 asFullOGRealMatrix() const
