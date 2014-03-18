@@ -194,14 +194,7 @@ NORM2::getType() const
  * SVD node
  */
 
-SVD::SVD(ArgContainer* args): OGUnaryExpr(args)
-{
-  // For testing, we invent three scalars. This needs to be removed when the
-  // call to LAPACK is hooked up.
-  _regs->push_back(new OGRealScalar(1.0));
-  _regs->push_back(new OGRealScalar(2.0));
-  _regs->push_back(new OGRealScalar(3.0));
-}
+SVD::SVD(ArgContainer* args): OGUnaryExpr(args) { }
 
 OGNumeric*
 SVD::copy() const

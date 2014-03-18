@@ -42,9 +42,9 @@ class OGExpr: public OGNumeric
     virtual const RegContainer * getRegs() const;
   protected:
     OGExpr(ArgContainer* args);
-    RegContainer * _regs;
   private:
     ArgContainer * _args;
+    RegContainer * _regs;
 };
 
 /**
