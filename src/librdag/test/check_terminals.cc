@@ -136,11 +136,11 @@ TEST(TerminalsTest, OGScalarTest) {
 
   OGScalar<real16> * tmp = new OGScalar<real16>(10);
 
-  ASSERT_ANY_THROW(tmp->copy());
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
-  ASSERT_ANY_THROW(tmp->asFullOGComplexMatrix());
-  ASSERT_ANY_THROW(tmp->createOwningCopy());
-  ASSERT_ANY_THROW(tmp->createComplexOwningCopy());
+  ASSERT_THROW(tmp->copy(), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
+  ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
+  ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
 
   // print for test completeness
   tmp->debug_print();
@@ -192,7 +192,7 @@ TEST(TerminalsTest, OGRealScalarTest) {
   delete [] computed;
 
   // check toComplex16ArrayOfArrays, should throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -256,7 +256,7 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   ASSERT_EQ(tmp->getType(), COMPLEX_SCALAR_ENUM);
 
   // check can't promote as real
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[1] = {{3.14e0, 0.00159e0}};
@@ -276,7 +276,7 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   delete [] computed;
 
   // check toReal16ArrayOfArrays, should throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -336,10 +336,10 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
   ASSERT_EQ(tmp->getType(), INTEGER_SCALAR_ENUM);  
 
   // check toReal16ArrayOfArrays, should throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check toComplex16ArrayOfArrays, should throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check copy and asOGIntegerScalar
   OGNumeric * copy = tmp->copy();
@@ -373,14 +373,14 @@ TEST(TerminalsTest, OGArrayTest) {
 
   OGArray<real16> * tmp = new OGArray<real16>();
 
-  ASSERT_ANY_THROW(tmp->copy());
-  ASSERT_ANY_THROW(tmp->debug_print());
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
-  ASSERT_ANY_THROW(tmp->asFullOGComplexMatrix());
-  ASSERT_ANY_THROW(tmp->createOwningCopy());
-  ASSERT_ANY_THROW(tmp->createComplexOwningCopy());
+  ASSERT_THROW((tmp->copy()), rdag_error);
+  ASSERT_THROW((tmp->debug_print()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
+  ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
+  ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
   Visitor * v = new FakeVisitor();
-  ASSERT_ANY_THROW(tmp->accept(*v));
+  ASSERT_THROW((tmp->accept(*v)), rdag_error);
   delete tmp;
   delete v;
 }
@@ -397,15 +397,15 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   // attempt construct from nullptr, should throw
   real16 * null = nullptr;
   OGRealMatrix * tmp;
-  ASSERT_ANY_THROW(tmp = new OGRealMatrix(null,rows,cols));
+  ASSERT_THROW((tmp = new OGRealMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealMatrix(data,-1,cols));
+  ASSERT_THROW((tmp = new OGRealMatrix(data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealMatrix(data,rows,-1));
+  ASSERT_THROW((tmp = new OGRealMatrix(data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = nullptr;
@@ -464,7 +464,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   delete [] expected;  
 
   // check toComplex16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -517,15 +517,15 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
   OGComplexMatrix * tmp;
-  ASSERT_ANY_THROW(tmp = new OGComplexMatrix(null,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexMatrix(data,-1,cols));
+  ASSERT_THROW((tmp = new OGComplexMatrix(data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexMatrix(data,rows,-1));
+  ASSERT_THROW((tmp = new OGComplexMatrix(data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = nullptr;
@@ -559,7 +559,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_EQ(tmp->getType(), COMPLEX_MATRIX_ENUM);    
 
   // check can't promote as real
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0},{2e0,20e0},{5e0,50e0},{8e0,80e0},{11e0,110e0},{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}};
@@ -586,7 +586,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   delete [] expected;  
 
   // check toReal16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -635,15 +635,15 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   // attempt construct from nullptr, should throw
   real16 * null = nullptr;
   OGRealDiagonalMatrix * tmp;
-  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(null,rows,cols));
+  ASSERT_THROW((tmp = new OGRealDiagonalMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(data,-1,cols));
+  ASSERT_THROW((tmp = new OGRealDiagonalMatrix(data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealDiagonalMatrix(data,rows,-1));
+  ASSERT_THROW((tmp = new OGRealDiagonalMatrix(data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = nullptr;
@@ -715,7 +715,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   delete [] expected;  
 
   // check toComplex16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -772,15 +772,15 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
   OGComplexDiagonalMatrix * tmp;
-  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(null,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexDiagonalMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(data,-1,cols));
+  ASSERT_THROW((tmp = new OGComplexDiagonalMatrix(data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexDiagonalMatrix(data,rows,-1));
+  ASSERT_THROW((tmp = new OGComplexDiagonalMatrix(data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = nullptr;
@@ -815,7 +815,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   ASSERT_EQ(tmp->getType(), COMPLEX_DIAGONAL_MATRIX_ENUM);  
 
   // check can't promote as real
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{2e0,20e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{3e0,30e0},{0e0,0e0}};
@@ -855,7 +855,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   delete [] expected;  
 
   // check toReal16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -913,24 +913,24 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
 
   // attempt construct from colptr as null, should throw
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(nullintptr,rowIdx,data,rows,cols));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(nullintptr,rowIdx,data,rows,cols)), rdag_error);
 
   // attempt construct from rowidx as null, should throw
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,nullintptr,data,rows,cols));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(colPtr,nullintptr,data,rows,cols)), rdag_error);
 
   // attempt construct from data nullptr, should throw
   real16 * nulldata = nullptr;
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,rowIdx,nulldata,rows,cols));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(colPtr,rowIdx,nulldata,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,-1,cols));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,rows,-1));
+  ASSERT_THROW((tmp = new OGRealSparseMatrix(colPtr,rowIdx,data,rows,-1)), rdag_error);
 
     // attempt construct from ok data, own the data and delete it
   tmp = nullptr;
@@ -1007,7 +1007,7 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   delete [] expected;
 
   // check toComplex16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toComplex16ArrayOfArrays());
+  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -1069,24 +1069,24 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
 
   // attempt construct from colptr as null, should throw
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(nullintptr,rowIdx,data,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(nullintptr,rowIdx,data,rows,cols)), rdag_error);
 
   // attempt construct from rowidx as null, should throw
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,nullintptr,data,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(colPtr,nullintptr,data,rows,cols)), rdag_error);
 
   // attempt construct from data nullptr, should throw
   complex16 * nulldata = nullptr;
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,rowIdx,nulldata,rows,cols));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(colPtr,rowIdx,nulldata,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,-1,cols));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,-1,cols)), rdag_error);
 
   // attempt construct from bad cols
   tmp = nullptr;
-  ASSERT_ANY_THROW(tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,-1));
+  ASSERT_THROW((tmp = new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = nullptr;
@@ -1127,7 +1127,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_EQ(tmp->getType(), COMPLEX_SPARSE_MATRIX_ENUM);  
 
   // check can't promote as real
-  ASSERT_ANY_THROW(tmp->asFullOGRealMatrix());
+  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[20] = {
@@ -1172,7 +1172,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   delete [] expected;
 
   // check toReal16ArrayOfArrays, expect throw
-  ASSERT_ANY_THROW(tmp->toReal16ArrayOfArrays());
+  ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
