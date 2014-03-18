@@ -97,6 +97,7 @@ def get_parser():
     action.add_argument('--numeric-hh', action='store_true', help='Generate numeric.hh')
     action.add_argument('--numeric-cc', action='store_true', help='Generate numeric.cc')
     action.add_argument('--exprenum-hh', action='store_true', help='Generate exprenum.hh')
+    action.add_argument('--exprenum-java', action='store_true', help='Generate ExprTypeEnum.java')
     action.add_argument('--createexpr-cc', action='store_true', help='Generate createexpr.cc')
     return parser
 
@@ -121,6 +122,8 @@ def main(args):
             code = Numeric(nodes).source
         elif args.exprenum_hh:
             code = ExprEnums(nodes).code
+        elif args.exprenum_java:
+            code = ExprEnums(nodes).java
         elif args.createexpr_cc:
             code = CreateExpressions(terminals + nodes + custom_nodes).source
         f.writelines(code)

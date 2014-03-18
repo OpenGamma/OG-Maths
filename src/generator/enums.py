@@ -4,6 +4,8 @@
 # Please see distribution for license.
 #
 
+from enumtemplates import exprenum_java
+
 primes = [ 373,  379,  383,  389,  397,  401,  409,  419,  421,  431,  433,
            439,  443,  449,  457,  461,  463,  467,  479,  487,  491,  499,
            503,  509, 521,  523,  541,  547,  557,  563,  569,  571,  577,  587,
@@ -41,3 +43,14 @@ class ExprEnums(object):
             enums.append(code)
             p = p + 1
         return ',\n'.join(enums);
+
+    @property
+    def java(self):
+        enums = []
+        p = 0
+        for node in self.nodes:
+            code = "  %s (0X%04XL)" % (node.enumname, primes[p])
+            enums.append(code)
+            p = p + 1
+        d = { 'generated_nodes': ',\n'.join(enums) }
+        return exprenum_java % d
