@@ -25,6 +25,8 @@ set(RDAG_SOURCES containers.cc
                  numericbase.cc
                  numerictypes.cc
                  terminal.cc
+                 runners/selectresultrunner.cc
+                 runners/svdrunner.cc
                  ${RDAG_GENERATED})
 
 include(${LAPACK_BUILDINFO})

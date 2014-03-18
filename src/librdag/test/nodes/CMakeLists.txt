@@ -23,6 +23,7 @@ add_multitarget_library(testhelper
 
 set(TESTS
     check_norm2
+    check_selectresult
    )
 
 # Compile and link each test and add to the list of tests

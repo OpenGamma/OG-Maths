@@ -76,6 +76,18 @@ void *
 
 """
 
+# Integer parameter runner
+
+integer_parameter_runner_class_definition = """\
+class %(nodename)sRunner: public DispatchVoidOp, private Uncopyable
+{
+  public:
+    virtual void* eval(RegContainer* reg, RegContainer const *arg0, OGIntegerScalar const *arg1) const;
+    virtual void* run(RegContainer* reg0, const RegContainer* arg0, const OGIntegerScalar* arg1) const;
+};
+
+"""
+
 # Infix runner
 
 infix_scalar_runner_implementation = """\

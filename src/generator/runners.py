@@ -5,7 +5,8 @@ from runnertemplates import runners_header, runners_cc, binary_runner_class_defi
                             prefix_matrix_runner_implementation, \
                             unaryfunction_scalar_runner_implementation, \
                             unaryfunction_matrix_runner_implementation, \
-                            unimplementedunary_runner_function, unimplementedbinary_runner_function
+                            unimplementedunary_runner_function, unimplementedbinary_runner_function, \
+                            integer_parameter_runner_class_definition
 from exprtree import UnaryExpression, BinaryExpression
 
 class UnaryExpressionRunner(UnaryExpression):
@@ -88,6 +89,56 @@ class BinaryExpressionRunner(BinaryExpression):
     @property
     def argcount(self):
         return 2
+
+class SelectResultRunner(BinaryExpression):
+    """This is a little bit special because its second
+    argument is always an integer scalar. Used for SELECTRESULT, and may be
+    useful for generalising into something for SELECT/ASSIGN nodes in future."""
+    def __init__(self, nodename, enumname):
+        super(SelectResultRunner, self).__init__(nodename, enumname)
+        self._class_definition_template = integer_parameter_runner_class_definition
+
+    @property
+    def class_definition(self):
+        return self._class_definition_template % { 'nodename': self.typename }
+
+    @property
+    def scalar_runner_function(self):
+        implementation = self.scalar_implementation
+        d = { 'implementation': implementation,
+              'nodename': self.typename,
+              'arg0type': 'OGRealScalar',
+              'arg1type': 'OGIntegerScalar',
+              'returntype': 'OGRealScalar' }
+        return binary_runner_function % d
+
+    @property
+    def real_matrix_runner_function(self):
+        implementation = self.real_matrix_implementation
+        d = { 'implementation': implementation,
+              'nodename': self.typename,
+              'arg0type': 'OGRealMatrix',
+              'arg1type': 'OGIntegerScalar',
+              'returntype': 'OGRealMatrix' }
+        return binary_runner_function % d
+
+    @property
+    def complex_matrix_runner_function(self):
+        implementation = self.complex_matrix_implementation
+        d = { 'implementation': implementation,
+              'nodename': self.typename,
+              'arg0type': 'OGComplexMatrix',
+              'arg1type': 'OGIntegerScalar',
+              'returntype': 'OGComplexMatrix' }
+        return binary_runner_function % d
+
+    @property
+    def argcount(self):
+        """The returned value (-1) is a special flag used to indicate the
+        SelectResultRunner to the dispatch code generator."""
+        # This is not the best design, and should be rethought once we have more
+        # custom nodes so we can do something more generic.
+        return -1
 
 class InfixOpRunner(BinaryExpressionRunner):
     """An InfixOp is a BinaryExpression that has a particular symbol that is

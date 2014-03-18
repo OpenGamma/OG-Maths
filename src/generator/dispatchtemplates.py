@@ -36,6 +36,7 @@ namespace librdag {
 %(dispatchbinary_definition)s
 
 // typedef the void dispatches
+typedef DispatchOp<void*> DispatchVoidOp;
 typedef DispatchUnaryOp<void*> DispatchVoidUnaryOp;
 typedef DispatchBinaryOp<void*> DispatchVoidBinaryOp;
 
@@ -43,6 +44,7 @@ typedef DispatchBinaryOp<void*> DispatchVoidBinaryOp;
  * Template instantiations
  */
 
+extern template class DispatchOp<void*>;
 extern template class DispatchUnaryOp<void*>;
 extern template class DispatchBinaryOp<void*>;
 
@@ -89,8 +91,10 @@ dispatcher_private_member = """\
 """
 
 dispatchop_class = """\
+template <typename T>
 class DispatchOp
 {
+  static_assert(is_pointer<T>::value, "Type T must be a pointer");
   public:
     DispatchOp();
     virtual ~DispatchOp();
@@ -104,11 +108,10 @@ dispatchunaryop_class = """\
 /**
  * For dispatching operations of the form "T foo(Register * register1, OGTerminal * arg)"
  */
-template<typename T> class DispatchUnaryOp: public DispatchOp
+template<typename T> class DispatchUnaryOp: public DispatchOp<T>
 {
-  static_assert(is_pointer<T>::value, "Type T must be a pointer");
   public:
-    using DispatchOp::getConvertTo;
+    using DispatchOp<T>::getConvertTo;
     virtual ~DispatchUnaryOp();
 
     // will run the operation
@@ -129,11 +132,10 @@ dispatchbinaryop_class = """\
 /**
  * For dispatching operations of the form "T foo(Register * register1, OGTerminal * arg0, OGTerminal * arg1)"
  */
-template<typename T> class  DispatchBinaryOp: public DispatchOp
+template<typename T> class  DispatchBinaryOp: public DispatchOp<T>
 {
-  static_assert(is_pointer<T>::value, "Type T must be a pointer");
   public:
-    using DispatchOp::getConvertTo;
+    using DispatchOp<T>::getConvertTo;
     virtual ~DispatchBinaryOp();
     // will run the operation
     T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal const *arg1) const;
@@ -199,6 +201,7 @@ namespace librdag {
  * Template instantiations
  */
 
+template class DispatchOp<void*>;
 template class DispatchUnaryOp<void*>;
 template class DispatchBinaryOp<void*>;
 
@@ -326,21 +329,34 @@ dispatcher_unary_implementation = """\
   _%(nodetype)sRunner->eval(const_cast<RegContainer *>(regs), argt);
 """
 
+dispatcher_select_implementation = """\
+  const ArgContainer* args = thing->getArgs();
+  const RegContainer* regs = thing->getRegs();
+  const OGNumeric *arg0 = (*args)[0];
+  const OGNumeric *arg1 = (*args)[1];
+  const RegContainer* arg0r = arg0->asOGExpr()->getRegs();
+  const OGIntegerScalar* arg1i = arg1->asOGIntegerScalar();
+  this->_%(nodetype)sRunner->eval(const_cast<RegContainer *>(regs), arg0r, arg1i);
+"""
+
 # DispatchOp methods
 
 dispatchop_methods = """\
-DispatchOp::DispatchOp()
+template <typename T>
+DispatchOp<T>::DispatchOp()
 {
   _convert = new ConvertTo();
 }
 
+template <typename T>
 const ConvertTo *
-DispatchOp::getConvertTo() const
+DispatchOp<T>::getConvertTo() const
 {
   return _convert;
 }
 
-DispatchOp::~DispatchOp()
+template <typename T>
+DispatchOp<T>::~DispatchOp()
 {
   delete _convert;
 }
