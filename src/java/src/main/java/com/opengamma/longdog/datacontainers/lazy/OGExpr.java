@@ -7,6 +7,7 @@
 package com.opengamma.longdog.datacontainers.lazy;
 
 import com.opengamma.longdog.datacontainers.OGNumeric;
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.nodes.NODE;
 
 /**
@@ -46,6 +47,10 @@ public abstract class OGExpr implements NODE {
   }
 
   public OGNumeric getArg(int index) {
+    int lastarg = _args.length;
+    if (index > lastarg) {
+      throw new MathsExceptionIllegalArgument("Index " + index + " exceeds index of last arg " + lastarg);
+    }
     return _args[index];
   }
 

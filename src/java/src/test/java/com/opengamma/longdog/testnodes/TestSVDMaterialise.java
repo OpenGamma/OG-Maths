@@ -9,9 +9,12 @@ package com.opengamma.longdog.testnodes;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.opengamma.longdog.datacontainers.OGNumeric;
+import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
 import com.opengamma.longdog.exceptions.MathsException;
+import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.FuzzyEquals;
 import com.opengamma.longdog.materialisers.Materialisers;
 import com.opengamma.longdog.nodes.SVD;
@@ -75,6 +78,11 @@ public class TestSVDMaterialise {
     if (!FuzzyEquals.SingleValueFuzzyEquals(V.getData()[0], expectedV.getData()[0])) {
       throw new MathsException("Arrays not equal. Got: " + V.toString() + " Expected: " + expectedV.getData()[0]);
     }
+  }
+
+  @Test(dataProvider = "dataContainer", expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void outsideArgBound(OGExpr input, OGRealScalar expected) {
+    OGNumeric n = input.getArg(3);
   }
 
 }
