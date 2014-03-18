@@ -37,7 +37,7 @@ public class TestSVDMaterialise {
   public void materialiseToJDoubleArray(SVD input, OGRealScalar expectedU, OGRealScalar expectedS, OGRealScalar expectedV) {
     double[][] U = Materialisers.toDoubleArrayOfArrays(input.getU());
     double[][] S = Materialisers.toDoubleArrayOfArrays(input.getS());
-    double[][] V = Materialisers.toDoubleArrayOfArrays(input.getV());
+    double[][] V = Materialisers.toDoubleArrayOfArrays(input.getVT());
 
     if (!FuzzyEquals.ArrayFuzzyEquals(expectedU.getData(), U[0])) {
       throw new MathsException("U not equal. Got: " + U[0][0] + " Expected: " + expectedU.getData()[0]);
@@ -56,7 +56,7 @@ public class TestSVDMaterialise {
   public void materialiseToOGTerminal(SVD input, OGRealScalar expectedU, OGRealScalar expectedS, OGRealScalar expectedV) {
     OGRealScalar U = (OGRealScalar) Materialisers.toOGTerminal(input.getU());
     OGRealScalar S = (OGRealScalar) Materialisers.toOGTerminal(input.getS());
-    OGRealScalar V = (OGRealScalar) Materialisers.toOGTerminal(input.getV());
+    OGRealScalar V = (OGRealScalar) Materialisers.toOGTerminal(input.getVT());
 
     if (U.getData().length != 1) {
       throw new MathsException("Scalar holding more than one value");

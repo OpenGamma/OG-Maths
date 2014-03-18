@@ -34,7 +34,7 @@ public class SVD extends OGExprVariadicReturn {
     return new SELECTRESULT(this, 1);
   }
 
-  public OGNumeric getV() {
+  public OGNumeric getVT() {
     return new SELECTRESULT(this, 2);
   }
 
