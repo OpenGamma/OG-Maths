@@ -243,6 +243,48 @@ OGScalar<T>::fuzzyequals(const OGTerminal * other) const
   return true;
 }
 
+template<typename T>
+OGRealMatrix *
+OGScalar<T>::asFullOGRealMatrix() const
+{
+  throw rdag_error("Cannot asFullOGRealMatrix() template OGScalar<T> class.");
+}
+
+template<typename T>
+OGComplexMatrix  *
+OGScalar<T>::asFullOGComplexMatrix() const
+{
+  throw rdag_error("Cannot asFullOGComplexMatrix() template OGScalar<T> class.");
+}
+
+template<typename T>
+OGTerminal *
+OGScalar<T>::createOwningCopy() const
+{
+  throw rdag_error("Cannot createOwningCopy() template OGScalar<T> class.");
+}
+
+template<typename T>
+OGTerminal *
+OGScalar<T>::createComplexOwningCopy() const
+{
+  throw rdag_error("Cannot createComplexOwningCopy() template OGScalar<T> class.");
+}
+
+template<typename T>
+void
+OGScalar<T>::debug_print() const
+{
+  cout << "OGScalar<T>: " << setprecision(__DEBUG_PRECISION) << this->getValue() << endl;
+}
+
+template<typename T>
+OGNumeric *
+OGScalar<T>::copy() const
+{
+  throw rdag_error("Cannot copy() template OGScalar<T> class.");
+}
+
 
 template class OGScalar<real16>;
 template class OGScalar<complex16>;
