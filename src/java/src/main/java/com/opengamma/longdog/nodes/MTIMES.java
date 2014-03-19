@@ -6,7 +6,7 @@
 
 package com.opengamma.longdog.nodes;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 
@@ -16,8 +16,8 @@ import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 public class MTIMES extends OGExpr {
 
   @Override
-  public ExprTypeEnum getType() {
-    return ExprTypeEnum.MTIMES;
+  public ExprEnum getType() {
+    return ExprEnum.MTIMES_ENUM;
   }
 
   public MTIMES(OGNumeric arg0, OGNumeric arg1) {

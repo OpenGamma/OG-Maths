@@ -17,6 +17,7 @@ set(JAVA_FILES
     nodes/SELECTRESULT.java
     nodes/COPY.java
     nodes/SVD.java
+    nodes/MTIMES.java
     nodes/NEGATE.java
     nodes/NODE.java
     nodes/NORM2.java

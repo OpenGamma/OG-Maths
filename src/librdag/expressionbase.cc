@@ -208,6 +208,7 @@ SVD::asSVD() const
   return this;
 }
 
+void
 SVD::debug_print() const
 {
   cout << "SVD node (functionality not yet implemented)" << endl;
