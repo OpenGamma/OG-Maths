@@ -46,7 +46,7 @@ public enum ExprEnum {
   SVD_ENUM          (0x0119L),
 
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
-%(generated_nodes)s
+%(generated_nodes)s;
 
   //CSON
   //@formatter:on
