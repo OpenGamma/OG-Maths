@@ -42,7 +42,7 @@ class JVMManager {
     DLLEXPORT_C static jclass getOGSparseMatrixClazz();
     DLLEXPORT_C static jclass getBigDDoubleArrayClazz();
     DLLEXPORT_C static jclass getComplexArrayContainerClazz();
-    DLLEXPORT_C static jclass getOGExprTypeEnumClazz();
+    DLLEXPORT_C static jclass getOGExprEnumClazz();
     DLLEXPORT_C static jclass getOGRealScalarClazz();
     DLLEXPORT_C static jclass getOGComplexScalarClazz();
     DLLEXPORT_C static jclass getOGIntegerScalarClazz();
@@ -72,7 +72,7 @@ class JVMManager {
     DLLEXPORT_C static jmethodID getOGSparseMatrixClazz_getColPtr();
     DLLEXPORT_C static jmethodID getOGSparseMatrixClazz_getRowIdx();
     DLLEXPORT_C static jmethodID getComplexArrayContainerClazz_ctor_DAoA_DAoA();
-    DLLEXPORT_C static jfieldID  getOGExprTypeEnumClazz__hashdefined();
+    DLLEXPORT_C static jfieldID  getOGExprEnumClazz__hashdefined();
     // Wrappers for JNIEnv and JavaVM methods
     DLLEXPORT_C static jobjectArray newObjectArray(JNIEnv *env, jsize len, jclass clazz, jobject init);
     DLLEXPORT_C static jintArray newIntArray(JNIEnv *env, jsize len);
@@ -98,7 +98,7 @@ class JVMManager {
     static jclass _OGSparseMatrixClazz;
     static jclass _BigDDoubleArrayClazz;
     static jclass _ComplexArrayContainerClazz;
-    static jclass _OGExprTypeEnumClazz;
+    static jclass _OGExprEnumClazz;
     static jclass _OGRealScalarClazz;
     static jclass _OGComplexScalarClazz;
     static jclass _OGIntegerScalarClazz;
@@ -129,7 +129,7 @@ class JVMManager {
     static jmethodID _OGSparseMatrixClazz_getColPtr;
     static jmethodID _OGSparseMatrixClazz_getRowIdx;
     static jmethodID _ComplexArrayContainerClazz_ctor_DAoA_DAoA;
-    static jfieldID  _OGExprTypeEnumClazz__hashdefined;
+    static jfieldID  _OGExprEnumClazz__hashdefined;
 };
 
 } // namespace convert

@@ -6,7 +6,7 @@
 
 package com.opengamma.longdog.datacontainers.scalar;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.Catchers;
 
@@ -14,7 +14,7 @@ import com.opengamma.longdog.helpers.Catchers;
  * Real Scalar Numeric class.
  */
 public class OGRealScalar extends OGScalar {
-  private static ExprTypeEnum s_type = ExprTypeEnum.OGRealScalar;
+  private static ExprEnum s_type = ExprEnum.OGRealScalar;
 
   private double[] _data = new double[1];
 
@@ -31,7 +31,7 @@ public class OGRealScalar extends OGScalar {
   }
 
   @Override
-  public ExprTypeEnum getType() {
+  public ExprEnum getType() {
     return s_type;
   }
 

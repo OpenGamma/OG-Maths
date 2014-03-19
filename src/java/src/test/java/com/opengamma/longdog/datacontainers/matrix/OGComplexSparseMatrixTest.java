@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 import org.testng.annotations.Test;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
@@ -445,7 +445,7 @@ public class OGComplexSparseMatrixTest {
   @Test
   public void testGetTypeEnum() {
     OGComplexSparseMatrix D = new OGComplexSparseMatrix(realData, imagData);
-    assertTrue(D.getType().equals(ExprTypeEnum.OGComplexSparseMatrix));
+    assertTrue(D.getType().equals(ExprEnum.OGComplexSparseMatrix));
   }
 
   @Test

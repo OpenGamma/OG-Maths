@@ -5,7 +5,7 @@
  */
 package com.opengamma.longdog.datacontainers.matrix;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
 import com.opengamma.longdog.helpers.Catchers;
@@ -14,7 +14,7 @@ import com.opengamma.longdog.helpers.Catchers;
  * Real Diagonal matrix type
  */
 public class OGRealDiagonalMatrix extends OGDiagonalMatrix {
-  private static ExprTypeEnum s_type = ExprTypeEnum.OGRealDiagonalMatrix;
+  private static ExprEnum s_type = ExprEnum.OGRealDiagonalMatrix;
 
   private double[] _data;
   private int _cols;
@@ -94,7 +94,7 @@ public class OGRealDiagonalMatrix extends OGDiagonalMatrix {
   }
 
   @Override
-  public ExprTypeEnum getType() {
+  public ExprEnum getType() {
     return s_type;
   }
 

@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import org.testng.annotations.Test;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
 
@@ -120,7 +120,7 @@ public class OGRealDiagonalMatrixTest {
   @Test
   public void testGetTypeEnum() {
     OGRealDiagonalMatrix D = new OGRealDiagonalMatrix(data4x3diagd, 4, 3);
-    assertTrue(D.getType().equals(ExprTypeEnum.OGRealDiagonalMatrix));
+    assertTrue(D.getType().equals(ExprEnum.OGRealDiagonalMatrix));
   }
 
   @Test

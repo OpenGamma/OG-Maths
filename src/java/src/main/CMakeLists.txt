@@ -45,7 +45,7 @@ set(JAVA_FILES
     datacontainers/matrix/OGRealDenseMatrix.java
     datacontainers/matrix/OGRealSparseMatrix.java
     datacontainers/matrix/OGArray.java
-    datacontainers/ExprTypeEnum.java
+    datacontainers/ExprEnum.java
     datacontainers/OGTerminal.java
     datacontainers/other/OGResult.java
     datacontainers/other/ComplexArrayContainer.java
