@@ -42,8 +42,8 @@ class BacktraceElementTest: public ::testing::Test
 
 TEST_F(BacktraceElementTest, Constructor)
 {
-  EXPECT_EQ(_element->getAddress(), address);
 #ifdef __APPLE__
+  EXPECT_EQ(_element->getAddress(), address);
   EXPECT_EQ("librdag_dbg.0.dylib", _element->getObjectFile());
   EXPECT_EQ("librdag::OGTerminal::toReal16ArrayOfArrays() const", _element->getFunction());
 #else

@@ -160,7 +160,7 @@ BacktraceElement::BacktraceElement(const string& backtrace_symbol, const void* a
 #ifdef __linux
   Dl_info dli;
   dladdr(address, &dli);
-  _address = (void*) ((long long unsigned) address - (long long unsigned) dli.dli_fbase);
+  _address = (void*) (((long long unsigned) address) - ((long long unsigned) dli.dli_fbase));
 #else // __linux
   _address = address;
 #endif // __linux
