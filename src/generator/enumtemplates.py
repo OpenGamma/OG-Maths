@@ -16,7 +16,7 @@ package com.opengamma.longdog.datacontainers;
 /**
  * Enumerate expr types.
  */
-public enum ExprTypeEnum {
+public enum ExprEnum {
 
   //@formatter:off
   //CSOFF
@@ -56,7 +56,7 @@ public enum ExprTypeEnum {
   /**
    * Construct a new expr enum
    */
-  ExprTypeEnum(long value) {
+  ExprEnum(long value) {
     this._hashDefined = value;
   }
 

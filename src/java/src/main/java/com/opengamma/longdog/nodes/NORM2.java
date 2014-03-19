@@ -6,7 +6,7 @@
 
 package com.opengamma.longdog.nodes;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 
@@ -16,8 +16,8 @@ import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 public class NORM2 extends OGExpr {
 
   @Override
-  public ExprTypeEnum getType() {
-    return ExprTypeEnum.NORM2_ENUM;
+  public ExprEnum getType() {
+    return ExprEnum.NORM2_ENUM;
   }
 
   public NORM2(OGNumeric arg) {

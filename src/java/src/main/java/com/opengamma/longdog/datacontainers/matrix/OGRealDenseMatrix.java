@@ -7,7 +7,7 @@ package com.opengamma.longdog.datacontainers.matrix;
 
 import java.util.Arrays;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.Catchers;
 import com.opengamma.longdog.helpers.DenseMemoryManipulation;
@@ -16,7 +16,7 @@ import com.opengamma.longdog.helpers.DenseMemoryManipulation;
  * Dense real matrix
  */
 public class OGRealDenseMatrix extends OGDenseMatrix {
-  private static ExprTypeEnum s_type = ExprTypeEnum.OGRealMatrix;
+  private static ExprEnum s_type = ExprEnum.OGRealMatrix;
 
   private double[] _data;
   private int _rows, _cols;
@@ -85,7 +85,7 @@ public class OGRealDenseMatrix extends OGDenseMatrix {
   }
 
   @Override
-  public ExprTypeEnum getType() {
+  public ExprEnum getType() {
     return s_type;
   }
 

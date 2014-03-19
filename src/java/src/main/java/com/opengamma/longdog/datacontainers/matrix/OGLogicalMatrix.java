@@ -5,7 +5,7 @@
  */
 package com.opengamma.longdog.datacontainers.matrix;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.helpers.Catchers;
 import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
 
@@ -14,7 +14,7 @@ import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
  */
 public class OGLogicalMatrix extends OGRealDenseMatrix {
 
-  private static ExprTypeEnum s_type = ExprTypeEnum.OGLogicalMatrix;
+  private static ExprEnum s_type = ExprEnum.OGLogicalMatrix;
 
   public OGLogicalMatrix(double[] data, int rows, int cols) {
     super(array1d2bool(data), rows, cols);
@@ -25,7 +25,7 @@ public class OGLogicalMatrix extends OGRealDenseMatrix {
   }
 
   @Override
-  public ExprTypeEnum getType() {
+  public ExprEnum getType() {
     return s_type;
   }
 

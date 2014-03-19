@@ -6,7 +6,7 @@
 
 package com.opengamma.longdog.nodes;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.scalar.OGIntegerScalar;
@@ -17,8 +17,8 @@ import com.opengamma.longdog.datacontainers.scalar.OGIntegerScalar;
 public class SELECTRESULT extends OGExpr {
 
   @Override
-  public ExprTypeEnum getType() {
-    return ExprTypeEnum.SELECTRESULT_ENUM;
+  public ExprEnum getType() {
+    return ExprEnum.SELECTRESULT_ENUM;
   }
 
   public SELECTRESULT(OGNumeric arg0, int index) {
