@@ -7,7 +7,7 @@ package com.opengamma.longdog.datacontainers.matrix;
 
 import java.util.Arrays;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.Catchers;
@@ -18,10 +18,10 @@ import com.opengamma.longdog.helpers.DenseMemoryManipulation;
  */
 public class OGComplexDiagonalMatrix extends OGDiagonalMatrix {
 
-  private static ExprTypeEnum s_type = ExprTypeEnum.OGComplexDiagonalMatrix;
+  private static ExprEnum s_type = ExprEnum.OGComplexDiagonalMatrix;
 
   @Override
-  public ExprTypeEnum getType() {
+  public ExprEnum getType() {
     return s_type;
   }
 

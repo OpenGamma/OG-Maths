@@ -6,7 +6,7 @@
 
 package com.opengamma.longdog.datacontainers.scalar;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.Catchers;
 
@@ -30,7 +30,7 @@ public class OGComplexScalar extends OGScalar {
    */
   public static final OGComplexScalar ZERO = new OGComplexScalar(0);
 
-  private static ExprTypeEnum s_type = ExprTypeEnum.OGComplexScalar;
+  private static ExprEnum s_type = ExprEnum.OGComplexScalar;
 
   /**
    * Construct from real only, imaginary set to 0
@@ -84,7 +84,7 @@ public class OGComplexScalar extends OGScalar {
   }
 
   @Override
-  public ExprTypeEnum getType() {
+  public ExprEnum getType() {
     return s_type;
   }
 

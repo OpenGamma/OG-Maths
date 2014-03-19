@@ -18,6 +18,7 @@ set(GENERATOR_FILES ${CMAKE_CURRENT_SOURCE_DIR}/generator.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/expression.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/exprtree.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/enums.py
+                    ${CMAKE_CURRENT_SOURCE_DIR}/enumtemplates.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/createexprtemplates.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/createexpressions.py)
 
@@ -105,6 +106,14 @@ add_custom_command(OUTPUT ${EXPRENUM_HH}
 
 # Custom target bottleneck
 add_custom_target(exprenum_hh DEPENDS ${EXPRENUM_HH})
+
+# For refreshing the Java ExprEnum
+
+set(EXPRENUM_JAVA ${longdog_SOURCE_DIR}/src/java/src/main/java/com/opengamma/longdog/datacontainers/ExprEnum.java)
+
+add_custom_target(exprenum_java
+                   COMMAND ${GENERATOR} -o ${EXPRENUM_JAVA} --exprenum-java
+                   COMMENT "Regenerating ExprEnum.java")
 
 # Createexpr generation
 

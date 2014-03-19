@@ -6,7 +6,7 @@
 
 package com.opengamma.longdog.nodes;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExprVariadicReturn;
 
@@ -18,8 +18,8 @@ public class SVD extends OGExprVariadicReturn {
   private static int s_nPossibleResults = 3;
 
   @Override
-  public ExprTypeEnum getType() {
-    return ExprTypeEnum.SVD;
+  public ExprEnum getType() {
+    return ExprEnum.SVD_ENUM;
   }
 
   public SVD(OGNumeric arg0) {
