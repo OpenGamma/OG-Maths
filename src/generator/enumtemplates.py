@@ -6,9 +6,11 @@
 
 exprenum_java = """\
 /**
- * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ * Copyright (C) 2014 - present by OpenGamma Inc. and the OpenGamma group of companies
  *
  * Please see distribution for license.
+ *
+ * This file is generated during the DOGMA2 build process: src/generator/generator.py
  */
 
 package com.opengamma.longdog.datacontainers;
