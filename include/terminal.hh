@@ -259,8 +259,16 @@ template <typename T> class OGMatrix: public OGArray<T>
     OGMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void accept(Visitor &v) const override;
     virtual void debug_print() const override;
+    virtual OGNumeric* copy() const override;
+    virtual OGTerminal * createOwningCopy() const override;
+    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
+    virtual real16 ** toReal16ArrayOfArrays() const override;
+    virtual complex16 ** toComplex16ArrayOfArrays() const override;
     T** toArrayOfArrays() const;
 };
+
+template<> real16 ** OGMatrix<real16>::toReal16ArrayOfArrays() const;
+template<> real16 ** OGMatrix<complex16>::toReal16ArrayOfArrays() const;
 
 extern template class OGMatrix<real16>;
 extern template class OGMatrix<complex16>;

@@ -723,8 +723,12 @@ OGMatrix<T>::toArrayOfArrays() const
   return tmp;
 }
 
-template class OGMatrix<real16>;
-template class OGMatrix<complex16>;
+template<typename T>
+OGNumeric*
+OGMatrix<T>::copy() const
+{
+  return new OGMatrix<T>(this->getData(), this->getRows(), this->getCols());
+}
 
 template<typename T>
 void
@@ -743,6 +747,71 @@ OGMatrix<T>::debug_print() const
   }
 }
 
+template<typename T>
+OGTerminal *
+OGMatrix<T>::createOwningCopy() const
+{
+  T * newdata =  new T[this->getDatalen()];
+  std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
+  return new OGMatrix<T>(newdata, this->getRows(), this->getCols(), OWNER);
+}
+
+template<typename T>
+OGComplexMatrix *
+OGMatrix<T>::asFullOGComplexMatrix() const
+{
+  complex16 * newdata = new complex16[this->getDatalen()];
+  std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
+  return new OGComplexMatrix(newdata,this->getRows(),this->getCols(),OWNER);
+}
+
+template<typename T>
+complex16 **
+OGMatrix<T>::toComplex16ArrayOfArrays() const
+{
+  int const rows = this->getRows();
+  int const cols = this->getCols();
+  T * const data = this->getData();
+  complex16 ** tmp = new complex16 * [rows];
+  for(int i=0; i < rows; i++)
+  {
+    tmp[i] = new complex16 [cols];
+    for(int j = 0; j < cols; j++)
+    {
+      tmp[i][j] = data[j*rows+i];
+    }
+  }
+  return tmp;
+}
+
+template<>
+real16 **
+OGMatrix<real16>::toReal16ArrayOfArrays() const
+{
+  int const rows = this->getRows();
+  int const cols = this->getCols();
+  real16 * const data = this->getData();
+  real16 ** tmp = new real16 * [rows];
+  for(int i=0; i < rows; i++)
+  {
+    tmp[i] = new real16 [cols];
+    for(int j = 0; j < cols; j++)
+    {
+      tmp[i][j] = data[j*rows+i];
+    }
+  }
+  return tmp;
+}
+
+template<>
+real16 **
+OGMatrix<complex16>::toReal16ArrayOfArrays() const
+{
+  throw rdag_error("Error in in partial template specialisation for OGMatrix<complex16>::toReal16ArrayOfArrays(). Cannot convert a matrix backed by complex16 type to a real16 type.");
+}
+
+template class OGMatrix<real16>;
+template class OGMatrix<complex16>;
 
 /**
  * OGRealMatrix
