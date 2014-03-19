@@ -259,8 +259,23 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
 {
   DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
-  OGRealMatrix * mat = new OGRealMatrix(new real16[4]{1,2,3,4},2,2, OWNER);
-  ASSERT_ANY_THROW(d->visit(mat));
+  const int rows = 3;
+  const int cols = 2;
+  real16 * data = new real16[rows*cols]{1,3,5,2,4,6};
+  complex16 ** dataAoA = new complex16 * [rows];
+  dataAoA[0] = new complex16[cols]{{1,0},{2,0}};
+  dataAoA[1] = new complex16[cols]{{3,0},{4,0}};
+  dataAoA[2] = new complex16[cols]{{5,0},{6,0}};
+  OGRealMatrix * mat = new OGRealMatrix(data,rows,cols,OWNER);
+  d->visit(mat);
+  ASSERT_TRUE(d->getRows()==rows);
+  ASSERT_TRUE(d->getCols()==cols);
+  for(int k = 0; k < rows; k++)
+  {
+    ASSERT_TRUE(ArrayFuzzyEquals(d->getData()[k],dataAoA[k],cols));
+    delete[] dataAoA[k];
+  }
+  delete [] dataAoA;
   delete d;
   delete mat;
 }

@@ -461,10 +461,21 @@ TEST(TerminalsTest, OGRealMatrixTest) {
     delete [] computed[i];
   }
   delete [] computed;
-  delete [] expected;  
+  delete [] expected;
 
-  // check toComplex16ArrayOfArrays, expect throw
-  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
+  // check toComplex16ArrayOfArrays()
+  complex16 c_expectedtmp[12] = {{1e0,0},{4e0,0},{7e0,0},{10e0,0},{2e0,0},{5e0,0},{8e0,0},{11e0,0},{3e0,0},{6e0,0},{9e0,0},{12e0,0}};
+  complex16 ** c_expected = new complex16  * [rows];
+  for(int i = 0; i < rows; i++){
+    c_expected[i] = &(c_expectedtmp[i*cols]);
+  }
+  complex16 ** c_computed = tmp->toComplex16ArrayOfArrays();
+  ASSERT_TRUE(ArrayOfArraysEquals<complex16>(c_expected,c_computed,rows,cols));
+  for(int i = 0; i < rows; i++){
+    delete [] c_computed[i];
+  }
+  delete [] c_computed;
+  delete [] c_expected;
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();

@@ -201,7 +201,7 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
   char N = 'N';
   T real_one = 1.e0;
 
-  OGTerminal * ret = nullptr;
+  OGMatrix<T> * ret = nullptr;
 
   if (colsArray1 == 1 && rowsArray1 == 1) { // We have scalar * matrix
     T deref = data1[0];
@@ -209,14 +209,14 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
     tmp = new T[n];
     memcpy(tmp,data2,n*sizeof(T));
     lapack::xscal(&n,&deref,tmp,&one);
-    ret = new OGOwningRealMatrix(tmp, rowsArray2, colsArray2);
+    ret = new OGMatrix<T>(tmp, rowsArray2, colsArray2, OWNER);
   } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
     T deref = data2[0];
     int n = rowsArray1 * colsArray1;
     tmp = new T[n];
     memcpy(tmp,data1,n*sizeof(T));
     lapack::xscal(&n,&deref,tmp,&one);
-    ret = new OGOwningRealMatrix(tmp, rowsArray1, colsArray1);
+    ret = new OGMatrix<T>(tmp, rowsArray1, colsArray1, OWNER);
   } else {
     if(colsArray1!=rowsArray2)
     {
@@ -227,7 +227,7 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
     if (colsArray2 == 1) { // A*x
       tmp = new T[rowsArray1]();
       lapack::xgemv(&N, &rowsArray1, &colsArray1, &real_one, data1, &rowsArray1, data2, &one, &real_one, tmp, &one);
-      ret = new OGOwningRealMatrix(tmp, rowsArray1, 1);
+      ret = new OGMatrix<T>(tmp, rowsArray1, 1, OWNER);
     } else {
       int fm = rowsArray1;
       int fn = colsArray2;
@@ -239,7 +239,7 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
       tmp = new T[fm * fn];
       int ldc = fm;
       lapack::xgemm(&N, &N, &fm, &fn, &fk, &alpha, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
-      ret = new OGOwningRealMatrix(tmp, fm, fn);
+      ret = new OGMatrix<T>(tmp, fm, fn, OWNER);
     }
   }
   // shove ret into register
@@ -251,63 +251,7 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
 // MTIMES runner:
 void * MTIMESRunner::run(RegContainer * reg0, const OGComplexMatrix * arg0, const OGComplexMatrix * arg1) const
 {
-  int colsArray1 = arg0->getCols();
-  int colsArray2 = arg1->getCols();
-  int rowsArray1 = arg0->getRows();
-  int rowsArray2 = arg1->getRows();
-  complex16 * data1 = arg0->getData();
-  complex16 * data2 = arg1->getData();
-
-  complex16 * tmp = nullptr;
-
-  // Fortran vars
-  int one = 1;
-  char N = 'N';
-  complex16 cmplx_one = 1.e0;
-
-  OGTerminal * ret = nullptr;
-
-  if (colsArray1 == 1 && rowsArray1 == 1) { // We have scalar * matrix
-    complex16 deref = data1[0];
-    int n = rowsArray2 * colsArray2;
-    tmp = new complex16[n];
-    memcpy(tmp,data2,n*sizeof(complex16));
-    lapack::xscal(&n,&deref,tmp,&one);
-    ret = new OGOwningComplexMatrix(tmp, rowsArray2, colsArray2);
-  } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
-    complex16 deref = data2[0];
-    int n = rowsArray1 * colsArray1;
-    tmp = new complex16[n];
-    memcpy(tmp,data1,n*sizeof(complex16));
-    lapack::xscal(&n,&deref,tmp,&one);
-    ret = new OGOwningComplexMatrix(tmp, rowsArray1, colsArray1);
-  } else {
-    if(colsArray1!=rowsArray2)
-    {
-      stringstream message;
-      message << "Matrices do not commute. First is: " << rowsArray1 <<"x"<< colsArray1 <<". Second is: " << rowsArray2 <<"x"<< colsArray2;
-      throw rdag_error(message.str());
-    }
-    if (colsArray2 == 1) { // A*x
-      tmp = new complex16[rowsArray1]();
-      lapack::xgemv(&N, &rowsArray1, &colsArray1, &cmplx_one, data1, &rowsArray1, data2, &one, &cmplx_one, tmp, &one);
-      ret = new OGOwningComplexMatrix(tmp, rowsArray1, 1);
-    } else {
-      int fm = rowsArray1;
-      int fn = colsArray2;
-      int fk = colsArray1;
-      complex16 alpha = 1.e0;
-      int lda = fm;
-      int ldb = fk;
-      complex16 beta = 0.e0;
-      tmp = new complex16[fm * fn];
-      int ldc = fm;
-      lapack::xgemm(&N, &N, &fm, &fn, &fk, &alpha, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
-      ret = new OGOwningComplexMatrix(tmp, fm, fn);
-    }
-  }
-  // shove ret into register
-  reg0->push_back(ret);
+  dense_runner(reg0, arg0, arg1);
   return nullptr;
 }
 
