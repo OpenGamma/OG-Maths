@@ -36,9 +36,7 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
   T * tmp = nullptr;
 
   // Fortran vars
-  int one = 1;
-  char N = 'N';
-  T real_one = 1.e0;
+  T fp_one = 1.e0;
 
   OGMatrix<T> * ret = nullptr;
 
@@ -47,14 +45,14 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
     int n = rowsArray2 * colsArray2;
     tmp = new T[n];
     memcpy(tmp,data2,n*sizeof(T));
-    lapack::xscal(&n,&deref,tmp,&one);
+    lapack::xscal(&n,&deref,tmp,lapack::ione);
     ret = new OGMatrix<T>(tmp, rowsArray2, colsArray2, OWNER);
   } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
     T deref = data2[0];
     int n = rowsArray1 * colsArray1;
     tmp = new T[n];
     memcpy(tmp,data1,n*sizeof(T));
-    lapack::xscal(&n,&deref,tmp,&one);
+    lapack::xscal(&n,&deref,tmp,lapack::ione);
     ret = new OGMatrix<T>(tmp, rowsArray1, colsArray1, OWNER);
   } else {
     if(colsArray1!=rowsArray2)
@@ -65,19 +63,18 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
     }
     if (colsArray2 == 1) { // A*x
       tmp = new T[rowsArray1]();
-      lapack::xgemv(&N, &rowsArray1, &colsArray1, &real_one, data1, &rowsArray1, data2, &one, &real_one, tmp, &one);
+      lapack::xgemv(lapack::N, &rowsArray1, &colsArray1, &fp_one, data1, &rowsArray1, data2, lapack::ione, &fp_one, tmp, lapack::ione);
       ret = new OGMatrix<T>(tmp, rowsArray1, 1, OWNER);
     } else {
       int fm = rowsArray1;
       int fn = colsArray2;
       int fk = colsArray1;
-      T alpha = 1.e0;
       int lda = fm;
       int ldb = fk;
       T beta = 0.e0;
       tmp = new T[fm * fn];
       int ldc = fm;
-      lapack::xgemm(&N, &N, &fm, &fn, &fk, &alpha, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
+      lapack::xgemm(lapack::N, lapack::N, &fm, &fn, &fk, &fp_one, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
       ret = new OGMatrix<T>(tmp, fm, fn, OWNER);
     }
   }
