@@ -15,7 +15,6 @@ set_source_files_properties(${RDAG_GENERATED} PROPERTIES GENERATED TRUE)
 
 set(RDAG_SOURCES containers.cc
                  convertto.cc
-                 customrunners.cc
                  entrypt.cc
                  equals.cc
                  exceptions.cc
@@ -28,6 +27,8 @@ set(RDAG_SOURCES containers.cc
                  terminal.cc
                  runners/selectresultrunner.cc
                  runners/svdrunner.cc
+                 runners/norm2runner.cc
+                 runners/mtimesrunner.cc
                  ${RDAG_GENERATED})
 
 include(${LAPACK_BUILDINFO})
