@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 import org.testng.annotations.Test;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
 import com.opengamma.longdog.helpers.DenseMemoryManipulation;
@@ -134,7 +134,7 @@ public class OGRealMatrixTest {
   @Test
   public void testGetTypeEnum() {
     OGRealDenseMatrix D = new OGRealDenseMatrix(data4x3unwound, 4, 3);
-    assertTrue(D.getType().equals(ExprTypeEnum.OGRealMatrix));
+    assertTrue(D.getType().equals(ExprEnum.OGRealMatrix));
   }
   
   @Test

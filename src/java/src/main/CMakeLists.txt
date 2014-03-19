@@ -4,7 +4,63 @@
 # Please see distribution for license.
 #
 
-file(GLOB_RECURSE JAR_SOURCES *.java)
+set(JPACKAGEFQN "com.opengamma.longdog")
+fqn_to_dir(JPACKAGEDIR ${JPACKAGEFQN})
+
+set(JAVA_FILES
+    materialisers/Materialisers.java
+    helpers/FuzzyEquals.java
+    helpers/Catchers.java
+    helpers/MatrixPrimitiveUtils.java
+    helpers/DenseMemoryManipulation.java
+    DOGMA2.java
+    nodes/SELECTRESULT.java
+    nodes/COPY.java
+    nodes/SVD.java
+    nodes/NEGATE.java
+    nodes/NODE.java
+    nodes/NORM2.java
+    nodes/PLUS.java
+    nativeloader/SupportedInstructionSet.java
+    nativeloader/NativeLibraries.java
+    nativeloader/NativeLibrariesSelfTest.java
+    exceptions/MathsExceptionNullPointer.java
+    exceptions/MathsException.java
+    exceptions/MathsExceptionNativeConversion.java
+    exceptions/MathsExceptionNonConformance.java
+    exceptions/MathsExceptionIllegalArgument.java
+    exceptions/MathsExceptionOnInitialization.java
+    exceptions/MathsExceptionUnsupportedPlatform.java
+    exceptions/MathsExceptionNotImplemented.java
+    exceptions/MathsExceptionNative.java
+    exceptions/MathsExceptionNativeComputation.java
+    datacontainers/matrix/OGSparseMatrix.java
+    datacontainers/matrix/OGComplexDiagonalMatrix.java
+    datacontainers/matrix/OGComplexDenseMatrix.java
+    datacontainers/matrix/OGRealDiagonalMatrix.java
+    datacontainers/matrix/OGDiagonalMatrix.java
+    datacontainers/matrix/OGDenseMatrix.java
+    datacontainers/matrix/OGComplexSparseMatrix.java
+    datacontainers/matrix/OGLogicalMatrix.java
+    datacontainers/matrix/OGRealDenseMatrix.java
+    datacontainers/matrix/OGRealSparseMatrix.java
+    datacontainers/matrix/OGArray.java
+    datacontainers/ExprEnum.java
+    datacontainers/OGTerminal.java
+    datacontainers/other/OGResult.java
+    datacontainers/other/ComplexArrayContainer.java
+    datacontainers/lazy/OGExpr.java
+    datacontainers/lazy/OGExprVariadicReturn.java
+    datacontainers/OGNumeric.java
+    datacontainers/scalar/OGScalar.java
+    datacontainers/scalar/OGRealScalar.java
+    datacontainers/scalar/OGComplexScalar.java
+    datacontainers/scalar/OGIntegerScalar.java
+    )
+
+foreach(JFILE ${JAVA_FILES})
+  set(JAR_SOURCES ${JAR_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/java/${JPACKAGEDIR}/${JFILE})
+endforeach()
 
 add_jar(${JAR_NAME_NO_EXTN} ${JAR_SOURCES}
         RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/config

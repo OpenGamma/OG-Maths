@@ -85,7 +85,7 @@ JVMManager::registerReferences()
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/OGNumeric", &_OGNumericClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/OGTerminal", &_OGTerminalClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGArray", &_OGArrayClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/ExprTypeEnum", &_OGExprTypeEnumClazz);
+  registerGlobalClassReference("com/opengamma/longdog/datacontainers/ExprEnum", &_OGExprEnumClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGSparseMatrix", &_OGSparseMatrixClazz);
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGScalar", &_OGScalarClazz);  
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/lazy/OGExpr", &_OGExprClazz);
@@ -110,7 +110,7 @@ JVMManager::registerReferences()
   //
 
   registerGlobalMethodReference(&_DoubleClazz, &_DoubleClazz_init, "<init>", "(D)V");
-  registerGlobalMethodReference(&_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/longdog/datacontainers/ExprTypeEnum;");
+  registerGlobalMethodReference(&_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/longdog/datacontainers/ExprEnum;");
   registerGlobalMethodReference(&_OGTerminalClazz, &_OGTerminalClazz_getData, "getData",  "()[D");
   registerGlobalMethodReference(&_OGIntegerScalarClazz, &_OGIntegerScalarClazz_getValue, "getValue",  "()I");
   registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getRows, "getRows",  "()I");
@@ -133,7 +133,7 @@ JVMManager::registerReferences()
   // REGISTER FIELD REFERENCES
   //
 
-  registerGlobalFieldReference(&_OGExprTypeEnumClazz, &_OGExprTypeEnumClazz__hashdefined, "_hashDefined", "J");
+  registerGlobalFieldReference(&_OGExprEnumClazz, &_OGExprEnumClazz__hashdefined, "_hashDefined", "J");
   
 }
 
@@ -238,8 +238,8 @@ jclass JVMManager::getOGRealSparseMatrixClazz()
 { return _OGRealSparseMatrixClazz; }
 jclass JVMManager::getOGComplexSparseMatrixClazz()
 { return _OGComplexSparseMatrixClazz; }
-jclass JVMManager::getOGExprTypeEnumClazz()
-{ return _OGExprTypeEnumClazz; }
+jclass JVMManager::getOGExprEnumClazz()
+{ return _OGExprEnumClazz; }
 jclass JVMManager::getMathsExceptionNativeConversionClazz()
 { return _MathsExceptionNativeConversionClazz; }
 jclass JVMManager::getMathsExceptionNativeComputationClazz()
@@ -280,8 +280,8 @@ jmethodID JVMManager::getOGSparseMatrixClazz_getRowIdx()
 { return _OGSparseMatrixClazz_getRowIdx; }
 jmethodID JVMManager::getComplexArrayContainerClazz_ctor_DAoA_DAoA()
 { return _ComplexArrayContainerClazz_ctor_DAoA_DAoA; }
-jfieldID JVMManager:: getOGExprTypeEnumClazz__hashdefined()
-{ return _OGExprTypeEnumClazz__hashdefined; }
+jfieldID JVMManager:: getOGExprEnumClazz__hashdefined()
+{ return _OGExprEnumClazz__hashdefined; }
 
 
 // Instantiation of JVMManager's fields
@@ -297,7 +297,7 @@ jclass JVMManager::_OGScalarClazz = nullptr;
 jclass JVMManager::_OGSparseMatrixClazz = nullptr;
 jclass JVMManager::_BigDDoubleArrayClazz = nullptr;
 jclass JVMManager::_ComplexArrayContainerClazz = nullptr;
-jclass JVMManager::_OGExprTypeEnumClazz = nullptr;
+jclass JVMManager::_OGExprEnumClazz = nullptr;
 jclass JVMManager::_OGRealScalarClazz = nullptr;
 jclass JVMManager::_OGComplexScalarClazz= nullptr;
 jclass JVMManager::_OGIntegerScalarClazz= nullptr;
@@ -328,7 +328,7 @@ jmethodID JVMManager::_OGArrayClazz_getCols = nullptr;
 jmethodID JVMManager::_OGSparseMatrixClazz_getColPtr = nullptr;
 jmethodID JVMManager::_OGSparseMatrixClazz_getRowIdx = nullptr;
 jmethodID JVMManager::_ComplexArrayContainerClazz_ctor_DAoA_DAoA = nullptr;
-jfieldID  JVMManager::_OGExprTypeEnumClazz__hashdefined = nullptr;
+jfieldID  JVMManager::_OGExprEnumClazz__hashdefined = nullptr;
 
 // Wrappers to JavaVM and JNIEnv methods
 

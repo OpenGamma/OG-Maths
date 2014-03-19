@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 import org.testng.annotations.Test;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
@@ -71,7 +71,7 @@ public class OGRealScalarTest {
 
   @Test
   public void testGetTypeEnum() {
-    assertTrue(defaultVal.getType().equals(ExprTypeEnum.OGRealScalar));
+    assertTrue(defaultVal.getType().equals(ExprEnum.OGRealScalar));
   }
 
   @Test

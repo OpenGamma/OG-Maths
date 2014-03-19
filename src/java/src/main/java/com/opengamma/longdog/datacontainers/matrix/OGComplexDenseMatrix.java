@@ -7,7 +7,7 @@ package com.opengamma.longdog.datacontainers.matrix;
 
 import java.util.Arrays;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.exceptions.MathsExceptionNullPointer;
@@ -19,7 +19,7 @@ import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
  * Dense complex matrix
  */
 public class OGComplexDenseMatrix extends OGDenseMatrix {
-  private static ExprTypeEnum s_type = ExprTypeEnum.OGComplexMatrix;
+  private static ExprEnum s_type = ExprEnum.OGComplexMatrix;
 
   private double[] _data;
   private int _rows, _cols;
@@ -174,7 +174,7 @@ public class OGComplexDenseMatrix extends OGDenseMatrix {
   }
 
   @Override
-  public ExprTypeEnum getType() {
+  public ExprEnum getType() {
     return s_type;
   }
 

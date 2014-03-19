@@ -101,7 +101,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_test_registerReferences)
     ASSERT_TRUE(jvm_manager->getOGSparseMatrixClazz()!=nullptr);
     ASSERT_TRUE(jvm_manager->getBigDDoubleArrayClazz()!=nullptr);
     ASSERT_TRUE(jvm_manager->getComplexArrayContainerClazz()!=nullptr);
-    ASSERT_TRUE(jvm_manager->getOGExprTypeEnumClazz()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGExprEnumClazz()!=nullptr);
     ASSERT_TRUE(jvm_manager->getOGScalarClazz()!=nullptr);
     ASSERT_TRUE(jvm_manager->getOGTerminalClazz_getData()!=nullptr);
     ASSERT_TRUE(jvm_manager->getOGNumericClazz_getType()!=nullptr);
@@ -112,7 +112,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_test_registerReferences)
     ASSERT_TRUE(jvm_manager->getOGSparseMatrixClazz_getColPtr()!=nullptr);
     ASSERT_TRUE(jvm_manager->getOGSparseMatrixClazz_getRowIdx()!=nullptr);
     ASSERT_TRUE(jvm_manager->getComplexArrayContainerClazz_ctor_DAoA_DAoA()!=nullptr);
-    ASSERT_TRUE(jvm_manager-> getOGExprTypeEnumClazz__hashdefined()!=nullptr);
+    ASSERT_TRUE(jvm_manager->getOGExprEnumClazz__hashdefined()!=nullptr);
     ASSERT_TRUE(jvm_manager->getOGRealScalarClazz()!=nullptr);
     ASSERT_TRUE(jvm_manager->getOGComplexScalarClazz()!=nullptr);
     ASSERT_TRUE(jvm_manager->getOGRealDenseMatrixClazz()!=nullptr);

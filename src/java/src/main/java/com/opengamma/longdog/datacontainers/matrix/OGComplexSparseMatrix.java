@@ -8,7 +8,7 @@ package com.opengamma.longdog.datacontainers.matrix;
 import java.util.Arrays;
 import java.util.Formatter;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.Catchers;
@@ -20,7 +20,7 @@ import com.opengamma.longdog.helpers.MatrixPrimitiveUtils;
  */
 public class OGComplexSparseMatrix extends OGSparseMatrix {
 
-  private static ExprTypeEnum s_type = ExprTypeEnum.OGComplexSparseMatrix;
+  private static ExprEnum s_type = ExprEnum.OGComplexSparseMatrix;
 
   private double[] _data;
   private int[] _colPtr;
@@ -416,7 +416,7 @@ public class OGComplexSparseMatrix extends OGSparseMatrix {
   }
 
   @Override
-  public ExprTypeEnum getType() {
+  public ExprEnum getType() {
     return s_type;
   }
 

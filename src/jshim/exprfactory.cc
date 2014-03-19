@@ -48,7 +48,7 @@ OGNumeric* createExpression(jobject obj)
   JNIEnv *env=nullptr;
   JVMManager::getEnv((void **)&env);
   jobject typeobj = env->CallObjectMethod(obj, JVMManager::getOGNumericClazz_getType());
-  jlong ID = env->GetLongField(typeobj, JVMManager::getOGExprTypeEnumClazz__hashdefined());
+  jlong ID = env->GetLongField(typeobj, JVMManager::getOGExprEnumClazz__hashdefined());
   VAL64BIT_PRINT("Class type", ID);
 
   return createExprWithID(ID, obj);

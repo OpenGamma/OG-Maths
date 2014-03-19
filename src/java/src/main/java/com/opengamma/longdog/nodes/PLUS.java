@@ -6,7 +6,7 @@
 
 package com.opengamma.longdog.nodes;
 
-import com.opengamma.longdog.datacontainers.ExprTypeEnum;
+import com.opengamma.longdog.datacontainers.ExprEnum;
 import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 
@@ -16,8 +16,8 @@ import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 public class PLUS extends OGExpr {
 
   @Override
-  public ExprTypeEnum getType() {
-    return ExprTypeEnum.PLUS;
+  public ExprEnum getType() {
+    return ExprEnum.PLUS_ENUM;
   }
 
   public PLUS(OGNumeric arg0, OGNumeric arg1) {

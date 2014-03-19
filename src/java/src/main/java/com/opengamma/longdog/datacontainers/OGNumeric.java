@@ -15,6 +15,6 @@ public interface OGNumeric {
    * Gets the expr type
    * @return the expr type
    */
-  ExprTypeEnum getType();
+  ExprEnum getType();
 
 }
