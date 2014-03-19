@@ -9,7 +9,7 @@
 from dispatch import Dispatch
 from runners import Runners, Runners, InfixOpRunner, PrefixOpRunner, UnaryFunctionRunner, \
                     UnimplementedUnary, UnimplementedBinary, UnaryExpressionRunner, \
-                    SelectResultRunner
+                    SelectResultRunner, BinaryExpression, BinaryExpressionRunner
 from exprtree import Terminal
 from expression import Expressions, Numeric
 from enums import ExprEnums
@@ -66,8 +66,8 @@ nodes = [ UnimplementedUnary('ABS'),
 custom_nodes = [
                 UnaryExpressionRunner('NORM2', 'NORM2_ENUM'),
                 UnaryExpressionRunner('SVD', 'SVD_ENUM'),
-                SelectResultRunner('SELECTRESULT', 'SELECTRESULT_ENUM')
-                UnimplementedBinary('MTIMES')
+                SelectResultRunner('SELECTRESULT', 'SELECTRESULT_ENUM'),
+                BinaryExpressionRunner('MTIMES','MTIMES_ENUM')
                ]
 
 # The list of terminals

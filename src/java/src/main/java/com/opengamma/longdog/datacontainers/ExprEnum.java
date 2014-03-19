@@ -1,7 +1,9 @@
 /**
- * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ * Copyright (C) 2014 - present by OpenGamma Inc. and the OpenGamma group of companies
  *
  * Please see distribution for license.
+ *
+ * This file is generated during the DOGMA2 build process: src/generator/generator.py
  */
 
 package com.opengamma.longdog.datacontainers;
@@ -37,6 +39,7 @@ public enum ExprEnum {
   SELECTRESULT_ENUM (0x010FL),
   NORM2_ENUM        (0x0115L),
   SVD_ENUM          (0x0119L),
+  MTIMES_ENUM       (0x011BL),
 
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
   ABS_ENUM (0X0175L),
@@ -76,13 +79,12 @@ public enum ExprEnum {
   WILKINSON_ENUM (0X0251L),
   HORZCAT_ENUM (0X0257L),
   MLDIVIDE_ENUM (0X0259L),
-  MTIMES_ENUM (0X025FL),
-  PLUS_ENUM (0X0265L),
-  POWER_ENUM (0X0269L),
-  RDIVIDE_ENUM (0X026BL),
-  TIMES_ENUM (0X0277L),
-  VERTCAT_ENUM (0X0281L),
-  DOT_ENUM (0X0283L);
+  PLUS_ENUM (0X025FL),
+  POWER_ENUM (0X0265L),
+  RDIVIDE_ENUM (0X0269L),
+  TIMES_ENUM (0X026BL),
+  VERTCAT_ENUM (0X0277L),
+  DOT_ENUM (0X0281L);
 
   //CSON
   //@formatter:on

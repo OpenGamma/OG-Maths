@@ -15,6 +15,7 @@ set(JAVA_FILES
     testnodes/TestPlusMaterialise.java
     testnodes/TestNegateMaterialise.java
     testnodes/TestSVDMaterialise.java
+    testnodes/TestMtimesMaterialise.java
     materialisers/TestOGComplexDenseMatrixMaterialise.java
     materialisers/TestOGRealDenseMatrixMaterialise.java
     materialisers/TestThreadedOGRealScalarMaterialise.java
