@@ -9,6 +9,10 @@
 #include <string.h>
 #include <regex>
 
+#ifdef __linux
+#include <dlfcn.h>
+#endif // __linux
+
 #ifndef __MINGW32__
 #include <execinfo.h>
 #include <cxxabi.h>
@@ -153,7 +157,13 @@ BacktraceElement::BacktraceElement(const BacktraceElement& other)
 
 BacktraceElement::BacktraceElement(const string& backtrace_symbol, const void* address)
 {
+#ifdef __linux
+  Dl_info dli;
+  dladdr(address, &dli);
+  _address = (void*) ((long long unsigned) address - (long long unsigned) dli.dli_fbase);
+#else // __linux
   _address = address;
+#endif // __linux
   _object_file = asciiOnly(get_file(backtrace_symbol));
   int status = 0;
   _function = asciiOnly(demangle_fname(get_fname(backtrace_symbol), &status));
