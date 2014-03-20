@@ -21,6 +21,7 @@ void check_rtti(OGNumeric* node, string name)
 {
   CHECK_CAST(COPY);
   CHECK_CAST(PLUS);
+  CHECK_CAST(MTIMES);
   CHECK_CAST(NEGATE);
   CHECK_CAST(SVD);
   CHECK_CAST(SELECTRESULT);
@@ -100,6 +101,12 @@ TEST_F(RTTIBinaryTest, TestPLUS) {
   node = new PLUS(_args);
   check_rtti(node, "PLUS");
 }
+
+TEST_F(RTTIBinaryTest, TestMTIMES) {
+  node = new MTIMES(_args);
+  check_rtti(node, "MTIMES");
+}
+
 
 TEST_F(RTTIUnaryTest, TestNEGATE) {
   node = new NEGATE(_args);

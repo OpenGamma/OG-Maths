@@ -97,6 +97,7 @@ class NORM2: public OGUnaryExpr
     virtual ExprType_t getType() const override;
 };
 
+
 class SVD: public OGUnaryExpr
 {
   public:
@@ -104,6 +105,16 @@ class SVD: public OGUnaryExpr
     virtual OGNumeric* copy() const override;
     virtual const SVD* asSVD() const override;
     virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+};
+
+class MTIMES: public OGBinaryExpr
+{
+  public:
+    MTIMES(ArgContainer *args);
+    virtual OGNumeric* copy() const override;
+    virtual const MTIMES* asMTIMES() const override;
+   virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
 };
 

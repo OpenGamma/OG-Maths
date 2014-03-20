@@ -385,6 +385,30 @@ TEST(TerminalsTest, OGArrayTest) {
   delete v;
 }
 
+TEST(TerminalsTest, OGMatrix_T_real16) {
+  real16 data [12] = {1e0,2e0,3e0,4e0,5e0,6e0,7e0,8e0,9e0,10e0,11e0,12e0};
+  int rows = 3;
+  int cols = 4;
+  OGMatrix<real16> * tmp = new OGMatrix<real16>(data,rows,cols);
+  OGNumeric * copy = tmp->copy();
+  // can't do much here as at present we can't cast via RTTI asFOO() methods to an OGMatrix<T>
+  ASSERT_TRUE(*tmp==~*(copy->asOGTerminal()));
+  delete tmp;
+  delete copy;
+}
+
+TEST(TerminalsTest, OGMatrix_T_complex16) {
+  complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
+  int rows = 3;
+  int cols = 4;
+  OGMatrix<complex16> * tmp = new OGMatrix<complex16>(data,rows,cols);
+  OGNumeric * copy = tmp->copy();
+  // can't do much here as at present we can't cast via RTTI asFOO() methods to an OGMatrix<T>
+  ASSERT_TRUE(*tmp==~*(copy->asOGTerminal()));
+  delete tmp;
+  delete copy;
+}
+
 /*
  * Test OGRealMatrix
  */
@@ -461,10 +485,21 @@ TEST(TerminalsTest, OGRealMatrixTest) {
     delete [] computed[i];
   }
   delete [] computed;
-  delete [] expected;  
+  delete [] expected;
 
-  // check toComplex16ArrayOfArrays, expect throw
-  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
+  // check toComplex16ArrayOfArrays()
+  complex16 c_expectedtmp[12] = {{1e0,0},{4e0,0},{7e0,0},{10e0,0},{2e0,0},{5e0,0},{8e0,0},{11e0,0},{3e0,0},{6e0,0},{9e0,0},{12e0,0}};
+  complex16 ** c_expected = new complex16  * [rows];
+  for(int i = 0; i < rows; i++){
+    c_expected[i] = &(c_expectedtmp[i*cols]);
+  }
+  complex16 ** c_computed = tmp->toComplex16ArrayOfArrays();
+  ASSERT_TRUE(ArrayOfArraysEquals<complex16>(c_expected,c_computed,rows,cols));
+  for(int i = 0; i < rows; i++){
+    delete [] c_computed[i];
+  }
+  delete [] c_computed;
+  delete [] c_expected;
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();

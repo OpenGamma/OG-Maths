@@ -44,6 +44,7 @@ typedef enum
   SELECTRESULT_ENUM    = 0X010FL ,
   NORM2_ENUM           = 0X0115L ,
   SVD_ENUM             = 0X0119L ,
+  MTIMES_ENUM          = 0X011BL ,
 #include "exprenum.hh"
 } ExprType_t;
 

@@ -27,7 +27,19 @@ namespace testnodes {
 #define UNARY_NODE_TEST_SETUP(__NODE)\
 class __NODE##TEST: public UnaryOpTest<__NODE>{};\
 TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
-  CheckUnary<NORM2> * impl = GetParam();\
+  CheckUnary<__NODE> * impl = GetParam();\
+  impl->execute();\
+  ASSERT_TRUE(impl->resultCorrect());\
+  delete impl;\
+}
+
+/**
+ * Use to set up a parameterised test for a binary node.
+ */
+#define BINARY_NODE_TEST_SETUP(__NODE)\
+class __NODE##TEST: public BinaryOpTest<__NODE>{};\
+TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
+  CheckBinary<__NODE> * impl = GetParam();\
   impl->execute();\
   ASSERT_TRUE(impl->resultCorrect());\
   delete impl;\
@@ -35,7 +47,7 @@ TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
 
 
 /**
- * Instantiate a set of parameterised noes tests (set up using the *_NODE_TEST_SETUP macro)
+ * Instantiate a set of parameterised nodes tests (set up using the *_NODE_TEST_SETUP macro)
  */
 #define INSTANTIATE_NODE_TEST_CASE_P(prefix, test_case_name, generator) INSTANTIATE_TEST_CASE_P(prefix, test_case_name##TEST, generator)
 
@@ -91,10 +103,6 @@ template <typename T> class CheckNode
        */
       virtual bool resultCorrect() const;
       /**
-       * Gets the node.
-       */
-      virtual T * getNode() const;
-      /**
        * Gets the expected value.
        */
       virtual const OGNumeric * getExpected() const;
@@ -109,7 +117,6 @@ template <typename T> class CheckNode
      */
     virtual void execute() = 0;
   private:
-    T * _node;
     const OGNumeric * _expected;
     CompareMethod _comparisonMethod;
 };
@@ -153,6 +160,53 @@ template <typename T> class UnaryOpTest : public ::testing::TestWithParam<CheckU
  public:
   UnaryOpTest();
   virtual ~UnaryOpTest();
+  virtual void SetUp();
+  virtual void TearDown();
+};
+
+
+/**
+ * Class used for checking binary nodes execute as expected.
+ * @param T the node to be checked.
+ */
+template <typename T> class CheckBinary: public CheckNode<T>
+{
+  public:
+    /**
+     * Construct a binary node check.
+     * @param first_input the first input value.
+     * @param second_input the second input value.
+     * @param expected the expected value.
+     * @param comparisonMethod how the results should be compared.
+     */
+    CheckBinary(OGNumeric * first_input, OGNumeric * second_input, OGNumeric * expected, CompareMethod comparisonMethod);
+    ~CheckBinary();
+    virtual bool comparesCorrectlyTypeInvariant() const override;
+    virtual bool comparesCorrectly() const override;
+
+    /**
+     * Get the ResultPair
+     */
+    ResultPair * getResultPair() const;
+    virtual void execute() override;
+
+    virtual void debug_print();
+
+  private:
+    ResultPair * _resultPair;
+    OGNumeric * _first_input;
+    OGNumeric * _second_input;
+};
+
+
+/**
+ * Binary Operation test class
+ */
+template <typename T> class BinaryOpTest : public ::testing::TestWithParam<CheckBinary<T> *>
+{
+ public:
+  BinaryOpTest();
+  virtual ~BinaryOpTest();
   virtual void SetUp();
   virtual void TearDown();
 };

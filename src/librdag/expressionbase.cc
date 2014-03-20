@@ -220,4 +220,33 @@ SVD::getType() const
   return SVD_ENUM;
 }
 
+/**
+ * MTIMES node
+ */
+MTIMES::MTIMES(ArgContainer* args): OGBinaryExpr(args) {}
+
+OGNumeric*
+MTIMES::copy() const
+{
+  return new MTIMES(this->getArgs()->copy());
+}
+
+const MTIMES*
+MTIMES::asMTIMES() const
+{
+  return this;
+}
+
+void
+MTIMES::debug_print() const
+{
+        cout << "MTIMES base class" << endl;
+}
+
+ExprType_t
+MTIMES::getType() const
+{
+  return MTIMES_ENUM;
+}
+
 } // namespace librdag

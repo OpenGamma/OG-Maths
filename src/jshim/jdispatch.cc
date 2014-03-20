@@ -154,14 +154,17 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int> const SUPPRE
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<complex16> const *thing)
 {
-    DEBUG_PRINT("Visitor: librdag::OGMatrix<complex16> branch\n");
+    DEBUG_PRINT("DispatchToComplex16ArrayOfArrays Visitor: librdag::OGMatrix<complex16> branch\n");
     this->setData(thing->toComplex16ArrayOfArrays());
     this->setRows(thing->getRows());
     this->setCols(thing->getCols());
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<real16> const SUPPRESS_UNUSED *thing)
 {
-    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<real16>)");
+    DEBUG_PRINT("DispatchToComplex16ArrayOfArrays Visitor: librdag::OGMatrix<real16> branch\n");
+    this->setData(thing->toComplex16ArrayOfArrays());
+    this->setRows(thing->getRows());
+    this->setCols(thing->getCols());
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
 {

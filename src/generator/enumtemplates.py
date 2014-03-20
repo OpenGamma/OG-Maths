@@ -46,6 +46,7 @@ public enum ExprEnum {
   SELECTRESULT_ENUM (0x010FL),
   NORM2_ENUM        (0x0115L),
   SVD_ENUM          (0x0119L),
+  MTIMES_ENUM       (0x011BL),
 
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
 %(generated_nodes)s;
