@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import com.opengamma.longdog.datacontainers.matrix.OGComplexDenseMatrix;
 import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.longdog.datacontainers.other.ComplexArrayContainer;
+import com.opengamma.longdog.exceptions.MathsExceptionNativeComputation;
 import com.opengamma.longdog.helpers.FuzzyEquals;
 import com.opengamma.longdog.materialisers.Materialisers;
 import com.opengamma.longdog.nodes.MTIMES;
@@ -113,7 +114,7 @@ public class TestMtimesMaterialise {
     assertTrue(FuzzyEquals.ArrayFuzzyEquals(ip, answer.getImag()));
   }
 
-  @Test(expectedExceptions = Exception.class, enabled = false)
+  @Test(expectedExceptions = MathsExceptionNativeComputation.class)
   public void Complex_MatrixMtimesMatrixNonConformanceTest() {
     Materialisers.toDoubleArrayOfArrays(new MTIMES(C_A, C_B));
   }
