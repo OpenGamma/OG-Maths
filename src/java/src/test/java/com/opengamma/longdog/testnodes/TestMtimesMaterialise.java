@@ -61,7 +61,7 @@ public class TestMtimesMaterialise {
     assertTrue(FuzzyEquals.ArrayFuzzyEquals(expected, answer));
   }
 
-  @Test(expectedExceptions = Exception.class, enabled = false)
+  @Test(expectedExceptions = MathsExceptionNativeComputation.class)
   public void Real_MatrixMtimesMatrixNonConformanceTest() {
     Materialisers.toDoubleArrayOfArrays(new MTIMES(R_A, R_B));
   }
