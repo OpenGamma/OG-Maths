@@ -817,12 +817,6 @@ template class OGMatrix<complex16>;
  * OGRealMatrix
  */
 
-real16**
-OGRealMatrix::toReal16ArrayOfArrays() const
-{
-  return this->toArrayOfArrays();
-}
-
 OGNumeric*
 OGRealMatrix::copy() const
 {

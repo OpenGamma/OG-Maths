@@ -277,7 +277,6 @@ class OGRealMatrix: public OGMatrix<real16>
 {
   public:
     using OGMatrix::OGMatrix;
-    virtual real16 ** toReal16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealMatrix* asOGRealMatrix() const override;
     virtual ExprType_t getType() const override;
