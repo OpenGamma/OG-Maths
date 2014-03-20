@@ -385,6 +385,30 @@ TEST(TerminalsTest, OGArrayTest) {
   delete v;
 }
 
+TEST(TerminalsTest, OGMatrix_T_real16) {
+  real16 data [12] = {1e0,2e0,3e0,4e0,5e0,6e0,7e0,8e0,9e0,10e0,11e0,12e0};
+  int rows = 3;
+  int cols = 4;
+  OGMatrix<real16> * tmp = new OGMatrix<real16>(data,rows,cols);
+  OGNumeric * copy = tmp->copy();
+  // can't do much here as at present we can't cast via RTTI asFOO() methods to an OGMatrix<T>
+  ASSERT_TRUE(*tmp==~*(copy->asOGTerminal()));
+  delete tmp;
+  delete copy;
+}
+
+TEST(TerminalsTest, OGMatrix_T_complex16) {
+  complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
+  int rows = 3;
+  int cols = 4;
+  OGMatrix<complex16> * tmp = new OGMatrix<complex16>(data,rows,cols);
+  OGNumeric * copy = tmp->copy();
+  // can't do much here as at present we can't cast via RTTI asFOO() methods to an OGMatrix<T>
+  ASSERT_TRUE(*tmp==~*(copy->asOGTerminal()));
+  delete tmp;
+  delete copy;
+}
+
 /*
  * Test OGRealMatrix
  */
