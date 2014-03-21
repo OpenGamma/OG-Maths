@@ -58,12 +58,12 @@ set(maven_VERSION
 # JAR VARIABLES
 set(JARDIR ${CMAKE_BINARY_DIR}/jars)
 
-set(JAR_VERSION "${PROJECT_NAME}-${maven_VERSION}-SNAPSHOT")
+set(JAR_VERSION "${maven_VERSION}-SNAPSHOT")
 
-set(JAR_NAME_NO_EXTN "${JAR_VERSION}" )
-set(JAR_SOURCES_NAME_NO_EXTN "${JAR_VERSION}-sources" )
-set(JAR_TEST_NAME_NO_EXTN "${JAR_VERSION}-tests" )
-set(JAR_JAVADOC_NAME_NO_EXTN "${JAR_VERSION}-javadoc" )
+set(JAR_NAME_NO_EXTN "og-maths-${JAR_VERSION}" )
+set(JAR_SOURCES_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-sources" )
+set(JAR_TEST_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-tests" )
+set(JAR_JAVADOC_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-javadoc" )
 
 set(JAR_EXT ".jar")
 
@@ -231,7 +231,7 @@ else()
                     COMMENT "Gathering Java test coverage information")
   add_custom_target(jacoco
                     COMMAND ${Java_JAVA_EXECUTABLE} com.opengamma.jacocoreporter.ReportGenerator jacoco.exec
-                            ${JARDIR}/CMakeFiles/${JAR_VERSION}.dir ${CMAKE_SOURCE_DIR}/src/java/src/main/java
+                            ${JARDIR}/CMakeFiles/${JAR_NAME_NO_EXTN}.dir ${CMAKE_SOURCE_DIR}/src/java/src/main/java
                             coveragereport
                     DEPENDS jacocorun
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -242,13 +242,13 @@ endif()
 # Installation to local maven repository
 add_custom_target(maven_install
                   COMMAND mvn install:install-file
-                          -Dfile=${JAR_VERSION}.jar
+                          -Dfile=${JAR_NAME}
                           -DgroupId=com.opengamma.maths
                           -DartifactId=og-maths
                           -Dversion=${JAR_VERSION}
                           -Dpackaging=jar
-                          -Djavadoc=${PATH_AND_JAR_JAVADOC_NAME}
-                          -Dsources=${PATH_AND_JAR_SOURCES_NAME}
+                          -Djavadoc=${JAR_JAVADOC_NAME}
+                          -Dsources=${JAR_SOURCES_NAME}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/jars)
 
 message("Build type: " ${CMAKE_BUILD_TYPE})
