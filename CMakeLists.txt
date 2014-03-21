@@ -175,7 +175,7 @@ if (NOT WIN32)
 
   add_custom_target(coverageextract
                      DEPENDS coverageinfo
-                     COMMAND lcov -o coverage-extract.info --extract coverage.info "\"${CMAKE_SOURCE_DIR}/include/*\"" "\"${CMAKE_SOURCE_DIR}/src/*\""
+                     COMMAND lcov -o coverage-extract.info --extract coverage.info "\"${CMAKE_SOURCE_DIR}/include/*\"" "\"${CMAKE_SOURCE_DIR}/src/*\"" "\"${CMAKE_BINARY_DIR}/src/*\"" "\"${CMAKE_BINARY_DIR}/include/*\""
                      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                      COMMENT "Removing external from coverage info")
 
