@@ -16,36 +16,57 @@
 
 
 /**
- * SVD custom runners. For now they are placeholders so the compile
- * doesn't fail.
+ *  Unit contains code for SVD node runners
  */
 namespace librdag {
 
-void
-dummy_svd_run(RegContainer* reg)
+template<typename T> void dense_runner(RegContainer* reg, const OGMatrix<T>* arg)
 {
-  reg->push_back(new OGRealScalar(1.0));
-  reg->push_back(new OGRealScalar(2.0));
-  reg->push_back(new OGRealScalar(3.0));
+  int m = arg->getRows();
+  int n = arg->getCols();
+  int lda = m > 1 ? m : 1;
+  int ldu = lda;
+  int minmn = m > n ? n : m;
+  int ldvt = minmn;
+  int info = 0;
+
+  T * U = new T[ldu*m];
+  T * VT = new T[ldvt*n];
+  real16 * S = new real16[minmn];
+
+  // copy A else it's destroyed
+  T * A = new T[m*n];
+  std::memcpy(A, arg->getData(), sizeof(T)*m*n);
+
+  // call lapack
+  lapack::xgesvd(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
+
+  reg->push_back(new OGMatrix<T>(U, m, m, OWNER));
+  reg->push_back(new OGRealDiagonalMatrix(S, m, n, OWNER));
+  reg->push_back(new OGMatrix<T>(VT, n, n, OWNER));
+  delete[] A;
 }
 
 void *
-SVDRunner::run(RegContainer *reg, OGRealScalar const SUPPRESS_UNUSED *arg) const
+SVDRunner::run(RegContainer *reg, OGRealScalar const *arg) const
 {
-  dummy_svd_run(reg);
+  // real space svd is just u=1, s=value, v=1
+  reg->push_back(new OGRealScalar(1.e0));
+  reg->push_back(new OGRealScalar(arg->getValue()));
+  reg->push_back(new OGRealScalar(1.e0));
   return nullptr;
 }
 void *
-SVDRunner::run(RegContainer *reg, OGRealMatrix const SUPPRESS_UNUSED *arg) const
+SVDRunner::run(RegContainer *reg, OGRealMatrix const *arg) const
 {
-  dummy_svd_run(reg);
+  dense_runner(reg, arg);
   return nullptr;
 }
 
 void *
-SVDRunner::run(RegContainer *reg, OGComplexMatrix const SUPPRESS_UNUSED *arg) const
+SVDRunner::run(RegContainer *reg, OGComplexMatrix const *arg) const
 {
-  dummy_svd_run(reg);
+  dense_runner(reg, arg);
   return nullptr;
 }
 

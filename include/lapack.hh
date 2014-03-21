@@ -48,6 +48,8 @@ namespace detail
 {
 // constants
 extern char N;
+extern char A;
+extern char T;
 extern int ione;
 extern real16 rone;
 extern complex16 cone;
@@ -60,6 +62,14 @@ extern complex16 czero;
  * The F77 character 'N'
  */
 extern char * N;
+/**
+ * The F77 character 'A'
+ */
+extern char * A;
+/**
+ * The F77 character 'T'
+ */
+extern char * T;
 /**
  * The F77 integer '1'
  */
