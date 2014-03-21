@@ -63,16 +63,19 @@ set(JAR_VERSION "${PROJECT_NAME}-${maven_VERSION}-SNAPSHOT")
 set(JAR_NAME_NO_EXTN "${JAR_VERSION}" )
 set(JAR_SOURCES_NAME_NO_EXTN "${JAR_VERSION}-sources" )
 set(JAR_TEST_NAME_NO_EXTN "${JAR_VERSION}-tests" )
+set(JAR_JAVADOC_NAME_NO_EXTN "${JAR_VERSION}-javadoc" )
 
 set(JAR_EXT ".jar")
 
 set(JAR_NAME "${JAR_NAME_NO_EXTN}${JAR_EXT}" )
 set(JAR_SOURCES_NAME "${JAR_SOURCES_NAME_NO_EXTN}${JAR_EXT}" )
 set(JAR_TEST_NAME "${JAR_TEST_NAME_NO_EXTN}${JAR_EXT}" )
+set(JAR_JAVADOC_NAME "${JAR_JAVADOC_NAME_NO_EXTN}${JAR_EXT}" )
 
 set(PATH_AND_JAR_NAME "${JARDIR}/${JAR_NAME}" )
 set(PATH_AND_JAR_SOURCES_NAME "${JARDIR}/${JAR_SOURCES_NAME}" )
 set(PATH_AND_JAR_TEST_NAME "${JARDIR}/${JAR_TEST_NAME}" )
+set(PATH_AND_JAR_JAVADOC_NAME "${JARDIR}/${JAR_JAVADOC_NAME}" )
 
 
 # Append local module folder to module path
@@ -244,7 +247,7 @@ add_custom_target(maven_install
                           -DartifactId=og-maths
                           -Dversion=${JAR_VERSION}
                           -Dpackaging=jar
-                          #-Djavadoc=og-maths-${longdog_VERSION}-javadoc.jar
+                          -Djavadoc=${PATH_AND_JAR_JAVADOC_NAME}
                           -Dsources=${PATH_AND_JAR_SOURCES_NAME}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/jars)
 

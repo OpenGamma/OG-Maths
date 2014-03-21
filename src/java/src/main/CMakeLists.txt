@@ -99,11 +99,11 @@ foreach(JHCLASS ${JAVAH_CLASSES})
   jni_header_target(${JPACKAGEFQN} ${JHCLASS} ${JAR_NAME} ${JARDIR} ${JNIDIR})
 endforeach()
 
-# create_javadoc_jar(${JARNAME}
-#                PACKAGES com.opengamma.maths
-#                SOURCEPATH "${CMAKE_CURRENT_SOURCE_DIR}/java"
-#                WINDOWTITLE "longdog"
-#                DOCTITLE "<h1>longdog</h1>"
-#                AUTHOR TRUE
-#                USE TRUE
-#                VERSION TRUE)
+create_javadoc_jar(${JAR_NAME_NO_EXTN}
+                   PACKAGES com.opengamma.longdog
+                   SOURCEPATH "${CMAKE_CURRENT_SOURCE_DIR}/java"
+                   WINDOWTITLE "OG-Maths"
+                   DOCTITLE "<h1>OG-Maths</h1>"
+                   AUTHOR TRUE
+                   USE TRUE
+                   VERSION TRUE)
