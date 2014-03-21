@@ -20,7 +20,7 @@
  */
 namespace librdag {
 
-template<typename T> void dense_runner(RegContainer* reg, const OGMatrix<T>* arg)
+template<typename T> void svd_dense_runner(RegContainer* reg, const OGMatrix<T>* arg)
 {
   int m = arg->getRows();
   int n = arg->getCols();
@@ -59,14 +59,14 @@ SVDRunner::run(RegContainer *reg, OGRealScalar const *arg) const
 void *
 SVDRunner::run(RegContainer *reg, OGRealMatrix const *arg) const
 {
-  dense_runner(reg, arg);
+  svd_dense_runner(reg, arg);
   return nullptr;
 }
 
 void *
 SVDRunner::run(RegContainer *reg, OGComplexMatrix const *arg) const
 {
-  dense_runner(reg, arg);
+  svd_dense_runner(reg, arg);
   return nullptr;
 }
 

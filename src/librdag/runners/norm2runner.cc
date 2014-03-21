@@ -33,9 +33,11 @@ NORM2Runner::run(RegContainer * reg, OGRealScalar const * arg) const
 
 template<typename T>
 void
-dense_runner(RegContainer * reg, OGMatrix<T> const * arg)
+norm2_dense_runner(RegContainer * reg, OGMatrix<T> const * arg)
 {
   const OGRealScalar* ret = nullptr; // the returned item
+
+  arg->debug_print();
 
   // Matrix in scalar context, i.e. a 1x1 matrix, norm2 is simply abs(value)
   if(arg->getRows()==1 && arg->getCols()==1)
@@ -81,14 +83,14 @@ dense_runner(RegContainer * reg, OGMatrix<T> const * arg)
 void *
 NORM2Runner::run(RegContainer * reg, OGRealMatrix const * arg) const
 {
-  dense_runner(reg, arg);
+  norm2_dense_runner(reg, arg);
   return nullptr;
 }
 
 void *
 NORM2Runner::run(RegContainer * reg, OGComplexMatrix const * arg) const
 {
-  dense_runner(reg, arg);
+  norm2_dense_runner(reg, arg);
   return nullptr;
 }
 
