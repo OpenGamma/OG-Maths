@@ -1,5 +1,6 @@
 from runnertemplates import runners_header, runners_cc, binary_runner_class_definition, \
                             binary_runner_function, infix_scalar_runner_implementation, \
+                            infix_matrix_runner_implementation,                         \
                             unary_runner_class_definition, unary_runner_function,       \
                             prefix_scalar_runner_implementation, \
                             prefix_matrix_runner_implementation, \
@@ -154,18 +155,22 @@ class InfixOpRunner(BinaryExpressionRunner):
     @property
     def scalar_implementation(self):
         d = { 'symbol':     self.symbol,
-              'arg0type':   'OGRealScalar',
-              'arg1type':   'OGRealScalar',
               'returntype': 'OGRealScalar' }
         return infix_scalar_runner_implementation % d
 
     @property
     def real_matrix_implementation(self):
-        return "  arg0->debug_print(); arg1->debug_print(); ret = arg0; // TBC"
+        d = { 'symbol':     self.symbol,
+              'datatype':   'real16',
+              'returntype': 'OGRealMatrix' }
+        return infix_matrix_runner_implementation % d
 
     @property
     def complex_matrix_implementation(self):
-        return "  arg0->debug_print(); arg1->debug_print(); ret = arg0; // TBC"
+        d = { 'symbol':     self.symbol,
+              'datatype':   'complex16',
+              'returntype': 'OGComplexMatrix' }
+        return infix_matrix_runner_implementation % d
 
 class PrefixOpRunner(UnaryExpressionRunner):
     """A PrefixOp is a UnaryFunction whose symbol is placed just before its

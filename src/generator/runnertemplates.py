@@ -94,6 +94,36 @@ infix_scalar_runner_implementation = """\
   ret = new %(returntype)s(arg0->getValue() %(symbol)s arg1->getValue());\
 """
 
+infix_matrix_runner_implementation = """\
+  int r0 = arg0->getRows();
+  int r1 = arg1->getRows();
+  int c0 = arg0->getCols();
+  int c1 = arg1->getCols();
+  if ((r0 != r1) || (c0 != c1))
+  {
+    stringstream s;
+    s << "Matrix dimensions ";
+    s << "(" << r0 << "," << c0 << ")";
+    s << " and ";
+    s << "(" << r1 << "," << c1 << ")";
+    s << " mismatch for operation: %(symbol)s";
+    throw rdag_error(s.str());
+  }
+
+  int datalen = arg0->getDatalen();
+  %(datatype)s* newData = new %(datatype)s[datalen];
+
+  %(datatype)s* data0 = arg0->getData();
+  %(datatype)s* data1 = arg1->getData();
+
+  for (int i = 0; i < datalen; i++)
+  {
+    newData[i] = data0[i] %(symbol)s data1[i];
+  }
+
+  ret = new %(returntype)s(newData, arg0->getRows(), arg0->getCols(), OWNER);
+"""
+
 # Unary runner
 
 unary_runner_class_definition = """\
