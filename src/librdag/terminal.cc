@@ -810,6 +810,20 @@ OGMatrix<complex16>::toReal16ArrayOfArrays() const
   throw rdag_error("Error in in partial template specialisation for OGMatrix<complex16>::toReal16ArrayOfArrays(). Cannot convert a matrix backed by complex16 type to a real16 type.");
 }
 
+template<>
+ExprType_t
+OGMatrix<real16>::getType() const
+{
+  return REAL_MATRIX_ENUM;
+}
+
+template<>
+ExprType_t
+OGMatrix<complex16>::getType() const
+{
+  return COMPLEX_MATRIX_ENUM;
+}
+
 template class OGMatrix<real16>;
 template class OGMatrix<complex16>;
 

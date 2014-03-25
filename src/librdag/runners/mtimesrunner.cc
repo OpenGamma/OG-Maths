@@ -24,7 +24,25 @@
 
 namespace librdag {
 
-template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* arg0, const OGMatrix<T>* arg1)
+template<typename T>
+OGTerminal * concreteDenseFactory(T * data, int rows, int cols, DATA_ACCESS access)
+{
+  throw rdag_error("Concrete type unknown");
+}
+
+template<>
+OGTerminal * concreteDenseFactory(real16 * data, int rows, int cols, DATA_ACCESS access)
+{
+  return new OGRealMatrix(data, rows, cols, access);
+}
+
+template<>
+OGTerminal * concreteDenseFactory(complex16 * data, int rows, int cols, DATA_ACCESS access)
+{
+  return new OGComplexMatrix(data, rows, cols, access);
+}
+
+template<typename T> void * mtimes_dense_runner(RegContainer* reg0, const OGMatrix<T>* arg0, const OGMatrix<T>* arg1)
 {
   int colsArray1 = arg0->getCols();
   int colsArray2 = arg1->getCols();
@@ -38,7 +56,7 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
   // Fortran vars
   T fp_one = 1.e0;
 
-  OGMatrix<T> * ret = nullptr;
+  OGTerminal * ret = nullptr;
 
   if (colsArray1 == 1 && rowsArray1 == 1) { // We have scalar * matrix
     T deref = data1[0];
@@ -46,14 +64,14 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
     tmp = new T[n];
     memcpy(tmp,data2,n*sizeof(T));
     lapack::xscal(&n,&deref,tmp,lapack::ione);
-    ret = new OGMatrix<T>(tmp, rowsArray2, colsArray2, OWNER);
+    ret = concreteDenseFactory(tmp, rowsArray2, colsArray2, OWNER);
   } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
     T deref = data2[0];
     int n = rowsArray1 * colsArray1;
     tmp = new T[n];
     memcpy(tmp,data1,n*sizeof(T));
     lapack::xscal(&n,&deref,tmp,lapack::ione);
-    ret = new OGMatrix<T>(tmp, rowsArray1, colsArray1, OWNER);
+    ret = concreteDenseFactory(tmp, rowsArray1, colsArray1, OWNER);
   } else {
     if(colsArray1!=rowsArray2)
     {
@@ -64,7 +82,7 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
     if (colsArray2 == 1) { // A*x
       tmp = new T[rowsArray1]();
       lapack::xgemv(lapack::N, &rowsArray1, &colsArray1, &fp_one, data1, &rowsArray1, data2, lapack::ione, &fp_one, tmp, lapack::ione);
-      ret = new OGMatrix<T>(tmp, rowsArray1, 1, OWNER);
+      ret = concreteDenseFactory(tmp, rowsArray1, 1, OWNER);
     } else {
       int fm = rowsArray1;
       int fn = colsArray2;
@@ -75,7 +93,7 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
       tmp = new T[fm * fn];
       int ldc = fm;
       lapack::xgemm(lapack::N, lapack::N, &fm, &fn, &fk, &fp_one, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
-      ret = new OGMatrix<T>(tmp, fm, fn, OWNER);
+      ret = concreteDenseFactory(tmp, fm, fn, OWNER);
     }
   }
   // shove ret into register
@@ -84,17 +102,19 @@ template<typename T> void * dense_runner(RegContainer* reg0, const OGMatrix<T>* 
 }
 
 
+
+
 // MTIMES runner:
 void * MTIMESRunner::run(RegContainer * reg0, const OGComplexMatrix * arg0, const OGComplexMatrix * arg1) const
 {
-  dense_runner(reg0, arg0, arg1);
+  mtimes_dense_runner(reg0, arg0, arg1);
   return nullptr;
 }
 
 
 void * MTIMESRunner::run(RegContainer* reg0, const OGRealMatrix*    arg0, const OGRealMatrix*    arg1) const
 {
-  dense_runner(reg0, arg0, arg1);
+  mtimes_dense_runner(reg0, arg0, arg1);
   return nullptr;
 }
 

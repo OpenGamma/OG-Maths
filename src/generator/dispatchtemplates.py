@@ -170,6 +170,7 @@ dispatch_cc = """\
 #include "warningmacros.h"
 #include "uncopyable.hh"
 #include <iostream>
+#include <sstream>
 
 namespace librdag {
 
@@ -441,7 +442,9 @@ DispatchBinaryOp<T>::eval(RegContainer* reg0, OGTerminal const *arg0, OGTerminal
   {
 %(eval_cases)s
     default:
-      throw rdag_error("Unknown type in dispatch on arg0");
+        stringstream message;
+        message << "Unknown type in dispatch on arg0. Type is: " << arg0->getType() << ".";
+        throw rdag_error(message.str());
   }
   return ret;
 }
@@ -453,7 +456,9 @@ dispatchbinaryop_eval_case_arg0 = """\
       {
 %(eval_arg1_cases)s
         default:
-          throw rdag_error("Unknown type in dispatch on arg1");
+        stringstream message;
+        message << "Unknown type in dispatch on arg1. Type is: " << arg1->getType() << ".";
+        throw rdag_error(message.str());
       }
       break;
 """
