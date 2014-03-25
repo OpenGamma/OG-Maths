@@ -83,7 +83,7 @@ public class TestSVDMaterialise {
   public void reconstructionTest(SVD input, OGRealDenseMatrix expectedU, OGRealDiagonalMatrix expectedS, OGRealDenseMatrix expectedV) {
 
     OGNumeric U = input.getU();
-    OGTerminal S = new OGRealDenseMatrix(Materialisers.toDoubleArrayOfArrays(input.getS()));
+    OGNumeric S = input.getS();
     OGNumeric VT = input.getVT();
 
    OGTerminal reconstructedMatrix =  Materialisers.toOGTerminal(new MTIMES(new MTIMES(U, S), VT));
