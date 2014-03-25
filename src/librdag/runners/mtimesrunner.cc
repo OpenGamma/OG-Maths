@@ -24,24 +24,6 @@
 
 namespace librdag {
 
-template<typename T>
-OGTerminal * concreteDenseFactory(T * data, int rows, int cols, DATA_ACCESS access)
-{
-  throw rdag_error("Concrete type unknown");
-}
-
-template<>
-OGTerminal * concreteDenseFactory(real16 * data, int rows, int cols, DATA_ACCESS access)
-{
-  return new OGRealMatrix(data, rows, cols, access);
-}
-
-template<>
-OGTerminal * concreteDenseFactory(complex16 * data, int rows, int cols, DATA_ACCESS access)
-{
-  return new OGComplexMatrix(data, rows, cols, access);
-}
-
 template<typename T> void * mtimes_dense_runner(RegContainer* reg0, const OGMatrix<T>* arg0, const OGMatrix<T>* arg1)
 {
   int colsArray1 = arg0->getCols();
@@ -64,14 +46,14 @@ template<typename T> void * mtimes_dense_runner(RegContainer* reg0, const OGMatr
     tmp = new T[n];
     memcpy(tmp,data2,n*sizeof(T));
     lapack::xscal(&n,&deref,tmp,lapack::ione);
-    ret = concreteDenseFactory(tmp, rowsArray2, colsArray2, OWNER);
+    ret = ConcreteDenseMatrixFactory(tmp, rowsArray2, colsArray2, OWNER);
   } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
     T deref = data2[0];
     int n = rowsArray1 * colsArray1;
     tmp = new T[n];
     memcpy(tmp,data1,n*sizeof(T));
     lapack::xscal(&n,&deref,tmp,lapack::ione);
-    ret = concreteDenseFactory(tmp, rowsArray1, colsArray1, OWNER);
+    ret = ConcreteDenseMatrixFactory(tmp, rowsArray1, colsArray1, OWNER);
   } else {
     if(colsArray1!=rowsArray2)
     {
@@ -82,7 +64,7 @@ template<typename T> void * mtimes_dense_runner(RegContainer* reg0, const OGMatr
     if (colsArray2 == 1) { // A*x
       tmp = new T[rowsArray1]();
       lapack::xgemv(lapack::N, &rowsArray1, &colsArray1, &fp_one, data1, &rowsArray1, data2, lapack::ione, &fp_one, tmp, lapack::ione);
-      ret = concreteDenseFactory(tmp, rowsArray1, 1, OWNER);
+      ret = ConcreteDenseMatrixFactory(tmp, rowsArray1, 1, OWNER);
     } else {
       int fm = rowsArray1;
       int fn = colsArray2;
@@ -93,7 +75,7 @@ template<typename T> void * mtimes_dense_runner(RegContainer* reg0, const OGMatr
       tmp = new T[fm * fn];
       int ldc = fm;
       lapack::xgemm(lapack::N, lapack::N, &fm, &fn, &fk, &fp_one, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
-      ret = concreteDenseFactory(tmp, fm, fn, OWNER);
+      ret = ConcreteDenseMatrixFactory(tmp, fm, fn, OWNER);
     }
   }
   // shove ret into register

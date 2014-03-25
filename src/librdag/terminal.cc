@@ -1497,4 +1497,26 @@ OGComplexSparseMatrix::createComplexOwningCopy() const
   return this->createOwningCopy();
 }
 
+
+// Concrete template factory for dense matrices
+
+template<typename T>
+OGTerminal * ConcreteDenseMatrixFactory(T * data, int rows, int cols, DATA_ACCESS access)
+{
+  throw rdag_error("Concrete type unknown");
+}
+
+template<>
+OGTerminal * ConcreteDenseMatrixFactory(real16 * data, int rows, int cols, DATA_ACCESS access)
+{
+  return new OGRealMatrix(data, rows, cols, access);
+}
+
+template<>
+OGTerminal * ConcreteDenseMatrixFactory(complex16 * data, int rows, int cols, DATA_ACCESS access)
+{
+  return new OGComplexMatrix(data, rows, cols, access);
+}
+
+
 } // namespace librdag

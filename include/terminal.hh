@@ -421,6 +421,15 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual OGTerminal * createComplexOwningCopy() const override;
 };
 
+
+template<typename T>
+OGTerminal * ConcreteDenseMatrixFactory(T * data, int rows, int cols, DATA_ACCESS access);
+// PTS
+template<>
+OGTerminal * ConcreteDenseMatrixFactory(real16 * data, int rows, int cols, DATA_ACCESS access);
+template<>
+OGTerminal * ConcreteDenseMatrixFactory(complex16 * data, int rows, int cols, DATA_ACCESS access);
+
 } // end namespace librdag
 
 #endif // _TERMINAL_HH

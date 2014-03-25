@@ -41,9 +41,9 @@ template<typename T> void svd_dense_runner(RegContainer* reg, const OGMatrix<T>*
   // call lapack
   lapack::xgesvd(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
 
-  reg->push_back(new OGMatrix<T>(U, m, m, OWNER));
+  reg->push_back(ConcreteDenseMatrixFactory(U, m, m, OWNER));
   reg->push_back(new OGRealDiagonalMatrix(S, m, n, OWNER));
-  reg->push_back(new OGMatrix<T>(VT, n, n, OWNER));
+  reg->push_back(ConcreteDenseMatrixFactory(VT, n, n, OWNER));
   delete[] A;
 }
 

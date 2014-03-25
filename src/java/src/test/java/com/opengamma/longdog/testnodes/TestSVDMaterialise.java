@@ -9,11 +9,11 @@ package com.opengamma.longdog.testnodes;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.opengamma.longdog.datacontainers.OGNumeric;
 import com.opengamma.longdog.datacontainers.OGTerminal;
 import com.opengamma.longdog.datacontainers.lazy.OGExpr;
 import com.opengamma.longdog.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.longdog.datacontainers.matrix.OGRealDiagonalMatrix;
-import com.opengamma.longdog.datacontainers.scalar.OGRealScalar;
 import com.opengamma.longdog.exceptions.MathsException;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.longdog.helpers.FuzzyEquals;
@@ -82,10 +82,9 @@ public class TestSVDMaterialise {
   @Test(dataProvider = "dataContainer")
   public void reconstructionTest(SVD input, OGRealDenseMatrix expectedU, OGRealDiagonalMatrix expectedS, OGRealDenseMatrix expectedV) {
 
-    // TODO: FIXME: MAT-353 Need SELECTRESULT to be understood correctly by librdag. 
-    OGTerminal U = Materialisers.toOGTerminal(input.getU());
+    OGNumeric U = input.getU();
     OGTerminal S = new OGRealDenseMatrix(Materialisers.toDoubleArrayOfArrays(input.getS()));
-    OGTerminal VT = Materialisers.toOGTerminal(input.getVT());
+    OGNumeric VT = input.getVT();
 
    OGTerminal reconstructedMatrix =  Materialisers.toOGTerminal(new MTIMES(new MTIMES(U, S), VT));
     if (!FuzzyEquals.ArrayFuzzyEquals(matrix.getData(), reconstructedMatrix.getData())) {
