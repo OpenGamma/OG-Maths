@@ -24,7 +24,7 @@ public class TestPlusMaterialise {
 
   @DataProvider
   public Object[][] dataContainer() {
-    Object[][] obj = new Object[6][2];
+    Object[][] obj = new Object[10][2];
 
 
     obj[0][0] = new PLUS(new OGRealScalar(2.0), new OGRealScalar(3.0));
@@ -79,6 +79,25 @@ public class TestPlusMaterialise {
     }
     obj[5][0] = bigRealMatrixTree;
     obj[5][1] = new OGRealDenseMatrix(realMatrixSum);
+
+    obj[6][0] = new PLUS(m1, new OGRealScalar(1.0));
+    obj[6][1] = new OGRealDenseMatrix(new double[][] { { 2.0, 3.0 }, { 4.0, 5.0 } });
+
+    OGNumeric m6 = new OGRealDenseMatrix(new double[][] { { 2.0, 3.0 }, { 4.0, 5.0 } });
+
+    obj[6][0] = new PLUS(m1, new OGRealScalar(1.0));
+    obj[6][1] = m6;
+
+    obj[7][0] = new PLUS(new OGRealScalar(1.0), m1);
+    obj[7][1] = m6;
+
+    OGNumeric m7 = new OGRealDenseMatrix(new double[][] { { 1.0 } });
+
+    obj[8][0] = new PLUS(m1, m7);
+    obj[8][1] = m6;
+
+    obj[9][0] = new PLUS(m7, m1);
+    obj[9][1] = m6;
 
     return obj;
   };

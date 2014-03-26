@@ -99,7 +99,33 @@ infix_matrix_runner_implementation = """\
   int r1 = arg1->getRows();
   int c0 = arg0->getCols();
   int c1 = arg1->getCols();
-  if ((r0 != r1) || (c0 != c1))
+  
+  bool arg0scalar = false, arg1scalar = false;
+  %(datatype)s arg0value = 0.0, arg1value = 0.0;
+
+  int newRows, newCols;
+  
+  if ((r0 == 1) && (c0 == 1))
+  {
+    arg0scalar = true;
+    arg0value = arg0->getData()[0];
+    newRows = arg1->getRows();
+    newCols = arg1->getCols();
+  }
+  else if ((r1 == 1) && (c1 == 1))
+  {
+    arg1scalar = true;
+    arg1value = arg1->getData()[0];
+    newRows = arg0->getRows();
+    newCols = arg0->getCols();
+  }
+  else
+  {
+    newRows = arg0->getRows();
+    newCols = arg0->getCols();
+  }
+  
+  if (((r0 != r1) || (c0 != c1)) && !arg0scalar && !arg1scalar)
   {
     stringstream s;
     s << "Matrix dimensions ";
@@ -110,18 +136,44 @@ infix_matrix_runner_implementation = """\
     throw rdag_error(s.str());
   }
 
-  int datalen = arg0->getDatalen();
-  %(datatype)s* newData = new %(datatype)s[datalen];
+  %(datatype)s* newData;
 
-  %(datatype)s* data0 = arg0->getData();
-  %(datatype)s* data1 = arg1->getData();
-
-  for (int i = 0; i < datalen; i++)
+  if (arg0scalar)
   {
-    newData[i] = data0[i] %(symbol)s data1[i];
+    int datalen = arg1->getDatalen();
+    %(datatype)s* data1 = arg1->getData();
+    newData = new %(datatype)s[datalen];
+    
+    for (int i = 0; i < datalen; i++)
+    {
+      newData[i] = data1[i] %(symbol)s arg0value;
+    }
+  }
+  else if (arg1scalar)
+  {
+    int datalen = arg0->getDatalen();
+    %(datatype)s* data0 = arg0->getData();
+    newData = new %(datatype)s[datalen];
+    
+    for (int i = 0; i < datalen; i++)
+    {
+      newData[i] = data0[i] %(symbol)s arg1value;
+    }
+  }
+  else
+  {
+    int datalen = arg0->getDatalen();
+    %(datatype)s* data0 = arg0->getData();
+    %(datatype)s* data1 = arg1->getData();
+    newData = new %(datatype)s[datalen];
+    
+    for (int i = 0; i < datalen; i++)
+    {
+      newData[i] = data0[i] %(symbol)s data1[i];
+    }
   }
 
-  ret = new %(returntype)s(newData, arg0->getRows(), arg0->getCols(), OWNER);
+  ret = new %(returntype)s(newData, newRows, newCols, OWNER);
 """
 
 # Unary runner
