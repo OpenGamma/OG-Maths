@@ -25,7 +25,7 @@ public class TestPlusMaterialiseToComplex {
 
   @DataProvider
   public Object[][] dataContainer() {
-    Object[][] obj = new Object[6][2];
+    Object[][] obj = new Object[10][2];
 
 
     obj[0][0] = new PLUS(new OGComplexScalar(2.0, 4.0), new OGComplexScalar(3.0, 5.0));
@@ -85,6 +85,22 @@ public class TestPlusMaterialiseToComplex {
     }
     obj[5][0] = bigRealMatrixTree;
     obj[5][1] = new OGComplexDenseMatrix(realMatrixSum, imagMatrixSum);
+
+    OGNumeric m6 = new OGComplexDenseMatrix(new double[][]{ { 2.0, 3.0 }, { 4.0, 5.0 } }, new double[][]{ { 9.0, 6.5 }, { 8.0, 10.0 } });
+
+    obj[6][0] = new PLUS(new OGComplexScalar(1.0, 2.0), m1);
+    obj[6][1] = m6;
+
+    obj[7][0] = new PLUS(m1, new OGComplexScalar(1.0, 2.0));
+    obj[7][1] = m6;
+
+    OGNumeric m7 = new OGComplexDenseMatrix(new double[][] { { 1.0 } }, new double[][] { { 2.0 } });
+
+    obj[8][0] = new PLUS(m1, m7);
+    obj[8][1] = m6;
+
+    obj[9][0] = new PLUS(m7, m1);
+    obj[9][1] = m6;
 
     return obj;
   };
