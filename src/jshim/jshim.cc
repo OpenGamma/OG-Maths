@@ -197,6 +197,33 @@ void rdagExceptionJava(JNIEnv* env, rdag_error& e)
   }
 }
 
+/**
+ * Throw a new Java MathsExceptionNativeUnspecified from a native exception. If the
+ * Java throw fails, stderr receives a warning and the what() of the exception because
+ * there is little else that can be done.
+ *
+ * @param env the JNI environment pointer
+ * @param e the native exception.
+ */
+void unspecifiedExceptionJava(JNIEnv* env, exception& e)
+{
+  if (checkedLocalCapacity(env, 1) == EXCEPTION_ERROR)
+  {
+    cerr << "Error ensuring local capacity for Java exception." << endl;
+    cerr << e.what();
+  }
+
+  jint throwStatus;
+  throwStatus = env->ThrowNew(JVMManager::getMathsExceptionNativeUnspecifiedClazz(), e.what());
+
+  if (throwStatus)
+  {
+    cerr << "Error ensuring throwing Java exception." << endl;
+    cerr << e.what();
+  }
+}
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -239,6 +266,11 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Material
   catch (rdag_error e)
   {
     rdagExceptionJava(env, e);
+    return nullptr;
+  }
+  catch (exception e)
+  {
+    unspecifiedExceptionJava(env, e);
     return nullptr;
   }
 
@@ -296,6 +328,11 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
     rdagExceptionJava(env, e);
     return nullptr;
   }
+  catch (exception e)
+  {
+    unspecifiedExceptionJava(env, e);
+    return nullptr;
+  }
 
   delete chain;
 
@@ -346,6 +383,11 @@ Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToOGTerminal(J
   catch (rdag_error e)
   {
     rdagExceptionJava(env, e);
+    return nullptr;
+  }
+  catch (exception e)
+  {
+    unspecifiedExceptionJava(env, e);
     return nullptr;
   }
 

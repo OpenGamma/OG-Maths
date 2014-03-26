@@ -104,6 +104,7 @@ JVMManager::registerReferences()
   registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexSparseMatrix", &_OGComplexSparseMatrixClazz);
   registerGlobalClassReference("com/opengamma/longdog/exceptions/MathsExceptionNativeConversion", &_MathsExceptionNativeConversionClazz);
   registerGlobalClassReference("com/opengamma/longdog/exceptions/MathsExceptionNativeComputation", &_MathsExceptionNativeComputationClazz);
+  registerGlobalClassReference("com/opengamma/longdog/exceptions/MathsExceptionNativeUnspecified", &_MathsExceptionNativeUnspecifiedClazz);
 
   //
   // REGISTER METHOD REFERENCES
@@ -244,6 +245,8 @@ jclass JVMManager::getMathsExceptionNativeConversionClazz()
 { return _MathsExceptionNativeConversionClazz; }
 jclass JVMManager::getMathsExceptionNativeComputationClazz()
 { return _MathsExceptionNativeComputationClazz; }
+jclass JVMManager::getMathsExceptionNativeUnspecifiedClazz()
+{ return _MathsExceptionNativeUnspecifiedClazz; }
 jmethodID JVMManager::getOGRealScalarClazz_init()
 { return _OGRealScalarClazz_init; }
 jmethodID JVMManager::getOGComplexScalarClazz_init()
@@ -309,6 +312,7 @@ jclass JVMManager::_OGRealSparseMatrixClazz = nullptr;
 jclass JVMManager::_OGComplexSparseMatrixClazz = nullptr;
 jclass JVMManager::_MathsExceptionNativeConversionClazz = nullptr;
 jclass JVMManager::_MathsExceptionNativeComputationClazz = nullptr;
+jclass JVMManager::_MathsExceptionNativeUnspecifiedClazz = nullptr;
 jmethodID JVMManager::_DoubleClazz_init = nullptr;
 jmethodID JVMManager::_OGRealScalarClazz_init = nullptr;
 jmethodID JVMManager::_OGComplexScalarClazz_init = nullptr;

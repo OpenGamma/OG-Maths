@@ -4,6 +4,7 @@
  * Please see distribution for license.
  */
 
+#include <stdexcept>
 #include "numeric.hh"
 #include "exprfactory.hh"
 #include "jvmmanager.hh"

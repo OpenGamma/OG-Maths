@@ -54,6 +54,7 @@ class JVMManager {
     DLLEXPORT_C static jclass getOGComplexSparseMatrixClazz();
     DLLEXPORT_C static jclass getMathsExceptionNativeConversionClazz();
     DLLEXPORT_C static jclass getMathsExceptionNativeComputationClazz();
+    DLLEXPORT_C static jclass getMathsExceptionNativeUnspecifiedClazz();
     DLLEXPORT_C static jmethodID getOGRealScalarClazz_init();
     DLLEXPORT_C static jmethodID getOGComplexScalarClazz_init();
     DLLEXPORT_C static jmethodID getOGRealDenseMatrixClazz_init();
@@ -110,6 +111,7 @@ class JVMManager {
     static jclass _OGComplexSparseMatrixClazz;
     static jclass _MathsExceptionNativeConversionClazz;
     static jclass _MathsExceptionNativeComputationClazz;
+    static jclass _MathsExceptionNativeUnspecifiedClazz;
     static jmethodID _DoubleClazz_init;
     static jmethodID _OGRealScalarClazz_init;
     static jmethodID _OGComplexScalarClazz_init;
