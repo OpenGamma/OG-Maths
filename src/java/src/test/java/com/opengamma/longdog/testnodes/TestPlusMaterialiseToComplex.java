@@ -17,6 +17,7 @@ import com.opengamma.longdog.datacontainers.other.ComplexArrayContainer;
 import com.opengamma.longdog.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.longdog.exceptions.MathsException;
 import com.opengamma.longdog.exceptions.MathsExceptionIllegalArgument;
+import com.opengamma.longdog.exceptions.MathsExceptionNativeComputation;
 import com.opengamma.longdog.helpers.FuzzyEquals;
 import com.opengamma.longdog.materialisers.Materialisers;
 import com.opengamma.longdog.nodes.PLUS;
@@ -124,6 +125,14 @@ public class TestPlusMaterialiseToComplex {
     if (!FuzzyEquals.ArrayFuzzyEquals(answer.getData(), expected.getData())) {
       throw new MathsException("Arrays not equal");
     }
+  }
+
+  @Test(expectedExceptions = MathsExceptionNativeComputation.class)
+  public void invalidDimensions() {
+    OGNumeric m1 = new OGComplexDenseMatrix(new double[][] { { 1.0, 2.0} }, new double[][] { { 3.0, 4.0 } });
+    OGNumeric m2 = new OGComplexDenseMatrix(new double[][] { { 1.0, 2.0, 3.0 } }, new double[][] { { 4.0, 5.0, 6.0 } });
+    OGNumeric p = new PLUS(m1, m2);
+    Materialisers.toOGTerminal(p);
   }
 
   @Test(dataProvider = "dataContainer", expectedExceptions = MathsExceptionIllegalArgument.class)
