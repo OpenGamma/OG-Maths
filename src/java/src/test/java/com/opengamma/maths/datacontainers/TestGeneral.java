@@ -27,7 +27,7 @@ import com.opengamma.maths.materialisers.Materialisers;
  * Test space for ideas.
  */
 @Test
-public class TestLongdog {
+public class TestGeneral {
 
   /**
    * The materialiser

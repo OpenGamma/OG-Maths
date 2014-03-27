@@ -41,7 +41,7 @@ set(JAVA_FILES
     datacontainers/scalars/OGComplexScalarTest.java
     datacontainers/other/OGResultTest.java
     datacontainers/other/ComplexArrayContainerTest.java
-    datacontainers/TestLongdog.java
+    datacontainers/TestGeneral.java
     )
 
 foreach(JFILE ${JAVA_FILES})
