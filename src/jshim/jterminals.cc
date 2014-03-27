@@ -35,6 +35,7 @@ DLLEXPORT_C jint getIntFromVoidJMethod(jmethodID id, jobject obj)
   }
   jint data = 0x7ff00000;
   data = env->CallIntMethod(obj, id);
+  checkEx(env);
   return data;
 }
 
