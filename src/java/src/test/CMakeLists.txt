@@ -13,6 +13,7 @@ fqn_to_dir(JPACKAGEDIR ${JPACKAGEFQN})
 set(JAVA_FILES
     testnodes/TestNorm2Materialise.java
     testnodes/TestPlusMaterialise.java
+    testnodes/TestPlusMaterialiseToComplex.java
     testnodes/TestNegateMaterialise.java
     testnodes/TestSVDMaterialise.java
     testnodes/TestMtimesMaterialise.java
