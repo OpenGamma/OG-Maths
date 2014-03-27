@@ -25,16 +25,17 @@ set(JAVA_FILES
     nativeloader/SupportedInstructionSet.java
     nativeloader/NativeLibraries.java
     nativeloader/NativeLibrariesSelfTest.java
-    exceptions/MathsExceptionNullPointer.java
     exceptions/MathsException.java
-    exceptions/MathsExceptionNativeConversion.java
-    exceptions/MathsExceptionNonConformance.java
     exceptions/MathsExceptionIllegalArgument.java
-    exceptions/MathsExceptionOnInitialization.java
-    exceptions/MathsExceptionUnsupportedPlatform.java
-    exceptions/MathsExceptionNotImplemented.java
     exceptions/MathsExceptionNative.java
     exceptions/MathsExceptionNativeComputation.java
+    exceptions/MathsExceptionNativeConversion.java
+    exceptions/MathsExceptionNativeUnspecified.java
+    exceptions/MathsExceptionNonConformance.java
+    exceptions/MathsExceptionNotImplemented.java
+    exceptions/MathsExceptionNullPointer.java
+    exceptions/MathsExceptionOnInitialization.java
+    exceptions/MathsExceptionUnsupportedPlatform.java
     datacontainers/matrix/OGSparseMatrix.java
     datacontainers/matrix/OGComplexDiagonalMatrix.java
     datacontainers/matrix/OGComplexDenseMatrix.java
