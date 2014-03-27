@@ -4,7 +4,7 @@
 # Please see distribution for license.
 #
 
-set(JPACKAGEFQN "com.opengamma.longdog")
+set(JPACKAGEFQN "com.opengamma.maths")
 fqn_to_dir(JPACKAGEDIR ${JPACKAGEFQN})
 
 set(JAVA_FILES
@@ -68,7 +68,7 @@ add_jar(${JAR_NAME_NO_EXTN} ${JAR_SOURCES}
         RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/config
         INCLUDE_NATIVE TRUE
         DEPENDS ${jar_native_libraries}
-        ENTRY_POINT com/opengamma/longdog/nativeloader/NativeLibrariesSelfTest
+        ENTRY_POINT com/opengamma/maths/nativeloader/NativeLibrariesSelfTest
         OUTPUT_DIR ${JARDIR})
 
 foreach(TARGET ${TARGET_TYPES})
@@ -85,7 +85,7 @@ add_custom_target(sources ALL
                           com
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/java)
 
-set(JPACKAGEFQN "com.opengamma.longdog.datacontainers")
+set(JPACKAGEFQN "com.opengamma.maths.datacontainers")
 set(JAVAH_CLASSES OGNumeric)
 
 set(JNIDIR ${CMAKE_BINARY_DIR}/src/nativeheaders)
@@ -93,7 +93,7 @@ foreach(JHCLASS ${JAVAH_CLASSES})
   jni_header_target(${JPACKAGEFQN} ${JHCLASS} ${JAR_NAME} ${JARDIR} ${JNIDIR})
 endforeach()
 
-set(JPACKAGEFQN "com.opengamma.longdog.datacontainers.matrix")
+set(JPACKAGEFQN "com.opengamma.maths.datacontainers.matrix")
 set(JAVAH_CLASSES OGComplexDiagonalMatrix)
 
 foreach(JHCLASS ${JAVAH_CLASSES})
@@ -101,7 +101,7 @@ foreach(JHCLASS ${JAVAH_CLASSES})
 endforeach()
 
 create_javadoc_jar(${JAR_NAME_NO_EXTN}
-                   PACKAGES com.opengamma.longdog
+                   PACKAGES com.opengamma.maths
                    SOURCEPATH "${CMAKE_CURRENT_SOURCE_DIR}/java"
                    WINDOWTITLE "OG-Maths"
                    DOCTITLE "<h1>OG-Maths</h1>"

@@ -21,6 +21,6 @@ foreach(TEST ${TESTS})
                         LINK_LIBRARIES jshimtest
                         TARGETS ${TARGET_TYPES}
                         COMPILE_DEFINITIONS _FAKE_JNI_H=1
-                        SUPPRESSIONS ${longdog_SOURCE_DIR}/src/librdag/test/valgrind.supp)
+                        SUPPRESSIONS ${og_maths_SOURCE_DIR}/src/librdag/test/valgrind.supp)
 endforeach()
 

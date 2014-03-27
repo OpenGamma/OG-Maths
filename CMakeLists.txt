@@ -15,7 +15,7 @@ if(APPLE OR WIN32)
 endif(APPLE OR WIN32)
 
 
-project (longdog)
+project (og_maths)
 
 # check command line is sensible
 if(LAPACK_EXPORT)
@@ -43,11 +43,11 @@ else()
   find_package(Threads)
 endif()
 
-set(longdog_VERSION_MAJOR 0)
-set(longdog_VERSION_MINOR 0)
-set(longdog_VERSION_PATCH 1)
-set(longdog_VERSION
-  ${longdog_VERSION_MAJOR}.${longdog_VERSION_MINOR}.${longdog_VERSION_PATCH})
+set(og_maths_VERSION_MAJOR 0)
+set(og_maths_VERSION_MINOR 0)
+set(og_maths_VERSION_PATCH 1)
+set(og_maths_VERSION
+  ${og_maths_VERSION_MAJOR}.${og_maths_VERSION_MINOR}.${og_maths_VERSION_PATCH})
 
 set(maven_VERSION_MAJOR 0)
 set(maven_VERSION_MINOR 1)
@@ -115,7 +115,7 @@ set(CMAKE_JAVA_TARGET_OUTPUT_DIR ${JARDIR})
 set(CMAKE_JAVA_INCLUDE_PATH $ENV{CLASSPATH})
 
 # Place executables and libraries in bin on Windows so that its linker can find them.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${longdog_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${og_maths_BINARY_DIR}/bin)
 
 enable_testing()
 
