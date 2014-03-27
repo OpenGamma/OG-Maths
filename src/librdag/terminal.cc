@@ -734,16 +734,15 @@ template<typename T>
 void
 OGMatrix<T>::debug_print() const
 {
-  cout << std::endl;
-  int lim = (this->getCols()-1);
+  cout << std::endl << "OGMatrix<T>:" << std::endl;
   int rows = this->getRows();
   for(int i = 0 ; i < rows; i++)
   {
-    for(int j = 0 ; j < lim-1; j++)
+    for(int j = 0 ; j < this->getCols()-1; j++)
     {
-      cout << setprecision(__DEBUG_PRECISION) << this->getData()[j*rows+i] << ", ";
+      cout << setprecision(__DEBUG_PRECISION) << this->getData()[j*this->getRows()+i] << ", ";
     }
-    cout << this->getData()[lim*rows+i] << std::endl;
+    cout << setprecision(__DEBUG_PRECISION) << this->getData()[(this->getCols() - 1)*this->getRows()+i] << std::endl;
   }
 }
 
