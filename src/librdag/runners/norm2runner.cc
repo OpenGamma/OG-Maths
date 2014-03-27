@@ -37,8 +37,6 @@ norm2_dense_runner(RegContainer * reg, OGMatrix<T> const * arg)
 {
   const OGRealScalar* ret = nullptr; // the returned item
 
-  arg->debug_print();
-
   // Matrix in scalar context, i.e. a 1x1 matrix, norm2 is simply abs(value)
   if(arg->getRows()==1 && arg->getCols()==1)
   {
