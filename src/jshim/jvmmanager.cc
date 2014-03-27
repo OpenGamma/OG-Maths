@@ -82,43 +82,43 @@ JVMManager::registerReferences()
   //
 
   registerGlobalClassReference("java/lang/Double", &_DoubleClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/OGNumeric", &_OGNumericClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/OGTerminal", &_OGTerminalClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGArray", &_OGArrayClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/ExprEnum", &_OGExprEnumClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGSparseMatrix", &_OGSparseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGScalar", &_OGScalarClazz);  
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/lazy/OGExpr", &_OGExprClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/OGNumeric", &_OGNumericClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/OGTerminal", &_OGTerminalClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGArray", &_OGArrayClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/ExprEnum", &_OGExprEnumClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGSparseMatrix", &_OGSparseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/scalar/OGScalar", &_OGScalarClazz);  
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/lazy/OGExpr", &_OGExprClazz);
   registerGlobalClassReference("[D", &_BigDDoubleArrayClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/other/ComplexArrayContainer", &_ComplexArrayContainerClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/other/ComplexArrayContainer", &_ComplexArrayContainerClazz);
 
 
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGRealScalar", &_OGRealScalarClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGComplexScalar", &_OGComplexScalarClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/scalar/OGIntegerScalar", &_OGIntegerScalarClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealDenseMatrix", &_OGRealDenseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexDenseMatrix", &_OGComplexDenseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealDiagonalMatrix", &_OGRealDiagonalMatrixClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexDiagonalMatrix", &_OGComplexDiagonalMatrixClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGRealSparseMatrix", &_OGRealSparseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/longdog/datacontainers/matrix/OGComplexSparseMatrix", &_OGComplexSparseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/longdog/exceptions/MathsExceptionNativeConversion", &_MathsExceptionNativeConversionClazz);
-  registerGlobalClassReference("com/opengamma/longdog/exceptions/MathsExceptionNativeComputation", &_MathsExceptionNativeComputationClazz);
-  registerGlobalClassReference("com/opengamma/longdog/exceptions/MathsExceptionNativeUnspecified", &_MathsExceptionNativeUnspecifiedClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/scalar/OGRealScalar", &_OGRealScalarClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/scalar/OGComplexScalar", &_OGComplexScalarClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/scalar/OGIntegerScalar", &_OGIntegerScalarClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGRealDenseMatrix", &_OGRealDenseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGComplexDenseMatrix", &_OGComplexDenseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGRealDiagonalMatrix", &_OGRealDiagonalMatrixClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGComplexDiagonalMatrix", &_OGComplexDiagonalMatrixClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGRealSparseMatrix", &_OGRealSparseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGComplexSparseMatrix", &_OGComplexSparseMatrixClazz);
+  registerGlobalClassReference("com/opengamma/maths/exceptions/MathsExceptionNativeConversion", &_MathsExceptionNativeConversionClazz);
+  registerGlobalClassReference("com/opengamma/maths/exceptions/MathsExceptionNativeComputation", &_MathsExceptionNativeComputationClazz);
+  registerGlobalClassReference("com/opengamma/maths/exceptions/MathsExceptionNativeUnspecified", &_MathsExceptionNativeUnspecifiedClazz);
 
   //
   // REGISTER METHOD REFERENCES
   //
 
   registerGlobalMethodReference(&_DoubleClazz, &_DoubleClazz_init, "<init>", "(D)V");
-  registerGlobalMethodReference(&_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/longdog/datacontainers/ExprEnum;");
+  registerGlobalMethodReference(&_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/maths/datacontainers/ExprEnum;");
   registerGlobalMethodReference(&_OGTerminalClazz, &_OGTerminalClazz_getData, "getData",  "()[D");
   registerGlobalMethodReference(&_OGIntegerScalarClazz, &_OGIntegerScalarClazz_getValue, "getValue",  "()I");
   registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getRows, "getRows",  "()I");
   registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getCols, "getCols",  "()I");
   registerGlobalMethodReference(&_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getColPtr, "getColPtr",  "()[I");
   registerGlobalMethodReference(&_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getRowIdx, "getRowIdx",  "()[I");
-  registerGlobalMethodReference(&_OGExprClazz, &_OGExprClazz_getExprs, "getExprs",  "()[Lcom/opengamma/longdog/datacontainers/OGNumeric;");
+  registerGlobalMethodReference(&_OGExprClazz, &_OGExprClazz_getExprs, "getExprs",  "()[Lcom/opengamma/maths/datacontainers/OGNumeric;");
   registerGlobalMethodReference(&_OGExprClazz, &_OGExprClazz_getNExprs, "getNExprs",  "()I");  
   registerGlobalMethodReference(&_ComplexArrayContainerClazz, &_ComplexArrayContainerClazz_ctor_DAoA_DAoA, "<init>","([[D[[D)V");
   registerGlobalMethodReference(&_OGRealScalarClazz, &_OGRealScalarClazz_init, "<init>", "(Ljava/lang/Number;)V");

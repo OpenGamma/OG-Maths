@@ -13,7 +13,7 @@ exprenum_java = """\
  * This file is generated during the DOGMA2 build process: src/generator/generator.py
  */
 
-package com.opengamma.longdog.datacontainers;
+package com.opengamma.maths.datacontainers;
 
 /**
  * Enumerate expr types.

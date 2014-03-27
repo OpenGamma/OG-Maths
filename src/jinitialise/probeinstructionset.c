@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "debug.h"
 #include "warningmacros.h"
-#include "com_opengamma_longdog_nativeloader_NativeLibraries.h"
+#include "com_opengamma_maths_nativeloader_NativeLibraries.h"
 #include "probeinstructionset.h"
 
 #ifdef __cplusplus
@@ -22,7 +22,7 @@ extern "C" {
 //
 jobject instrEnumAsjobj(JNIEnv * env, jclass containerClass, char * field)
 {
-  jfieldID jfieldID_enum = (*env)->GetStaticFieldID(env,containerClass,field,"Lcom/opengamma/longdog/nativeloader/SupportedInstructionSet;");
+  jfieldID jfieldID_enum = (*env)->GetStaticFieldID(env,containerClass,field,"Lcom/opengamma/maths/nativeloader/SupportedInstructionSet;");
   if(!jfieldID_enum )
   {
     DEBUG_PRINT("Failed to access SupportedInstructionSet %s fieldID!\n",field);
@@ -38,15 +38,15 @@ jobject instrEnumAsjobj(JNIEnv * env, jclass containerClass, char * field)
 }
 
 /*
- * Class:     com_opengamma_longdog_nativeloader_NativeLibraries
+ * Class:     com_opengamma_maths_nativeloader_NativeLibraries
  * Method:    getSupportedInstructionSet
- * Signature: ()Lcom/opengamma/longdog/nativeloader/SupportedInstructionSet;
+ * Signature: ()Lcom/opengamma/maths/nativeloader/SupportedInstructionSet;
  */
-JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_nativeloader_NativeLibraries_getSupportedInstructionSet
+JNIEXPORT jobject JNICALL Java_com_opengamma_maths_nativeloader_NativeLibraries_getSupportedInstructionSet
   (JNIEnv * env, jclass SUPPRESS_UNUSED clazz)
 {
 
-  jclass jclass_instrEnum = (*env)->FindClass(env,"com/opengamma/longdog/nativeloader/SupportedInstructionSet");
+  jclass jclass_instrEnum = (*env)->FindClass(env,"com/opengamma/maths/nativeloader/SupportedInstructionSet");
   if(!jclass_instrEnum )
   {
     DEBUG_PRINT("Failed to access SupportedInstructionSet enum!\n");

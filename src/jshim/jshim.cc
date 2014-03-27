@@ -5,7 +5,7 @@
  */
 
 #include <sstream>
-#include "com_opengamma_longdog_materialisers_Materialisers.h"
+#include "com_opengamma_maths_materialisers_Materialisers.h"
 #include "entrypt.hh"
 #include "jvmmanager.hh"
 #include "expression.hh"
@@ -229,11 +229,11 @@ extern "C" {
 #endif
 
 /*
- * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Class:     com_opengamma_maths_materialisers_Materialisers
  * Method:    materialiseToJDoubleArrayOfArrays
- * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)[[D
+ * Signature: (Lcom/opengamma/maths/datacontainers/OGNumeric;)[[D
  */
-JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJDoubleArrayOfArrays
+JNIEXPORT jobjectArray JNICALL Java_com_opengamma_maths_materialisers_Materialisers_materialiseToJDoubleArrayOfArrays
 (JNIEnv *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
 {
   DEBUG_PRINT("Entering materialise function\n");
@@ -281,11 +281,11 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_longdog_materialisers_Material
 }
 
 /*
- * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Class:     com_opengamma_maths_materialisers_Materialisers
  * Method:    materialiseToJComplexArrayContainer
- * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Lcom/opengamma/longdog/datacontainers/other/ComplexArrayContainer;
+ * Signature: (Lcom/opengamma/maths/datacontainers/OGNumeric;)Lcom/opengamma/maths/datacontainers/other/ComplexArrayContainer;
  */
-JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJComplexArrayContainer
+JNIEXPORT jobject JNICALL Java_com_opengamma_maths_materialisers_Materialisers_materialiseToJComplexArrayContainer
 (JNIEnv *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
 {
   DEBUG_PRINT("materialiseToJComplexArrayContainer\n");
@@ -341,11 +341,11 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_longdog_materialisers_Materialisers
 }
 
 /*
- * Class:     com_opengamma_longdog_materialisers_Materialisers
+ * Class:     com_opengamma_maths_materialisers_Materialisers
  * Method:    materialiseToJBoolean
- * Signature: (Lcom/opengamma/longdog/datacontainers/OGNumeric;)Z
+ * Signature: (Lcom/opengamma/maths/datacontainers/OGNumeric;)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToJBoolean
+JNIEXPORT jboolean JNICALL Java_com_opengamma_maths_materialisers_Materialisers_materialiseToJBoolean
 (JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject SUPPRESS_UNUSED obj)
 {
   jboolean returnVal = 0;
@@ -353,7 +353,7 @@ JNIEXPORT jboolean JNICALL Java_com_opengamma_longdog_materialisers_Materialiser
 }
 
 JNIEXPORT jobject JNICALL
-Java_com_opengamma_longdog_materialisers_Materialisers_materialiseToOGTerminal(JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
+Java_com_opengamma_maths_materialisers_Materialisers_materialiseToOGTerminal(JNIEnv SUPPRESS_UNUSED *env, jclass SUPPRESS_UNUSED clazz, jobject obj)
 {
   DEBUG_PRINT("materialiseToOGTerminal\n");
   DEBUG_PRINT("Calling convert::createExpression\n");
