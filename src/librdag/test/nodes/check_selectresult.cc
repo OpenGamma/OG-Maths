@@ -23,11 +23,10 @@ using ::testing::Values;
  */
 
 
-TEST(SELECTRESULTTests,NORM2)
+TEST(SELECTRESULTTests,CheckBehaviour)
 {
-  OGTerminal* r0 = new OGRealScalar(1.0);
-  OGTerminal* r1 = new OGRealScalar(2.0);
-  OGTerminal* r2 = new OGRealScalar(3.0);
+  OGTerminal* one = new OGRealScalar(1.0);
+  OGTerminal* r0 = new OGRealScalar(10.0);
   ArgContainer *args = new ArgContainer();
   args->push_back(r0);
   SVD* svd = new SVD(args);
@@ -46,7 +45,7 @@ TEST(SELECTRESULTTests,NORM2)
   }
   const RegContainer * regs = s0->getRegs();
   const OGNumeric * answer = (*regs)[0];
-  EXPECT_TRUE((*r0) ==~ (*(answer->asOGTerminal())));
+  EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 1 (S)
   ArgContainer* args1 = new ArgContainer();
@@ -60,7 +59,7 @@ TEST(SELECTRESULTTests,NORM2)
   }
   regs = s1->getRegs();
   answer = (*regs)[0];
-  EXPECT_TRUE((*r1) ==~ (*(answer->asOGTerminal())));
+  EXPECT_TRUE((*r0) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 2 (V)
   ArgContainer* args2 = new ArgContainer();
@@ -74,13 +73,12 @@ TEST(SELECTRESULTTests,NORM2)
   }
   regs = s2->getRegs();
   answer = (*regs)[0];
-  EXPECT_TRUE((*r2) ==~ (*(answer->asOGTerminal())));
+  EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
 
   // Clean up
+  delete one;
   delete s0;
   delete d;
-  delete r1;
-  delete r2;
   delete el0;
   delete s1;
   delete el1;

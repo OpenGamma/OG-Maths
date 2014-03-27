@@ -14,6 +14,8 @@ namespace lapack {
 namespace detail
 {
   char N = 'N';
+  char A = 'A';
+  char T = 'T';
   int ione = 1;
   real16 rone = 1.e0;
   complex16 cone = {1.e0, 0.e0};
@@ -23,6 +25,8 @@ namespace detail
 
 // f77 constants
 char *      N     = &detail::N;
+char *      A     = &detail::A;
+char *      T     = &detail::T;
 int *       ione  = &detail::ione;
 real16 *    rone  = &detail::rone;
 complex16 * cone  = &detail::cone;

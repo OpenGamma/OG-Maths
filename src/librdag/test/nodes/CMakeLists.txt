@@ -22,9 +22,10 @@ add_multitarget_library(testhelper
                         TARGETS ${TARGET_TYPES})
 
 set(TESTS
+    check_mtimes
     check_norm2
     check_selectresult
-    check_mtimes
+    check_svd
    )
 
 # Compile and link each test and add to the list of tests

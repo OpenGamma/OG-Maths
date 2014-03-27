@@ -264,11 +264,15 @@ template <typename T> class OGMatrix: public OGArray<T>
     virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
     virtual real16 ** toReal16ArrayOfArrays() const override;
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
+    virtual ExprType_t getType() const override;
     T** toArrayOfArrays() const;
 };
 
 template<> real16 ** OGMatrix<real16>::toReal16ArrayOfArrays() const;
 template<> real16 ** OGMatrix<complex16>::toReal16ArrayOfArrays() const;
+
+template<> ExprType_t OGMatrix<real16>::getType() const ;
+template<> ExprType_t OGMatrix<complex16>::getType() const ;
 
 extern template class OGMatrix<real16>;
 extern template class OGMatrix<complex16>;
@@ -416,6 +420,15 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual OGTerminal * createOwningCopy() const override;
     virtual OGTerminal * createComplexOwningCopy() const override;
 };
+
+
+template<typename T>
+OGTerminal * makeConcreteDenseMatrix(T * data, int rows, int cols, DATA_ACCESS access);
+// PTS
+template<>
+OGTerminal * makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access);
+template<>
+OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access);
 
 } // end namespace librdag
 

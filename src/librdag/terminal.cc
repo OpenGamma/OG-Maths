@@ -734,16 +734,15 @@ template<typename T>
 void
 OGMatrix<T>::debug_print() const
 {
-  cout << std::endl;
-  int lim = (this->getCols()-1);
+  cout << std::endl << "OGMatrix<T>:" << std::endl;
   int rows = this->getRows();
   for(int i = 0 ; i < rows; i++)
   {
-    for(int j = 0 ; j < lim-1; j++)
+    for(int j = 0 ; j < this->getCols()-1; j++)
     {
-      cout << setprecision(__DEBUG_PRECISION) << this->getData()[j*rows+i] << ", ";
+      cout << setprecision(__DEBUG_PRECISION) << this->getData()[j*this->getRows()+i] << ", ";
     }
-    cout << this->getData()[lim*rows+i] << std::endl;
+    cout << setprecision(__DEBUG_PRECISION) << this->getData()[(this->getCols() - 1)*this->getRows()+i] << std::endl;
   }
 }
 
@@ -808,6 +807,20 @@ real16 **
 OGMatrix<complex16>::toReal16ArrayOfArrays() const
 {
   throw rdag_error("Error in in partial template specialisation for OGMatrix<complex16>::toReal16ArrayOfArrays(). Cannot convert a matrix backed by complex16 type to a real16 type.");
+}
+
+template<>
+ExprType_t
+OGMatrix<real16>::getType() const
+{
+  return REAL_MATRIX_ENUM;
+}
+
+template<>
+ExprType_t
+OGMatrix<complex16>::getType() const
+{
+  return COMPLEX_MATRIX_ENUM;
 }
 
 template class OGMatrix<real16>;
@@ -1482,5 +1495,27 @@ OGComplexSparseMatrix::createComplexOwningCopy() const
 {
   return this->createOwningCopy();
 }
+
+
+// Concrete template factory for dense matrices
+
+template<typename T>
+OGTerminal * makeConcreteDenseMatrix(T * data, int rows, int cols, DATA_ACCESS access)
+{
+  throw rdag_error("Concrete type unknown");
+}
+
+template<>
+OGTerminal * makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access)
+{
+  return new OGRealMatrix(data, rows, cols, access);
+}
+
+template<>
+OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access)
+{
+  return new OGComplexMatrix(data, rows, cols, access);
+}
+
 
 } // namespace librdag
