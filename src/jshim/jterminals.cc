@@ -58,7 +58,13 @@ JOGRealScalar::JOGRealScalar(jobject obj): OGRealScalar(0.0)
 
 JOGRealScalar::~JOGRealScalar()
 {
-  unbindOGArrayData<real16, jdoubleArray>(this->_dataRef, _backingObject);
+  try {
+    unbindOGArrayData<real16, jdoubleArray>(this->_dataRef, _backingObject);
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGRealScalar): convert_error thrown when unbinding Java array data" << endl;
+  }
   this->_backingObject = nullptr;
   this->_dataRef = nullptr;
 }
@@ -88,7 +94,14 @@ JOGComplexScalar::JOGComplexScalar(jobject obj): OGComplexScalar(0.0)
 
 JOGComplexScalar::~JOGComplexScalar()
 {
-  unbindOGArrayData<complex16, jdoubleArray>(this->_dataRef, _backingObject);
+  try {
+    unbindOGArrayData<complex16, jdoubleArray>(this->_dataRef, _backingObject);
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGComplexScalar): convert_error thrown when unbinding Java array data" << endl;
+  }
+
   this->_backingObject = nullptr;
   this->_dataRef = nullptr;
 }
@@ -154,7 +167,14 @@ JOGRealMatrix::JOGRealMatrix(jobject obj): OGRealMatrix
 
 JOGRealMatrix::~JOGRealMatrix()
 {
-  unbindOGArrayData<real16, jdoubleArray>(this->getData(), _backingObject);
+  try {
+    unbindOGArrayData<real16, jdoubleArray>(this->getData(), _backingObject);
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGRealMatrix): convert_error thrown when unbinding Java array data" << endl;
+  }
+
   this->_backingObject = nullptr;
 }
 
@@ -179,7 +199,14 @@ JOGComplexMatrix::JOGComplexMatrix(jobject obj): OGComplexMatrix
 }
 
 JOGComplexMatrix::~JOGComplexMatrix() {
-  unbindOGArrayData<complex16, jdoubleArray>(this->getData(), _backingObject);
+  try {
+    unbindOGArrayData<complex16, jdoubleArray>(this->getData(), _backingObject);
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGComplexMatrix): convert_error thrown when unbinding Java array data" << endl;
+  }
+
   this->_backingObject = nullptr;
 }
 
@@ -205,7 +232,14 @@ JOGLogicalMatrix::JOGLogicalMatrix(jobject obj): OGLogicalMatrix
 
 JOGLogicalMatrix::~JOGLogicalMatrix()
 {
-  unbindOGArrayData<real16, jdoubleArray>(this->getData(), _backingObject);
+  try {
+    unbindOGArrayData<real16, jdoubleArray>(this->getData(), _backingObject);
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGLogicalMatrix): convert_error thrown when unbinding Java array data" << endl;
+  }
+
   this->_backingObject = nullptr;
 }
 
@@ -233,9 +267,16 @@ JOGRealSparseMatrix::JOGRealSparseMatrix(jobject obj): OGRealSparseMatrix
 
 JOGRealSparseMatrix::~JOGRealSparseMatrix()
 {
-  unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(), _backingObject, JVMManager::getOGTerminalClazz_getData());
-  unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getRowIdx()), _backingObject, JVMManager::getOGSparseMatrixClazz_getRowIdx());
-  unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getColPtr()), _backingObject, JVMManager::getOGSparseMatrixClazz_getColPtr());
+  try {
+    unbindPrimitiveArrayData<real16, jdoubleArray>(this->getData(), _backingObject, JVMManager::getOGTerminalClazz_getData());
+    unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getRowIdx()), _backingObject, JVMManager::getOGSparseMatrixClazz_getRowIdx());
+    unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getColPtr()), _backingObject, JVMManager::getOGSparseMatrixClazz_getColPtr());
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGRealSparseMatrix): convert_error thrown when unbinding Java array data" << endl;
+  }
+
   this->_backingObject = nullptr;
 }
 
@@ -274,9 +315,16 @@ JOGComplexSparseMatrix::JOGComplexSparseMatrix(jobject obj): OGComplexSparseMatr
 
 JOGComplexSparseMatrix::~JOGComplexSparseMatrix()
 {
-  unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(), _backingObject, JVMManager::getOGTerminalClazz_getData());
-  unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getRowIdx()), _backingObject, JVMManager::getOGSparseMatrixClazz_getRowIdx());
-  unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getColPtr()), _backingObject, JVMManager::getOGSparseMatrixClazz_getColPtr());
+  try {
+    unbindPrimitiveArrayData<complex16, jdoubleArray>(this->getData(), _backingObject, JVMManager::getOGTerminalClazz_getData());
+    unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getRowIdx()), _backingObject, JVMManager::getOGSparseMatrixClazz_getRowIdx());
+    unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getColPtr()), _backingObject, JVMManager::getOGSparseMatrixClazz_getColPtr());
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGComplexSparseMatrix): convert_error thrown when unbinding Java array data" << endl;
+  }
+
   this->_backingObject = nullptr;
 }
 
@@ -314,7 +362,14 @@ JOGRealDiagonalMatrix::JOGRealDiagonalMatrix(jobject obj):OGRealDiagonalMatrix
 
 JOGRealDiagonalMatrix::~JOGRealDiagonalMatrix()
 {
-  unbindOGArrayData<real16, jdoubleArray>(this->getData(), _backingObject);
+  try {
+    unbindOGArrayData<real16, jdoubleArray>(this->getData(), _backingObject);
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGRealDiagonalMatrix): convert_error thrown when unbinding Java array data" << endl;
+  }
+
   this->_backingObject = nullptr;
 }
 
@@ -340,7 +395,14 @@ JOGComplexDiagonalMatrix::JOGComplexDiagonalMatrix(jobject obj):OGComplexDiagona
 
 JOGComplexDiagonalMatrix::~JOGComplexDiagonalMatrix()
 {
-  unbindOGArrayData<complex16, jdoubleArray>(this->getData(), _backingObject);
+  try {
+    unbindOGArrayData<complex16, jdoubleArray>(this->getData(), _backingObject);
+  }
+  catch (convert_error e)
+  {
+    cerr << "Warning (~JOGRealDiagonalMatrix): convert_error thrown when unbinding Java array data" << endl;
+  }
+
   this->_backingObject = nullptr;
 }
 
