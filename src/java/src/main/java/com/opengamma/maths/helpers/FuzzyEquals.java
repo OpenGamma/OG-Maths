@@ -8,7 +8,7 @@ package com.opengamma.maths.helpers;
 
 /**
  * Tests for values being equal allowing for a level of floating point fuzz
- * Based on our nyqwk2 C++ code.
+ * Based on the OG-Maths C++ fuzzy equals code .
  */
 public class FuzzyEquals {
 

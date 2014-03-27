@@ -15,7 +15,7 @@ import com.opengamma.maths.helpers.FuzzyEquals;
 
 /**
  * Tests for values being equal allowing for a level of floating point fuzz
- * Based on our nyqwk2 C++ code.
+ * Based on the OG-Maths C++ fuzzy equals test code.
  */
 @Test
 public class FuzzyEqualsTest {

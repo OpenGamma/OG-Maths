@@ -9,11 +9,11 @@
 				<relativePath></relativePath>
 		</parent>
 		<groupId>com.opengamma.maths</groupId>
-		<artifactId>nyqwk2</artifactId>
+		<artifactId>og-maths</artifactId>
 		<version>0.1</version>
 		<packaging>jar</packaging>
-		<name>nyqwk2</name>
-		<description>OpenGamma nyqwk2</description>
+		<name>OG-Maths</name>
+		<description>OpenGamma Maths</description>
 
 		<dependencies>
 				<dependency>
