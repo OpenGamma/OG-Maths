@@ -252,11 +252,9 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_maths_materialisers_Materialis
     const librdag::OGTerminal* answer = entrypt(chain);
     DEBUG_PRINT("Returning from entrypt function\n");
 
-    DispatchToReal16ArrayOfArrays *visitor = new DispatchToReal16ArrayOfArrays();
-    answer->accept(*visitor);
-
-    returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
-    delete visitor;
+    DispatchToReal16ArrayOfArrays visitor{};
+    answer->accept(visitor);
+    returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, visitor.getData(), visitor.getRows(), visitor.getCols());
   }
   catch (convert_error e)
   {
@@ -306,13 +304,11 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_maths_materialisers_Materialisers_m
     const librdag::OGTerminal* answer = entrypt(chain);
 
 
-    DispatchToComplex16ArrayOfArrays *visitor = new DispatchToComplex16ArrayOfArrays();
-    answer->accept(*visitor);
+    DispatchToComplex16ArrayOfArrays visitor{};
+    answer->accept(visitor);
 
-    jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
-    jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor->getData(), visitor->getRows(), visitor->getCols());
-
-    delete visitor;
+    jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor.getData(), visitor.getRows(), visitor.getCols());
+    jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor.getData(), visitor.getRows(), visitor.getCols());
 
     returnVal = env->NewObject(JVMManager::getComplexArrayContainerClazz(),
                                JVMManager::getComplexArrayContainerClazz_ctor_DAoA_DAoA(),
@@ -370,10 +366,9 @@ Java_com_opengamma_maths_materialisers_Materialisers_materialiseToOGTerminal(JNI
     DEBUG_PRINT("Calling entrypt function\n");
     const librdag::OGTerminal* answer = entrypt(chain);
 
-    DispatchToOGTerminal *visitor = new DispatchToOGTerminal(env);
-    answer->accept(*visitor);
-    result = visitor->getObject();
-    delete visitor;
+    DispatchToOGTerminal visitor{env};
+    answer->accept(visitor);
+    result = visitor.getObject();
   }
   catch (convert_error e)
   {
