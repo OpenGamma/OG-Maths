@@ -7,7 +7,7 @@
 set(CMAKE_JAVA_INCLUDE_PATH ${CMAKE_JAVA_INCLUDE_PATH} ${PATH_AND_JAR_NAME})
 set(CMAKE_JAVA_INCLUDE_PATH ${CMAKE_JAVA_INCLUDE_PATH} ${JAR_TEST_NAME})
 
-set(JPACKAGEFQN "com.opengamma.longdog")
+set(JPACKAGEFQN "com.opengamma.maths")
 fqn_to_dir(JPACKAGEDIR ${JPACKAGEFQN})
 
 set(JAVA_FILES
@@ -41,7 +41,7 @@ set(JAVA_FILES
     datacontainers/scalars/OGComplexScalarTest.java
     datacontainers/other/OGResultTest.java
     datacontainers/other/ComplexArrayContainerTest.java
-    datacontainers/TestLongdog.java
+    datacontainers/TestGeneral.java
     )
 
 foreach(JFILE ${JAVA_FILES})

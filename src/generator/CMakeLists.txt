@@ -109,7 +109,7 @@ add_custom_target(exprenum_hh DEPENDS ${EXPRENUM_HH})
 
 # For refreshing the Java ExprEnum
 
-set(EXPRENUM_JAVA ${longdog_SOURCE_DIR}/src/java/src/main/java/com/opengamma/longdog/datacontainers/ExprEnum.java)
+set(EXPRENUM_JAVA ${og_maths_SOURCE_DIR}/src/java/src/main/java/com/opengamma/maths/datacontainers/ExprEnum.java)
 
 add_custom_target(exprenum_java
                    COMMAND ${GENERATOR} -o ${EXPRENUM_JAVA} --exprenum-java

@@ -34,8 +34,8 @@ set(RDAG_SOURCES containers.cc
 include(${LAPACK_BUILDINFO})
 
 add_multitarget_library(rdag
-                        VERSION ${longdog_VERSION}
-                        SOVERSION ${longdog_VERSION_MAJOR}
+                        VERSION ${og_maths_VERSION}
+                        SOVERSION ${og_maths_VERSION_MAJOR}
                         SOURCES ${RDAG_SOURCES}
                         DEPENDS runners_cc dispatch_cc expression_cc numeric_cc exprenum_hh
                         LINK_MULTILIBRARIES oglapack ogblas ogxerbla

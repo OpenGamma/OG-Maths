@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>nyqwk2</name>
+	<name>og-maths</name>
 	<comment></comment>
 	<projects>
-		<project>nyqwk2</project>
+		<project>og-maths</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

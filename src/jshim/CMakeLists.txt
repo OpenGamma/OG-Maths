@@ -15,8 +15,8 @@ set(JSHIM_SOURCES jshim.cc jterminals.cc jbindings.cc exprfactory.cc jdispatch.c
                   ${JSHIM_GENERATED})
 
 add_multitarget_library(jshim
-                        VERSION ${longdog_VERSION}
-                        SOVERSION ${longdog_VERSION_MAJOR}
+                        VERSION ${og_maths_VERSION}
+                        SOVERSION ${og_maths_VERSION_MAJOR}
                         SOURCES ${JSHIM_SOURCES}
                         TARGETS ${TARGET_TYPES}
                         DEPENDS createexpr_cc
@@ -25,8 +25,8 @@ add_multitarget_library(jshim
 
 
 add_multitarget_library(jshimtest
-                        VERSION ${longdog_VERSION}
-                        SOVERSION ${longdog_VERSION_MAJOR}
+                        VERSION ${og_maths_VERSION}
+                        SOVERSION ${og_maths_VERSION_MAJOR}
                         SOURCES ${JSHIM_SOURCES}
                         TARGETS ${TARGET_TYPES}
                         DEPENDS createexpr_cc
