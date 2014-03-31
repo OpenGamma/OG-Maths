@@ -25,26 +25,25 @@ namespace convert {
 
 using namespace librdag;
 
-OGNumeric* createExprWithID(jlong ID, jobject obj)
+OGNumeric* translateNode(JNIEnv* env, jobject obj, const OGNumeric* arg0, const OGNumeric* arg1)
 {
   librdag::OGNumeric * _expr = nullptr;
-  vector<const OGNumeric*>* args;
 
-  switch(ID)
+  // Get the type of the node
+  jobject typeobj = env->CallObjectMethod(obj, JVMManager::getOGNumericClazz_getType());
+  checkEx(env);
+  jlong type = env->GetLongField(typeobj, JVMManager::getOGExprEnumClazz__hashdefined());
+
+  switch(type)
   {
 %(switch_cases)s
   default:
   {
     stringstream s;
-    s << "Unknown node type " << ID;
+    s << "Unknown node type " << type;
     throw convert_error(s.str());
   }
   break;
-  }
-
-  if(_expr == nullptr)
-  {
-    throw convert_error("_expr is NULL, and probably hasn't been set by the factory");
   }
 
   return _expr;
@@ -63,11 +62,10 @@ terminal_case = """\
 expr_case = """\
     case %(enumname)s:
       DEBUG_PRINT("%(typename)s function\\n");
-      args = generateArgs(obj);
       _expr = new %(typename)s(%(args)s);
       break;
 """
 
-unary_args = "(*args)[0]"
+unary_args = "arg0"
 
-binary_args = "(*args)[0], (*args)[1]"
+binary_args = "arg0, arg1"
