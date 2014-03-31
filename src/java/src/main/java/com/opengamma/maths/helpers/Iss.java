@@ -14,6 +14,12 @@ import com.opengamma.maths.datacontainers.OGTerminal;
 public class Iss {
 
   /**
+   * Default ctor.
+   */
+  private Iss() {
+  };
+
+  /**
    * Check if a terminal is a type that can represent numbers in complex space.
    * @param terminal the terminal to check.
    * @return true if {@code terminal} can support complex numbers, false else.
