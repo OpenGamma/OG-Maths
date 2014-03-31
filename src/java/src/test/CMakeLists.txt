@@ -34,11 +34,13 @@ set(JAVA_FILES
     datacontainers/matrix/OGComplexDiagonalMatrixTest.java
     datacontainers/matrix/OGComplexDenseMatrixTest.java
     datacontainers/matrix/OGComplexSparseMatrixTest.java
+    datacontainers/matrix/OGLogicalMatrixTest.java
     datacontainers/matrix/OGRealDiagonalMatrixTest.java
     datacontainers/matrix/OGRealSparseMatrixTest.java
     datacontainers/matrix/OGRealDenseMatrixTest.java
-    datacontainers/scalars/OGRealScalarTest.java
     datacontainers/scalars/OGComplexScalarTest.java
+    datacontainers/scalars/OGIntegerScalarTest.java
+    datacontainers/scalars/OGRealScalarTest.java
     datacontainers/other/OGResultTest.java
     datacontainers/other/ComplexArrayContainerTest.java
     )

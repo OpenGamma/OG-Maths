@@ -15,22 +15,23 @@ import org.testng.annotations.Test;
 import com.opengamma.maths.datacontainers.ExprEnum;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
+import com.opengamma.maths.datacontainers.scalar.OGIntegerScalar;
 import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.exceptions.MathsExceptionNullPointer;
 import com.opengamma.maths.helpers.FuzzyEquals;
 
 /**
- * Tests the real scalar class
+ * Tests the integer scalar class
  */
 @Test
-public class OGRealScalarTest {
-  OGRealScalar defaultVal = new OGRealScalar(1.4);
-  OGRealScalar same = new OGRealScalar(1.4);
-  OGRealDenseMatrix diffclass = new OGRealDenseMatrix(1.4);
-  OGRealScalar diffnumber = new OGRealScalar(4.1);
-  OGRealScalar withindiffnumber = new OGRealScalar(1.4 + FuzzyEquals.getDefaultTolerance() * 0.9);
-  OGComplexScalar diffdomain = new OGComplexScalar(1.4);
+public class OGIntegerScalarTest {
+  OGIntegerScalar defaultVal = new OGIntegerScalar(4);
+  OGIntegerScalar same = new OGIntegerScalar(4);
+  OGRealDenseMatrix diffclass = new OGRealDenseMatrix(4);
+  OGIntegerScalar diffnumber = new OGIntegerScalar(1);
+  OGIntegerScalar withindiffnumber = new OGIntegerScalar(4 + FuzzyEquals.getDefaultTolerance() * 0.9); // pointless
+  OGComplexScalar diffdomain = new OGComplexScalar(4);
   Double NULL = null;
 
   @Test
@@ -75,12 +76,12 @@ public class OGRealScalarTest {
 
   @Test
   public void getDataTest() {
-    assertTrue(Arrays.equals(defaultVal.getData(), new double[] { 1.4 }));
+    assertTrue(Arrays.equals(defaultVal.getData(), new double[] { 4 }));
   }
 
   @Test
   public void testGetTypeEnum() {
-    assertTrue(defaultVal.getType().equals(ExprEnum.OGRealScalar));
+    assertTrue(defaultVal.getType().equals(ExprEnum.OGIntegerScalar));
   }
 
   @Test
