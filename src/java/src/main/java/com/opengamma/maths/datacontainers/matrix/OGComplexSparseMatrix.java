@@ -491,4 +491,23 @@ public class OGComplexSparseMatrix extends OGSparseMatrix {
 
   }
 
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    final int rows = this.getRows();
+    final int cols = this.getCols();
+    final int[] colPtr = this.getColPtr();
+    final int[] rowIdx = this.getRowIdx();
+    final double[] data = this.getData();
+    double[] tmp = new double[2 * rows * cols];
+    int idx, ptr = 0;
+    for (int ir = 0; ir < cols; ir++) {
+      for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++) {
+        idx = 2 * (rowIdx[i] + ir * rows);
+        tmp[idx] = data[ptr++];
+        tmp[idx + 1] = data[ptr++];
+      }
+    }
+    return new OGComplexDenseMatrix(tmp, rows, cols);
+  }
+
 }

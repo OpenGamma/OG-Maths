@@ -6,6 +6,7 @@
 package com.opengamma.maths.datacontainers.matrix;
 
 import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
 
 import java.util.Arrays;
 
@@ -16,6 +17,7 @@ import com.opengamma.maths.datacontainers.matrix.OGComplexSparseMatrix;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.exceptions.MathsExceptionNullPointer;
+import com.opengamma.maths.helpers.FuzzyEquals;
 
 /**
  * Tests the complex sparse matrix class
@@ -38,6 +40,19 @@ public class OGComplexSparseMatrixTest {
     { new OGComplexScalar(5, 0), new OGComplexScalar(0, 60), new OGComplexScalar(7, 70), new OGComplexScalar(0, 0) }, //
     { new OGComplexScalar(0, 90), new OGComplexScalar(10, 100), new OGComplexScalar(11, 0), new OGComplexScalar(0, 120) }, //
     { new OGComplexScalar(0, 0), new OGComplexScalar(0, 0), new OGComplexScalar(15, 0), new OGComplexScalar(0, 160) }, };
+
+  OGComplexSparseMatrix defaultVal = new OGComplexSparseMatrix(compressedColPtr, compressedRowIdx, compressedMixedData, 4, 4);
+  OGComplexSparseMatrix same = new OGComplexSparseMatrix(compressedColPtr, compressedRowIdx, compressedMixedData, 4, 4);
+  OGComplexSparseMatrix withindiffnumber = new OGComplexSparseMatrix(compressedColPtr, compressedRowIdx, new double[] { 1 + FuzzyEquals.getDefaultTolerance() / 2, 10, 5, 0, 0, 90, 2, 20, 0, 60, 10,
+    100, 0, 30, 7, 70, 11, 0, 15, 0, 0, 120, 0, 160 }, 4, 4);
+  OGRealDenseMatrix diffclass = new OGRealDenseMatrix(1);
+  OGComplexSparseMatrix diffrows = new OGComplexSparseMatrix(compressedColPtr, compressedRowIdx, compressedMixedData, 5, 4);
+  OGComplexSparseMatrix diffcols = new OGComplexSparseMatrix(new int[] { 0, 3, 6, 10, 12, 12 }, compressedRowIdx, compressedMixedData, 4, 5);
+  OGComplexSparseMatrix diffcolptr = new OGComplexSparseMatrix(new int[] { 0, 3, 6, 11, 12 }, compressedRowIdx, compressedMixedData, 4, 4); // NOTE: invalid data layout
+  OGComplexSparseMatrix diffrowidx = new OGComplexSparseMatrix(compressedColPtr, new int[] { 0, 1, 3, 0, 1, 2, 0, 1, 2, 3, 2, 3 }, compressedMixedData, 4, 4);
+  OGComplexSparseMatrix diffnumber = new OGComplexSparseMatrix(compressedColPtr, compressedRowIdx, new double[] { 1337, 10, 5, 0, 0, 90, 2, 20, 0, 60, 10, 100, 0, 30, 7, 70, 11, 0, 15, 0, 0, 120, 0,
+    160 }, 4, 4);
+  OGComplexDenseMatrix diffdomain = new OGComplexDenseMatrix(realData, imagData);
 
   // sending in null ptr double[][] constructor
   @Test(expectedExceptions = MathsExceptionNullPointer.class)
@@ -453,6 +468,52 @@ public class OGComplexSparseMatrixTest {
   public void toStringTest() {
     OGComplexSparseMatrix D = new OGComplexSparseMatrix(new double[][] { { 1, -1 } }, new double[][] { { 1, -1 } });
     D.toString();
+  }
+
+  @Test
+  public void testHashCode() {
+    assertTrue(defaultVal.hashCode() == same.hashCode());
+    assertFalse(defaultVal.hashCode() == diffnumber.hashCode());
+  }
+
+  @Test
+  public void testEquals() {
+    assertTrue(defaultVal.equals(defaultVal));
+    assertTrue(defaultVal.equals(same));
+    assertFalse(defaultVal.equals(diffrows));
+    assertFalse(defaultVal.equals(diffcols));
+    assertFalse(defaultVal.equals(diffcolptr));
+    assertFalse(defaultVal.equals(diffrowidx));
+    assertFalse(defaultVal.equals(diffclass));
+    assertFalse(defaultVal.equals(diffnumber));
+  }
+
+  @Test
+  public void testFuzzyEquals() {
+    assertTrue(defaultVal.fuzzyequals(defaultVal));
+    assertTrue(defaultVal.fuzzyequals(same));
+    assertTrue(defaultVal.fuzzyequals(withindiffnumber));
+    assertFalse(defaultVal.fuzzyequals(diffrows));
+    assertFalse(defaultVal.fuzzyequals(diffcols));
+    assertFalse(defaultVal.fuzzyequals(diffcolptr));
+    assertFalse(defaultVal.fuzzyequals(diffrowidx));
+    assertFalse(defaultVal.fuzzyequals(diffclass));
+    assertFalse(defaultVal.fuzzyequals(diffnumber));
+    assertFalse(defaultVal.fuzzyequals(diffdomain));
+  }
+
+  @Test
+  public void testMathsEquals() {
+    assertTrue(defaultVal.mathsequals(defaultVal));
+    assertTrue(defaultVal.mathsequals(same));
+    assertTrue(defaultVal.mathsequals(withindiffnumber));
+    assertFalse(defaultVal.mathsequals(diffclass));
+    assertFalse(defaultVal.mathsequals(diffrows));
+    assertFalse(defaultVal.mathsequals(diffcols));
+    assertFalse(defaultVal.mathsequals(diffcolptr));
+    assertFalse(defaultVal.mathsequals(diffrowidx));
+    assertFalse(defaultVal.mathsequals(diffnumber));
+    assertTrue(defaultVal.mathsequals(diffdomain));
   }
 
 }

@@ -7,6 +7,8 @@
 package com.opengamma.maths.datacontainers.scalar;
 
 import com.opengamma.maths.datacontainers.ExprEnum;
+import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
+import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.helpers.Catchers;
 
@@ -50,4 +52,13 @@ public class OGIntegerScalar extends OGScalar {
     return str;
   }
 
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    return new OGComplexDenseMatrix(new double[][] { { this.getData()[0] } });
+  }
+
+  @Override
+  protected OGRealDenseMatrix asOGRealDenseMatrix() {
+    return new OGRealDenseMatrix(new double[][] { { this.getData()[0] } });
+  }
 }

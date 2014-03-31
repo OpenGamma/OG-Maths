@@ -6,6 +6,7 @@
 package com.opengamma.maths.datacontainers.matrix;
 
 import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
 
 import java.util.Arrays;
 
@@ -17,6 +18,7 @@ import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.exceptions.MathsExceptionNullPointer;
 import com.opengamma.maths.helpers.DenseMemoryManipulation;
+import com.opengamma.maths.helpers.FuzzyEquals;
 
 /**
  * Tests the {@link OGComplexDiagonalMatrix} Class
@@ -32,6 +34,16 @@ public class OGComplexDiagonalMatrixTest {
     { new OGComplexScalar(0.00), new OGComplexScalar(2, 20), new OGComplexScalar(0.00) }, //
     { new OGComplexScalar(0.00), new OGComplexScalar(0.00), new OGComplexScalar(3, 30) },//
     { new OGComplexScalar(0.00), new OGComplexScalar(0.00), new OGComplexScalar(0.00) } };
+
+  OGComplexDiagonalMatrix defaultVal = new OGComplexDiagonalMatrix(data4x3diagdreal, data4x3diagdimag, 4, 3);
+  OGComplexDiagonalMatrix same = new OGComplexDiagonalMatrix(data4x3diagdreal, data4x3diagdimag, 4, 3);
+  OGComplexDiagonalMatrix withindiffnumber = new OGComplexDiagonalMatrix(new double[] { 1 + FuzzyEquals.getDefaultTolerance() / 2, 2, 3 }, data4x3diagdimag, 4, 3);
+  OGComplexDenseMatrix diffclass = new OGComplexDenseMatrix(1);
+  OGComplexDiagonalMatrix diffrows = new OGComplexDiagonalMatrix(data4x3diagdreal, data4x3diagdimag, 7, 3);
+  OGComplexDiagonalMatrix diffcols = new OGComplexDiagonalMatrix(data4x3diagdreal, data4x3diagdimag, 4, 5);
+  OGComplexDiagonalMatrix diffnumber = new OGComplexDiagonalMatrix(new double[] { 1337, 2, 3 }, data4x3diagdimag, 4, 3);
+  OGComplexDenseMatrix samediffclass = new OGComplexDenseMatrix(new double[][] { { 1, 0, 0 }, { 0, 2, 0 }, { 0, 0, 3 }, { 0, 0, 0 } }, new double[][] { { 10, 0, 0 }, { 0, 20, 0 }, { 0, 0, 30 },
+    { 0, 0, 0 } });
 
   // sending in null ptr double[] constructor
   @Test(expectedExceptions = MathsExceptionNullPointer.class)
@@ -249,4 +261,51 @@ public class OGComplexDiagonalMatrixTest {
     assertTrue(D.getType().equals(ExprEnum.OGComplexDiagonalMatrix));
   }
 
+  @Test
+  public void toStringTest() {
+    OGComplexDiagonalMatrix D = new OGComplexDiagonalMatrix(data4x3diagdreal, data4x3diagdimag);
+    D.toString();
+  }
+  
+  @Test
+  public void testHashCode() {
+    assertTrue(defaultVal.hashCode() == same.hashCode());
+    assertFalse(defaultVal.hashCode() == diffnumber.hashCode());
+  }
+
+  @Test
+  public void testEquals() {
+    assertTrue(defaultVal.equals(defaultVal));
+    assertTrue(defaultVal.equals(same));
+    assertFalse(defaultVal.equals(diffrows));
+    assertFalse(defaultVal.equals(diffcols));
+    assertFalse(defaultVal.equals(diffclass));
+    assertFalse(defaultVal.equals(diffnumber));
+  }
+
+  @Test
+  public void testFuzzyEquals() {
+    assertTrue(defaultVal.fuzzyequals(defaultVal));
+    assertTrue(defaultVal.fuzzyequals(same));
+    assertTrue(defaultVal.fuzzyequals(withindiffnumber));
+    assertFalse(defaultVal.fuzzyequals(diffrows));
+    assertFalse(defaultVal.fuzzyequals(diffcols));
+    assertFalse(defaultVal.fuzzyequals(diffclass));
+    assertFalse(defaultVal.fuzzyequals(diffnumber));
+    assertFalse(defaultVal.fuzzyequals(samediffclass));
+  }
+
+  @Test
+  public void testMathsEquals() {
+    assertTrue(defaultVal.mathsequals(defaultVal));
+    assertTrue(defaultVal.mathsequals(same));
+    assertTrue(defaultVal.mathsequals(withindiffnumber));
+    assertFalse(defaultVal.mathsequals(diffclass));
+    assertFalse(defaultVal.mathsequals(diffrows));
+    assertFalse(defaultVal.mathsequals(diffcols));
+    assertFalse(defaultVal.mathsequals(diffnumber));
+    assertTrue(defaultVal.mathsequals(samediffclass));
+  }
+
 }
+

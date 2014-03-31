@@ -6,6 +6,7 @@
 package com.opengamma.maths.datacontainers.matrix;
 
 import com.opengamma.maths.datacontainers.ExprEnum;
+import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.exceptions.MathsExceptionNullPointer;
 import com.opengamma.maths.helpers.Catchers;
@@ -119,5 +120,23 @@ public class OGRealDiagonalMatrix extends OGDiagonalMatrix {
   @Override
   public int getCols() {
     return _cols;
+  }
+
+  @Override
+  protected OGRealDenseMatrix asOGRealDenseMatrix() {
+    double[] data = new double[_rows * _cols];
+    for (int k = 0; k < this.getData().length; k++) {
+      data[k * (_rows + 1)] = this.getData()[k];
+    }
+    return new OGRealDenseMatrix(data, _rows, _cols);
+  }
+
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    double[] data = new double[2 * _rows * _cols];
+    for (int k = 0; k < this.getData().length; k++) {
+      data[2 * k * (_rows + 1)] = this.getData()[k];
+    }
+    return new OGComplexDenseMatrix(data, _rows, _cols);
   }
 }

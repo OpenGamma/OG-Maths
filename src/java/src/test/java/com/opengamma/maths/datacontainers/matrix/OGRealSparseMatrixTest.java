@@ -6,6 +6,7 @@
 package com.opengamma.maths.datacontainers.matrix;
 
 import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
 
 import java.util.Arrays;
 
@@ -16,6 +17,7 @@ import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGRealSparseMatrix;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.exceptions.MathsExceptionNullPointer;
+import com.opengamma.maths.helpers.FuzzyEquals;
 
 /**
  * Tests the OGRealSparseMatrix Class
@@ -29,6 +31,17 @@ public class OGRealSparseMatrixTest {
 
   OGRealDenseMatrix getRow = new OGRealDenseMatrix(new double[] { 0, 5, 6, 0 }, 1, 4);
   OGRealDenseMatrix getCol = new OGRealDenseMatrix(new double[] { 2, 0, 5, 0 }, 4, 1);
+
+  OGRealSparseMatrix defaultVal = new OGRealSparseMatrix(compressedColPtr, compressedRowIdx, compressedData, 4, 4);
+  OGRealSparseMatrix same = new OGRealSparseMatrix(compressedColPtr, compressedRowIdx, compressedData, 4, 4);
+  OGRealSparseMatrix withindiffnumber = new OGRealSparseMatrix(compressedColPtr, compressedRowIdx, new double[] { 1.0 + FuzzyEquals.getDefaultTolerance() / 2, 3.0, 2.0, 5.0, 4.0, 6.0, 7.0 }, 4, 4);
+  OGRealDenseMatrix diffclass = new OGRealDenseMatrix(1);
+  OGRealSparseMatrix diffrows = new OGRealSparseMatrix(compressedColPtr, compressedRowIdx, compressedData, 5, 4);
+  OGRealSparseMatrix diffcols = new OGRealSparseMatrix(new int[] { 0, 2, 4, 7, 7, 7 }, compressedRowIdx, compressedData, 4, 5);
+  OGRealSparseMatrix diffcolptr = new OGRealSparseMatrix(new int[] { 0, 2, 3, 7, 7 }, compressedRowIdx, compressedData, 4, 4); // NOTE: invalid data layout
+  OGRealSparseMatrix diffrowidx = new OGRealSparseMatrix(compressedColPtr, new int[] { 0, 1, 1, 2, 1, 2, 3 }, compressedData, 4, 4);
+  OGRealSparseMatrix diffnumber = new OGRealSparseMatrix(compressedColPtr, compressedRowIdx, new double[] { 1337, 3.0, 2.0, 5.0, 4.0, 6.0, 7.0 }, 4, 4);
+  OGComplexDenseMatrix diffdomain = new OGComplexDenseMatrix(data);
 
   // sending in null ptr double[][] constructor
   @Test(expectedExceptions = MathsExceptionNullPointer.class)
@@ -179,6 +192,52 @@ public class OGRealSparseMatrixTest {
   public void toStringTest() {
     OGRealSparseMatrix D = new OGRealSparseMatrix(data);
     D.toString();
+  }
+
+  @Test
+  public void testHashCode() {
+    assertTrue(defaultVal.hashCode() == same.hashCode());
+    assertFalse(defaultVal.hashCode() == diffnumber.hashCode());
+  }
+
+  @Test
+  public void testEquals() {
+    assertTrue(defaultVal.equals(defaultVal));
+    assertTrue(defaultVal.equals(same));
+    assertFalse(defaultVal.equals(diffrows));
+    assertFalse(defaultVal.equals(diffcols));
+    assertFalse(defaultVal.equals(diffcolptr));
+    assertFalse(defaultVal.equals(diffrowidx));
+    assertFalse(defaultVal.equals(diffclass));
+    assertFalse(defaultVal.equals(diffnumber));
+  }
+
+  @Test
+  public void testFuzzyEquals() {
+    assertTrue(defaultVal.fuzzyequals(defaultVal));
+    assertTrue(defaultVal.fuzzyequals(same));
+    assertTrue(defaultVal.fuzzyequals(withindiffnumber));
+    assertFalse(defaultVal.fuzzyequals(diffrows));
+    assertFalse(defaultVal.fuzzyequals(diffcols));
+    assertFalse(defaultVal.fuzzyequals(diffcolptr));
+    assertFalse(defaultVal.fuzzyequals(diffrowidx));
+    assertFalse(defaultVal.fuzzyequals(diffclass));
+    assertFalse(defaultVal.fuzzyequals(diffnumber));
+    assertFalse(defaultVal.fuzzyequals(diffdomain));
+  }
+
+  @Test
+  public void testMathsEquals() {
+    assertTrue(defaultVal.mathsequals(defaultVal));
+    assertTrue(defaultVal.mathsequals(same));
+    assertTrue(defaultVal.mathsequals(withindiffnumber));
+    assertFalse(defaultVal.mathsequals(diffclass));
+    assertFalse(defaultVal.mathsequals(diffrows));
+    assertFalse(defaultVal.mathsequals(diffcols));
+    assertFalse(defaultVal.mathsequals(diffcolptr));
+    assertFalse(defaultVal.mathsequals(diffrowidx));
+    assertFalse(defaultVal.mathsequals(diffnumber));
+    assertTrue(defaultVal.mathsequals(diffdomain));
   }
 
 }

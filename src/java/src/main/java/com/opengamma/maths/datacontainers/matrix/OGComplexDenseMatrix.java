@@ -8,6 +8,7 @@ package com.opengamma.maths.datacontainers.matrix;
 import java.util.Arrays;
 
 import com.opengamma.maths.datacontainers.ExprEnum;
+import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.exceptions.MathsExceptionNullPointer;
@@ -211,6 +212,11 @@ public class OGComplexDenseMatrix extends OGDenseMatrix {
       str += String.format("\n");
     }
     return str;
+  }
+
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    return new OGComplexDenseMatrix(this._data, this._rows, this._cols);
   }
 
 }
