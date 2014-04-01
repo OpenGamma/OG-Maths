@@ -14,7 +14,7 @@ set(JAVA_FILES
     helpers/FuzzyEquals.java
     helpers/Iss.java
     helpers/MatrixPrimitiveUtils.java
-    DOGMA2.java
+    DOGMA.java
     nodes/SELECTRESULT.java
     nodes/COPY.java
     nodes/SVD.java
@@ -52,6 +52,7 @@ set(JAVA_FILES
     datacontainers/OGTerminal.java
     datacontainers/other/OGResult.java
     datacontainers/other/ComplexArrayContainer.java
+    datacontainers/other/OGSVDResult.java
     datacontainers/lazy/OGExpr.java
     datacontainers/lazy/OGExprVariadicReturn.java
     datacontainers/OGNumeric.java
