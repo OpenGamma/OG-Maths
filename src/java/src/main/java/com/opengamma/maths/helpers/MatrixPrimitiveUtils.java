@@ -215,7 +215,7 @@ public class MatrixPrimitiveUtils {
    */
   public static double[][] removeLowerTriangle(double[][] aMatrix) {
     if (isRagged(aMatrix)) {
-      throw new MathsExceptionNotImplemented("Construction from ragged array is not implemented");
+      throw new MathsExceptionIllegalArgument("Operation on ragged arrays is not implemented");
     }
     if (!isSquare(aMatrix)) {
       throw new MathsExceptionIllegalArgument("Matrix is not square so removing lower triangle isn't clear cut enough to be implemented");

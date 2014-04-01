@@ -79,16 +79,37 @@ public class MatrixPrimitiveUtilsTest {
 
   @Test
   public void testArrayHasContiguousNonZeros() {
+    double[] data0 = { 0, 0, 0, 0, 0 };
     double[] data1 = { 0, 1, 1, 1, 0 };
     double[] data2 = { 0, 1, 0, 0, 0 };
     double[] data3 = { 1, 0, 0, 0, 0 };
     double[] data4 = { 1, 0, 0, 0, 1 };
     double[] data5 = { 0, 0, 1, 1, 1, 0, 0, 1 };
+    assertTrue(MatrixPrimitiveUtils.arrayHasContiguousRowEntries(data0));
     assertTrue(MatrixPrimitiveUtils.arrayHasContiguousRowEntries(data1));
     assertTrue(MatrixPrimitiveUtils.arrayHasContiguousRowEntries(data2));
     assertTrue(MatrixPrimitiveUtils.arrayHasContiguousRowEntries(data3));
     assertFalse(MatrixPrimitiveUtils.arrayHasContiguousRowEntries(data4));
     assertFalse(MatrixPrimitiveUtils.arrayHasContiguousRowEntries(data5));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testRemoveLowerTriangleThrowsOnRagged() {
+    double[][] ragged = { { 1, 2 }, { 3, 4, 5 } };
+    MatrixPrimitiveUtils.removeLowerTriangle(ragged);
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testRemoveLowerTriangleThrowsOnNotSquare() {
+    double[][] notsq = { { 1, 2, 3 }, { 4, 5, 6 } };
+    MatrixPrimitiveUtils.removeLowerTriangle(notsq);
+  }
+
+  @Test
+  public void testRemoveLowerTriangle() {
+    double[][] array = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+    double[][] expected = { { 1, 2, 3 }, { 0, 5, 6 }, { 0, 0, 9 } };
+    assertTrue(Arrays.deepEquals(expected, MatrixPrimitiveUtils.removeLowerTriangle(array)));
   }
 
   @Test
@@ -97,6 +118,12 @@ public class MatrixPrimitiveUtilsTest {
     double[][] notUT = { { 1, 2, 3 }, { 0, 4, 5 }, { 0, 1, 6 } };
     assertTrue(MatrixPrimitiveUtils.isUpperTriangular(UT));
     assertFalse(MatrixPrimitiveUtils.isUpperTriangular(notUT));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsUpperTriangularThrowsOnRagged() {
+    double[][] ragged = { { 1, 2 }, { 3, 4, 5 } };
+    assertTrue(MatrixPrimitiveUtils.isUpperTriangular(ragged));
   }
 
   @Test
@@ -117,6 +144,12 @@ public class MatrixPrimitiveUtilsTest {
     double[][] notLT = { { 1, 1, 0 }, { 2, 3, 0 }, { 4, 5, 6 } };
     assertTrue(MatrixPrimitiveUtils.isLowerTriangular(LT));
     assertFalse(MatrixPrimitiveUtils.isLowerTriangular(notLT));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsLowerTriangularThrowsOnRagged() {
+    double[][] ragged = { { 1, 2 }, { 3, 4, 5 } };
+    MatrixPrimitiveUtils.isLowerTriangular(ragged);
   }
 
   @Test
@@ -144,6 +177,20 @@ public class MatrixPrimitiveUtilsTest {
   }
 
   @Test
+  public void testIsUpperHessenberg() {
+    double[][] UH = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 0, 9, 10, 11 }, { 0, 0, 12, 13 } };
+    assertTrue(MatrixPrimitiveUtils.isUpperHessenberg(UH));
+    double[][] notUH = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 1, 9, 10, 11 }, { 0, 0, 12, 13 } };
+    assertFalse(MatrixPrimitiveUtils.isUpperHessenberg(notUH));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsUpperHessenbergThrowsOnRagged() {
+    double[][] ragged = { { 1, 2 }, { 3, 4, 5 } };
+    MatrixPrimitiveUtils.isUpperHessenberg(ragged);
+  }
+
+  @Test
   public void testCheckIsLowerHessenberg() {
     double[][] LH = { { 1, 2, 0, 0 }, { 3, 4, 5, 0 }, { 6, 7, 8, 9 }, { 10, 11, 12, 13 } };
     assertTrue(Arrays.deepEquals(LH, MatrixPrimitiveUtils.checkIsLowerHessenberg(LH)));
@@ -156,13 +203,42 @@ public class MatrixPrimitiveUtilsTest {
   }
 
   @Test
+  public void testIsLowerHessenberg() {
+    double[][] LH = { { 1, 2, 0, 0 }, { 3, 4, 5, 0 }, { 6, 7, 8, 9 }, { 10, 11, 12, 13 } };
+    double[][] notLH = { { 1, 2, 0, 1 }, { 3, 4, 5, 0 }, { 6, 7, 8, 9 }, { 10, 11, 12, 13 } };
+    assertTrue(MatrixPrimitiveUtils.isLowerHessenberg(LH));
+    assertFalse(MatrixPrimitiveUtils.isLowerHessenberg(notLH));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsLowerHessenbergThrowsOnRagged() {
+    double[][] ragged = { { 1, 2 }, { 3, 4, 5 } };
+    MatrixPrimitiveUtils.isLowerHessenberg(ragged);
+  }
+
+  @Test
   public void testIsTriDiag() {
     double[][] trid = { { 1, 2, 0, 0, 0, 0, 0 }, { 3, 4, 5, 0, 0, 0, 0 }, { 0, 6, 7, 8, 0, 0, 0 }, { 0, 0, 9, 10, 11, 0, 0 }, { 0, 0, 0, 12, 13, 14, 0 }, { 0, 0, 0, 0, 15, 16, 17 },
       { 0, 0, 0, 0, 0, 18, 19 } };
     double[][] ntrid = { { 1, 2, 1, 0, 0, 0, 0 }, { 3, 4, 5, 0, 0, 0, 0 }, { 0, 6, 7, 8, 0, 0, 0 }, { 0, 0, 9, 10, 11, 0, 0 }, { 0, 0, 0, 12, 13, 14, 0 }, { 0, 0, 0, 0, 15, 16, 17 },
       { 0, 0, 0, 0, 0, 18, 19 } };
+    double[][] ntrid_LHS_escape = { { 1, 2, 0, 0, 0, 0, 0 }, { 3, 4, 5, 0, 0, 0, 0 }, { -1, 6, 7, 8, 0, 0, 0 }, { 0, 0, 9, 10, 11, 0, 0 }, { 0, 0, 0, 12, 13, 14, 0 }, { 0, 0, 0, 0, 15, 16, 17 },
+      { 0, 0, 0, 0, 0, 18, 19 } };
+    double[][] ntrid_RHS_escape = { { 1, 2, 0, 0, 0, 0, 0 }, { 3, 4, 5, 0, 0, 0, 0 }, { 0, 6, 7, 8, -1, 0, 0 }, { 0, 0, 9, 10, 11, 0, 0 }, { 0, 0, 0, 12, 13, 14, 0 }, { 0, 0, 0, 0, 15, 16, 17 },
+      { 0, 0, 0, 0, 0, 18, 19 } };
+    double[][] ntrid_lastrow_escape = { { 1, 2, 0, 0, 0, 0, 0 }, { 3, 4, 5, 0, 0, 0, 0 }, { 0, 6, 7, 8, 0, 0, 0 }, { 0, 0, 9, 10, 11, 0, 0 }, { 0, 0, 0, 12, 13, 14, 0 }, { 0, 0, 0, 0, 15, 16, 17 },
+      { 0, 0, 0, 0, -1, 18, 19 } };
     assertTrue(MatrixPrimitiveUtils.isTriDiag(trid));
     assertFalse(MatrixPrimitiveUtils.isTriDiag(ntrid));
+    assertFalse(MatrixPrimitiveUtils.isTriDiag(ntrid_LHS_escape));
+    assertFalse(MatrixPrimitiveUtils.isTriDiag(ntrid_RHS_escape));
+    assertFalse(MatrixPrimitiveUtils.isTriDiag(ntrid_lastrow_escape));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsTriDiagThrowsOnRagged() {
+    double[][] ragged = { { 1, 2 }, { 3, 4, 5 } };
+    MatrixPrimitiveUtils.isTriDiag(ragged);
   }
 
   @Test
@@ -191,6 +267,8 @@ public class MatrixPrimitiveUtilsTest {
       { 0, 0, 0, 23, 24, 25, 26, 27, 0 }, { 0, 0, 0, 0, 28, 29, 30, 31, 32 }, { 0, 0, 0, 0, 0, 33, 34, 35, 36 }, { 0, 0, 0, 0, 0, 0, 37, 38, 39 } };
     double[][] npentd = { { 1, 2, 3, 0, 0, 0, 0, 0, 0 }, { 4, 5, 6, 7, 0, 0, 0, 0, 0 }, { 8, 9, 10, 11, 12, 0, 0, 0, 0 }, { 0, 13, 14, 15, 16, 17, 0, 0, 0 }, { 0, 0, 18, 19, 20, 21, 22, 0, 0 },
       { 0, 0, 0, 23, 24, 25, 26, 27, 0 }, { 0, 0, 0, 0, 28, 29, 30, 31, 32 }, { 0, 0, 0, 0, 0, 33, 34, 35, 36 }, { 0, 0, 0, 0, 0, 1, 37, 38, 39 } };
+    double[][] trid_tripLHS = { { 1, 2, 0, 0, 0, 0, 0 }, { 3, 4, 5, 0, 0, 0, 0 }, { -1, 6, 7, 8, 0, 0, 0 }, { 0, 0, 9, 10, 11, 0, 0 }, { 0, 0, 0, 12, 13, 14, 0 }, { 0, 0, 0, 0, 15, 16, 17 },
+      { 0, 0, 0, 0, 0, 18, 19 } };
 
     assertTrue(MatrixPrimitiveUtils.isNDiag(diag, 1));
     assertTrue(MatrixPrimitiveUtils.isNDiag(trid, 3));
@@ -198,6 +276,31 @@ public class MatrixPrimitiveUtilsTest {
     assertFalse(MatrixPrimitiveUtils.isNDiag(ndiag, 1));
     assertFalse(MatrixPrimitiveUtils.isNDiag(ntrid, 3));
     assertFalse(MatrixPrimitiveUtils.isNDiag(npentd, 5));
+    assertFalse(MatrixPrimitiveUtils.isNDiag(trid_tripLHS, 3));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsNDiagThrowsEven() {
+    double[][] even = { { 1, -1, 0, 0 }, { 0, 2, -1, 0 }, { 0, 0, 3, -1 }, { 0, 0, 0, 4 } };
+    MatrixPrimitiveUtils.isNDiag(even, 2);
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsNDiagThrowsOnRagged() {
+    double[][] ragged = { { 1, 2 }, { 3, 4, 5 } };
+    MatrixPrimitiveUtils.isNDiag(ragged, 3);
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsNDiagThrowsOnBadBandWidth() {
+    double[][] diag = { { 1, 0, 0, 0 }, { 0, 2, 0, 0 }, { 0, 0, 3, 0 }, { 0, 0, 0, 4 } };
+    MatrixPrimitiveUtils.isNDiag(diag, 11);
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void testIsNDiagThrowsOnZeroBandWidth() {
+    double[][] diag = { { 1, 0, 0, 0 }, { 0, 2, 0, 0 }, { 0, 0, 3, 0 }, { 0, 0, 0, 4 } };
+    MatrixPrimitiveUtils.isNDiag(diag, 0);
   }
 
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
