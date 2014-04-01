@@ -8,6 +8,7 @@ package com.opengamma.maths;
 
 import static com.opengamma.maths.DOGMA.C;
 import static com.opengamma.maths.DOGMA.D;
+import static com.opengamma.maths.DOGMA.disp;
 import static com.opengamma.maths.DOGMA.minus;
 import static com.opengamma.maths.DOGMA.mtimes;
 import static com.opengamma.maths.DOGMA.norm2;
@@ -27,12 +28,37 @@ import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.datacontainers.other.OGSVDResult;
+import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
+import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
+import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.helpers.FuzzyEquals;
 
 /**
  * Test of DOGMA.
  */
 public class DOGMATest {
+
+  @Test
+  public void DShortCutTest() {
+    OGRealScalar rs = new OGRealScalar(10);
+    assertTrue(rs.mathsequals(D(10)));
+  }
+
+  @Test
+  public void CShortCutTest() {
+    OGComplexScalar cs;
+    cs = new OGComplexScalar(10);
+    assertTrue(cs.mathsequals(C(10)));
+    cs = new OGComplexScalar(10, 20);
+    assertTrue(cs.mathsequals(C(10, 20)));
+  }
+
+  @Test
+  public void DispTest() {
+    OGComplexScalar cs;
+    cs = new OGComplexScalar(10);
+    disp(cs); // Nothing we can do!
+  }
 
   @Test
   public void Norm2Test() {
@@ -49,6 +75,11 @@ public class DOGMATest {
     assertTrue(new OGRealDenseMatrix(new double[] { -1, -2, -3, -4, -5 }).mathsequals(toOGTerminal(uminus(mat))));
   }
 
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void PlusBadDataTest() {
+    plus(D(10));
+  }
+
   @Test
   public void PlusTest() {
     OGTerminal rmat, cmat;
@@ -61,6 +92,11 @@ public class DOGMATest {
     assertTrue(C(100, -70).mathsequals(toOGTerminal(TenTimes)));
   }
 
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void MinusBadDataTest() {
+    minus(D(10));
+  }
+
   @Test
   public void MinusTest() {
     OGTerminal rmat, cmat;
@@ -71,6 +107,11 @@ public class DOGMATest {
     assertTrue(D(-80).mathsequals(toOGTerminal(TenTimes)));
     TenTimes = minus(cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat);
     assertTrue(C(-80, 56).mathsequals(toOGTerminal(TenTimes)));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void MtimesBadDataTest() {
+    mtimes(D(10));
   }
 
   @Test
