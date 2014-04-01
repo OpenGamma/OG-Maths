@@ -7,6 +7,7 @@
 package com.opengamma.maths.datacontainers.scalar;
 
 import com.opengamma.maths.datacontainers.ExprEnum;
+import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.helpers.Catchers;
 
@@ -97,5 +98,10 @@ public class OGComplexScalar extends OGScalar {
   public String toString() {
     String str = "\nOGComplexScalar: value = " + String.format("%24.18f " + (_data[1] >= 0 ? "+" : "-") + "%24.18fi, ", _data[0], Math.abs(_data[1]));
     return str;
+  }
+
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    return new OGComplexDenseMatrix(this.getData(), 1, 1);
   }
 }

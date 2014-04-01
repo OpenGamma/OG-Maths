@@ -32,16 +32,17 @@ set(JAVA_FILES
     helpers/MatrixPrimitiveUtilsTest.java
     testhelpers/ArraysHelpers.java
     datacontainers/matrix/OGComplexDiagonalMatrixTest.java
-    datacontainers/matrix/OGComplexMatrixTest.java
+    datacontainers/matrix/OGComplexDenseMatrixTest.java
     datacontainers/matrix/OGComplexSparseMatrixTest.java
+    datacontainers/matrix/OGLogicalMatrixTest.java
     datacontainers/matrix/OGRealDiagonalMatrixTest.java
     datacontainers/matrix/OGRealSparseMatrixTest.java
-    datacontainers/matrix/OGRealMatrixTest.java
-    datacontainers/scalars/OGRealScalarTest.java
+    datacontainers/matrix/OGRealDenseMatrixTest.java
     datacontainers/scalars/OGComplexScalarTest.java
+    datacontainers/scalars/OGIntegerScalarTest.java
+    datacontainers/scalars/OGRealScalarTest.java
     datacontainers/other/OGResultTest.java
     datacontainers/other/ComplexArrayContainerTest.java
-    datacontainers/TestGeneral.java
     )
 
 foreach(JFILE ${JAVA_FILES})

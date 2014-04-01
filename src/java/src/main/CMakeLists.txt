@@ -9,10 +9,11 @@ fqn_to_dir(JPACKAGEDIR ${JPACKAGEFQN})
 
 set(JAVA_FILES
     materialisers/Materialisers.java
-    helpers/FuzzyEquals.java
     helpers/Catchers.java
-    helpers/MatrixPrimitiveUtils.java
     helpers/DenseMemoryManipulation.java
+    helpers/FuzzyEquals.java
+    helpers/Iss.java
+    helpers/MatrixPrimitiveUtils.java
     DOGMA2.java
     nodes/SELECTRESULT.java
     nodes/COPY.java

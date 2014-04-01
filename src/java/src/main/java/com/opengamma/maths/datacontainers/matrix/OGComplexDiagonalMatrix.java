@@ -237,4 +237,18 @@ public class OGComplexDiagonalMatrix extends OGDiagonalMatrix {
     return str;
   }
 
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    final int rows = this.getRows();
+    final int cols = this.getCols();
+    final double[] data = this.getData();
+    double[] tmp = new double[2 * rows * cols];
+    for (int i = 0; i < data.length; i += 2) {
+      tmp[(i * rows + i)] = data[i];
+      tmp[(i * rows + i) + 1] = data[i + 1];
+    }
+    return new OGComplexDenseMatrix(tmp, rows, cols);
+
+  }
+
 }

@@ -6,6 +6,7 @@
 package com.opengamma.maths.datacontainers.matrix;
 
 import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertFalse;
 
 import java.util.Arrays;
 
@@ -17,11 +18,12 @@ import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.exceptions.MathsExceptionNullPointer;
 import com.opengamma.maths.helpers.DenseMemoryManipulation;
+import com.opengamma.maths.helpers.FuzzyEquals;
 
 /**
- * Tests the OGComplexMatrix class 
+ * Tests the OGComplexDenseMatrix class 
  */
-public class OGComplexMatrixTest {
+public class OGComplexDenseMatrixTest {
 
   double[][] realdata4x3 = new double[][] { { 1.00, 2.00, 3.00 }, { 4.00, 5.00, 6.00 }, { 7.00, 8.00, 9.00 }, { 10.00, 11.00, 12.00 } };
   double[] realdata4x3unwound = new double[] { 1.00, 4.00, 7.00, 10.00, 2.00, 5.00, 8.00, 11.00, 3.00, 6.00, 9.00, 12.00 };
@@ -38,6 +40,19 @@ public class OGComplexMatrixTest {
 
   OGComplexDenseMatrix getRow = new OGComplexDenseMatrix(new double[] { 7, 70, 8, 80, 9, 90 }, 1, 3);
   OGComplexDenseMatrix getCol = new OGComplexDenseMatrix(new double[] { 2, 20, 5, 50, 8, 80, 11, 110 }, 4, 1);
+
+  // for equals tests
+  OGComplexDenseMatrix defaultVal = new OGComplexDenseMatrix(interleaved4x3,4,3);
+  OGComplexDenseMatrix same = new OGComplexDenseMatrix(interleaved4x3,4,3);
+  OGComplexDenseMatrix withindiffnumber = new OGComplexDenseMatrix(new double[] { 1.00+ FuzzyEquals.getDefaultTolerance()/2, 10.00, 4.00, 40.00, 7.00, 70.00, 10.00, 100.00, 2.00, 20.00, 5.00, 50.00, 8.00, 80.00, 11.00, 110.00, 3.00, 30.00, 6.00, 60.00, 9.00, 90.00, 12.00,
+    120.00 },4,3);
+  OGRealDenseMatrix diffclass =  new OGRealDenseMatrix(1);
+  OGComplexDenseMatrix diffrows = new OGComplexDenseMatrix(interleaved4x3,3,4);
+  OGComplexDenseMatrix diffcols = new OGComplexDenseMatrix(new double[8],4,2);  
+  OGComplexDenseMatrix diffnumber = new OGComplexDenseMatrix(new double[] { 1337, 10.00, 4.00, 40.00, 7.00, 70.00, 10.00, 100.00, 2.00, 20.00, 5.00, 50.00, 8.00, 80.00, 11.00, 110.00, 3.00, 30.00, 6.00, 60.00, 9.00, 90.00, 12.00,
+    120.00 },4,3);
+  OGComplexDenseMatrix diffdomain_cmplx = new OGComplexDenseMatrix(realdata4x3);
+  OGRealDenseMatrix diffdomain_real = new OGRealDenseMatrix(realdata4x3);
 
   // sending in null ptr double[][] constructor
   @Test(expectedExceptions = MathsExceptionNullPointer.class)
@@ -318,5 +333,52 @@ public class OGComplexMatrixTest {
   public void testGetTypeEnum() {
     OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
     assertTrue(D.getType().equals(ExprEnum.OGComplexMatrix));
+  }
+  
+  @Test
+  public void toStringTest() {
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
+    D.toString();
+  }
+
+  
+  @Test
+  public void testHashCode() {
+    assertTrue(defaultVal.hashCode() == same.hashCode());
+    assertFalse(defaultVal.hashCode() == diffnumber.hashCode());
+  }
+
+  @Test
+  public void testEquals() {
+    assertTrue(defaultVal.equals(defaultVal));
+    assertTrue(defaultVal.equals(same));
+    assertFalse(defaultVal.equals(diffrows));
+    assertFalse(defaultVal.equals(diffcols));
+    assertFalse(defaultVal.equals(diffclass));
+    assertFalse(defaultVal.equals(diffnumber));
+  }
+
+  @Test
+  public void testFuzzyEquals() {
+    assertTrue(defaultVal.fuzzyequals(defaultVal));
+    assertTrue(defaultVal.fuzzyequals(same));
+    assertTrue(defaultVal.fuzzyequals(withindiffnumber));
+    assertFalse(defaultVal.fuzzyequals(diffrows));
+    assertFalse(defaultVal.fuzzyequals(diffcols));
+    assertFalse(defaultVal.fuzzyequals(diffclass));
+    assertFalse(defaultVal.fuzzyequals(diffnumber));
+    assertFalse(diffdomain_cmplx.fuzzyequals(diffdomain_real));
+  }
+
+  @Test
+  public void testMathsEquals() {
+    assertTrue(defaultVal.mathsequals(defaultVal));
+    assertTrue(defaultVal.mathsequals(same));
+    assertTrue(defaultVal.mathsequals(withindiffnumber));
+    assertFalse(defaultVal.mathsequals(diffclass));
+    assertFalse(defaultVal.mathsequals(diffrows));
+    assertFalse(defaultVal.mathsequals(diffcols));
+    assertFalse(defaultVal.mathsequals(diffnumber));
+    assertTrue(diffdomain_cmplx.mathsequals(diffdomain_real));
   }
 }

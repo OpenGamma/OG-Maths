@@ -8,9 +8,12 @@ package com.opengamma.maths.datacontainers.matrix;
 import java.util.Arrays;
 
 import com.opengamma.maths.datacontainers.ExprEnum;
+import com.opengamma.maths.datacontainers.OGTerminal;
+import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.helpers.Catchers;
 import com.opengamma.maths.helpers.DenseMemoryManipulation;
+import com.opengamma.maths.helpers.FuzzyEquals;
 
 /**
  * Dense real matrix
@@ -118,6 +121,16 @@ public class OGRealDenseMatrix extends OGDenseMatrix {
       str += String.format("\n");
     }
     return str;
+  }
+
+  @Override
+  protected OGRealDenseMatrix asOGRealDenseMatrix() {
+    return new OGRealDenseMatrix(this.getData(), _rows, _cols);
+  }
+
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    return new OGComplexDenseMatrix(DenseMemoryManipulation.convertSinglePointerToZeroInterleavedSinglePointer(this.getData()), _rows, _cols);
   }
 
 }

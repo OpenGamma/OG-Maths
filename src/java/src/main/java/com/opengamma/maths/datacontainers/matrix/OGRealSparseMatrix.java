@@ -212,4 +212,38 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
     return str + "\nvalues=" + Arrays.toString(_data) + "\nrowInd=" + Arrays.toString(_rowIdx) + "\ncolPtr=" + Arrays.toString(_colPtr) + "\ncols=" + _cols + "\nrows=" + _rows + "\nels=" + _els;
   }
 
+  @Override
+  protected OGRealDenseMatrix asOGRealDenseMatrix() {
+    final int rows = this.getRows();
+    final int cols = this.getCols();
+    final int[] colPtr = this.getColPtr();
+    final int[] rowIdx = this.getRowIdx();
+    final double[] data = this.getData();
+    double[] tmp = new double[rows * cols];
+    for (int ir = 0; ir < cols; ir++) {
+      for (int i = colPtr[ir]; i <= colPtr[ir + 1] - 1; i++) {
+        tmp[rowIdx[i] + ir * rows] = data[i];
+      }
+    }
+    return new OGRealDenseMatrix(tmp, rows, cols);
+
+  }
+
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    final int rows = this.getRows();
+    final int cols = this.getCols();
+    final int[] colPtr = this.getColPtr();
+    final int[] rowIdx = this.getRowIdx();
+    final double[] data = this.getData();
+    double[] tmp = new double[2 * rows * cols];
+    for (int ir = 0; ir < cols; ir++) {
+      for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++) {
+        tmp[2 * (rowIdx[i] + ir * rows)] = data[i];
+      }
+    }
+    return new OGComplexDenseMatrix(tmp, rows, cols);
+
+  }
+
 }

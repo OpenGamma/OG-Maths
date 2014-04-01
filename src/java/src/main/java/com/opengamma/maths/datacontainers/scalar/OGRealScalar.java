@@ -6,7 +6,11 @@
 
 package com.opengamma.maths.datacontainers.scalar;
 
+import java.util.Arrays;
+
 import com.opengamma.maths.datacontainers.ExprEnum;
+import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
+import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.helpers.Catchers;
 
@@ -44,6 +48,16 @@ public class OGRealScalar extends OGScalar {
   public String toString() {
     String str = "\nOGRealScalar: value = " + String.format("%24.18f\n", _data[0]);
     return str;
+  }
+
+  @Override
+  protected OGComplexDenseMatrix asOGComplexDenseMatrix() {
+    return new OGComplexDenseMatrix(new double[][] { { this.getData()[0] } });
+  }
+
+  @Override
+  protected OGRealDenseMatrix asOGRealDenseMatrix() {
+    return new OGRealDenseMatrix(new double[][] { { this.getData()[0] } });
   }
 
 }

@@ -7,7 +7,7 @@ package com.opengamma.maths.datacontainers.matrix;
 
 
 /**
- * Dense matrix super type
+ * Dense matrix super type.
  */
 public abstract class OGDenseMatrix extends OGArray {
 

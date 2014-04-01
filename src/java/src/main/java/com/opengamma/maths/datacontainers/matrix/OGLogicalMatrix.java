@@ -6,6 +6,7 @@
 package com.opengamma.maths.datacontainers.matrix;
 
 import com.opengamma.maths.datacontainers.ExprEnum;
+import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.helpers.Catchers;
 import com.opengamma.maths.helpers.MatrixPrimitiveUtils;
 
@@ -30,7 +31,7 @@ public class OGLogicalMatrix extends OGRealDenseMatrix {
   }
 
   private static double[] array1d2bool(double[] data) {
-    Catchers.catchNull(data);
+    Catchers.catchNullFromArgList(data, 1);
     double[] tmp = new double[data.length];
     for (int i = 0; i < data.length; i++) {
       if (data[i] != 0) {
@@ -41,8 +42,10 @@ public class OGLogicalMatrix extends OGRealDenseMatrix {
   }
 
   private static double[][] array2d2bool(double[][] data) {
-    Catchers.catchNull(data);
-    Catchers.catchCondition(MatrixPrimitiveUtils.isRagged(data), "Cannot construct from ragged data");
+    Catchers.catchNullFromArgList(data, 1);
+    if (MatrixPrimitiveUtils.isRagged(data)) {
+      throw new MathsExceptionIllegalArgument("Cannot construct from ragged data");
+    }
     double[][] tmp = new double[data.length][data[0].length];
     for (int i = 0; i < data.length; i++) {
       for (int j = 0; j < data[i].length; j++) {
