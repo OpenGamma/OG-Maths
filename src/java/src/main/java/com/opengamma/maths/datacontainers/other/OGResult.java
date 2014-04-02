@@ -16,7 +16,7 @@ import com.opengamma.maths.nodes.SELECTRESULT;
  */
 public class OGResult {
 
-  protected OGExprVariadicReturn _computeNode;
+  private OGExprVariadicReturn _computeNode;
   private int _nResults;
 
   /**
