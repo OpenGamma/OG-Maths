@@ -803,23 +803,4 @@ public class Catchers {
     }
   }
 
-  //////////////// commute catch
-
-  /**
-   * Catches bad commutes, given two dimensions, if they are not the same an exception is thrown 
-   * @param dim1 the first dimension
-   * @param varName1 the literal name of the first variable so that the error string makes sense
-   * @param dim2 the second dimension
-   * @param varName2 the literal name of the second variable so that the error string makes sense
-   */
-  public static void catchBadCommute(int dim1, String varName1, int dim2, String varName2) {
-    if (dim1 != dim2) {
-      throw new MathsExceptionNonConformance(varName1 + " (" + dim1 + ") and " + varName2 + " (" + dim2 + ") do not commute. STOPPING");
-    }
-  }
-
-  public static void catchBadCommute(String message) {
-    throw new MathsExceptionNonConformance("Problem with arrays not commuting. STOPPING. Error message is:" + message);
-  }
-
 }

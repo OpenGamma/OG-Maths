@@ -11,6 +11,7 @@ set(JPACKAGEFQN "com.opengamma.maths")
 fqn_to_dir(JPACKAGEDIR ${JPACKAGEFQN})
 
 set(JAVA_FILES
+    DOGMATest.java
     testnodes/TestNorm2Materialise.java
     testnodes/TestPlusMaterialise.java
     testnodes/TestPlusMaterialiseToComplex.java
