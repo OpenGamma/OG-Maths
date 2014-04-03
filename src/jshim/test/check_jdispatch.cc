@@ -25,9 +25,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGExpr)
 {
   DispatchToReal16ArrayOfArrays * d = new DispatchToReal16ArrayOfArrays();
   OGRealScalar * scal = new OGRealScalar(10);
-  ArgContainer * args = new ArgContainer();
-  args->push_back(scal);
-  OGExpr * expr = new NORM2(args);
+  OGExpr * expr = new NORM2(scal);
   ASSERT_ANY_THROW(d->visit(expr));
   delete d;
   delete expr;
@@ -193,9 +191,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGExpr)
 {
   DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
   OGRealScalar * scal = new OGRealScalar(10);
-  ArgContainer * args = new ArgContainer();
-  args->push_back(scal);
-  OGExpr * expr = new NORM2(args);
+  OGExpr * expr = new NORM2(scal);
   ASSERT_ANY_THROW(d->visit(expr));
   delete d;
   delete expr;

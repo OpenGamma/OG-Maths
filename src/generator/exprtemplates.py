@@ -51,13 +51,19 @@ expr_class = """\
 class %(classname)s: public %(parentclass)s
 {
   public:
-    %(classname)s(ArgContainer *args);
+%(constructor)s
     virtual OGNumeric* copy() const override;
     virtual const %(classname)s* as%(classname)s() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
 };
 """
+
+unary_constructor = """\
+    %(classname)s(const OGNumeric* arg);"""
+
+binary_constructor = """\
+    %(classname)s(const OGNumeric* arg0, const OGNumeric* arg1);"""
 
 # Expressions cc
 
@@ -91,12 +97,12 @@ expr_methods = """\
  * %(classname)s node
  */
 
-%(classname)s::%(classname)s(ArgContainer* args): %(parentclass)s(args) {}
+%(ctor_method)s
 
 OGNumeric*
 %(classname)s::copy() const
 {
-  return new %(classname)s(this->getArgs()->copy());
+%(copy_method)s
 }
 
 const %(classname)s*
@@ -118,6 +124,18 @@ ExprType_t
 }
 
 """
+
+unary_ctor_method = """\
+%(classname)s::%(classname)s(const OGNumeric* arg): OGUnaryExpr{arg} {}"""
+
+binary_ctor_method = """\
+%(classname)s::%(classname)s(const OGNumeric* arg1, const OGNumeric* arg2): OGBinaryExpr{arg1, arg2} {}"""
+
+unary_copy_method = """\
+  return new %(classname)s((*_args)[0]->copy());"""
+
+binary_copy_method = """\
+  return new %(classname)s((*_args)[0]->copy(), (*_args)[1]->copy());"""
 
 # Numeric header file
 

@@ -41,9 +41,9 @@ class OGExpr: public OGNumeric
     virtual void accept(Visitor &v) const override;
     virtual const RegContainer * getRegs() const;
   protected:
-    OGExpr(ArgContainer* args);
-  private:
+    OGExpr();
     ArgContainer * _args;
+  private:
     RegContainer * _regs;
 };
 
@@ -54,13 +54,13 @@ class OGExpr: public OGNumeric
 class OGUnaryExpr: public OGExpr
 {
   protected:
-    OGUnaryExpr(ArgContainer* args);
+    OGUnaryExpr(const OGNumeric* arg);
 };
 
 class OGBinaryExpr : public OGExpr
 {
   protected:
-    OGBinaryExpr(ArgContainer* args);
+    OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1);
 };
 
 /**
@@ -70,17 +70,17 @@ class OGBinaryExpr : public OGExpr
 class COPY: public OGUnaryExpr
 {
   public:
-    COPY(ArgContainer *args);
+    COPY(const OGNumeric* arg);
     virtual OGNumeric* copy() const override;
     virtual const COPY* asCOPY() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
 };
 
-class SELECTRESULT: public OGBinaryExpr
+class SELECTRESULT: public OGExpr
 {
   public:
-    SELECTRESULT(ArgContainer *args);
+    SELECTRESULT(const OGNumeric* arg0, const OGNumeric* arg1);
     virtual OGNumeric* copy() const override;
     virtual const SELECTRESULT* asSELECTRESULT() const override;
     virtual void debug_print() const override;
@@ -90,7 +90,7 @@ class SELECTRESULT: public OGBinaryExpr
 class NORM2: public OGUnaryExpr
 {
   public:
-    NORM2(ArgContainer *args);
+    NORM2(const OGNumeric* arg);
     virtual OGNumeric* copy() const override;
     virtual const NORM2* asNORM2() const override;
     virtual void debug_print() const override;
@@ -101,7 +101,7 @@ class NORM2: public OGUnaryExpr
 class SVD: public OGUnaryExpr
 {
   public:
-    SVD(ArgContainer* args);
+    SVD(const OGNumeric* arg);
     virtual OGNumeric* copy() const override;
     virtual const SVD* asSVD() const override;
     virtual void debug_print() const override;
@@ -111,10 +111,10 @@ class SVD: public OGUnaryExpr
 class MTIMES: public OGBinaryExpr
 {
   public:
-    MTIMES(ArgContainer *args);
+    MTIMES(const OGNumeric* arg0, const OGNumeric* arg1);
     virtual OGNumeric* copy() const override;
     virtual const MTIMES* asMTIMES() const override;
-   virtual void debug_print() const override;
+    virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
 };
 

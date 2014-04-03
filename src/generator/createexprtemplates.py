@@ -28,6 +28,7 @@ using namespace librdag;
 OGNumeric* createExprWithID(jlong ID, jobject obj)
 {
   librdag::OGNumeric * _expr = nullptr;
+  vector<const OGNumeric*>* args;
 
   switch(ID)
   {
@@ -62,6 +63,11 @@ terminal_case = """\
 expr_case = """\
     case %(enumname)s:
       DEBUG_PRINT("%(typename)s function\\n");
-      _expr = new %(typename)s(generateArgs(obj));
+      args = generateArgs(obj);
+      _expr = new %(typename)s(%(args)s);
       break;
 """
+
+unary_args = "(*args)[0]"
+
+binary_args = "(*args)[0], (*args)[1]"

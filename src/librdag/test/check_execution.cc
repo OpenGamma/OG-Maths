@@ -40,9 +40,7 @@ TEST(LinearisationTest, UnaryTreeLinearisation)
 {
   // One unary node holding one terminal
   OGNumeric* real = new OGRealScalar(1.0);
-  ArgContainer *copyArgs = new ArgContainer();
-  copyArgs->push_back(real);
-  OGNumeric* copy = new COPY(copyArgs);
+  OGNumeric* copy = new COPY(real);
   ExecutionList* el1 = new ExecutionList(copy);
   EXPECT_EQ(2, el1->size());
   // Check ordering
@@ -63,12 +61,9 @@ TEST(LinearisationTest, UnaryTreeLinearisation)
 TEST(LinearisationTest, BinaryTreeLinearisation)
 {
   // One binary node holding two terminals
-  OGNumeric *real1 = new OGRealScalar(1.0);
-  OGNumeric *real2 = new OGRealScalar(2.0);
-  ArgContainer* plusArgs = new ArgContainer();
-  plusArgs->push_back(real1);
-  plusArgs->push_back(real2);
-  OGNumeric *plus = new PLUS(plusArgs);
+  OGNumeric* real1 = new OGRealScalar(1.0);
+  OGNumeric* real2 = new OGRealScalar(2.0);
+  OGNumeric *plus = new PLUS(real1, real2);
   ExecutionList* el1 = new ExecutionList(plus);
   EXPECT_EQ(3, el1->size());
   // Check ordering. We iterate over the list and get
@@ -107,15 +102,10 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
    *          \
    *           2.0
    */
-  OGNumeric *real1 = new OGRealScalar(1.0);
-  OGNumeric *real2 = new OGRealScalar(2.0);
-  ArgContainer *copyArgs = new ArgContainer();
-  copyArgs->push_back(real2);
-  OGNumeric* copy = new COPY(copyArgs);
-  ArgContainer* plusArgs = new ArgContainer();
-  plusArgs->push_back(real1);
-  plusArgs->push_back(copy);
-  OGNumeric *plus = new PLUS(plusArgs);
+  OGNumeric* real1 = new OGRealScalar(1.0);
+  OGNumeric* real2 = new OGRealScalar(2.0);
+  OGNumeric* copy = new COPY(real2);
+  OGNumeric *plus = new PLUS(real1, copy);
   ExecutionList *el1 = new ExecutionList(plus);
   // Check ordering. We iterate over the list and get
   // its contents first.

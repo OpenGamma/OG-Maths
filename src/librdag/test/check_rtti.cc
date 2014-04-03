@@ -36,15 +36,13 @@ void check_rtti(OGNumeric* node, string name)
   CHECK_CAST(OGComplexSparseMatrix);
 }
 
-// Creates an ArgContainer with one argument for use in construction of a unary node.
+// Creates an OGRealScalar for use in construction of a unary node.
 class RTTIUnaryTest: public testing::Test
 {
   protected:
     virtual void SetUp()
     {
-      OGNumeric *real = new OGRealScalar(1.0);
-      _args = new ArgContainer();
-      _args->push_back(real);
+      arg = new OGRealScalar(1.0);
     }
 
     virtual void TearDown()
@@ -52,20 +50,17 @@ class RTTIUnaryTest: public testing::Test
       delete node;
     }
     OGNumeric* node;
-    ArgContainer* _args;
+    OGNumeric* arg;
 };
 
-// Creates an ArgContainer with two arguments for use in construction of a binary node.
+// Creates two OGRealScalars for use in construction of a binary node.
 class RTTIBinaryTest: public testing::Test
 {
   protected:
     virtual void SetUp()
     {
-      OGNumeric *real1 = new OGRealScalar(1.0);
-      OGNumeric *real2 = new OGRealScalar(2.0);
-      _args = new ArgContainer();
-      _args->push_back(real1);
-      _args->push_back(real2);
+      arg0 = new OGRealScalar(1.0);
+      arg1 = new OGRealScalar(2.0);
     }
 
     virtual void TearDown()
@@ -73,7 +68,8 @@ class RTTIBinaryTest: public testing::Test
       delete node;
     }
     OGNumeric* node;
-    ArgContainer* _args;
+    OGNumeric* arg0;
+    OGNumeric* arg1;
 };
 
 // Clears up the node after use to keep format of tests uniform between terminal and expr tests.
@@ -88,39 +84,35 @@ class RTTITerminalTest: public testing::Test
 };
 
 TEST_F(RTTIUnaryTest, TestCOPY) {
-  node = new COPY(_args);
+  node = new COPY(arg);
   check_rtti(node, "COPY");
 }
 
 TEST_F(RTTIUnaryTest, TestSVD) {
-  node = new SVD(_args);
+  node = new SVD(arg);
   check_rtti(node, "SVD");
 }
 
 TEST_F(RTTIBinaryTest, TestPLUS) {
-  node = new PLUS(_args);
+  node = new PLUS(arg0, arg1);
   check_rtti(node, "PLUS");
 }
 
 TEST_F(RTTIBinaryTest, TestMTIMES) {
-  node = new MTIMES(_args);
+  node = new MTIMES(arg0, arg1);
   check_rtti(node, "MTIMES");
 }
 
-
 TEST_F(RTTIUnaryTest, TestNEGATE) {
-  node = new NEGATE(_args);
+  node = new NEGATE(arg);
   check_rtti(node, "NEGATE");
 }
 
 // Not using the fixture because SELECTRESULT requires specific arg types
 TEST(RTTITest, TestSELECTRESULT) {
-  ArgContainer* args = new ArgContainer();
   OGRealScalar *real = new OGRealScalar(3.14);
   OGIntegerScalar *index = new OGIntegerScalar(0);
-  args->push_back(real);
-  args->push_back(index);
-  OGNumeric* node = new SELECTRESULT(args);
+  OGNumeric* node = new SELECTRESULT(real, index);
   check_rtti(node, "SELECTRESULT");
   delete node;
 }

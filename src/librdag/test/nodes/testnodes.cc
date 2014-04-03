@@ -75,9 +75,7 @@ CheckUnary<T>::getResultPair() const
 template<typename T> void
 CheckUnary<T>::execute()
 {
-  ArgContainer * args = new ArgContainer();
-  args->push_back(_input);
-  T * node = new T(args);
+  T * node = new T(_input);
   ExecutionList * el1 = new ExecutionList(node);
   for (auto it = el1->begin(); it != el1->end(); ++it)
   {
@@ -143,10 +141,7 @@ CheckBinary<T>::getResultPair() const
 template<typename T> void
 CheckBinary<T>::execute()
 {
-  ArgContainer * args = new ArgContainer();
-  args->push_back(_first_input);
-  args->push_back(_second_input);
-  T * node = new T(args);
+  T * node = new T(_first_input, _second_input);
   ExecutionList * el1 = new ExecutionList(node);
   for (auto it = el1->begin(); it != el1->end(); ++it)
   {

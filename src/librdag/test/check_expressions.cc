@@ -21,12 +21,9 @@ TYPED_TEST_CASE_P(BinaryExprTest);
 
 TYPED_TEST_P(BinaryExprTest, Functionality){
   // Constructor
-  ArgContainer* args = new ArgContainer();
   OGRealScalar* real = new OGRealScalar(3.14);
   OGComplexScalar *complx = new OGComplexScalar(complex16(2.7182, 2.7182));
-  args->push_back(real);
-  args->push_back(complx);
-  TypeParam *expr = new TypeParam(args);
+  TypeParam *expr = new TypeParam(real, complx);
   ASSERT_EQ(2, expr->getNArgs());
   const ArgContainer* gotArgs = expr->getArgs();
   EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
@@ -36,12 +33,8 @@ TYPED_TEST_P(BinaryExprTest, Functionality){
   expr->debug_print();
 
   // Constructor with null args
-  EXPECT_THROW(new TypeParam(nullptr), rdag_error);
-
-  // Constructor with args of wrong length
-  ArgContainer* wrongArgs = new ArgContainer();
-  wrongArgs->push_back(real->copy());
-  EXPECT_THROW(new TypeParam(wrongArgs), rdag_error);
+  EXPECT_THROW(new TypeParam(nullptr, real), rdag_error);
+  EXPECT_THROW(new TypeParam(real, nullptr), rdag_error);
 
   // Cleanup
   delete expr;
@@ -61,10 +54,8 @@ TYPED_TEST_CASE_P(UnaryExprTest);
 
 TYPED_TEST_P(UnaryExprTest, Functionality){
   // Constructor
-  ArgContainer* args = new ArgContainer();
   OGRealScalar *real = new OGRealScalar(3.14);
-  args->push_back(real);
-  TypeParam *expr = new TypeParam(args);
+  TypeParam *expr = new TypeParam(real);
   ASSERT_EQ(1, expr->getNArgs());
   const ArgContainer* gotArgs = expr->getArgs();
   EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
@@ -74,12 +65,6 @@ TYPED_TEST_P(UnaryExprTest, Functionality){
 
   // Constructor with null args
   EXPECT_THROW(new TypeParam(nullptr), rdag_error);
-
-  // Constructor with args of wrong length
-  ArgContainer* wrongArgs = new ArgContainer();
-  wrongArgs->push_back(real->copy());
-  wrongArgs->push_back(real->copy());
-  EXPECT_THROW(new TypeParam(wrongArgs), rdag_error);
 
   // Cleanup
   delete expr;
@@ -95,12 +80,9 @@ INSTANTIATE_TYPED_TEST_CASE_P(Unary, UnaryExprTest, UnaryExprTypes);
 
 TEST(OGExprTest, SELECTRESULT){
   // Constructor
-  ArgContainer* args = new ArgContainer();
   OGRealScalar *real = new OGRealScalar(3.14);
   OGIntegerScalar *index = new OGIntegerScalar(2);
-  args->push_back(real);
-  args->push_back(index);
-  OGExpr *selectresult = new SELECTRESULT(args);
+  OGExpr *selectresult = new SELECTRESULT(real, index);
   ASSERT_EQ(2, selectresult->getNArgs());
   const ArgContainer* gotArgs = selectresult->getArgs();
   EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
@@ -110,18 +92,13 @@ TEST(OGExprTest, SELECTRESULT){
   selectresult->debug_print();
 
   // Constructor with null args
-  EXPECT_THROW(new SELECTRESULT(nullptr), rdag_error);
-
-  // Constructor with args of wrong length
-  ArgContainer* wrongArgs = new ArgContainer();
-  wrongArgs->push_back(real->copy());
-  EXPECT_THROW(new SELECTRESULT(wrongArgs), rdag_error);
+  EXPECT_THROW(new SELECTRESULT(nullptr, index), rdag_error);
+  EXPECT_THROW(new SELECTRESULT(real, nullptr), rdag_error);
 
   // Constructor where second argument is not an integer type
-  ArgContainer* wrongTypeArgs = new ArgContainer();
-  wrongTypeArgs->push_back(real->copy());
-  wrongTypeArgs->push_back(real->copy());
-  EXPECT_THROW(new SELECTRESULT(wrongTypeArgs), rdag_error);
+  OGNumeric* realcopy = real->copy();
+  EXPECT_THROW(new SELECTRESULT(real, realcopy), rdag_error);
+  delete realcopy;
 
   // Cleanup
   delete selectresult;
@@ -241,9 +218,7 @@ TEST(VirtualCopyTest, ComplexSparseMatrix){
 
 TEST(VirtualCopyTest, COPY) {
   OGRealScalar *real = new OGRealScalar(1.0);
-  ArgContainer *a = new ArgContainer();
-  a->push_back(real);
-  COPY *copy1 = new COPY(a);
+  COPY *copy1 = new COPY(real);
   COPY const *copy2 = copy1->copy()->asCOPY();
   ASSERT_NE(nullptr, copy2);
   const ArgContainer* a1 = copy1->getArgs();
@@ -265,10 +240,7 @@ TEST(VirtualCopyTest, COPY) {
 TEST(VirtualCopyTest, PLUS) {
   OGRealScalar *real1 = new OGRealScalar(1.0);
   OGRealScalar *real2 = new OGRealScalar(2.0);
-  ArgContainer *a = new ArgContainer();
-  a->push_back(real1);
-  a->push_back(real2);
-  PLUS *plus1 = new PLUS(a);
+  PLUS *plus1 = new PLUS(real1, real2);
   const PLUS *plus2 = plus1->copy()->asPLUS();
   ASSERT_NE(nullptr, plus2);
   const ArgContainer* a1 = plus1->getArgs();
@@ -297,9 +269,7 @@ TEST(VirtualCopyTest, PLUS) {
 
 TEST(VirtualCopyTest, NEGATE) {
   OGRealScalar *real1 = new OGRealScalar(1.0);
-  ArgContainer *a = new ArgContainer();
-  a->push_back(real1);
-  NEGATE *negate1 = new NEGATE(a);
+  NEGATE *negate1 = new NEGATE(real1);
   const NEGATE *negate2 = negate1->copy()->asNEGATE();
   ASSERT_NE(nullptr, negate2);
   const ArgContainer* a1 = negate1->getArgs();
@@ -321,9 +291,7 @@ TEST(VirtualCopyTest, NEGATE) {
 TEST(VirtualCopyTest, SVD) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGRealMatrix *realMat = new OGRealMatrix(matData, 3, 2);
-  ArgContainer *a = new ArgContainer();
-  a->push_back(realMat);
-  SVD *svd1 = new SVD(a);
+  SVD *svd1 = new SVD(realMat);
   SVD const *svd2 = svd1->copy()->asSVD();
   ASSERT_NE(nullptr, svd2);
   const ArgContainer* a1 = svd1->getArgs();
@@ -348,14 +316,9 @@ TEST(VirtualCopyTest, SVD) {
 TEST(VirtualCopyTest, SELECTRESULT) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGRealMatrix *realMat = new OGRealMatrix(matData, 3, 2);
-  ArgContainer *svdArgs = new ArgContainer();
-  svdArgs->push_back(realMat);
-  SVD *svd = new SVD(svdArgs);
+  SVD *svd = new SVD(realMat);
   OGIntegerScalar* i = new OGIntegerScalar(0);
-  ArgContainer *srArgs = new ArgContainer();
-  srArgs->push_back(svd);
-  srArgs->push_back(i);
-  SELECTRESULT *sr1 = new SELECTRESULT(srArgs);
+  SELECTRESULT *sr1 = new SELECTRESULT(svd, i);
   const SELECTRESULT *sr2 = sr1->copy()->asSELECTRESULT();
   ASSERT_NE(nullptr, sr2);
   const ArgContainer* a1 = sr1->getArgs();

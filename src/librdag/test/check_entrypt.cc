@@ -63,21 +63,15 @@ TEST_P(EntryptNegateTest, Running)
 
 TreeResultPair negatepair(double v)
 {
-  ArgContainer* args = new ArgContainer();
-  args->push_back(new OGRealScalar(v));
-  const OGNumeric* negate = new NEGATE(args);
+  const OGNumeric* negate = new NEGATE(new OGRealScalar(v));
   const OGNumeric* expected = new OGRealScalar(-v);
   return TreeResultPair(negate, expected);
 }
 
 TreeResultPair doublenegate(double v)
 {
-  ArgContainer* args = new ArgContainer();
-  args->push_back(new OGRealScalar(v));
-  const OGNumeric* negate = new NEGATE(args);
-  args = new ArgContainer();
-  args->push_back(negate);
-  negate = new NEGATE(args);
+  const OGNumeric* negate = new NEGATE(new OGRealScalar(v));
+  negate = new NEGATE(negate);
   const OGNumeric* expected = new OGRealScalar(v);
   return TreeResultPair(negate, expected);
 }
@@ -88,9 +82,7 @@ double realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
 TreeResultPair negaterealmatrix()
 {
   const OGTerminal* ogrealmatrix = new OGRealMatrix(realData, 2, 3);
-  ArgContainer* arg = new ArgContainer();
-  arg->push_back(ogrealmatrix);
-  const OGNumeric* negate = new NEGATE(arg);
+  const OGNumeric* negate = new NEGATE(ogrealmatrix);
   const OGTerminal* ogrealnegmatrix = new OGRealMatrix(realNegData, 2, 3);
   return TreeResultPair(negate, ogrealnegmatrix);
 }
@@ -103,9 +95,7 @@ complex16 complexNegData[6] = { {-1.0, -2.0}, {-3.0, -4.0},  {-5.0,  -6.0},
 TreeResultPair negatecomplexmatrix()
 {
   const OGTerminal* ogcomplexmatrix = new OGComplexMatrix(complexData, 2, 3);
-  ArgContainer* arg = new ArgContainer();
-  arg->push_back(ogcomplexmatrix);
-  const OGNumeric* negate = new NEGATE(arg);
+  const OGNumeric* negate = new NEGATE(ogcomplexmatrix);
   const OGTerminal* ogcomplexnegmatrix = new OGComplexMatrix(complexNegData, 2, 3);
   return TreeResultPair(negate, ogcomplexnegmatrix);
 }
@@ -129,24 +119,15 @@ TEST_P(EntryptPlusTest, Running)
 
 TreeResultPair plustestsimple()
 {
-  ArgContainer* args = new ArgContainer();
-  args->push_back(new OGRealScalar(2.0));
-  args->push_back(new OGRealScalar(3.0));
-  const OGNumeric* plus = new PLUS(args);
+  const OGNumeric* plus = new PLUS(new OGRealScalar(2.0), new OGRealScalar(3.0));
   const OGNumeric* expected = new OGRealScalar(2.0+3.0);
   return TreeResultPair(plus, expected);
 }
 
 TreeResultPair plustesttwoplus()
 {
-  ArgContainer* args = new ArgContainer();
-  args->push_back(new OGRealScalar(2.0));
-  args->push_back(new OGRealScalar(3.0));
-  const OGNumeric* plus = new PLUS(args);
-  args = new ArgContainer();
-  args->push_back(new OGRealScalar(1.0));
-  args->push_back(plus);
-  plus = new PLUS(args);
+  const OGNumeric* plus = new PLUS(new OGRealScalar(2.0), new OGRealScalar(3.0));
+  plus = new PLUS(new OGRealScalar(1.0), plus);
   const OGNumeric* expected = new OGRealScalar(1.0+2.0+3.0);
   return TreeResultPair(plus, expected);
 }
@@ -158,19 +139,15 @@ TreeResultPair plustestbigtree()
   for (int i = 0; i < 5000; ++i)
   {
     sum += i;
-    ArgContainer* args = new ArgContainer();
 
     if (i%2 == 0)
     {
-      args->push_back(new OGRealScalar(i));
-      args->push_back(bigtree);
+      bigtree = new PLUS(new OGRealScalar(i), bigtree);
     }
     else
     {
-      args->push_back(bigtree);
-      args->push_back(new OGRealScalar(i));
+      bigtree = new PLUS(bigtree, new OGRealScalar(i));
     }
-    bigtree = new PLUS(args);
   }
 
   return TreeResultPair(bigtree, new OGRealScalar(sum));
