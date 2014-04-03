@@ -111,9 +111,7 @@ class FakeVisitor: public librdag::Visitor
  */
 TEST(TerminalsTest, OGTerminalTest) {
   OGNumeric * terminal_t = new OGRealScalar(3.14e0);
-  ArgContainer * args = new ArgContainer();
-  args->push_back(terminal_t);
-  OGNumeric * expr_t = new NEGATE(args);
+  OGNumeric * expr_t = new NEGATE(terminal_t);
   const OGTerminal * term;
   term = terminal_t->asOGTerminal();
   ASSERT_NE(term,nullptr);

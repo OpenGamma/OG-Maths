@@ -27,17 +27,12 @@ TEST(SELECTRESULTTests,CheckBehaviour)
 {
   OGTerminal* one = new OGRealScalar(1.0);
   OGTerminal* r0 = new OGRealScalar(10.0);
-  ArgContainer *args = new ArgContainer();
-  args->push_back(r0);
-  SVD* svd = new SVD(args);
+  SVD* svd = new SVD(r0);
 
   Dispatcher * d = new Dispatcher();
 
   // Check selecting 0 (U)
-  ArgContainer* args0 = new ArgContainer();
-  args0->push_back(svd);
-  args0->push_back(new OGIntegerScalar(0));
-  SELECTRESULT* s0 = new SELECTRESULT(args0);
+  SELECTRESULT* s0 = new SELECTRESULT(svd, new OGIntegerScalar(0));
   ExecutionList* el0 = new ExecutionList(s0);
   for (auto it = el0->begin(); it != el0->end(); ++it)
   {
@@ -48,10 +43,7 @@ TEST(SELECTRESULTTests,CheckBehaviour)
   EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 1 (S)
-  ArgContainer* args1 = new ArgContainer();
-  args1->push_back(svd->copy());
-  args1->push_back(new OGIntegerScalar(1));
-  SELECTRESULT* s1 = new SELECTRESULT(args1);
+  SELECTRESULT* s1 = new SELECTRESULT(svd->copy(), new OGIntegerScalar(1));
   ExecutionList* el1 = new ExecutionList(s1);
   for (auto it = el1->begin(); it != el1->end(); ++it)
   {
@@ -62,10 +54,7 @@ TEST(SELECTRESULTTests,CheckBehaviour)
   EXPECT_TRUE((*r0) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 2 (V)
-  ArgContainer* args2 = new ArgContainer();
-  args2->push_back(svd->copy());
-  args2->push_back(new OGIntegerScalar(2));
-  SELECTRESULT* s2 = new SELECTRESULT(args2);
+  SELECTRESULT* s2 = new SELECTRESULT(svd->copy(), new OGIntegerScalar(2));
   ExecutionList* el2 = new ExecutionList(s2);
   for (auto it = el2->begin(); it != el2->end(); ++it)
   {

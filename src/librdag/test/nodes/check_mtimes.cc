@@ -59,10 +59,9 @@ INSTANTIATE_NODE_TEST_CASE_P(MTIMESTests,MTIMES,
 
 
 TEST(MTIMESTests, CheckBadCommuteThrows) {
-  ArgContainer * args = new ArgContainer();
-  args->push_back(new OGRealMatrix(new real16[6]{1,3,5,2,4,6},3,2,OWNER));
-  args->push_back(new OGRealMatrix(new real16[7]{10,30,20,40,50,60,70},1,7,OWNER));
-  MTIMES * node = new MTIMES(args);
+  OGNumeric* m1 = new OGRealMatrix(new real16[6]{1,3,5,2,4,6},3,2,OWNER);
+  OGNumeric* m2 = new OGRealMatrix(new real16[7]{10,30,20,40,50,60,70},1,7,OWNER);
+  MTIMES * node = new MTIMES(m1, m2);
   ExecutionList * el1 = new ExecutionList(node);
   Dispatcher * v = new Dispatcher();
   ASSERT_THROW(

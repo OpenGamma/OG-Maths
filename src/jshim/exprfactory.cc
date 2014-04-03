@@ -17,9 +17,10 @@ using namespace librdag;
 /**
  * Generate the libRDAG expression objects for a given Java object
  * @param obj a Java OGNumeric type
- * @return a pointer to an ArgContainer representing the parameters
+ * @return a pointer to a vector of pointers that point at the arguments. This return type is
+ * temporary, and will disappear when the tree generation is converted to the procedural variant.
  */
-ArgContainer* generateArgs(jobject obj)
+vector<const OGNumeric*>* generateArgs(jobject obj)
 {
   // get object array
   jmethodID method = JVMManager::getOGExprClazz_getExprs();
@@ -29,10 +30,11 @@ ArgContainer* generateArgs(jobject obj)
   jobjectArray * args = reinterpret_cast<jobjectArray *>(&dataobj);
   jsize len = env->GetArrayLength((jarray)*args);
   DEBUG_PRINT("JOGExpr arg size is %d\n",(int)len);
-  ArgContainer* local_args = new ArgContainer();
+  vector<const OGNumeric*>* local_args = new vector<const OGNumeric*>();
   for(int i=0; i<len; i++)
   {
     jobject tmp = (jobject) env->GetObjectArrayElement(*args, i);
+    checkEx(env);
     local_args->push_back(createExpression(tmp));
   }
   return local_args;
@@ -49,6 +51,7 @@ OGNumeric* createExpression(jobject obj)
   JNIEnv *env=nullptr;
   JVMManager::getEnv((void **)&env);
   jobject typeobj = env->CallObjectMethod(obj, JVMManager::getOGNumericClazz_getType());
+  checkEx(env);
   jlong ID = env->GetLongField(typeobj, JVMManager::getOGExprEnumClazz__hashdefined());
   VAL64BIT_PRINT("Class type", ID);
 

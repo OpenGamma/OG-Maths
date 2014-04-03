@@ -29,10 +29,7 @@ TEST(DispatchTest, SimpleTest) {
     // One binary node holding two terminals
   OGNumeric *real1 = new OGRealScalar(1.0);
   OGNumeric *real2 = new OGRealScalar(2.0);
-  ArgContainer* plusArgs = new ArgContainer();
-  plusArgs->push_back(real1);
-  plusArgs->push_back(real2);
-  OGExpr *plus = new PLUS(plusArgs);
+  OGExpr *plus = new PLUS(real1, real2);
   ExecutionList* el1 = new ExecutionList(plus);
   const OGNumeric * val;
   int counter = 0;

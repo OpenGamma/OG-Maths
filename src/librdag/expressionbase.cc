@@ -19,32 +19,31 @@ namespace librdag
  * OGExpr
  */
 
-OGExpr::OGExpr(ArgContainer *args)
+OGExpr::OGExpr()
 {
-  if (args == nullptr)
-  {
-    throw rdag_error("Null args passed to Expr constructor");
-  }
-  this->_args = args;
-  this->_regs = new RegContainer();
+  _args = nullptr;
+  _regs = new RegContainer();
 }
 
 OGExpr::~OGExpr()
 {
-  delete this->_args;
-  delete this->_regs;
+  if (_args != nullptr)
+  {
+    delete _args;
+  }
+  delete _regs;
 }
 
 const ArgContainer*
 OGExpr::getArgs() const
 {
-  return this->_args;
+  return _args;
 }
 
 size_t
 OGExpr::getNArgs() const
 {
-  return this->_args->size();
+  return _args->size();
 }
 
 void
@@ -62,7 +61,7 @@ OGExpr::asOGExpr() const
 const RegContainer *
 OGExpr::getRegs() const
 {
-  return this->_regs;
+  return _regs;
 }
 
 void OGExpr::debug_print() const
@@ -75,20 +74,29 @@ void OGExpr::debug_print() const
  * Things that extend OGExpr
  */
 
-OGUnaryExpr::OGUnaryExpr(ArgContainer* args): OGExpr(args)
+OGUnaryExpr::OGUnaryExpr(const OGNumeric* arg): OGExpr{}
 {
-  if (args->size() != 1)
+  if (arg == nullptr)
   {
-    throw rdag_error("ArgContainer passed to UnaryExpr does not have exactly one argument");
+    throw rdag_error("Null operand passed to unary expression");
   }
+  _args = new ArgContainer();
+  _args->push_back(arg);
 }
 
-OGBinaryExpr::OGBinaryExpr(ArgContainer* args): OGExpr(args)
+OGBinaryExpr::OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr{}
 {
-  if (args->size() != 2)
+  if (arg0 == nullptr)
   {
-    throw rdag_error("ArgContainer passed to BinaryExpr does not have exactly two arguments");
+    throw rdag_error("Null operand passed to binary expression in arg0");
   }
+  if (arg1 == nullptr)
+  {
+    throw rdag_error("Null operand passed to binary expression in arg1");
+  }
+  _args = new ArgContainer();
+  _args->push_back(arg0);
+  _args->push_back(arg1);
 }
 
 /**
@@ -98,12 +106,13 @@ OGBinaryExpr::OGBinaryExpr(ArgContainer* args): OGExpr(args)
 /**
  * COPY node
  */
-COPY::COPY(ArgContainer* args): OGUnaryExpr(args) {}
+
+COPY::COPY(const OGNumeric* arg): OGUnaryExpr{arg} {}
 
 OGNumeric*
 COPY::copy() const
 {
-  return new COPY(this->getArgs()->copy());
+  return new COPY((*_args)[0]->copy());
 }
 
 const COPY*
@@ -127,19 +136,29 @@ COPY::getType() const
 /**
  * SELECTRESULT node
  */
-SELECTRESULT::SELECTRESULT(ArgContainer* args): OGBinaryExpr(args) {
-  // Check that the second argument is an integer
-  const OGIntegerScalar* i = (*args)[1]->asOGIntegerScalar();
-  if (i == nullptr)
+SELECTRESULT::SELECTRESULT(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr{}
+{
+  if (arg0 == nullptr)
+  {
+    throw rdag_error("Null operand passed to binary expression in arg0");
+  }
+  if (arg1 == nullptr)
+  {
+    throw rdag_error("Null operand passed to binary expression in arg1");
+  }
+  if (arg1->getType() != INTEGER_SCALAR_ENUM)
   {
     throw rdag_error("Second argument of SelectResult is not an integer");
   }
+  _args = new ArgContainer();
+  _args->push_back(arg0);
+  _args->push_back(arg1);
 }
 
 OGNumeric*
 SELECTRESULT::copy() const
 {
-  return new SELECTRESULT(this->getArgs()->copy());
+  return new SELECTRESULT((*_args)[0]->copy(), (*_args)[1]->copy());
 }
 
 const SELECTRESULT*
@@ -164,12 +183,14 @@ SELECTRESULT::getType() const
 /**
  * NORM2 node
  */
-NORM2::NORM2(ArgContainer* args): OGUnaryExpr(args) {}
+
+NORM2::NORM2(const OGNumeric* arg): OGUnaryExpr{arg} {}
 
 OGNumeric*
 NORM2::copy() const
 {
-  return new NORM2(this->getArgs()->copy());
+
+  return new NORM2((*_args)[0]->copy());
 }
 
 const NORM2*
@@ -194,12 +215,12 @@ NORM2::getType() const
  * SVD node
  */
 
-SVD::SVD(ArgContainer* args): OGUnaryExpr(args) { }
+SVD::SVD(const OGNumeric* arg): OGUnaryExpr{arg} {}
 
 OGNumeric*
 SVD::copy() const
 {
-  return new SVD(this->getArgs()->copy());
+  return new SVD((*_args)[0]->copy());
 }
 
 const SVD*
@@ -223,12 +244,13 @@ SVD::getType() const
 /**
  * MTIMES node
  */
-MTIMES::MTIMES(ArgContainer* args): OGBinaryExpr(args) {}
+
+MTIMES::MTIMES(const OGNumeric* arg0, const OGNumeric* arg1): OGBinaryExpr{arg0, arg1} {}
 
 OGNumeric*
 MTIMES::copy() const
 {
-  return new MTIMES(this->getArgs()->copy());
+  return new MTIMES((*_args)[0]->copy(), (*_args)[1]->copy());
 }
 
 const MTIMES*
