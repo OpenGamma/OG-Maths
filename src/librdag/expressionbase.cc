@@ -21,8 +21,12 @@ namespace librdag
 
 OGExpr::OGExpr()
 {
+  // _args must be initialised by a subclass.
   _args = nullptr;
+  // _regs are safe to immediately own their contents because we don't put anything
+  // in them during construction.
   _regs = new RegContainer();
+  _regs->set_ownership(true);
 }
 
 OGExpr::~OGExpr()
@@ -82,6 +86,9 @@ OGUnaryExpr::OGUnaryExpr(const OGNumeric* arg): OGExpr{}
   }
   _args = new ArgContainer();
   _args->push_back(arg);
+  // We got all the way through building the OGUnaryExpr object, so it
+  // is now safe to own the arguments.
+  _args->set_ownership(true);
 }
 
 OGBinaryExpr::OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr{}
@@ -97,6 +104,9 @@ OGBinaryExpr::OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr
   _args = new ArgContainer();
   _args->push_back(arg0);
   _args->push_back(arg1);
+  // We got all the way through building the OGBinaryExpr object, so it
+  // is now safe to own the arguments.
+  _args->set_ownership(true);
 }
 
 /**
@@ -153,6 +163,9 @@ SELECTRESULT::SELECTRESULT(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr
   _args = new ArgContainer();
   _args->push_back(arg0);
   _args->push_back(arg1);
+  // We got all the way through building the SELECTRESULT object, so it
+  // is now safe to own the arguments.
+  _args->set_ownership(true);
 }
 
 OGNumeric*
