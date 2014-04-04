@@ -35,16 +35,16 @@ class OGExpr: public OGNumeric
   public:
     virtual ~OGExpr();
     const ArgContainer& getArgs() const;
+    RegContainer& getRegs() const;
     size_t getNArgs() const;
     virtual const OGExpr* asOGExpr() const override;
     virtual void debug_print() const override;
     virtual void accept(Visitor &v) const override;
-    virtual const RegContainer * getRegs() const;
   protected:
     OGExpr();
     ArgContainer _args;
   private:
-    RegContainer * _regs;
+    mutable RegContainer _regs;
 };
 
 /**

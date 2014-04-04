@@ -23,17 +23,17 @@
 namespace librdag {
 
 void *
-NORM2Runner::run(RegContainer * reg, OGRealScalar const * arg) const
+NORM2Runner::run(RegContainer& reg, OGRealScalar const * arg) const
 {
   const OGRealScalar* ret;
   ret = new OGRealScalar(fabs(arg->getValue()));
-  reg->push_back(ret);
+  reg.push_back(ret);
   return nullptr;
 }
 
 template<typename T>
 void
-norm2_dense_runner(RegContainer * reg, OGMatrix<T> const * arg)
+norm2_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
 {
   const OGRealScalar* ret = nullptr; // the returned item
 
@@ -75,18 +75,18 @@ norm2_dense_runner(RegContainer * reg, OGMatrix<T> const * arg)
   }
 
   // shove ret into register
-  reg->push_back(ret);
+  reg.push_back(ret);
 }
 
 void *
-NORM2Runner::run(RegContainer * reg, OGRealMatrix const * arg) const
+NORM2Runner::run(RegContainer& reg, OGRealMatrix const * arg) const
 {
   norm2_dense_runner(reg, arg);
   return nullptr;
 }
 
 void *
-NORM2Runner::run(RegContainer * reg, OGComplexMatrix const * arg) const
+NORM2Runner::run(RegContainer& reg, OGComplexMatrix const * arg) const
 {
   norm2_dense_runner(reg, arg);
   return nullptr;

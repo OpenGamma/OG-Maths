@@ -157,10 +157,10 @@ entrypt(const OGNumeric* expr)
       }
     }
 
-    const RegContainer * reg = expr->asOGExpr()->getRegs();
+    const RegContainer& regs = expr->asOGExpr()->getRegs();
     
     // Make a copy of the result because it gets blown away by the deletion of the tree
-    const OGNumeric * answer = (*reg)[0]->copy();
+    const OGNumeric * answer = regs[0]->copy();
     const OGTerminal * returnTerm = answer->asOGTerminal();
     
     if(returnTerm==nullptr)

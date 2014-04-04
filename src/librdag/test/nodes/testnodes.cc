@@ -83,8 +83,8 @@ CheckUnary<T>::execute()
     v->dispatch(*it);
     delete v;
   }
-  const RegContainer * regs = node->getRegs();
-  const OGNumeric * answer = (*regs)[0];
+  const RegContainer& regs = node->getRegs();
+  const OGNumeric * answer = regs[0];
   this->_resultPair = new ResultPair(answer->asOGTerminal()->createOwningCopy(), this->getExpected());
   delete node;
   delete el1;
@@ -149,8 +149,8 @@ CheckBinary<T>::execute()
     v->dispatch(*it);
     delete v;
   }
-  const RegContainer * regs = node->getRegs();
-  const OGNumeric * answer = (*regs)[0];
+  const RegContainer& regs = node->getRegs();
+  const OGNumeric* answer = regs[0];
   this->_resultPair = new ResultPair(answer->asOGTerminal()->createOwningCopy(), this->getExpected());
   delete node;
   delete el1;

@@ -23,14 +23,10 @@ OGExpr::OGExpr()
 {
   // _regs are safe to immediately own their contents because we don't put anything
   // in them during construction.
-  _regs = new RegContainer();
-  _regs->set_ownership(true);
+  _regs.set_ownership(true);
 }
 
-OGExpr::~OGExpr()
-{
-  delete _regs;
-}
+OGExpr::~OGExpr() {}
 
 const ArgContainer&
 OGExpr::getArgs() const
@@ -56,7 +52,7 @@ OGExpr::asOGExpr() const
   return this;
 }
 
-const RegContainer *
+RegContainer&
 OGExpr::getRegs() const
 {
   return _regs;
