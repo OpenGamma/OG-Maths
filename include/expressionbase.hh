@@ -34,7 +34,7 @@ class OGExpr: public OGNumeric
 {
   public:
     virtual ~OGExpr();
-    const ArgContainer* getArgs() const;
+    const ArgContainer& getArgs() const;
     size_t getNArgs() const;
     virtual const OGExpr* asOGExpr() const override;
     virtual void debug_print() const override;
@@ -42,7 +42,7 @@ class OGExpr: public OGNumeric
     virtual const RegContainer * getRegs() const;
   protected:
     OGExpr();
-    ArgContainer * _args;
+    ArgContainer _args;
   private:
     RegContainer * _regs;
 };

@@ -132,10 +132,10 @@ binary_ctor_method = """\
 %(classname)s::%(classname)s(const OGNumeric* arg1, const OGNumeric* arg2): OGBinaryExpr{arg1, arg2} {}"""
 
 unary_copy_method = """\
-  return new %(classname)s((*_args)[0]->copy());"""
+  return new %(classname)s(_args[0]->copy());"""
 
 binary_copy_method = """\
-  return new %(classname)s((*_args)[0]->copy(), (*_args)[1]->copy());"""
+  return new %(classname)s(_args[0]->copy(), _args[1]->copy());"""
 
 # Numeric header file
 

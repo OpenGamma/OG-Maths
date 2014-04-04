@@ -301,10 +301,10 @@ Dispatcher::dispatch(%(nodetype)s const SUPPRESS_UNUSED * thing) const
 """
 
 dispatcher_binary_implementation = """\
-  const ArgContainer * args = thing->getArgs();
+  const ArgContainer& args = thing->getArgs();
   const RegContainer * regs = thing->getRegs();
-  const OGNumeric * arg0 = (*args)[0];
-  const OGNumeric * arg1 = (*args)[1];
+  const OGNumeric * arg0 = args[0];
+  const OGNumeric * arg1 = args[1];
   const OGTerminal* arg0t = arg0->asOGTerminal();
   const OGTerminal* arg1t = arg1->asOGTerminal();
   if (arg0t == nullptr)
@@ -319,9 +319,9 @@ dispatcher_binary_implementation = """\
 """
 
 dispatcher_unary_implementation = """\
-  const ArgContainer* args = thing->getArgs();
+  const ArgContainer& args = thing->getArgs();
   const RegContainer* regs = thing->getRegs();
-  const OGNumeric *arg = (*args)[0];
+  const OGNumeric *arg = args[0];
   const OGTerminal *argt = arg->asOGTerminal();
   if (argt == nullptr)
   {
@@ -331,10 +331,10 @@ dispatcher_unary_implementation = """\
 """
 
 dispatcher_select_implementation = """\
-  const ArgContainer* args = thing->getArgs();
+  const ArgContainer& args = thing->getArgs();
   const RegContainer* regs = thing->getRegs();
-  const OGNumeric *arg0 = (*args)[0];
-  const OGNumeric *arg1 = (*args)[1];
+  const OGNumeric *arg0 = args[0];
+  const OGNumeric *arg1 = args[1];
   const RegContainer* arg0r = arg0->asOGExpr()->getRegs();
   const OGIntegerScalar* arg1i = arg1->asOGIntegerScalar();
   this->_%(nodetype)sRunner->eval(const_cast<RegContainer *>(regs), arg0r, arg1i);

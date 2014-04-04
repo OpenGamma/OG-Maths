@@ -25,9 +25,9 @@ TYPED_TEST_P(BinaryExprTest, Functionality){
   OGComplexScalar *complx = new OGComplexScalar(complex16(2.7182, 2.7182));
   TypeParam *expr = new TypeParam(real, complx);
   ASSERT_EQ(2, expr->getNArgs());
-  const ArgContainer* gotArgs = expr->getArgs();
-  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
-  EXPECT_EQ(complx, ((*gotArgs)[1])->asOGComplexScalar());
+  const ArgContainer& gotArgs = expr->getArgs();
+  EXPECT_EQ(real, (gotArgs[0])->asOGRealScalar());
+  EXPECT_EQ(complx, (gotArgs[1])->asOGComplexScalar());
 
   // Debug string
   expr->debug_print();
@@ -57,8 +57,8 @@ TYPED_TEST_P(UnaryExprTest, Functionality){
   OGRealScalar *real = new OGRealScalar(3.14);
   TypeParam *expr = new TypeParam(real);
   ASSERT_EQ(1, expr->getNArgs());
-  const ArgContainer* gotArgs = expr->getArgs();
-  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
+  const ArgContainer& gotArgs = expr->getArgs();
+  EXPECT_EQ(real, (gotArgs[0])->asOGRealScalar());
 
   // Debug string
   expr->debug_print();
@@ -84,9 +84,9 @@ TEST(OGExprTest, SELECTRESULT){
   OGIntegerScalar *index = new OGIntegerScalar(2);
   OGExpr *selectresult = new SELECTRESULT(real, index);
   ASSERT_EQ(2, selectresult->getNArgs());
-  const ArgContainer* gotArgs = selectresult->getArgs();
-  EXPECT_EQ(real, ((*gotArgs)[0])->asOGRealScalar());
-  EXPECT_EQ(index, ((*gotArgs)[1])->asOGIntegerScalar());
+  const ArgContainer& gotArgs = selectresult->getArgs();
+  EXPECT_EQ(real, (gotArgs[0])->asOGRealScalar());
+  EXPECT_EQ(index, (gotArgs[1])->asOGIntegerScalar());
 
   // Debug string
   selectresult->debug_print();
@@ -221,12 +221,11 @@ TEST(VirtualCopyTest, COPY) {
   COPY *copy1 = new COPY(real);
   COPY const *copy2 = copy1->copy()->asCOPY();
   ASSERT_NE(nullptr, copy2);
-  const ArgContainer* a1 = copy1->getArgs();
-  const ArgContainer* a2 = copy2->getArgs();
-  EXPECT_NE(a1, a2);
-  EXPECT_EQ(a1->size(), a2->size());
-  const OGNumeric* c1arg1 = (*a1)[0];
-  const OGNumeric* c2arg1 = (*a2)[0];
+  const ArgContainer& a1 = copy1->getArgs();
+  const ArgContainer& a2 = copy2->getArgs();
+  EXPECT_EQ(a1.size(), a2.size());
+  const OGNumeric* c1arg1 = a1[0];
+  const OGNumeric* c2arg1 = a2[0];
   EXPECT_NE(c1arg1, c2arg1);
   const OGRealScalar* c1s = c1arg1->asOGRealScalar();
   const OGRealScalar* c2s = c2arg1->asOGRealScalar();
@@ -243,15 +242,14 @@ TEST(VirtualCopyTest, PLUS) {
   PLUS *plus1 = new PLUS(real1, real2);
   const PLUS *plus2 = plus1->copy()->asPLUS();
   ASSERT_NE(nullptr, plus2);
-  const ArgContainer* a1 = plus1->getArgs();
-  const ArgContainer* a2 = plus2->getArgs();
-  EXPECT_NE(a1, a2);
-  EXPECT_EQ(a1->size(), a2->size());
-  const OGNumeric* p1arg1 = (*a1)[0];
-  const OGNumeric* p2arg1 = (*a2)[0];
+  const ArgContainer& a1 = plus1->getArgs();
+  const ArgContainer& a2 = plus2->getArgs();
+  EXPECT_EQ(a1.size(), a2.size());
+  const OGNumeric* p1arg1 = a1[0];
+  const OGNumeric* p2arg1 = a2[0];
   EXPECT_NE(p1arg1, p2arg1);
-  const OGNumeric* p1arg2 = (*a1)[1];
-  const OGNumeric* p2arg2 = (*a2)[1];
+  const OGNumeric* p1arg2 = a1[1];
+  const OGNumeric* p2arg2 = a2[1];
   EXPECT_NE(p1arg2, p2arg2);
   const OGRealScalar* p1s1 = p1arg1->asOGRealScalar();
   const OGRealScalar* p2s1 = p2arg1->asOGRealScalar();
@@ -272,12 +270,11 @@ TEST(VirtualCopyTest, NEGATE) {
   NEGATE *negate1 = new NEGATE(real1);
   const NEGATE *negate2 = negate1->copy()->asNEGATE();
   ASSERT_NE(nullptr, negate2);
-  const ArgContainer* a1 = negate1->getArgs();
-  const ArgContainer* a2 = negate2->getArgs();
-  EXPECT_NE(a1, a2);
-  EXPECT_EQ(a1->size(), a2->size());
-  const OGNumeric* n1arg1 = (*a1)[0];
-  const OGNumeric* n2arg1 = (*a2)[0];
+  const ArgContainer& a1 = negate1->getArgs();
+  const ArgContainer& a2 = negate2->getArgs();
+  EXPECT_EQ(a1.size(), a2.size());
+  const OGNumeric* n1arg1 = a1[0];
+  const OGNumeric* n2arg1 = a2[0];
   EXPECT_NE(n1arg1, n2arg1);
   const OGRealScalar* n1s1 = n1arg1->asOGRealScalar();
   const OGRealScalar* n2s1 = n2arg1->asOGRealScalar();
@@ -294,12 +291,11 @@ TEST(VirtualCopyTest, SVD) {
   SVD *svd1 = new SVD(realMat);
   SVD const *svd2 = svd1->copy()->asSVD();
   ASSERT_NE(nullptr, svd2);
-  const ArgContainer* a1 = svd1->getArgs();
-  const ArgContainer* a2 = svd2->getArgs();
-  EXPECT_NE(a1, a2);
-  EXPECT_EQ(a1->size(), a2->size());
-  const OGNumeric* s1arg1 = (*a1)[0];
-  const OGNumeric* s2arg1 = (*a2)[0];
+  const ArgContainer& a1 = svd1->getArgs();
+  const ArgContainer& a2 = svd2->getArgs();
+  EXPECT_EQ(a1.size(), a2.size());
+  const OGNumeric* s1arg1 = a1[0];
+  const OGNumeric* s2arg1 = a2[0];
   EXPECT_NE(s1arg1, s2arg1);
   const OGRealMatrix* s1m = s1arg1->asOGRealMatrix();
   const OGRealMatrix* s2m = s2arg1->asOGRealMatrix();
@@ -321,15 +317,14 @@ TEST(VirtualCopyTest, SELECTRESULT) {
   SELECTRESULT *sr1 = new SELECTRESULT(svd, i);
   const SELECTRESULT *sr2 = sr1->copy()->asSELECTRESULT();
   ASSERT_NE(nullptr, sr2);
-  const ArgContainer* a1 = sr1->getArgs();
-  const ArgContainer* a2 = sr2->getArgs();
-  EXPECT_NE(a1, a2);
-  EXPECT_EQ(a1->size(), a2->size());
-  const OGNumeric* sr1arg1 = (*a1)[0];
-  const OGNumeric* sr2arg1 = (*a2)[0];
+  const ArgContainer& a1 = sr1->getArgs();
+  const ArgContainer& a2 = sr2->getArgs();
+  EXPECT_EQ(a1.size(), a2.size());
+  const OGNumeric* sr1arg1 = a1[0];
+  const OGNumeric* sr2arg1 = a2[0];
   EXPECT_NE(sr1arg1, sr2arg1);
-  const OGNumeric* sr1arg2 = (*a1)[1];
-  const OGNumeric* sr2arg2 = (*a2)[1];
+  const OGNumeric* sr1arg2 = a1[1];
+  const OGNumeric* sr2arg2 = a2[1];
   EXPECT_NE(sr1arg2, sr2arg2);
   const SVD* sr1svd = sr1arg1->asSVD();
   const SVD* sr2svd = sr2arg1->asSVD();

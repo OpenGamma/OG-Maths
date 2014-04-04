@@ -54,10 +54,10 @@ class PrintTreeVisitor: public librdag::Visitor
       cout << "Have OGExpr type ";
       thing->debug_print();
       cout << "\n";
-      librdag::ArgContainer const *tmp = thing->getArgs();
+      const ArgContainer& tmp = thing->getArgs();
       //hmmm perhaps we should either store the args as a raw array, or insist on everything being a vector.
       // anyway, walk over given args
-      for(auto it = tmp->begin();  it != tmp->end(); it++)
+      for(auto it = tmp.begin();  it != tmp.end(); it++)
       {
         _walker->talkandwalk(*(it));
       }
