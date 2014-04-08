@@ -196,7 +196,13 @@ template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, complex16
 template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO)
 {
   F77FUNC(dtrtrs)(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
-  if(*INFO!=0)
+  if(*INFO>0)
+  {
+    stringstream message;
+    message << "LAPACK::dtrtrs matrix is reported as being singular, the " << *INFO << "th diagonal is zero. No solutions have been computed.";
+    throw rdag_error(message.str());
+  }
+  if(*INFO<0)
   {
     stringstream message;
     message << "Input to LAPACK::dtrtrs call incorrect at arg: " << *INFO;
@@ -207,6 +213,12 @@ template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NR
 template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO)
 {
   F77FUNC(ztrtrs)(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
+  if(*INFO>0)
+  {
+    stringstream message;
+    message << "LAPACK::dtrtrs matrix is reported as being singular, the " << *INFO << "th diagonal is zero. No solutions have been computed.";
+    throw rdag_error(message.str());
+  }
   if(*INFO!=0)
   {
     stringstream message;
@@ -219,6 +231,12 @@ template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NR
 template<> void xpotrf(char * UPLO, int * N, real16 * A, int * LDA, int * INFO)
 {
   F77FUNC(dpotrf)(UPLO, N, A, LDA, INFO);
+  if(*INFO>0)
+  {
+    stringstream message;
+    message << "LAPACK::dpotrf matrix is reported as being non s.p.d OR the factorisation failed. The " << *INFO << "th leading minor is not positive definite.";
+    throw rdag_error(message.str());
+  }
   if(*INFO<0)
   {
     stringstream message;
@@ -230,6 +248,12 @@ template<> void xpotrf(char * UPLO, int * N, real16 * A, int * LDA, int * INFO)
 template<> void xpotrf(char * UPLO, int * N, complex16 * A, int * LDA, int * INFO)
 {
   F77FUNC(zpotrf)(UPLO, N, A, LDA, INFO);
+  if(*INFO>0)
+  {
+    stringstream message;
+    message << "LAPACK::zpotrf matrix is reported as being non s.p.d OR the factorisation failed. The " << *INFO << "th leading minor is not positive definite.";
+    throw rdag_error(message.str());
+  }
   if(*INFO<0)
   {
     stringstream message;
@@ -240,8 +264,14 @@ template<> void xpotrf(char * UPLO, int * N, complex16 * A, int * LDA, int * INF
 
 template<> void xpocon(char * UPLO, int * N, real16 * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO)
 {
-  real16 * WORK = new real16[3 * *N];
-  int * IWORK = new int[*N];
+  if(*N<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dpocon call incorrect at arg: " << 2;
+    throw rdag_error(message.str());
+  }
+  real16 * WORK = new real16[3 * (*N)];
+  int * IWORK = new int[(*N)];
   F77FUNC(dpocon)(UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
   delete [] WORK;
   delete [] IWORK;
@@ -255,6 +285,12 @@ template<> void xpocon(char * UPLO, int * N, real16 * A, int * LDA, real16 * ANO
 
 template<> void xpocon(char * UPLO, int * N, complex16 * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO)
 {
+  if(*N<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zpocon call incorrect at arg: " << 2;
+    throw rdag_error(message.str());
+  }
   complex16 * WORK = new complex16[2 * *N];
   real16 * RWORK = new real16[*N];
   F77FUNC(zpocon)(UPLO, N, A, LDA, ANORM, RCOND, WORK, RWORK, INFO);
@@ -280,6 +316,15 @@ template<>real16 xlansy(char * NORM, char * UPLO, int * N, complex16 * A, int * 
 {
   real16 * WORK = new real16[*N]; // allocate regardless of *NORM
   real16 ret = F77FUNC(zlansy)(NORM, UPLO, N, A, LDA, WORK);
+  delete [] WORK;
+  return ret;
+}
+
+
+real16 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA)
+{
+  real16 * WORK = new real16[*N]; // allocate regardless of *NORM
+  real16 ret = F77FUNC(zlanhe)(NORM, UPLO, N, A, LDA, WORK);
   delete [] WORK;
   return ret;
 }

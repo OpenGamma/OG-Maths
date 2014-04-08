@@ -58,6 +58,10 @@ extern "C" void F77FUNC(zpocon)(char * UPLO, int * N, complex16 * A, int * LDA, 
 extern "C" real16 F77FUNC(dlansy)(char * NORM, char * UPLO, int * N, real16 * A, int * LDA, real16 * WORK);
 extern "C" real16 F77FUNC(zlansy)(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA, real16 * WORK);
 
+// Norm calculator for Hermitian matrix
+extern "C" real16 F77FUNC(zlanhe)(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA, real16 * WORK);
+
+
 // Cholesky based solvers
 extern "C" void F77FUNC(dpotrs)(char * UPLO, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO);
 extern "C" void F77FUNC(zpotrs)(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO);
@@ -239,6 +243,16 @@ template<typename T> void xpocon(char * UPLO, int * N, T * A, int * LDA, real16 
  */
 template<typename T> real16 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA);
 
+/**
+ * zlanhe() computes condition numbers for a Hermitian matrix.
+ * @param NORM as LAPACK zlanhe NORM
+ * @param UPLO as LAPACK zlanhe UPLO
+ * @param N as LAPACK zlanhe N
+ * @param A a complex Hermitian matrix with intent as given in LAPACK zlanhe A
+ * @param LDA as LAPACK zlanhe LDA
+ * @return the NORM as indicated by \a NORM.
+ */
+real16 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA);
 
 /**
  * xpotrs() solves s.p.d. systems via Cholesky decomposition as computed by xpotrf().
