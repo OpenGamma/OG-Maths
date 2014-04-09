@@ -164,6 +164,12 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, complex16 *
 
 template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, real16 * A, int * LDA, real16 * RCOND, int * INFO)
 {
+  if(*N<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dtrcon call incorrect at arg: " << 4;
+    throw rdag_error(message.str());
+  }
   real16 * WORK = new real16[ 3 * *N];
   int * IWORK = new int[*N];
   F77FUNC(dtrcon)(NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK, IWORK, INFO);
@@ -180,6 +186,12 @@ template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, real16 * 
 
 template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, complex16 * A, int * LDA, real16 * RCOND, int * INFO)
 {
+  if(*N<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::ztrcon call incorrect at arg: " << 4;
+    throw rdag_error(message.str());
+  }
   complex16 * WORK = new complex16[ 2 * *N];
   real16 * RWORK = new real16[*N];
   F77FUNC(ztrcon)(NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK, RWORK, INFO);
@@ -306,6 +318,12 @@ template<> void xpocon(char * UPLO, int * N, complex16 * A, int * LDA, real16 * 
 
 template<>real16 xlansy(char * NORM, char * UPLO, int * N, real16 * A, int * LDA)
 {
+  if(*N<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dlansy call incorrect at arg: " << 3;
+    throw rdag_error(message.str());
+  }
   real16 * WORK = new real16[*N]; // allocate regardless of *NORM
   real16 ret = F77FUNC(dlansy)(NORM, UPLO, N, A, LDA, WORK);
   delete [] WORK;
@@ -314,6 +332,12 @@ template<>real16 xlansy(char * NORM, char * UPLO, int * N, real16 * A, int * LDA
 
 template<>real16 xlansy(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA)
 {
+  if(*N<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zlansy call incorrect at arg: " << 3;
+    throw rdag_error(message.str());
+  }
   real16 * WORK = new real16[*N]; // allocate regardless of *NORM
   real16 ret = F77FUNC(zlansy)(NORM, UPLO, N, A, LDA, WORK);
   delete [] WORK;

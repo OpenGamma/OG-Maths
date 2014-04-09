@@ -295,6 +295,16 @@ TEST(LAPACKTest_xtrcon, dtrcon) {
   lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, rutri4, &n, &rcond, &INFO );
   real16 expected = 0.025e0;
   EXPECT_TRUE(SingleValueFuzzyEquals(expected,rcond));
+
+  // check throw on bad arg (first throw)
+  n=-1;
+  EXPECT_THROW(lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, rutri4, &n, &rcond, &INFO ), rdag_error);
+
+  // check throw on bad arg (second throw)
+  n=4;
+  int lda = -1;
+  EXPECT_THROW(lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, rutri4, &lda, &rcond, &INFO ), rdag_error);
+
 }
 
 // Check successful templating of ztrcon.
@@ -305,6 +315,15 @@ TEST(LAPACKTest_xtrcon, ztrcon) {
   lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, cutri4, &n, &rcond, &INFO );
   real16 expected = 0.025e0;
   EXPECT_TRUE(SingleValueFuzzyEquals(expected,rcond));
+
+  // check throw on bad arg (first throw)
+  n=-1;
+  EXPECT_THROW(lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, cutri4, &n, &rcond, &INFO ), rdag_error);
+
+  // check throw on bad arg (second throw)
+  n=4;
+  int lda = -1;
+  EXPECT_THROW(lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, cutri4, &lda, &rcond, &INFO ), rdag_error);
 }
 
 // Check successful templating of dtrtrs.
@@ -422,9 +441,14 @@ TEST(LAPACKTest_xpocon, dpocon) {
   real16 rcond_expected = 0.00190665795051604e0;
   EXPECT_TRUE(SingleValueFuzzyEquals(rcond_expected, RCOND));
 
-  // check throw on bad arg
+  // check throw on bad arg (first catch to prevent bad alloc)
   n = -1;
   EXPECT_THROW(lapack::xpocon(lapack::U, &n, A, &n, &ANORM, &RCOND, &INFO), rdag_error);
+
+  // check throw on bad arg (second catch, bad input elsewhere)
+  n = 4;
+  char kew = 'Q';
+  EXPECT_THROW(lapack::xpocon(&kew, &n, A, &n, &ANORM, &RCOND, &INFO), rdag_error);
 
   delete [] A;
 }
@@ -445,9 +469,79 @@ TEST(LAPACKTest_xpocon, zpocon) {
   real16 rcond_expected = 3.21351909155511e-04;
   EXPECT_TRUE(SingleValueFuzzyEquals(rcond_expected, RCOND));
 
-  // check throw on bad arg
+  // check throw on bad arg (first catch to prevent bad alloc)
   n = -1;
   EXPECT_THROW(lapack::xpocon(lapack::U, &n, A, &n, &ANORM, &RCOND, &INFO), rdag_error);
 
+  // check throw on bad arg (second catch, bad input elsewhere)
+  n = 4;
+  char kew = 'Q';
+  EXPECT_THROW(lapack::xpocon(&kew, &n, A, &n, &ANORM, &RCOND, &INFO), rdag_error);
+
   delete [] A;
+}
+
+TEST(LAPACKTest_xlansy, dlansy) {
+  int n = 4;
+  real16 NORM = lapack::xlansy(lapack::ONE, lapack::U, &n, rspd, &n);
+  real16 expected = 79;
+  EXPECT_TRUE(SingleValueFuzzyEquals(expected, NORM));
+
+  // check throw on bad arg (first catch to prevent bad alloc)
+  n = -1;
+  EXPECT_THROW(lapack::xlansy(lapack::ONE, lapack::U, &n, rspd, &n), rdag_error);
+}
+
+TEST(LAPACKTest_xlansy, zlansy) {
+  int n = 4;
+  // cpsd is Hermitian, but the upper triangle only is addressed so we
+  // can pretend it's symmetric.
+  real16 NORM = lapack::xlansy(lapack::ONE, lapack::U, &n, cspd, &n);
+  real16 expected = 792.493781056045e0;
+  EXPECT_TRUE(SingleValueFuzzyEquals(expected, NORM));
+
+  // check throw on bad arg (first catch to prevent bad alloc)
+  n = -1;
+  EXPECT_THROW(lapack::xlansy(lapack::ONE, lapack::U, &n, cspd, &n), rdag_error);
+}
+
+
+TEST(LAPACKTest_xpotrs, dpotrs) {
+  int n = 4;
+  int INFO;
+  real16 * A = new real16[16];
+  std::copy(rspd,rspd+n*n,A);
+  lapack::xpotrf(lapack::U, &n, A, &n, &INFO);
+  real16 * RHS = new real16[4];
+  std::copy(r4x1, r4x1+n, RHS);
+  lapack::xpotrs(lapack::U, &n, lapack::ione, A, &n, RHS, &n, &INFO);
+  real16 expected[4] = {-0.2831168831168828,0.1194805194805193,0.0155844155844156,0.1480519480519481};
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,RHS,n));
+
+  // check throw on bad arg
+  n=-1;
+  EXPECT_THROW(lapack::xpotrs(lapack::U, &n, lapack::ione, A, &n, RHS, &n, &INFO), rdag_error);
+
+  delete [] A;
+  delete [] RHS;
+}
+
+TEST(LAPACKTest_xpotrs, zpotrs) {
+  int n = 4;
+  int INFO;
+  complex16 * A = new complex16[16];
+  std::copy(cspd,cspd+n*n,A);
+  lapack::xpotrf(lapack::U, &n, A, &n, &INFO);
+  complex16 * RHS = new complex16[4];
+  std::copy(c4x1, c4x1+n, RHS);
+  lapack::xpotrs(lapack::U, &n, lapack::ione, A, &n, RHS, &n, &INFO);
+  complex16 expected[4] =  {{-1.0063762794655238,-1.5989977364878503}, {0.8869421128000980,0.5966984611395660}, {-0.1560914405265542,0.1826679640758723}, {-0.0562376225820731,0.1501070660620698}};
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,RHS,n, 1e-14, 1e-14));
+  cout << RHS[0] << " " << RHS[1] << " " << RHS[2] << " " << RHS[3] << std::endl;
+  // check throw on bad arg
+  n=-1;
+  EXPECT_THROW(lapack::xpotrs(lapack::U, &n, lapack::ione, A, &n, RHS, &n, &INFO), rdag_error);
+
+  delete [] A;
+  delete [] RHS;
 }
