@@ -13,8 +13,7 @@ using librdag::OGNumeric;
 
 namespace convert {
 
-vector<const OGNumeric*>* generateArgs(jobject obj);
 OGNumeric* createExpression(jobject obj);
-OGNumeric* createExprWithID(jlong ID, jobject obj);
+OGNumeric* translateNode(JNIEnv* env, jobject obj, const OGNumeric* arg0 = nullptr, const OGNumeric* arg1 = nullptr);
 
 } // namespace convert
