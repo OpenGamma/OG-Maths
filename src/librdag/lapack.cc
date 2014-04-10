@@ -16,6 +16,11 @@ namespace detail
   char N = 'N';
   char A = 'A';
   char T = 'T';
+  char L = 'L';
+  char U = 'U';
+  char D = 'D';
+  char O = 'O';
+  char ONE = '1';
   int ione = 1;
   real16 rone = 1.e0;
   complex16 cone = {1.e0, 0.e0};
@@ -27,6 +32,11 @@ namespace detail
 char *      N     = &detail::N;
 char *      A     = &detail::A;
 char *      T     = &detail::T;
+char *      L     = &detail::L;
+char *      U     = &detail::U;
+char *      D     = &detail::D;
+char * 	    O     = &detail::O;
+char *      ONE   = &detail::ONE;
 int *       ione  = &detail::ione;
 real16 *    rone  = &detail::rone;
 complex16 * cone  = &detail::cone;
@@ -90,28 +100,29 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, real16 * A,
   // work space query
   F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, INFO);
 
+  if(*INFO < 0)
+  {
+    delete [] tmp;
+    stringstream message;
+    message << "Input to LAPACK::dgesvd call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+
   // query complete WORK[0] contains size needed
   lwork = (int)WORK[0];
-  WORK = new real16[lwork];
+  WORK = new real16[lwork]();
 
   // full execution
   F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, INFO);
-  if(*INFO!=0)
-  {
-    if(*INFO < 0)
-    {
-      stringstream message;
-      message << "Input to LAPACK::dgesvd call incorrect at arg: " << *INFO;
-      throw rdag_error(message.str());
-    }
-    else
-    {
-      throw rdag_error("LAPACK::dgesvd, internal call to dbdsqr did not converge.");
-    }
-  }
 
+  // clean up
   delete [] tmp;
   delete [] WORK;
+
+  if(*INFO!=0)
+  {
+    throw rdag_error("LAPACK::dgesvd, internal call to dbdsqr did not converge.");
+  }
 }
 
 template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, complex16 * A, int * LDA, real16 * S, complex16 * U, int * LDU, complex16 * VT, int * LDVT, int * INFO)
@@ -129,25 +140,171 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, complex16 *
 
   // full execution
   F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, RWORK, INFO);
-    if(*INFO!=0)
-    {
-      if(*INFO < 0)
-      {
-        stringstream message;
-        message << "Input to LAPACK::zgesvd call incorrect at arg: " << *INFO;
-        throw rdag_error(message.str());
-      }
-      else
-      {
-        throw rdag_error("LAPACK::zgesvd, internal call to zbdsqr did not converge.");
-      }
-    }
 
+  // clean up
   delete [] tmp;
   delete [] WORK;
   delete [] RWORK;
+
+  if(*INFO!=0)
+  {
+    if(*INFO < 0)
+    {
+      stringstream message;
+      message << "Input to LAPACK::zgesvd call incorrect at arg: " << *INFO;
+      throw rdag_error(message.str());
+    }
+    else
+    {
+      throw rdag_error("LAPACK::zgesvd, internal call to zbdsqr did not converge.");
+    }
+  }
 }
 
+template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, real16 * A, int * LDA, real16 * RCOND, int * INFO)
+{
+  real16 * WORK = new real16[ 3 * *N];
+  int * IWORK = new int[*N];
+  F77FUNC(dtrcon)(NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK, IWORK, INFO);
+  delete [] WORK;
+  delete [] IWORK;
+  if(*INFO!=0)
+  {
+      stringstream message;
+      message << "Input to LAPACK::dtrcon call incorrect at arg: " << *INFO;
+      throw rdag_error(message.str());
+  }
+}
+
+
+template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, complex16 * A, int * LDA, real16 * RCOND, int * INFO)
+{
+  complex16 * WORK = new complex16[ 2 * *N];
+  real16 * RWORK = new real16[*N];
+  F77FUNC(ztrcon)(NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK, RWORK, INFO);
+  delete [] WORK;
+  delete [] RWORK;
+  if(*INFO!=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::ztrcon call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO)
+{
+  F77FUNC(dtrtrs)(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
+  if(*INFO!=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dtrtrs call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO)
+{
+  F77FUNC(ztrtrs)(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
+  if(*INFO!=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::ztrtrs call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+
+template<> void xpotrf(char * UPLO, int * N, real16 * A, int * LDA, int * INFO)
+{
+  F77FUNC(dpotrf)(UPLO, N, A, LDA, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dpotrf call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+template<> void xpotrf(char * UPLO, int * N, complex16 * A, int * LDA, int * INFO)
+{
+  F77FUNC(zpotrf)(UPLO, N, A, LDA, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zpotrf call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+template<> void xpocon(char * UPLO, int * N, real16 * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO)
+{
+  real16 * WORK = new real16[3 * *N];
+  int * IWORK = new int[*N];
+  F77FUNC(dpocon)(UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
+  delete [] WORK;
+  delete [] IWORK;
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dpocon call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+template<> void xpocon(char * UPLO, int * N, complex16 * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO)
+{
+  complex16 * WORK = new complex16[2 * *N];
+  real16 * RWORK = new real16[*N];
+  F77FUNC(zpocon)(UPLO, N, A, LDA, ANORM, RCOND, WORK, RWORK, INFO);
+  delete [] WORK;
+  delete [] RWORK;
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dpocon call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+template<>real16 xlansy(char * NORM, char * UPLO, int * N, real16 * A, int * LDA)
+{
+  real16 * WORK = new real16[*N]; // allocate regardless of *NORM
+  real16 ret = F77FUNC(dlansy)(NORM, UPLO, N, A, LDA, WORK);
+  delete [] WORK;
+  return ret;
+}
+
+template<>real16 xlansy(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA)
+{
+  real16 * WORK = new real16[*N]; // allocate regardless of *NORM
+  real16 ret = F77FUNC(zlansy)(NORM, UPLO, N, A, LDA, WORK);
+  delete [] WORK;
+  return ret;
+}
+
+
+template<> void xpotrs(char * UPLO, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO)
+{
+  F77FUNC(dpotrs)(UPLO, N, NRHS, A, LDA, B, LDB, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dpotrs call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+template<> void xpotrs(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO)
+{
+  F77FUNC(zpotrs)(UPLO, N, NRHS, A, LDA, B, LDB, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zpotrs call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
 
 
 } // end namespace lapack
