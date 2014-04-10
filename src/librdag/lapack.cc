@@ -128,15 +128,25 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, real16 * A,
 template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, complex16 * A, int * LDA, real16 * S, complex16 * U, int * LDU, complex16 * VT, int * LDVT, int * INFO)
 {
   int minmn = *M > *N ? *N : *M; // compute scale for RWORK
-  complex16 * tmp = new complex16[1];
+  complex16 * tmp = new complex16[1]; // buffer, alloc slot of 1 needed as the work space dimension is written here.
   int lwork = -1; // set for query
-  real16    * RWORK = new real16[5*minmn];
-  complex16 * WORK = tmp; // set properly after query, alloc slot of 1 needed as the work space dimension is written here.
+  real16    * RWORK = nullptr;
+  complex16 * WORK = tmp; // set properly after query
+
+  // work space query
   F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, RWORK, INFO);
+  if(*INFO < 0)
+  {
+    delete [] tmp;
+    stringstream message;
+    message << "Input to LAPACK::zgesvd call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
 
   // query complete WORK[0] contains size needed
   lwork = (int)(WORK[0].real());
   WORK = new complex16[lwork];
+  RWORK = new real16[5*minmn];
 
   // full execution
   F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, RWORK, INFO);
@@ -148,16 +158,7 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, complex16 *
 
   if(*INFO!=0)
   {
-    if(*INFO < 0)
-    {
-      stringstream message;
-      message << "Input to LAPACK::zgesvd call incorrect at arg: " << *INFO;
-      throw rdag_error(message.str());
-    }
-    else
-    {
-      throw rdag_error("LAPACK::zgesvd, internal call to zbdsqr did not converge.");
-    }
+    throw rdag_error("LAPACK::zgesvd, internal call to zbdsqr did not converge.");
   }
 }
 
