@@ -115,17 +115,17 @@ template<typename T> class DispatchUnaryOp: public DispatchOp<T>
     virtual ~DispatchUnaryOp();
 
     // will run the operation
-    T eval(RegContainer* reg, const OGTerminal* arg) const;
+    T eval(RegContainer& reg, const OGTerminal* arg) const;
     // Methods for specific terminals
 %(dispatchunaryop_terminal_methods)s
     // Backstop methods for generic implementation
-    virtual T run(RegContainer * reg, OGRealMatrix const * arg) const = 0;
-    virtual T run(RegContainer * reg, OGComplexMatrix const * arg) const = 0;
+    virtual T run(RegContainer& reg, OGRealMatrix const * arg) const = 0;
+    virtual T run(RegContainer& reg, OGComplexMatrix const * arg) const = 0;
 };
 """
 
 dispatchunaryop_run = """\
-    virtual T run(RegContainer* reg, const %(nodetype)s* arg) const;
+    virtual T run(RegContainer& reg, const %(nodetype)s* arg) const;
 """
 
 dispatchbinaryop_class = """\
@@ -138,18 +138,18 @@ template<typename T> class  DispatchBinaryOp: public DispatchOp<T>
     using DispatchOp<T>::getConvertTo;
     virtual ~DispatchBinaryOp();
     // will run the operation
-    T eval(RegContainer SUPPRESS_UNUSED * reg0, OGTerminal const *arg0, OGTerminal const *arg1) const;
+    T eval(RegContainer SUPPRESS_UNUSED & reg0, OGTerminal const *arg0, OGTerminal const *arg1) const;
 
     // Methods for specific terminals
 %(dispatchbinaryop_terminal_methods)s
     // Required backstop impls
-    virtual T run(RegContainer* reg0, const OGComplexMatrix* arg0, const OGComplexMatrix* arg1) const = 0;
-    virtual T run(RegContainer* reg0, const OGRealMatrix* arg0, const OGRealMatrix* arg1) const = 0;
+    virtual T run(RegContainer& reg0, const OGComplexMatrix* arg0, const OGComplexMatrix* arg1) const = 0;
+    virtual T run(RegContainer& reg0, const OGRealMatrix* arg0, const OGRealMatrix* arg1) const = 0;
 };
 """
 
 dispatchbinaryop_run = """\
-    virtual T run(RegContainer* reg0, const %(node0type)s* arg0, const %(node1type)s* arg1) const;
+    virtual T run(RegContainer& reg0, const %(node0type)s* arg0, const %(node1type)s* arg1) const;
 """
 
 # Dispatch cc file
@@ -301,43 +301,43 @@ Dispatcher::dispatch(%(nodetype)s const SUPPRESS_UNUSED * thing) const
 """
 
 dispatcher_binary_implementation = """\
-  const ArgContainer * args = thing->getArgs();
-  const RegContainer * regs = thing->getRegs();
-  const OGNumeric * arg0 = (*args)[0];
-  const OGNumeric * arg1 = (*args)[1];
+  const ArgContainer& args = thing->getArgs();
+  RegContainer& regs = thing->getRegs();
+  const OGNumeric * arg0 = args[0];
+  const OGNumeric * arg1 = args[1];
   const OGTerminal* arg0t = arg0->asOGTerminal();
   const OGTerminal* arg1t = arg1->asOGTerminal();
   if (arg0t == nullptr)
   {
-    arg0t = (*(arg0->asOGExpr()->getRegs()))[0]->asOGTerminal();
+    arg0t = arg0->asOGExpr()->getRegs()[0]->asOGTerminal();
   }
   if (arg1t == nullptr)
   {
-    arg1t = (*(arg1->asOGExpr()->getRegs()))[0]->asOGTerminal();
+    arg1t = arg1->asOGExpr()->getRegs()[0]->asOGTerminal();
   }
-  this->_%(nodetype)sRunner->eval(const_cast<RegContainer *>(regs), arg0t, arg1t);
+  this->_%(nodetype)sRunner->eval(regs, arg0t, arg1t);
 """
 
 dispatcher_unary_implementation = """\
-  const ArgContainer* args = thing->getArgs();
-  const RegContainer* regs = thing->getRegs();
-  const OGNumeric *arg = (*args)[0];
+  const ArgContainer& args = thing->getArgs();
+  RegContainer& regs = thing->getRegs();
+  const OGNumeric *arg = args[0];
   const OGTerminal *argt = arg->asOGTerminal();
   if (argt == nullptr)
   {
-    argt = (*(arg->asOGExpr()->getRegs()))[0]->asOGTerminal();
+    argt = arg->asOGExpr()->getRegs()[0]->asOGTerminal();
   }
-  _%(nodetype)sRunner->eval(const_cast<RegContainer *>(regs), argt);
+  _%(nodetype)sRunner->eval(regs, argt);
 """
 
 dispatcher_select_implementation = """\
-  const ArgContainer* args = thing->getArgs();
-  const RegContainer* regs = thing->getRegs();
-  const OGNumeric *arg0 = (*args)[0];
-  const OGNumeric *arg1 = (*args)[1];
-  const RegContainer* arg0r = arg0->asOGExpr()->getRegs();
+  const ArgContainer& args = thing->getArgs();
+  RegContainer& regs = thing->getRegs();
+  const OGNumeric *arg0 = args[0];
+  const OGNumeric *arg1 = args[1];
+  const RegContainer& arg0r = arg0->asOGExpr()->getRegs();
   const OGIntegerScalar* arg1i = arg1->asOGIntegerScalar();
-  this->_%(nodetype)sRunner->eval(const_cast<RegContainer *>(regs), arg0r, arg1i);
+  this->_%(nodetype)sRunner->eval(regs, arg0r, arg1i);
 """
 
 # DispatchOp methods
@@ -381,7 +381,7 @@ DispatchUnaryOp<T>::~DispatchUnaryOp() {}
 dispatchunaryop_eval = """\
 template<typename T>
 T
-DispatchUnaryOp<T>::eval(RegContainer* reg, const OGTerminal* arg) const
+DispatchUnaryOp<T>::eval(RegContainer& reg, const OGTerminal* arg) const
 {
   ExprType_t argID = arg->getType();
   T ret = nullptr;
@@ -405,7 +405,7 @@ dispatchunaryop_eval_case = """\
 dispatchunaryop_terminal_method = """\
 template<typename T>
 T
-DispatchUnaryOp<T>::run(RegContainer* reg, const %(nodetype)s* arg) const
+DispatchUnaryOp<T>::run(RegContainer& reg, const %(nodetype)s* arg) const
 {
   %(typetoconvertto)s* conv = this->getConvertTo()->convertTo%(typetoconvertto)s(arg);
   T ret = run(reg, conv);
@@ -432,7 +432,7 @@ DispatchBinaryOp<T>::~DispatchBinaryOp(){}
 dispatchbinaryop_eval = """\
 template <typename T>
 T
-DispatchBinaryOp<T>::eval(RegContainer* reg0, OGTerminal const *arg0, OGTerminal const *arg1) const
+DispatchBinaryOp<T>::eval(RegContainer& reg0, OGTerminal const *arg0, OGTerminal const *arg1) const
 {
   ExprType_t arg0ID = arg0->getType();
   ExprType_t arg1ID = arg1->getType();
@@ -473,7 +473,7 @@ dispatchbinaryop_eval_case_arg1 = """\
 dispatchbinaryop_terminal_method = """\
 template<typename T>
 T
-DispatchBinaryOp<T>::run(RegContainer* reg0,
+DispatchBinaryOp<T>::run(RegContainer& reg0,
                          const %(node0type)s* arg0,
                          const %(node1type)s* arg1) const
 {

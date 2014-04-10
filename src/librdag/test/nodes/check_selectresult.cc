@@ -38,8 +38,7 @@ TEST(SELECTRESULTTests,CheckBehaviour)
   {
     d->dispatch(*it);
   }
-  const RegContainer * regs = s0->getRegs();
-  const OGNumeric * answer = (*regs)[0];
+  const OGNumeric * answer = s0->getRegs()[0];
   EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 1 (S)
@@ -49,8 +48,7 @@ TEST(SELECTRESULTTests,CheckBehaviour)
   {
     d->dispatch(*it);
   }
-  regs = s1->getRegs();
-  answer = (*regs)[0];
+  answer = s1->getRegs()[0];
   EXPECT_TRUE((*r0) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 2 (V)
@@ -60,8 +58,7 @@ TEST(SELECTRESULTTests,CheckBehaviour)
   {
     d->dispatch(*it);
   }
-  regs = s2->getRegs();
-  answer = (*regs)[0];
+  answer = s2->getRegs()[0];
   EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
 
   // Clean up

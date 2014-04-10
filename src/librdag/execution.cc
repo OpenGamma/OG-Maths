@@ -66,12 +66,12 @@ ExecutionList::ExecutionList(const OGNumeric* tree)
         argPos.pop();
         argPos.push(pos);
         // Get our args
-        const ArgContainer* currentArgs = current->asOGExpr()->getArgs();
+        const ArgContainer& currentArgs = current->asOGExpr()->getArgs();
         // Has our last arg already been traversed?
-        if (pos < currentArgs->size())
+        if (pos < currentArgs.size())
         {
           // No, so go down that child now
-          treePos.push((*currentArgs)[pos]);
+          treePos.push(currentArgs[pos]);
           argPos.push(0);
           dir = Direction::DOWN;
         }
@@ -91,8 +91,8 @@ ExecutionList::ExecutionList(const OGNumeric* tree)
         // We're on our way down, so we need to push the next node on to the stack
         
         // Get the first arg and go down to it
-        const ArgContainer* args = current->asOGExpr()->getArgs();
-        treePos.push((*args)[0]);
+        const ArgContainer& args = current->asOGExpr()->getArgs();
+        treePos.push(args[0]);
         argPos.push(0);
       }
     }

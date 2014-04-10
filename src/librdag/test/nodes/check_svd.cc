@@ -38,8 +38,7 @@ TEST(SVDTests,CheckScalar)
   {
     d->dispatch(*it);
   }
-  const RegContainer * regs = s0->getRegs();
-  const OGNumeric * answer = (*regs)[0];
+  const OGNumeric * answer = s0->getRegs()[0];
   EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 1 (S)
@@ -49,8 +48,7 @@ TEST(SVDTests,CheckScalar)
   {
     d->dispatch(*it);
   }
-  regs = s1->getRegs();
-  answer = (*regs)[0];
+  answer = s1->getRegs()[0];
   EXPECT_TRUE((*r0) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 2 (V)
@@ -60,8 +58,7 @@ TEST(SVDTests,CheckScalar)
   {
     d->dispatch(*it);
   }
-  regs = s2->getRegs();
-  answer = (*regs)[0];
+  answer = s2->getRegs()[0];
   EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
 
   // Clean up
@@ -90,8 +87,6 @@ TEST(SVDTests,CheckRealMatrix)
 
   // computed answer pointers
   const OGNumeric * answerU, * answerS, * answerVT, * reconstruct;
-  // computed answer reg containers
-  const RegContainer * regs0, * regs1, * regs2, * regs3;
 
   Dispatcher * d = new Dispatcher();
 
@@ -102,8 +97,7 @@ TEST(SVDTests,CheckRealMatrix)
   {
     d->dispatch(*it);
   }
-  regs0 = s0->getRegs();
-  answerU = (*regs0)[0];
+  answerU = s0->getRegs()[0];
   EXPECT_TRUE((*U) % (*(answerU->asOGTerminal())));
 
   // Check selecting 1 (S)
@@ -113,8 +107,7 @@ TEST(SVDTests,CheckRealMatrix)
   {
     d->dispatch(*it);
   }
-  regs1 = s1->getRegs();
-  answerS = (*regs1)[0];
+  answerS = s1->getRegs()[0];
   EXPECT_TRUE((*S) ==~ (*(answerS->asOGTerminal())));
 
   // Check selecting 2 (V)
@@ -124,8 +117,7 @@ TEST(SVDTests,CheckRealMatrix)
   {
     d->dispatch(*it);
   }
-  regs2 = s2->getRegs();
-  answerVT = (*regs2)[0];
+  answerVT = s2->getRegs()[0];
   EXPECT_TRUE((*VT) % (*(answerVT->asOGTerminal())));
 
   // reconstruction test i.e. recover A from U,S,V**T as A=U*S*V**T
@@ -137,8 +129,7 @@ TEST(SVDTests,CheckRealMatrix)
   {
     d->dispatch(*it);
   }
-  regs3 = m2->getRegs();
-  reconstruct = (*regs3)[0];
+  reconstruct = m2->getRegs()[0];
   EXPECT_TRUE((*M) ==~ (*(reconstruct->asOGTerminal())));
 
   // Clean up
@@ -173,8 +164,6 @@ TEST(SVDTests,CheckComplexMatrix)
 
   // computed answer pointers
   const OGNumeric * answerU, * answerS, * answerVT, * reconstruct;
-  // computed answer reg containers
-  const RegContainer * regs0, * regs1, * regs2, * regs3;
 
   Dispatcher * d = new Dispatcher();
 
@@ -185,8 +174,7 @@ TEST(SVDTests,CheckComplexMatrix)
   {
     d->dispatch(*it);
   }
-  regs0 = s0->getRegs();
-  answerU = (*regs0)[0];
+  answerU = s0->getRegs()[0];
   EXPECT_TRUE((*U) % (*(answerU->asOGTerminal())));
 
   // Check selecting 1 (S)
@@ -196,8 +184,7 @@ TEST(SVDTests,CheckComplexMatrix)
   {
     d->dispatch(*it);
   }
-  regs1 = s1->getRegs();
-  answerS = (*regs1)[0];
+  answerS = s1->getRegs()[0];
   EXPECT_TRUE((*S) ==~ (*(answerS->asOGTerminal())));
 
   // Check selecting 2 (V)
@@ -207,8 +194,7 @@ TEST(SVDTests,CheckComplexMatrix)
   {
     d->dispatch(*it);
   }
-  regs2 = s2->getRegs();
-  answerVT = (*regs2)[0];
+  answerVT = s2->getRegs()[0];
   EXPECT_TRUE((*VT) % (*(answerVT->asOGTerminal())));
 
   // reconstruction test i.e. recover A from U,S,V**T as A=U*S*V**T
@@ -220,8 +206,7 @@ TEST(SVDTests,CheckComplexMatrix)
   {
     d->dispatch(*it);
   }
-  regs3 = m2->getRegs();
-  reconstruct = (*regs3)[0];
+  reconstruct = m2->getRegs()[0];
   // FP fuzz causes grief on reconstruction
   EXPECT_TRUE(ArrayFuzzyEquals(M->asOGComplexMatrix()->getData(),reconstruct->asOGComplexMatrix()->getData(),1e-15,1e-15));
 

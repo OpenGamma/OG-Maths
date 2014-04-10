@@ -57,20 +57,20 @@ class %(nodename)sRunner: public DispatchVoidBinaryOp, private Uncopyable
 {
   public:
     using DispatchBinaryOp<void *>::run;
-    virtual void * run(RegContainer* reg0, const OGComplexMatrix* arg0, const OGComplexMatrix* arg1) const override;
-    virtual void * run(RegContainer* reg0, const OGRealMatrix*    arg0, const OGRealMatrix*    arg1) const override;
-    virtual void * run(RegContainer* reg0, const OGRealScalar*    arg0, const OGRealScalar*    arg1) const override;
+    virtual void * run(RegContainer& reg0, const OGComplexMatrix* arg0, const OGComplexMatrix* arg1) const override;
+    virtual void * run(RegContainer& reg0, const OGRealMatrix*    arg0, const OGRealMatrix*    arg1) const override;
+    virtual void * run(RegContainer& reg0, const OGRealScalar*    arg0, const OGRealScalar*    arg1) const override;
 };
 
 """
 
 binary_runner_function =  """\
 void *
-%(nodename)sRunner::run(RegContainer* reg0, const %(arg0type)s* arg0, const %(arg1type)s* arg1) const
+%(nodename)sRunner::run(RegContainer& reg0, const %(arg0type)s* arg0, const %(arg1type)s* arg1) const
 {
   const %(returntype)s* ret;
 %(implementation)s
-  reg0->push_back(ret);
+  reg0.push_back(ret);
   return nullptr;
 }
 
@@ -82,8 +82,8 @@ integer_parameter_runner_class_definition = """\
 class %(nodename)sRunner: public DispatchVoidOp, private Uncopyable
 {
   public:
-    virtual void* eval(RegContainer* reg, RegContainer const *arg0, OGIntegerScalar const *arg1) const;
-    virtual void* run(RegContainer* reg0, const RegContainer* arg0, const OGIntegerScalar* arg1) const;
+    virtual void* eval(RegContainer& reg, const RegContainer& arg0, OGIntegerScalar const *arg1) const;
+    virtual void* run(RegContainer& reg0, const RegContainer& arg0, const OGIntegerScalar* arg1) const;
 };
 
 """
@@ -182,19 +182,19 @@ unary_runner_class_definition = """\
 class %(nodename)sRunner: public DispatchVoidUnaryOp, private Uncopyable
 {
   public:
-    virtual void * run(RegContainer* reg, const OGRealScalar*    arg) const override;
-    virtual void * run(RegContainer* reg, const OGRealMatrix*    arg) const override;
-    virtual void * run(RegContainer* reg, const OGComplexMatrix* arg) const override;
+    virtual void * run(RegContainer& reg, const OGRealScalar*    arg) const override;
+    virtual void * run(RegContainer& reg, const OGRealMatrix*    arg) const override;
+    virtual void * run(RegContainer& reg, const OGComplexMatrix* arg) const override;
 };
 """
 
 unary_runner_function = """\
 void *
-%(nodename)sRunner::run(RegContainer* reg, const %(argtype)s* arg) const
+%(nodename)sRunner::run(RegContainer& reg, const %(argtype)s* arg) const
 {
   const %(returntype)s* ret;
 %(implementation)s
-  reg->push_back(ret);
+  reg.push_back(ret);
   return nullptr;
 }
 
@@ -238,7 +238,7 @@ unaryfunction_matrix_runner_implementation = """\
 
 unimplementedunary_runner_function = """\
 void *
-%(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED * reg, %(argtype)s const SUPPRESS_UNUSED * arg) const
+%(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED & reg, %(argtype)s const SUPPRESS_UNUSED * arg) const
 {
   throw rdag_error("Unimplemented unary expression node");
   return nullptr;
@@ -247,7 +247,7 @@ void *
 
 unimplementedbinary_runner_function =  """\
 void *
-%(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED * reg0,
+%(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED & reg0,
                         %(arg0type)s const SUPPRESS_UNUSED * arg0,
                         %(arg1type)s const SUPPRESS_UNUSED * arg1) const
 {

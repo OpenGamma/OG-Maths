@@ -21,24 +21,14 @@ namespace librdag
 
 OGExpr::OGExpr()
 {
-  // _args must be initialised by a subclass.
-  _args = nullptr;
   // _regs are safe to immediately own their contents because we don't put anything
   // in them during construction.
-  _regs = new RegContainer();
-  _regs->set_ownership(true);
+  _regs.set_ownership(true);
 }
 
-OGExpr::~OGExpr()
-{
-  if (_args != nullptr)
-  {
-    delete _args;
-  }
-  delete _regs;
-}
+OGExpr::~OGExpr() {}
 
-const ArgContainer*
+const ArgContainer&
 OGExpr::getArgs() const
 {
   return _args;
@@ -47,11 +37,11 @@ OGExpr::getArgs() const
 size_t
 OGExpr::getNArgs() const
 {
-  return _args->size();
+  return _args.size();
 }
 
 void
-OGExpr::accept(Visitor &v) const
+OGExpr::accept(Visitor& v) const
 {
   v.visit(this);
 }
@@ -62,7 +52,7 @@ OGExpr::asOGExpr() const
   return this;
 }
 
-const RegContainer *
+RegContainer&
 OGExpr::getRegs() const
 {
   return _regs;
@@ -84,11 +74,10 @@ OGUnaryExpr::OGUnaryExpr(const OGNumeric* arg): OGExpr{}
   {
     throw rdag_error("Null operand passed to unary expression");
   }
-  _args = new ArgContainer();
-  _args->push_back(arg);
+  _args.push_back(arg);
   // We got all the way through building the OGUnaryExpr object, so it
   // is now safe to own the arguments.
-  _args->set_ownership(true);
+  _args.set_ownership(true);
 }
 
 OGBinaryExpr::OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr{}
@@ -101,12 +90,11 @@ OGBinaryExpr::OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr
   {
     throw rdag_error("Null operand passed to binary expression in arg1");
   }
-  _args = new ArgContainer();
-  _args->push_back(arg0);
-  _args->push_back(arg1);
+  _args.push_back(arg0);
+  _args.push_back(arg1);
   // We got all the way through building the OGBinaryExpr object, so it
   // is now safe to own the arguments.
-  _args->set_ownership(true);
+  _args.set_ownership(true);
 }
 
 /**
@@ -122,7 +110,7 @@ COPY::COPY(const OGNumeric* arg): OGUnaryExpr{arg} {}
 OGNumeric*
 COPY::copy() const
 {
-  return new COPY((*_args)[0]->copy());
+  return new COPY(_args[0]->copy());
 }
 
 const COPY*
@@ -160,18 +148,17 @@ SELECTRESULT::SELECTRESULT(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr
   {
     throw rdag_error("Second argument of SelectResult is not an integer");
   }
-  _args = new ArgContainer();
-  _args->push_back(arg0);
-  _args->push_back(arg1);
+  _args.push_back(arg0);
+  _args.push_back(arg1);
   // We got all the way through building the SELECTRESULT object, so it
   // is now safe to own the arguments.
-  _args->set_ownership(true);
+  _args.set_ownership(true);
 }
 
 OGNumeric*
 SELECTRESULT::copy() const
 {
-  return new SELECTRESULT((*_args)[0]->copy(), (*_args)[1]->copy());
+  return new SELECTRESULT(_args[0]->copy(), _args[1]->copy());
 }
 
 const SELECTRESULT*
@@ -203,7 +190,7 @@ OGNumeric*
 NORM2::copy() const
 {
 
-  return new NORM2((*_args)[0]->copy());
+  return new NORM2(_args[0]->copy());
 }
 
 const NORM2*
@@ -233,7 +220,7 @@ SVD::SVD(const OGNumeric* arg): OGUnaryExpr{arg} {}
 OGNumeric*
 SVD::copy() const
 {
-  return new SVD((*_args)[0]->copy());
+  return new SVD(_args[0]->copy());
 }
 
 const SVD*
@@ -263,7 +250,7 @@ MTIMES::MTIMES(const OGNumeric* arg0, const OGNumeric* arg1): OGBinaryExpr{arg0,
 OGNumeric*
 MTIMES::copy() const
 {
-  return new MTIMES((*_args)[0]->copy(), (*_args)[1]->copy());
+  return new MTIMES(_args[0]->copy(), _args[1]->copy());
 }
 
 const MTIMES*
