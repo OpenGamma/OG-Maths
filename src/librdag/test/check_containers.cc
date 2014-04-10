@@ -5,6 +5,7 @@
  */
 
 #include "containers.hh"
+#include "terminal.hh"
 #include "gtest/gtest.h"
 
 using namespace std;
@@ -16,7 +17,8 @@ using namespace librdag;
  */
 TEST(ContainerTest, OwningPtrVectorTest) {
   // Default constructor
-  OwningPtrVector<const int*> *pv1 = new OwningPtrVector<const int*>();
+  PtrVector<const int*> *pv1 = new PtrVector<const int*>();
+  pv1->set_ownership(true);
   EXPECT_EQ(0, pv1->size());
 
   // Add elements
@@ -50,11 +52,11 @@ TEST(ContainerTest, OwningPtrVectorTest) {
   }
   EXPECT_EQ(5, i);
 
-  // Copy the OwningPtrVector
-  OwningPtrVector<const int*> *pv2 = pv1->copy();
+  // Copy the PtrVector
+  PtrVector<const int*> *pv2 = pv1->copy();
 
   // Test the copy is the same as the original
-  OwningPtrVector<const int*>::citerator it1, it2;
+  PtrVector<const int*>::citerator it1, it2;
   for (it1 = pv1->begin(), it2 = pv2->begin(); it1 != pv1->end(), it2 != pv2->end(); ++it1, ++it2)
   {
     EXPECT_EQ(**it1, **it2);
@@ -77,7 +79,7 @@ TEST(ContainerTest, OwningPtrVectorTest) {
  */
 TEST(ContainerTest, NonOwningPtrVectorTest) {
   // Default constructor
-  NonOwningPtrVector<const int*> *pv1 = new NonOwningPtrVector<const int*>();
+  PtrVector<const int*> *pv1 = new PtrVector<const int*>();
   EXPECT_EQ(0, pv1->size());
 
   // Add elements
@@ -111,11 +113,11 @@ TEST(ContainerTest, NonOwningPtrVectorTest) {
   }
   EXPECT_EQ(5, i);
 
-  // Copy the NonOwningPtrVector
-  NonOwningPtrVector<const int*> *pv2 = pv1->copy();
+  // Copy the PtrVector
+  PtrVector<const int*> *pv2 = pv1->copy();
 
   // Test the copy is the same as the original
-  NonOwningPtrVector<const int*>::citerator it1, it2;
+  PtrVector<const int*>::citerator it1, it2;
   for (it1 = pv1->begin(), it2 = pv2->begin(); it1 != pv1->end(), it2 != pv2->end(); ++it1, ++it2)
   {
     EXPECT_EQ( *it1,  *it2);
@@ -135,4 +137,37 @@ TEST(ContainerTest, NonOwningPtrVectorTest) {
     delete i_ptr_list[i];
   }
   free(i_ptr_list);
+}
+
+TEST(ContainerTest, CopyNonPrimitiveTest)
+{
+  PtrVector<const OGNumeric*>* pv1 = new PtrVector<const OGNumeric*>{};
+  OGNumeric* s1 = new OGRealScalar(1.0);
+  OGNumeric* s2 = new OGRealScalar(2.0);
+
+  pv1->push_back(s1);
+  pv1->push_back(s2);
+
+  // Non-owning copy - check size and pointers are equal
+  PtrVector<const OGNumeric*>* pv1copy1 = pv1->copy();
+  EXPECT_EQ(2, pv1copy1->size());
+  EXPECT_EQ((*pv1)[0], (*pv1copy1)[0]);
+  EXPECT_EQ((*pv1)[1], (*pv1copy1)[1]);
+
+  // Set owning
+  pv1->set_ownership(true);
+
+  // Owning copy - check size equal, pointers distinct, pointed-to objects equal
+  PtrVector<const OGNumeric*>* pv1copy2 = pv1->copy();
+  EXPECT_EQ(2, pv1copy2->size());
+  EXPECT_NE((*pv1)[0], (*pv1copy2)[0]);
+  EXPECT_NE((*pv1)[1], (*pv1copy2)[1]);
+  EXPECT_EQ(1.0, ((OGRealScalar*)(*pv1copy2)[0])->getValue());
+  EXPECT_EQ(2.0, ((OGRealScalar*)(*pv1copy2)[1])->getValue());
+
+  // Cleanup - pv1copy1 should not delete pv1's elements.
+  // pv1copy2 deletes its own elements.
+  delete pv1copy1;
+  delete pv1copy2;
+  delete pv1;
 }

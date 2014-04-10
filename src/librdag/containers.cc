@@ -15,15 +15,18 @@ namespace librdag {
  */
 
 template<typename cTp>
-PtrVector<cTp>::PtrVector()
-{
-  _vector = new vector<cTp>();
-}
+PtrVector<cTp>::PtrVector(): _vector{}, _owning{false} {}
 
 template<typename cTp>
 PtrVector<cTp>::~PtrVector()
 {
-  delete _vector;
+  if (_owning)
+  {
+    for (auto it = this->begin(); it != this->end(); ++it)
+    {
+      delete *it;
+    }
+  }
 }
 
 template<typename cTp>
@@ -31,36 +34,51 @@ void
 PtrVector<cTp>::push_back(cTp arg)
 {
   _check_arg(arg);
-  _vector->push_back(arg);
+  _vector.push_back(arg);
 }
 
 template<typename cTp>
 size_t
 PtrVector<cTp>::size() const
 {
-  return _vector->size();
+  return _vector.size();
 }
 
 template<typename cTp>
 typename PtrVector<cTp>::citerator
 PtrVector<cTp>::begin() const
 {
-  return _vector->begin();
+  return _vector.begin();
 }
 
 template<typename cTp>
 typename PtrVector<cTp>::citerator
 PtrVector<cTp>::end() const
 {
-  return _vector->end();
+  return _vector.end();
 }
 
 template<typename cTp>
 cTp
 PtrVector<cTp>::operator[](size_t n) const
 {
-  return (*_vector)[n];
+  return _vector[n];
 }
+
+template<typename cTp>
+void
+PtrVector<cTp>::set_ownership(bool owning)
+{
+  _owning = owning;
+}
+
+template<typename cTp>
+bool
+PtrVector<cTp>::get_ownership() const
+{
+  return _owning;
+}
+
 
 template<typename cTp>
 void
@@ -72,85 +90,66 @@ PtrVector<cTp>::_check_arg(cTp arg)
   }
 }
 
-
-template class PtrVector<const int*>;
-template class PtrVector<const OGNumeric*>;
-
-/**
- * NonOwningPtrVector
- */
-
-template<typename cTp>
-NonOwningPtrVector<cTp>*
-NonOwningPtrVector<cTp>::copy() const
-{
-  NonOwningPtrVector* c = new NonOwningPtrVector();
-  for (auto it = this->begin(); it != this->end(); ++it)
-  {
-    c->push_back(*it);
-  }
-  return c;
-}
-
-
-template class NonOwningPtrVector<const int*>;
-template class NonOwningPtrVector<const OGNumeric*>;
-
-/**
- * OwningPtrVector
- */
-
-template<typename cTp>
-OwningPtrVector<cTp>::~OwningPtrVector()
-{
-  for (auto it = this->begin(); it != this->end(); ++it)
-  {
-    delete *it;
-  }
-}
-
 namespace detail {
 
 /**
- * OwningPtrVector expects classes to implement the copy() method - this is
- * fine.  However, fundamental types do not implement copy, but we know how to
+ * PtrVector expects classes to implement the copy() method - this is
+ * fine. However, fundamental types do not implement copy, but we know how to
  * copy them. ptrvector_copy_impl defines an implementation for classes using
  * copy() and an implementation for fundamental types that manually copies the
  * data.
  */
 
 template<typename cTp, bool Q = is_fundamental<typename remove_pointer<cTp>::type>::value >
-struct owningptrvector_copy_impl;
+struct ptrvector_copy_impl;
 
 template<typename cTp>
-struct owningptrvector_copy_impl<cTp, false>
+struct ptrvector_copy_impl<cTp, false>
 {
-  OwningPtrVector<cTp>* operator()(const OwningPtrVector<cTp>* src)
+  PtrVector<cTp>* operator()(const PtrVector<cTp>* src)
   {
-    OwningPtrVector<cTp>* c = new OwningPtrVector<cTp>();
+    PtrVector<cTp>* c = new PtrVector<cTp>();
+    bool owning = src->get_ownership();
     for (auto it = src->begin(); it != src->end(); ++it)
     {
-      c->push_back((*it)->copy());
+      if (owning)
+      {
+        c->push_back((*it)->copy());
+      }
+      else
+      {
+        c->push_back(*it);
+      }
     }
+    c->set_ownership(owning);
     return c;
   }
 };
 
 template<typename cTp>
-struct owningptrvector_copy_impl<cTp, true>
+struct ptrvector_copy_impl<cTp, true>
 {
-  OwningPtrVector<cTp>* operator()(const OwningPtrVector<cTp>* src)
+  PtrVector<cTp>* operator()(const PtrVector<cTp>* src)
   {
-    OwningPtrVector<cTp>* c = new OwningPtrVector<cTp>();
+    PtrVector<cTp>* c = new PtrVector<cTp>();
+    bool owning = src->get_ownership();
     for (auto it = src->begin(); it != src->end(); ++it)
     {
-      typedef typename remove_pointer<cTp>::type cT;
-      typedef typename remove_const<cT>::type T;
-      typedef T* Tp;
-      Tp n = new T;
-      *n = **it;
-      c->push_back(n);
+      if (owning)
+      {
+        typedef typename remove_pointer<cTp>::type cT;
+        typedef typename remove_const<cT>::type T;
+        typedef T* Tp;
+        Tp n = new T;
+        *n = **it;
+        c->push_back(n);
+      }
+      else
+      {
+        c->push_back(*it);
+      }
     }
+    c->set_ownership(owning);
     return c;
   }
 };
@@ -158,13 +157,13 @@ struct owningptrvector_copy_impl<cTp, true>
 } // namespace detail
 
 template<typename cTp>
-OwningPtrVector<cTp>*
-OwningPtrVector<cTp>::copy() const
+PtrVector<cTp>*
+PtrVector<cTp>::copy() const
 {
-  return detail::owningptrvector_copy_impl<cTp>()(this);
+  return detail::ptrvector_copy_impl<cTp>()(this);
 }
 
-template class OwningPtrVector<const int*>;
-template class OwningPtrVector<const OGNumeric*>;
+template class PtrVector<const int*>;
+template class PtrVector<const OGNumeric*>;
 
 } // namespace librdag

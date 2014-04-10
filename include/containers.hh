@@ -17,7 +17,8 @@ using namespace std;
 namespace librdag {
 
 /*
- * A vector that holds pointers. Null pointers are not allowed.
+ * A vector that holds pointers. Null pointers are not allowed. If it owns its pointers,
+ * then it deletes them on destruction.
  */
 template<typename cTp>
 class PtrVector
@@ -33,42 +34,19 @@ class PtrVector
     citerator begin() const;
     citerator end() const;
     cTp operator[](size_t n) const;
-    virtual PtrVector* copy() const = 0;
+    virtual PtrVector* copy() const;
+    void set_ownership(bool owning);
+    bool get_ownership() const;
   private:
-    vector<cTp>* _vector;
+    vector<cTp> _vector;
+    bool _owning;
     void _check_arg(cTp arg);
-};
-
-/*
- * A vector that holds pointers that point to data that it does not own.
- */
-template<typename cTp>
-class NonOwningPtrVector: public PtrVector<cTp>
-{
-  public:
-    virtual NonOwningPtrVector* copy() const override;
-};
-
-/*
- * A vector that holds pointers that point to data that it owns.
- *
- * Classes held in an OwningPtrVector must define a method copy() that returns
- * a pointer to a copy of itself.
- */
-template<typename cTp>
-class OwningPtrVector: public PtrVector<cTp>
-{
-  public:
-    virtual ~OwningPtrVector() override;
-    virtual OwningPtrVector* copy() const override;
 };
 
 class OGNumeric;
 
-extern template class NonOwningPtrVector<const int*>;
-extern template class NonOwningPtrVector<const OGNumeric*>;
-extern template class OwningPtrVector<const int*>;
-extern template class OwningPtrVector<const OGNumeric*>;
+extern template class PtrVector<const int*>;
+extern template class PtrVector<const OGNumeric*>;
 
 } // namespace librdag
 

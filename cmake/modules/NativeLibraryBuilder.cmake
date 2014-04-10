@@ -28,7 +28,7 @@ macro(jar_native_library lib)
 
   # if the lib is imported, we know what it is called!
   if(_ncfg)
-      set(_output_name ${_ncfg})
+    get_filename_component(_output_name ${_ncfg} NAME)
   else()
     get_filename_component(_basename ${_location} NAME_WE)
     if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
