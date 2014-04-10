@@ -35,6 +35,17 @@ extern complex16 cone;
 extern real16 rzero;
 extern complex16 czero;
 
+template<typename T>char charmagic();
+
+template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
+template<typename T> void xgemv(char * TRANS, int * M, int * N, T * ALPHA, T * A, int * LDA, T * X, int * INCX, T * BETA, T * Y, int * INCY );
+template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, T * ALPHA, T * A, int * LDA, T * B, int * LDB, T * BETA, T * C, int * LDC );
+template<typename T> real16 xnrm2(int * N, T * X, int * INCX);
+template<typename T> void xpotrs(char * UPLO, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
+template<typename T> real16 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA, real16 * WORK);
+template<typename T> void xpotrf(char * UPLO, int * N, T * A, int * LDA, int * INFO);
+template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
+
 }
 
 /**
@@ -98,29 +109,76 @@ extern complex16 * czero;
 // BLAS
 
 /**
- * xscal general vector scaling
+ * xscal generalised vector scaling
+ * @param N as BLAS dscal N
+ * @param DA data type specific with intent as BLAS dscal DA
+ * @param DX data type specific with intent as BLAS dscal DX
+ * @param INCX as BLAS dscal INCX
  */
 template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
 
 /**
- * xgemv general matrix vector multiplication.
+ * xgemv generalised matrix vector multiplication.
+ * @param TRANS as BLAS dgemv TRANS
+ * @param M as BLAS dgemv M
+ * @param N as BLAS dgemv N
+ * @param ALPHA data type specific with intent as BLAS dgemv ALPHA
+ * @param A data type specific with intent as BLAS dgemv A
+ * @param LDA as BLAS dgemv LDA
+ * @param X data type specific with intent as BLAS dgemv X
+ * @param INCX as BLAS dgemv INCX
+ * @param BETA data type specific with intent as BLAS dgemv BETA
+ * @param Y data type specific with intent as BLAS dgemv Y
+ * @param INCY as BLAS dgemv INCY
  */
 template<typename T> void xgemv(char * TRANS, int * M, int * N, T * ALPHA, T * A, int * LDA, T * X, int * INCX, T * BETA, T * Y, int * INCY );
 
 /**
- * xgemm general matrix matrix multiplication.
+ * xgemm generalised matrix matrix multiplication.
+ * @param TRANSA as BLAS dgemm TRANSA
+ * @param TRANSB as BLAS dgemm TRANSB
+ * @param M as BLAS dgemm M
+ * @param N as BLAS dgemm N
+ * @param K as BLAS dgemm K
+ * @param ALPHA data type specific with intent as BLAS dgemm ALPHA
+ * @param A data type specific with intent as BLAS dgemm A
+ * @param LDA as BLAS dgemm LDA
+ * @param B data type specific with intent as BLAS dgemm B
+ * @param LDB as BLAS dgemm LDB
+ * @param BETA data type specific with intent as BLAS dgemm BETA
+ * @param C data type specific with intent as BLAS dgemm C
+ * @param LDC as BLAS dgemm LDC
+
  */
 template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, T * ALPHA, T * A, int * LDA, T * B, int * LDB, T * BETA, T * C, int * LDC );
 
 /**
- * xnrm2 general norm2 implementation
+ * xnrm2 generalised 2-norm implementation
+ * @param N as BLAS dnrm2 N
+ * @param A data type specific with intent as BLAS dnrm2 A
+ * @param INCX as BLAS dnrm2 INCX
+ * @return the 2-norm of X
  */
 template<typename T> real16 xnrm2(int * N, T * X, int * INCX);
 
 // LAPACK
 
 /**
- * xgesvd general svd implementation that takes care of workspaces
+ * xgesvd is a generalised svd implementation that takes care of workspaces
+ * @param JOBU as LAPACK dgesvd JOBU
+ * @param JOBVT as LAPACK dgesvd JOBVT
+ * @param M as LAPACK dgesvd M
+ * @param N as LAPACK dgesvd N
+ * @param A data type specific with intent as LAPACK dgesvd A
+ * @param LDA as LAPACK dgesvd LDA
+ * @param S as LAPACK dgesvd S
+ * @param T as LAPACK dgesvd T
+ * @param U as LAPACK dgesvd U
+ * @param LDU as LAPACK dgesvd LDU
+ * @param VT as LAPACK dgesvd VT
+ * @param LDVT as LAPACK dgesvd LDVT
+ * @param INFO as LAPACK dgesvd INFO
+ * @throws rdag_error on illegal input OR non-convergence
  */
 template<typename T> void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, T * A, int * LDA, real16 * S, T * U, int * LDU, T * VT, int * LDVT, int * INFO);
 

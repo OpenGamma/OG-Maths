@@ -27,6 +27,103 @@ namespace detail
   complex16 cone = {1.e0, 0.e0};
   real16 rzero = 0.e0;
   complex16 czero = {0.e0, 0.e0};
+
+  // charmagic specialisation
+  template<>char charmagic<real16>()
+  {
+    return 'd';
+  }
+  template<>char charmagic<complex16>()
+  {
+    return 'z';
+  }
+
+  // xSCAL specialisations
+  template<> void xscal(int * N, real16 * DA, real16 * DX, int * INCX)
+  {
+    F77FUNC(dscal)(N, DA, DX, INCX);
+  }
+
+  template<> void xscal(int * N, complex16 * DA, complex16 * DX, int * INCX)
+  {
+    F77FUNC(zscal)(N, DA, DX, INCX);
+  }
+
+  // xGEMV specialisations
+  template<> void xgemv(char * TRANS, int * M, int * N, real16 * ALPHA, real16 * A, int * LDA, real16 * X, int * INCX, real16 * BETA, real16 * Y, int * INCY )
+  {
+    F77FUNC(dgemv)(TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA, Y, INCY);
+  }
+
+  template<> void xgemv(char * TRANS, int * M, int * N, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * X, int * INCX, complex16 * BETA, complex16 * Y, int * INCY )
+  {
+    F77FUNC(zgemv)(TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA, Y, INCY);
+  }
+
+  // xGEMM specialisations
+  template<> void
+  xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, real16 * ALPHA, real16 * A, int * LDA, real16 * B, int * LDB, real16 * BETA, real16 * C, int * LDC )
+  {
+    F77FUNC(dgemm)(TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC );
+  }
+
+  template<> void
+  xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * B, int * LDB, complex16 * BETA, complex16 * C, int * LDC )
+  {
+    F77FUNC(zgemm)(TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC );
+  }
+
+  // xNORM2 specialisations
+  template<> real16 xnrm2(int * N, real16 * X, int * INCX)
+  {
+    return F77FUNC(dnrm2)(N, X, INCX);
+  }
+
+  template<> real16 xnrm2(int * N, complex16 * X, int * INCX)
+  {
+    return F77FUNC(dznrm2)(N, X, INCX);
+  }
+
+  // xPOTRS specialisations
+  template<> void xpotrs(char * UPLO, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO)
+  {
+    F77FUNC(dpotrs)(UPLO, N, NRHS, A, LDA, B, LDB, INFO);
+  }
+
+  template<> void xpotrs(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO)
+  {
+    F77FUNC(zpotrs)(UPLO, N, NRHS, A, LDA, B, LDB, INFO);
+  }
+
+  // xLANSY specialisations
+  template<>real16 xlansy(char * NORM, char * UPLO, int * N, real16 * A, int * LDA, real16 * WORK)
+  {
+    return F77FUNC(dlansy)(NORM, UPLO, N, A, LDA, WORK);
+  }
+  template<>real16 xlansy(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA, real16 * WORK)
+  {
+    return  F77FUNC(zlansy)(NORM, UPLO, N, A, LDA, WORK);
+  }
+
+  // xPOTRF specialisations
+  template<> void xpotrf(char * UPLO, int * N, real16 * A, int * LDA, int * INFO)
+  {
+    F77FUNC(dpotrf)(UPLO, N, A, LDA, INFO);
+  }
+  template<> void xpotrf(char * UPLO, int * N, complex16 * A, int * LDA, int * INFO)
+  {
+    F77FUNC(zpotrf)(UPLO, N, A, LDA, INFO);
+  }
+
+  //xTRTRS specialisations
+  template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO)
+  {
+    F77FUNC(dtrtrs)(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
+  }
+  template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO)
+  {
+    F77FUNC(ztrtrs)(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
+  }
 }
 
 // f77 constants
@@ -45,60 +142,44 @@ complex16 * cone  = &detail::cone;
 real16 *    rzero = &detail::rzero;
 complex16 * czero = &detail::czero;
 
-// xSCAL specialisations
-template<> void xscal(int * N, real16 * DA, real16 * DX, int * INCX)
+// xSCAL
+template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX)
 {
   set_xerbla_death_switch(lapack::izero);
-  F77FUNC(dscal)(N, DA, DX, INCX);
+  detail::xscal(N, DA, DX, INCX);
 }
+template void xscal<real16>(int * N, real16 * DA, real16 * DX, int * INCX);
+template void xscal<complex16>(int * N, complex16 * DA, complex16 * DX, int * INCX);
 
-template<> void xscal(int * N, complex16 * DA, complex16 * DX, int * INCX)
+// xGEMV
+template<typename T> void
+xgemv(char * TRANS, int * M, int * N, T * ALPHA, T * A, int * LDA, T * X, int * INCX, T * BETA, T * Y, int * INCY )
 {
   set_xerbla_death_switch(lapack::izero);
-  F77FUNC(zscal)(N, DA, DX, INCX);
+  detail::xgemv(TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA, Y, INCY);
 }
+template void xgemv<real16>(char * TRANS, int * M, int * N, real16 * ALPHA, real16 * A, int * LDA, real16 * X, int * INCX, real16 * BETA, real16 * Y, int * INCY);
+template void xgemv<complex16>(char * TRANS, int * M, int * N, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * X, int * INCX, complex16 * BETA, complex16 * Y, int * INCY);
 
-// xGEMV specialisations
-template<> void xgemv(char * TRANS, int * M, int * N, real16 * ALPHA, real16 * A, int * LDA, real16 * X, int * INCX, real16 * BETA, real16 * Y, int * INCY )
+// xGEMM
+template<typename T> void
+xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, T * ALPHA, T * A, int * LDA, T * B, int * LDB, T * BETA, T * C, int * LDC )
 {
   set_xerbla_death_switch(lapack::izero);
-  F77FUNC(dgemv)(TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA, Y, INCY);
+  detail::xgemm(TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC );
 }
+template void xgemm<real16>(char * TRANSA, char * TRANSB, int * M, int * N, int * K, real16 * ALPHA, real16 * A, int * LDA, real16 * B, int * LDB, real16 * BETA, real16 * C, int * LDC );
+template void xgemm<complex16>(char * TRANSA, char * TRANSB, int * M, int * N, int * K, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * B, int * LDB, complex16 * BETA, complex16 * C, int * LDC );
 
-template<> void xgemv(char * TRANS, int * M, int * N, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * X, int * INCX, complex16 * BETA, complex16 * Y, int * INCY )
+// xNORM2
+template<typename T> real16
+xnrm2(int * N, T * X, int * INCX)
 {
   set_xerbla_death_switch(lapack::izero);
-  F77FUNC(zgemv)(TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA, Y, INCY);
+  return detail::xnrm2(N, X, INCX);
 }
-
-// xGEMM specialisations
-template<> void
-xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, real16 * ALPHA, real16 * A, int * LDA, real16 * B, int * LDB, real16 * BETA, real16 * C, int * LDC )
-{
-  set_xerbla_death_switch(lapack::izero);
-  F77FUNC(dgemm)(TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC );
-}
-
-template<> void
-xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * B, int * LDB, complex16 * BETA, complex16 * C, int * LDC )
-{
-  set_xerbla_death_switch(lapack::izero);
-  F77FUNC(zgemm)(TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC );
-}
-
-
-// xNORM2 specialisations
-template<> real16 xnrm2(int * N, real16 * X, int * INCX)
-{
-  set_xerbla_death_switch(lapack::izero);
-  return F77FUNC(dnrm2)(N, X, INCX);
-}
-
-template<> real16 xnrm2(int * N, complex16 * X, int * INCX)
-{
-  set_xerbla_death_switch(lapack::izero);
-  return F77FUNC(dznrm2)(N, X, INCX);
-}
+template real16 xnrm2<real16>(int * N, real16 * X, int * INCX);
+template real16 xnrm2<complex16>(int * N, complex16 * X, int * INCX);
 
 // xGESVD specialisations
 template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, real16 * A, int * LDA, real16 * S, real16 * U, int * LDU, real16 * VT, int * LDVT, int * INFO)
@@ -219,78 +300,47 @@ template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, complex16
   }
 }
 
-template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO)
+template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
-  F77FUNC(dtrtrs)(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
+  detail::xtrtrs(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
   if(*INFO>0)
   {
     stringstream message;
-    message << "LAPACK::dtrtrs matrix is reported as being singular, the " << *INFO << "th diagonal is zero. No solutions have been computed.";
-    throw rdag_error(message.str());
-  }
-  if(*INFO<0)
-  {
-    stringstream message;
-    message << "Input to LAPACK::dtrtrs call incorrect at arg: " << *INFO;
-    throw rdag_error(message.str());
-  }
-}
-
-template<> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO)
-{
-  set_xerbla_death_switch(lapack::izero);
-  F77FUNC(ztrtrs)(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
-  if(*INFO>0)
-  {
-    stringstream message;
-    message << "LAPACK::dtrtrs matrix is reported as being singular, the " << *INFO << "th diagonal is zero. No solutions have been computed.";
+    message << "LAPACK::"<<detail::charmagic<T>()<<"trtrs matrix is reported as being singular, the " << *INFO << "th diagonal is zero. No solutions have been computed.";
     throw rdag_error(message.str());
   }
   if(*INFO!=0)
   {
     stringstream message;
-    message << "Input to LAPACK::ztrtrs call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"trtrs call incorrect at arg: " << *INFO;
     throw rdag_error(message.str());
   }
 }
+template void xtrtrs<real16>(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO);
+template void xtrtrs<complex16>(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO);
 
 
-template<> void xpotrf(char * UPLO, int * N, real16 * A, int * LDA, int * INFO)
+template<typename T> void xpotrf(char * UPLO, int * N, T * A, int * LDA, int * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
-  F77FUNC(dpotrf)(UPLO, N, A, LDA, INFO);
+  detail::xpotrf(UPLO, N, A, LDA, INFO);
   if(*INFO>0)
   {
     stringstream message;
-    message << "LAPACK::dpotrf matrix is reported as being non s.p.d OR the factorisation failed. The " << *INFO << "th leading minor is not positive definite.";
+    message << "LAPACK::"<<detail::charmagic<T>()<<"potrf matrix is reported as being non s.p.d OR the factorisation failed. The " << *INFO << "th leading minor is not positive definite.";
     throw rdag_error(message.str());
   }
   if(*INFO<0)
   {
     stringstream message;
-    message << "Input to LAPACK::dpotrf call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"potrf call incorrect at arg: " << *INFO;
     throw rdag_error(message.str());
   }
 }
+template void xpotrf<real16>(char * UPLO, int * N, real16 * A, int * LDA, int * INFO);
+template void xpotrf<complex16>(char * UPLO, int * N, complex16 * A, int * LDA, int * INFO);
 
-template<> void xpotrf(char * UPLO, int * N, complex16 * A, int * LDA, int * INFO)
-{
-  set_xerbla_death_switch(lapack::izero);
-  F77FUNC(zpotrf)(UPLO, N, A, LDA, INFO);
-  if(*INFO>0)
-  {
-    stringstream message;
-    message << "LAPACK::zpotrf matrix is reported as being non s.p.d OR the factorisation failed. The " << *INFO << "th leading minor is not positive definite.";
-    throw rdag_error(message.str());
-  }
-  if(*INFO<0)
-  {
-    stringstream message;
-    message << "Input to LAPACK::zpotrf call incorrect at arg: " << *INFO;
-    throw rdag_error(message.str());
-  }
-}
 
 template<> void xpocon(char * UPLO, int * N, real16 * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO)
 {
@@ -336,36 +386,22 @@ template<> void xpocon(char * UPLO, int * N, complex16 * A, int * LDA, real16 * 
   }
 }
 
-template<>real16 xlansy(char * NORM, char * UPLO, int * N, real16 * A, int * LDA)
+template<typename T>real16 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA)
 {
   set_xerbla_death_switch(lapack::izero);
   if(*N<0)
   {
     stringstream message;
-    message << "Input to LAPACK::dlansy call incorrect at arg: " << 3;
+    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"lansy call incorrect at arg: " << 3;
     throw rdag_error(message.str());
   }
   real16 * WORK = new real16[*N]; // allocate regardless of *NORM
-  real16 ret = F77FUNC(dlansy)(NORM, UPLO, N, A, LDA, WORK);
+  real16 ret = detail::xlansy(NORM, UPLO, N, A, LDA, WORK);
   delete [] WORK;
   return ret;
 }
-
-template<>real16 xlansy(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA)
-{
-  set_xerbla_death_switch(lapack::izero);
-  if(*N<0)
-  {
-    stringstream message;
-    message << "Input to LAPACK::zlansy call incorrect at arg: " << 3;
-    throw rdag_error(message.str());
-  }
-  real16 * WORK = new real16[*N]; // allocate regardless of *NORM
-  real16 ret = F77FUNC(zlansy)(NORM, UPLO, N, A, LDA, WORK);
-  delete [] WORK;
-  return ret;
-}
-
+template real16 xlansy<real16>(char * NORM, char * UPLO, int * N, real16 * A, int * LDA);
+template real16  xlansy<complex16>(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA);
 
 real16 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA)
 {
@@ -377,29 +413,19 @@ real16 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA)
 }
 
 
-template<> void xpotrs(char * UPLO, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO)
+template<typename T> void xpotrs(char * UPLO, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
-  F77FUNC(dpotrs)(UPLO, N, NRHS, A, LDA, B, LDB, INFO);
+  detail::xpotrs(UPLO, N, NRHS, A, LDA, B, LDB, INFO);
   if(*INFO<0)
   {
     stringstream message;
-    message << "Input to LAPACK::dpotrs call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"potrs call incorrect at arg: " << *INFO;
     throw rdag_error(message.str());
   }
 }
-
-template<> void xpotrs(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO)
-{
-  set_xerbla_death_switch(lapack::izero);
-  F77FUNC(zpotrs)(UPLO, N, NRHS, A, LDA, B, LDB, INFO);
-  if(*INFO<0)
-  {
-    stringstream message;
-    message << "Input to LAPACK::zpotrs call incorrect at arg: " << *INFO;
-    throw rdag_error(message.str());
-  }
-}
+template void xpotrs<real16>(char * UPLO, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO);
+template void xpotrs<complex16>(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO);
 
 
 } // end namespace lapack
