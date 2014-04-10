@@ -7,66 +7,8 @@
 #ifndef _LAPACK_HH
 #define _LAPACK_HH
 
+#include "lapack_raw.h"
 #include "numerictypes.hh"
-
-#define F77FUNC(__FUNC) __FUNC##_
-
-// these lurk in global namespace
-
-// BLAS
-// Standard xSCAL
-extern "C" void F77FUNC(dscal)(int * N, real16 * DA, real16* DX, int * INCX);
-extern "C" void F77FUNC(zscal)(int * N, complex16 * DA, complex16* DX, int * INCX);
-
-// Standard xGEMV
-extern "C" void F77FUNC(dgemv)(char * TRANS, int * M, int * N, real16 * ALPHA, real16 * A, int * LDA, real16 * X, int * INCX, real16 * BETA, real16 * Y, int * INCY);
-extern "C" void F77FUNC(zgemv)(char * TRANS, int * M, int * N, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * X, int * INCX, complex16 * BETA, complex16 * Y, int * INCY);
-
-// Standard xGEMM
-extern "C" void F77FUNC(dgemm)(char * TRANSA, char * TRANSB, int * M, int * N, int * K, real16 * ALPHA, real16 * A, int * LDA, real16 * B, int * LDB, real16 * BETA, real16 * C, int * LDC );
-extern "C" void F77FUNC(zgemm)(char * TRANSA, char * TRANSB, int * M, int * N, int * K, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * B, int * LDB, complex16 * BETA, complex16 * C, int * LDC );
-
-// Standard NORM2 implementations.
-extern "C" real16 F77FUNC(dnrm2)(int * N, real16 * X, int * INCX);
-extern "C" real16 F77FUNC(dznrm2)(int * N, complex16 * X, int * INCX);
-
-
-// LAPACK
-
-// Standard SVD implementations.
-extern "C" void F77FUNC(dgesvd)(char * JOBU, char * JOBVT, int * M, int * N, real16 * A, int * LDA, real16 * S, real16 * U, int * LDU, real16 * VT, int * LDVT, real16 * WORK, int * LWORK, int * INFO);
-extern "C" void F77FUNC(zgesvd)(char * JOBU, char * JOBVT, int * M, int * N, complex16 * A, int * LDA, real16 * S, complex16 * U, int * LDU, complex16 * VT, int * LDVT, complex16 * WORK, int * LWORK, real16 * RWORK, int * INFO);
-
-// Reciprocal condition number estimates
-extern "C" void F77FUNC(dtrcon)(char * NORM, char * UPLO, char * DIAG, int * N, real16 * A, int * LDA, real16 * RCOND, real16 * WORK, int * IWORK, int * INFO);
-extern "C" void F77FUNC(ztrcon)(char * NORM, char * UPLO, char * DIAG, int * N, complex16 * A, int * LDA, real16 * RCOND, complex16 * WORK, real16 * IWORK, int * INFO);
-
-
-// solves a triangular system of the form : A * X = B  or  A**T * X = B
-extern "C" void F77FUNC(dtrtrs)(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO);
-extern "C" void F77FUNC(ztrtrs)(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO);
-
-// Cholesky factorisation for s.p.d matrices
-extern "C" void F77FUNC(dpotrf)(char * UPLO, int * N, real16 * A, int * LDA, int * INFO);
-extern "C" void F77FUNC(zpotrf)(char * UPLO, int * N, complex16 * A, int * LDA, int * INFO);
-
-// Reciprocal condition estimate in the 1-norm of a Cholesky decomposition as computed by xpotrf
-extern "C" void F77FUNC(dpocon)(char * UPLO, int * N, real16 * A, int * LDA, real16 * ANORM, real16 * RCOND, real16 * WORK, int * IWORK, int * INFO);
-extern "C" void F77FUNC(zpocon)(char * UPLO, int * N, complex16 * A, int * LDA, real16 * ANORM, real16 * RCOND, complex16 * WORK, real16 * RWORK, int * INFO);
-
-// Norm calculators for symmetric matrices
-extern "C" real16 F77FUNC(dlansy)(char * NORM, char * UPLO, int * N, real16 * A, int * LDA, real16 * WORK);
-extern "C" real16 F77FUNC(zlansy)(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA, real16 * WORK);
-
-// Norm calculator for Hermitian matrix
-extern "C" real16 F77FUNC(zlanhe)(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA, real16 * WORK);
-
-
-// Cholesky based solvers
-extern "C" void F77FUNC(dpotrs)(char * UPLO, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO);
-extern "C" void F77FUNC(zpotrs)(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO);
-
-
 
 /**
  * The lapack namespace contains templated variants of functions that vary <real16,complex16> in their signature. In places the <real16,complex16> versions of a function require different
@@ -87,6 +29,7 @@ extern char D;
 extern char ONE;
 extern char O;
 extern int ione;
+extern int izero;
 extern real16 rone;
 extern complex16 cone;
 extern real16 rzero;
@@ -130,6 +73,10 @@ extern char * O;
  * The F77 integer '1'
  */
 extern int * ione;
+/**
+ * The F77 integer '0'
+ */
+extern int * izero;
 /**
  * The F77 double precision '1.d0'
  */
