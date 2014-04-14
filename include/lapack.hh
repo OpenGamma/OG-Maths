@@ -155,7 +155,7 @@ template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, 
 /**
  * xnrm2 generalised 2-norm implementation
  * @param N as BLAS dnrm2 N
- * @param A data type specific with intent as BLAS dnrm2 A
+ * @param X data type specific with intent as BLAS dnrm2 X
  * @param INCX as BLAS dnrm2 INCX
  * @return the 2-norm of X
  */
@@ -172,7 +172,6 @@ template<typename T> real16 xnrm2(int * N, T * X, int * INCX);
  * @param A data type specific with intent as LAPACK dgesvd A
  * @param LDA as LAPACK dgesvd LDA
  * @param S as LAPACK dgesvd S
- * @param T as LAPACK dgesvd T
  * @param U as LAPACK dgesvd U
  * @param LDU as LAPACK dgesvd LDU
  * @param VT as LAPACK dgesvd VT

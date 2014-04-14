@@ -48,6 +48,9 @@ template<typename T> void svd_dense_runner(RegContainer& reg, const OGMatrix<T>*
     if(info < 0) // illegal arg
     {
       delete[] A;
+      delete[] U;
+      delete[] VT;
+      delete[] S;
       throw e;
     }
     else // failed convergence TODO: this will end up in logs (MAT-369) and userland (MAT-370).
