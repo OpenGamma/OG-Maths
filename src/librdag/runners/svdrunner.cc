@@ -39,12 +39,30 @@ template<typename T> void svd_dense_runner(RegContainer& reg, const OGMatrix<T>*
   std::memcpy(A, arg->getData(), sizeof(T)*m*n);
 
   // call lapack
-  lapack::xgesvd(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
+  try
+  {
+    lapack::xgesvd(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
+  }
+  catch (exception& e)
+  {
+    if(info < 0) // illegal arg
+    {
+      delete[] A;
+      delete[] U;
+      delete[] VT;
+      delete[] S;
+      throw e;
+    }
+    else // failed convergence TODO: this will end up in logs (MAT-369) and userland (MAT-370).
+    {
+      cerr << e.what() << std::endl;
+    }
+  }
+  delete[] A;
 
   reg.push_back(makeConcreteDenseMatrix(U, m, m, OWNER));
   reg.push_back(new OGRealDiagonalMatrix(S, m, n, OWNER));
   reg.push_back(makeConcreteDenseMatrix(VT, n, n, OWNER));
-  delete[] A;
 }
 
 void *

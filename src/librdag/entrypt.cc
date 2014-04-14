@@ -14,6 +14,7 @@
 #include "exprtypeenum.h"
 #include <typeinfo>
 #include <iostream>
+#include "lapack_raw.h"
 
 using namespace std;
 
@@ -134,6 +135,10 @@ void Walker::talkandwalk(librdag::OGNumeric const * numeric_expr_types)
 const OGTerminal*
 entrypt(const OGNumeric* expr)
 {
+  // Sort out LAPACK so xerbla calls don't kill the processes.
+  int zero = 0;
+  set_xerbla_death_switch(&zero);
+
   const OGTerminal* asTerminal = expr->asOGTerminal();
   if (asTerminal!=nullptr)
   {
