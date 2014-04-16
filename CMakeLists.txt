@@ -197,6 +197,20 @@ endif()
 # Where the generated include files live
 set(BIN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 
+# Add version info file
+if(WIN32)
+  set(PLATFORM_CODE win)
+else()
+  if(APPLE)
+    set(PLATFORM_CODE osx)
+  else()
+    set(PLATFORM_CODE lnx)
+  endif()
+endif()
+add_custom_target(verinfo
+                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/lib/og-maths-${PLATFORM_CODE}-sha1.txt
+                  COMMENT "Generating version info")
+
 add_subdirectory(src)
 
 add_gtest_report()
