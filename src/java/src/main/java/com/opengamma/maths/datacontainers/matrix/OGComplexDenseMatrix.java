@@ -59,7 +59,7 @@ public class OGComplexDenseMatrix extends OGDenseMatrix {
    * Takes a column major double[] and turns it into an OGComplexArray
    * The length of dataIn must be either:
    * a) rows*columns in which case it is assumed the double[] provided is the real part of the data (imaginary part assumed zero)
-   * c) 2*rows*columns in which case it is assumed the double[] provided is formed of interleaved real and imaginary values
+   * b) 2*rows*columns in which case it is assumed the double[] provided is formed of interleaved real and imaginary values
    * @param dataIn the real part data backing data
    * @param rows number of rows
    * @param columns number of columns
