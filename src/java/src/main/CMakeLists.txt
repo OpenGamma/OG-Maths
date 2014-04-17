@@ -69,7 +69,7 @@ endforeach()
 add_jar(${JAR_NAME_NO_EXTN} ${JAR_SOURCES}
         RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/config
         INCLUDE_NATIVE TRUE
-        DEPENDS ${jar_native_libraries}
+        DEPENDS verinfo
         ENTRY_POINT com/opengamma/maths/nativeloader/NativeLibrariesSelfTest
         OUTPUT_DIR ${JARDIR})
 

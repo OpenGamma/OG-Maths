@@ -240,7 +240,7 @@ function(add_jar _TARGET_NAME)
     cmake_parse_arguments(_add_jar
       ""
       "VERSION;OUTPUT_DIR;OUTPUT_NAME;ENTRY_POINT"
-      "SOURCES;RESOURCES;INCLUDE_NATIVE;INCLUDE_JARS"
+      "SOURCES;RESOURCES;INCLUDE_NATIVE;INCLUDE_JARS;DEPENDS"
       ${ARGN}
     )
 
@@ -302,6 +302,11 @@ function(add_jar _TARGET_NAME)
     set(_JAVA_COMPILE_FILES)
     set(_JAVA_DEPENDS)
     set(_JAVA_COMPILE_DEPENDS)
+
+    foreach(_JAVA_DEPENDENCY ${_add_jar_DEPENDS})
+      list(APPEND _JAVA_DEPENDS ${_JAVA_DEPENDENCY})
+    endforeach()
+
     foreach(_JAVA_SOURCE_FILE ${_JAVA_SOURCE_FILES})
         get_filename_component(_JAVA_EXT ${_JAVA_SOURCE_FILE} EXT)
         get_filename_component(_JAVA_FILE ${_JAVA_SOURCE_FILE} NAME_WE)
@@ -382,13 +387,12 @@ function(add_jar _TARGET_NAME)
     if(_JAVA_INCLUDE_NATIVE)
       set(_src ${CMAKE_BINARY_DIR}/lib)
       set(_dest ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/lib)
-      add_custom_command(OUTPUT  ${_dest}
-                         COMMAND cmake -E copy_directory
-                         ARGS    ${_src} ${_dest}
-                         DEPENDS ${jar_native_libraries}
-                         COMMENT "Copying native libraries to the build directory")
+      add_custom_target(copylibs
+                        cmake -E copy_directory ${_src} ${_dest}
+                        DEPENDS ${jar_native_libraries} ${_add_jar_DEPENDS}
+                        COMMENT "Copying native libraries to the build directory")
       list(APPEND _JAVA_NATIVE_FILES lib)
-      list(APPEND _JAVA_DEPENDS ${_dest})
+      list(APPEND _JAVA_DEPENDS copylibs)
     endif()
 
     # create an empty java_class_filelist
@@ -450,25 +454,40 @@ function(add_jar _TARGET_NAME)
             WORKING_DIRECTORY ${CMAKE_JAVA_CLASS_OUTPUT_PATH}
             COMMENT "Creating Java archive ${_JAVA_TARGET_OUTPUT_NAME}"
         )
+        add_custom_target(${_TARGET_NAME} ALL DEPENDS ${_JAVA_JAR_OUTPUT_PATH})
     else ()
-        add_custom_command(
-            OUTPUT ${_JAVA_JAR_OUTPUT_PATH}
-            COMMAND ${Java_JAR_EXECUTABLE}
-                -cf${_ENTRY_POINT_OPTION} ${_JAVA_JAR_OUTPUT_PATH} ${_ENTRY_POINT_VALUE}
-                ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} @java_class_filelist
-            COMMAND ${CMAKE_COMMAND}
-                -D_JAVA_TARGET_DIR=${_add_jar_OUTPUT_DIR}
-                -D_JAVA_TARGET_OUTPUT_NAME=${_JAVA_TARGET_OUTPUT_NAME}
-                -D_JAVA_TARGET_OUTPUT_LINK=${_JAVA_TARGET_OUTPUT_LINK}
-                -P ${_JAVA_SYMLINK_SCRIPT}
-            WORKING_DIRECTORY ${CMAKE_JAVA_CLASS_OUTPUT_PATH}
-            DEPENDS ${_JAVA_RESOURCE_FILES} ${_JAVA_DEPENDS} ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/java_class_filelist
-            COMMENT "Creating Java archive ${_JAVA_TARGET_OUTPUT_NAME}"
-        )
+        if(${_JAVA_INCLUDE_NATIVE})
+            add_custom_target(${_TARGET_NAME} ALL
+                ${Java_JAR_EXECUTABLE}
+                    -cf${_ENTRY_POINT_OPTION} ${_JAVA_JAR_OUTPUT_PATH} ${_ENTRY_POINT_VALUE}
+                    ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} @java_class_filelist
+                COMMAND ${CMAKE_COMMAND}
+                    -D_JAVA_TARGET_DIR=${_add_jar_OUTPUT_DIR}
+                    -D_JAVA_TARGET_OUTPUT_NAME=${_JAVA_TARGET_OUTPUT_NAME}
+                    -D_JAVA_TARGET_OUTPUT_LINK=${_JAVA_TARGET_OUTPUT_LINK}
+                    -P ${_JAVA_SYMLINK_SCRIPT}
+                WORKING_DIRECTORY ${CMAKE_JAVA_CLASS_OUTPUT_PATH}
+                DEPENDS ${_JAVA_RESOURCE_FILES} ${_JAVA_DEPENDS} ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/java_class_filelist
+                COMMENT "Creating Java archive ${_JAVA_TARGET_OUTPUT_NAME}"
+            )
+        else()
+            add_custom_command(
+                OUTPUT ${_JAVA_JAR_OUTPUT_PATH}
+                COMMAND ${Java_JAR_EXECUTABLE}
+                    -cf${_ENTRY_POINT_OPTION} ${_JAVA_JAR_OUTPUT_PATH} ${_ENTRY_POINT_VALUE}
+                    ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} @java_class_filelist
+                COMMAND ${CMAKE_COMMAND}
+                    -D_JAVA_TARGET_DIR=${_add_jar_OUTPUT_DIR}
+                    -D_JAVA_TARGET_OUTPUT_NAME=${_JAVA_TARGET_OUTPUT_NAME}
+                    -D_JAVA_TARGET_OUTPUT_LINK=${_JAVA_TARGET_OUTPUT_LINK}
+                    -P ${_JAVA_SYMLINK_SCRIPT}
+                WORKING_DIRECTORY ${CMAKE_JAVA_CLASS_OUTPUT_PATH}
+                DEPENDS ${_JAVA_RESOURCE_FILES} ${_JAVA_DEPENDS} ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/java_class_filelist
+                COMMENT "Creating Java archive ${_JAVA_TARGET_OUTPUT_NAME}"
+            )
+            add_custom_target(${_TARGET_NAME} ALL DEPENDS ${_JAVA_JAR_OUTPUT_PATH})
+        endif()
     endif ()
-
-    # Add the target and make sure we have the latest resource files.
-    add_custom_target(${_TARGET_NAME} ALL DEPENDS ${_JAVA_JAR_OUTPUT_PATH})
 
     set_property(
         TARGET
