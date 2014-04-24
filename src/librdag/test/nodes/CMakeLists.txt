@@ -22,11 +22,13 @@ add_multitarget_library(testhelper
                         TARGETS ${TARGET_TYPES})
 
 set(TESTS
+    check_ctranspose
     check_mtimes
     check_norm2
     check_pinv
     check_selectresult
     check_svd
+    check_transpose
    )
 
 # Compile and link each test and add to the list of tests

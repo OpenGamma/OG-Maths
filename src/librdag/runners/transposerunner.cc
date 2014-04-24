@@ -40,7 +40,7 @@ transpose_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
   // Matrix in scalar context, i.e. a 1x1 matrix, transpose is simply value
   if(arg->getRows()==1 && arg->getCols()==1)
   {
-    ret = new OGScalar<T>(arg->getData()[0]);
+    ret = makeConcreteScalar(arg->getData()[0]);
   }
   else // Matrix is a full matrix
   {

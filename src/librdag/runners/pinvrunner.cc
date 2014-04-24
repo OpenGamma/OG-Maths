@@ -86,20 +86,7 @@ pinv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
     SVD * svd = new SVD(arg->createOwningCopy());
 
     // run the tree
-    try
-    {
-      runtree(svd);
-    }
-    catch(rdag_error e)
-    {
-      delete svd;
-      throw;
-    }
-    catch(exception e)
-    {
-      delete svd;
-      throw;
-    }
+    runtree(svd);
 
     // svd regs now hold [U,S,V**T]
     const OGNumeric * numericU = svd->getRegs()[0]->asOGTerminal()->createOwningCopy();
@@ -147,22 +134,7 @@ pinv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
     MTIMES * VTSUT = new MTIMES(VTS, ctransposeU);
 
     // run the tree
-    try
-    {
-      runtree(VTSUT);
-    }
-    catch(rdag_error e)
-    {
-      delete VTSUT;
-      delete numericS;
-      throw e;
-    }
-    catch(exception e)
-    {
-      delete VTSUT;
-      delete numericS;
-      throw e;
-    }
+    runtree(VTSUT);
 
     // get the return item
     ret = VTSUT->getRegs()[0]->asOGTerminal()->createOwningCopy();
