@@ -90,10 +90,15 @@ pinv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
     {
       runtree(svd);
     }
-    catch (exception e)
+    catch(rdag_error e)
     {
       delete svd;
-      throw e;
+      throw;
+    }
+    catch(exception e)
+    {
+      delete svd;
+      throw;
     }
 
     // svd regs now hold [U,S,V**T]
@@ -146,7 +151,13 @@ pinv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
     {
       runtree(VTSUT);
     }
-    catch (exception e)
+    catch(rdag_error e)
+    {
+      delete VTSUT;
+      delete numericS;
+      throw e;
+    }
+    catch(exception e)
     {
       delete VTSUT;
       delete numericS;
