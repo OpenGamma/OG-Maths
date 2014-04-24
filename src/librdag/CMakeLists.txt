@@ -24,6 +24,7 @@ set(RDAG_SOURCES containers.cc
                  lapack.cc
                  numericbase.cc
                  numerictypes.cc
+                 runtree.cc
                  terminal.cc
                  runners/ctransposerunner.cc
                  runners/mtimesrunner.cc

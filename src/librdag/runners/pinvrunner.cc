@@ -13,7 +13,7 @@
 #include "execution.hh"
 #include "dispatch.hh"
 #include "uncopyable.hh"
-#include "lapack.hh"
+#include "runtree.hh"
 
 #include <stdio.h>
 #include <complex>
@@ -82,18 +82,18 @@ pinv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
     const int n = arg->getCols();
     const int minmn = m > n ? n : m;
 
-    // create dispatcher for use in computation
-    Dispatcher * d = new Dispatcher();
-    // pointer to execution list
-    ExecutionList * el0, *  el1;
-
     // svd the arg
     SVD * svd = new SVD(arg->createOwningCopy());
 
-    el0 = new ExecutionList(svd);
-    for (auto it = el0->begin(); it != el0->end(); ++it)
+    // run the tree
+    try
     {
-      d->dispatch(*it);
+      runtree(svd);
+    }
+    catch (exception e)
+    {
+      delete svd;
+      throw e;
     }
 
     // svd regs now hold [U,S,V**T]
@@ -127,8 +127,9 @@ pinv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
       S[i] = 0.e0;
     }
 
-    // create a new transposed inverted diag matrix
-    OGRealDiagonalMatrix * diag_transpose = new OGRealDiagonalMatrix(S,n,m);
+    // create a new transposed inverted diag matrix.
+    // this matrix is just a viewer of S, numericS is the owner
+    OGRealDiagonalMatrix * invS = new OGRealDiagonalMatrix(S,n,m);
 
     // need to transpose U
     CTRANSPOSE * ctransposeU = new CTRANSPOSE(numericU);
@@ -137,22 +138,27 @@ pinv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
     CTRANSPOSE * ctransposeVT = new CTRANSPOSE(numericVT);
 
     // multiply back together as [(V**T)**T * inv(S) * U**T]
-    MTIMES * VTS = new MTIMES(ctransposeVT, diag_transpose);
+    MTIMES * VTS = new MTIMES(ctransposeVT, invS);
     MTIMES * VTSUT = new MTIMES(VTS, ctransposeU);
 
-    el1 = new ExecutionList(VTSUT);
-    for (auto it = el1->begin(); it != el1->end(); ++it)
+    // run the tree
+    try
     {
-      d->dispatch(*it);
+      runtree(VTSUT);
+    }
+    catch (exception e)
+    {
+      delete VTSUT;
+      delete numericS;
+      throw e;
     }
 
+    // get the return item
     ret = VTSUT->getRegs()[0]->asOGTerminal()->createOwningCopy();
 
-    delete el0;
-    delete el1;
-    delete d;
+    // clean up
     delete VTSUT;
-    // This is floating about still as it's owning and diag_transpose was just a view
+    // This is floating about still as it's owning and invS was just a view
     delete numericS;
   }
 

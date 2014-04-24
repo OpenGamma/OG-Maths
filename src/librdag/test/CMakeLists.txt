@@ -20,6 +20,7 @@ set(TESTS
   check_iss
   check_lapack
   check_numerictypes
+  check_runtree
   check_rtti
   check_terminals
   check_terminals_abstract_regression
