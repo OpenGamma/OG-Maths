@@ -15,14 +15,17 @@ set(JAVA_FILES
     helpers/Iss.java
     helpers/MatrixPrimitiveUtils.java
     DOGMA.java
-    nodes/SELECTRESULT.java
     nodes/COPY.java
-    nodes/SVD.java
+    nodes/CTRANSPOSE.java
     nodes/MTIMES.java
     nodes/NEGATE.java
     nodes/NODE.java
     nodes/NORM2.java
+    nodes/PINV.java
     nodes/PLUS.java
+    nodes/SELECTRESULT.java
+    nodes/SVD.java
+    nodes/TRANSPOSE.java
     nativeloader/SupportedInstructionSet.java
     nativeloader/NativeLibraries.java
     nativeloader/NativeLibrariesSelfTest.java

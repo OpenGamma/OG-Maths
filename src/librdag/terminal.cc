@@ -735,6 +735,7 @@ void
 OGMatrix<T>::debug_print() const
 {
   cout << std::endl << "OGMatrix<T>:" << std::endl;
+  cout << std::endl << "OWNING STATUS:" << this->getDataAccess() << std::endl;
   int rows = this->getRows();
   for(int i = 0 ; i < rows; i++)
   {
@@ -1517,5 +1518,24 @@ OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_
   return new OGComplexMatrix(data, rows, cols, access);
 }
 
+// Concrete template factory for scalars
+
+template<typename T>
+OGTerminal * makeConcreteScalar(T data)
+{
+  throw rdag_error("Concrete type unknown");
+}
+
+template<>
+OGTerminal * makeConcreteScalar(real16 data)
+{
+  return new OGRealScalar(data);
+}
+
+template<>
+OGTerminal * makeConcreteScalar(complex16 data)
+{
+  return new OGComplexScalar(data);
+}
 
 } // namespace librdag

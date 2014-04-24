@@ -212,6 +212,101 @@ NORM2::getType() const
 }
 
 /**
+ * PINV node
+ */
+
+PINV::PINV(const OGNumeric* arg): OGUnaryExpr{arg} {}
+
+OGNumeric*
+PINV::copy() const
+{
+
+  return new PINV(_args[0]->copy());
+}
+
+const PINV*
+PINV::asPINV() const
+{
+  return this;
+}
+
+void
+PINV::debug_print() const
+{
+        cout << "PINV base class" << endl;
+}
+
+ExprType_t
+PINV::getType() const
+{
+  return PINV_ENUM;
+}
+
+
+/**
+ * TRANSPOSE node
+ */
+
+TRANSPOSE::TRANSPOSE(const OGNumeric* arg): OGUnaryExpr{arg} {}
+
+OGNumeric*
+TRANSPOSE::copy() const
+{
+
+  return new TRANSPOSE(_args[0]->copy());
+}
+
+const TRANSPOSE*
+TRANSPOSE::asTRANSPOSE() const
+{
+  return this;
+}
+
+void
+TRANSPOSE::debug_print() const
+{
+        cout << "TRANSPOSE base class" << endl;
+}
+
+ExprType_t
+TRANSPOSE::getType() const
+{
+  return TRANSPOSE_ENUM;
+}
+
+
+/**
+ * CTRANSPOSE node
+ */
+
+CTRANSPOSE::CTRANSPOSE(const OGNumeric* arg): OGUnaryExpr{arg} {}
+
+OGNumeric*
+CTRANSPOSE::copy() const
+{
+
+  return new CTRANSPOSE(_args[0]->copy());
+}
+
+const CTRANSPOSE*
+CTRANSPOSE::asCTRANSPOSE() const
+{
+  return this;
+}
+
+void
+CTRANSPOSE::debug_print() const
+{
+        cout << "CTRANSPOSE base class" << endl;
+}
+
+ExprType_t
+CTRANSPOSE::getType() const
+{
+  return CTRANSPOSE_ENUM;
+}
+
+/**
  * SVD node
  */
 

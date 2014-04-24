@@ -47,6 +47,9 @@ public enum ExprEnum {
   NORM2_ENUM        (0x0115L),
   SVD_ENUM          (0x0119L),
   MTIMES_ENUM       (0x011BL),
+  PINV_ENUM         (0x0125L),
+  TRANSPOSE_ENUM    (0x0133L),
+  CTRANSPOSE_ENUM   (0x0137L),
 
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
 %(generated_nodes)s;

@@ -430,6 +430,15 @@ OGTerminal * makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACC
 template<>
 OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access);
 
+template<typename T>
+OGTerminal * makeConcreteScalar(T data);
+// PTS
+template<>
+OGTerminal * makeConcreteScalar(real16 data);
+template<>
+OGTerminal * makeConcreteScalar(complex16 data);
+
+
 } // end namespace librdag
 
 #endif // _TERMINAL_HH

@@ -190,6 +190,9 @@ BinaryOpTest<T>::TearDown() {}
 template class CheckUnary<NORM2>;
 template class UnaryOpTest<NORM2>;
 
+template class CheckUnary<PINV>;
+template class UnaryOpTest<PINV>;
+
 template class CheckBinary<MTIMES>;
 template class BinaryOpTest<MTIMES>;
 

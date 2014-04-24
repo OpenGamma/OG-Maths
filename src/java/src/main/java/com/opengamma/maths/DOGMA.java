@@ -15,11 +15,14 @@ import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.materialisers.Materialisers;
 import com.opengamma.maths.nativeloader.NativeLibraries;
+import com.opengamma.maths.nodes.CTRANSPOSE;
 import com.opengamma.maths.nodes.MTIMES;
 import com.opengamma.maths.nodes.NEGATE;
 import com.opengamma.maths.nodes.NORM2;
+import com.opengamma.maths.nodes.PINV;
 import com.opengamma.maths.nodes.PLUS;
 import com.opengamma.maths.nodes.SVD;
+import com.opengamma.maths.nodes.TRANSPOSE;
 
 /**
  * DOGMA the OpenGamma maths assembler.
@@ -63,6 +66,18 @@ public final class DOGMA {
     return new NEGATE(arg0);
   }
 
+  public static OGNumeric pinv(OGNumeric arg0) {
+    return new PINV(arg0);
+  }
+
+  public static OGNumeric transpose(OGNumeric arg0) {
+    return new TRANSPOSE(arg0);
+  }
+
+  public static OGNumeric ctranspose(OGNumeric arg0) {
+    return new CTRANSPOSE(arg0);
+  }
+  
   // binary nodes
 
   public static OGNumeric plus(final OGNumeric... args) {

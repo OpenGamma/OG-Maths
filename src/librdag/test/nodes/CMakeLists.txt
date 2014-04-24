@@ -24,6 +24,7 @@ add_multitarget_library(testhelper
 set(TESTS
     check_mtimes
     check_norm2
+    check_pinv
     check_selectresult
     check_svd
    )
