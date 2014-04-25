@@ -10,6 +10,8 @@
 #include "execution.hh"
 #include "dispatch.hh"
 #include "testnodes.hh"
+#include "runtree.hh"
+#include "equals.hh"
 
 using namespace std;
 using namespace librdag;
@@ -81,4 +83,37 @@ INSTANTIATE_NODE_TEST_CASE_P(PINVTests,PINV,
       MATHSEQUAL)
   )
 );
+
+
+// Reconstruction Tests, does A*pinv(A) = identity matrix?
+
+namespace testinternal {
+
+using namespace librdag;
+  real16 reals[9] = {1,-4,7,2,2,9,3,1,11};
+  OGRealMatrix * real = new OGRealMatrix(reals,3,3);
+  complex16 complexs[9] = {{1,10},{-4,-40},{7,70},{2,20},{2,20},{9,90},{3,30},{1,10},{11,110}};
+  OGComplexMatrix * complex = new OGComplexMatrix(complexs,3,3);
+}
+
+// Reconstruction Testing
+const librdag::OGTerminal * terminals[] = { testinternal::real,
+                                           testinternal::complex};
+
+class ReconstructPinvNodeTest: public ::testing::TestWithParam<const OGTerminal*> {};
+
+TEST_P(ReconstructPinvNodeTest, TerminalTypes)
+{
+  const OGTerminal * A = GetParam();
+  OGExpr * pinv = new PINV(A);
+  OGExpr * AtimesPinvA = new MTIMES(A->createOwningCopy(),pinv); // use copy else there's two refs to one terminal floating about
+  OGRealMatrix * expected = new OGRealMatrix(new real16[9] {1,0,0,0,1,0,0,0,1},3,3, OWNER);
+  runtree(AtimesPinvA);
+  // this is temporary pending ->mathsequals() getting tolerance options
+  EXPECT_TRUE(AtimesPinvA->getRegs()[0]->asOGTerminal()->mathsequals(expected, 1e-14, 1e-14));
+  delete AtimesPinvA;
+  delete expected;
+}
+
+INSTANTIATE_TEST_CASE_P(PINVTests, ReconstructPinvNodeTest, ::testing::ValuesIn(terminals));
 

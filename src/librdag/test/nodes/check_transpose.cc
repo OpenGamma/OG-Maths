@@ -10,6 +10,7 @@
 #include "execution.hh"
 #include "dispatch.hh"
 #include "testnodes.hh"
+#include "runtree.hh"
 
 using namespace std;
 using namespace librdag;
@@ -73,3 +74,32 @@ INSTANTIATE_NODE_TEST_CASE_P(TRANSPOSETests,TRANSPOSE,
   )
 );
 
+// Reconstruction Tests, does transpose(transpose(A)) = A?
+
+namespace testinternal {
+
+using namespace librdag;
+  real16 reals[12] = {1.,-4.,7.,-12.,2.,2.,9.,4.,3.,1.,11.,7.};
+  OGRealMatrix * real = new OGRealMatrix(reals,4,3);
+  complex16 complexs[12] = {{1,-10}, {-4,40}, {7,-70}, {-12,120}, {2,-20}, {2,-20}, {9,-90}, {4,-40}, {3,-30}, {1,-10}, {11,-110}, {7,-70}};
+  OGComplexMatrix * complex = new OGComplexMatrix(complexs,4,3);
+}
+
+// Reconstruction Testing
+const librdag::OGTerminal * terminals[] = { testinternal::real,
+                                           testinternal::complex};
+
+class ReconstructTransposeNodeTest: public ::testing::TestWithParam<const OGTerminal*> {};
+
+TEST_P(ReconstructTransposeNodeTest, TerminalTypes)
+{
+  const OGTerminal * A = GetParam();
+  OGExpr * t = new TRANSPOSE(A);
+  OGExpr * ttA = new TRANSPOSE(t); // use copy else there's two refs to one terminal floating about
+  runtree(ttA);
+  // this is temporary pending ->mathsequals() getting tolerance options
+  EXPECT_TRUE(ttA->getRegs()[0]->asOGTerminal()->mathsequals(A));
+  delete ttA;
+}
+
+INSTANTIATE_TEST_CASE_P(TRANSPOSETests, ReconstructTransposeNodeTest, ::testing::ValuesIn(terminals));

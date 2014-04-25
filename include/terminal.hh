@@ -11,6 +11,7 @@
 #include "numerictypes.hh"
 #include "warningmacros.h"
 #include "convertto.hh"
+#include <limits>
 
 namespace librdag {
 
@@ -99,8 +100,18 @@ class OGTerminal: public OGNumeric
     virtual bool equals(const OGTerminal *)const = 0;
     /**
      * Fuzzy Equals method. Computed with a fuzzy tolerance (to deal with floating point fuzz) on relavent data fields.
+     * @param term the terminal to compare against.
+     * @return true if \a this is considered fuzzy equal to \a term, false else
      */
-    virtual bool fuzzyequals(const OGTerminal *)const = 0;
+    virtual bool fuzzyequals(const OGTerminal * term)const = 0;
+    /**
+     * Fuzzy Equals method. Computed with a fuzzy tolerance (to deal with floating point fuzz) on relavent data fields.
+     * @param term the terminal to compare against.
+     * @param maxabserror the maximum absolute error to use during comparison
+     * @param maxrelerror the maximum relative error to use during comparison
+     * @return true if \a this is considered fuzzy equal to \a term, false else
+     */
+    virtual bool fuzzyequals(const OGTerminal * term, real16 maxabserror, real16 maxrelerror)const = 0;
     /**
      * Create a copy of this terminal that owns its own data.
      */
@@ -112,8 +123,19 @@ class OGTerminal: public OGNumeric
 
     /**
      * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
+     * @param term the terminal to compare against.
+     * @return true if \a this is considered mathematically equal to \a term, false else
      */
-    virtual bool mathsequals(const OGTerminal *)const;
+    virtual bool mathsequals(const OGTerminal * term)const;
+
+    /**
+     * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
+     * @param term the terminal to compare against.
+     * @param maxabserror the maximum absolute error to use during comparison
+     * @param maxrelerror the maximum relative error to use during comparison
+     * @return true if \a this is considered mathematically equal to \a term, false else
+     */
+    virtual bool mathsequals(const OGTerminal * term, real16 maxabserror, real16 maxrelerror)const;
     virtual bool operator==(const OGTerminal&) const;
     virtual bool operator!=(const OGTerminal&) const;
     virtual bool operator%(const OGTerminal&) const;
@@ -148,7 +170,8 @@ class OGScalar: public OGTerminal
     T getValue() const;
     T ** toArrayOfArrays() const;
     virtual bool equals(const OGTerminal * ) const override;
-    virtual bool fuzzyequals(const OGTerminal * ) const override;
+    virtual bool fuzzyequals(const OGTerminal * term)const override;
+    virtual bool fuzzyequals(const OGTerminal *, real16 maxabserror, real16 maxrelerror) const override;
     virtual void debug_print() const override;
     /*
      * The following will throw.
@@ -223,7 +246,8 @@ template <typename T> class OGArray: public OGTerminal
     virtual int getDatalen() const override;
     virtual DATA_ACCESS getDataAccess() const;
     virtual bool equals(const OGTerminal *)const override;
-    virtual bool fuzzyequals(const OGTerminal * ) const override;
+    virtual bool fuzzyequals(const OGTerminal * term)const override;
+    virtual bool fuzzyequals(const OGTerminal *, real16 maxabserror, real16 maxrelerror) const override;
     /*
      * The following will throw.
      */
@@ -376,7 +400,8 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
     int* getRowIdx() const;
     T** toArrayOfArrays() const;
     virtual bool equals(const OGTerminal * ) const override; // override OGArray equals to add in calls to check colPtr and rowIdx
-    virtual bool fuzzyequals(const OGTerminal * ) const override;
+    virtual bool fuzzyequals(const OGTerminal * term)const override;
+    virtual bool fuzzyequals(const OGTerminal *, real16 maxabserror, real16 maxrelerror) const override;
   protected:
     void setColPtr(int * colPtr);
     void setRowIdx(int * rowIdx);

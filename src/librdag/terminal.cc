@@ -107,6 +107,12 @@ OGTerminal::getConvertTo() const
 bool
 OGTerminal::mathsequals(const OGTerminal * other) const
 {
+  return this->mathsequals(other, FuzzyEquals_default_maxabserror, FuzzyEquals_default_maxrelerror);
+}
+
+bool
+OGTerminal::mathsequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+{
   OGTerminal * thisconv = nullptr;
   OGTerminal * otherconv = nullptr;
   bool ret = false;
@@ -124,7 +130,7 @@ OGTerminal::mathsequals(const OGTerminal * other) const
     otherconv = other->asFullOGComplexMatrix();
     thisconv = this->asFullOGComplexMatrix();
   }
-  if(thisconv->fuzzyequals(otherconv))
+  if(thisconv->fuzzyequals(otherconv, maxabserror, maxrelerror))
   {
     ret = true;
   }
@@ -232,11 +238,18 @@ template<typename T>
 bool
 OGScalar<T>::fuzzyequals(const OGTerminal * other) const
 {
+  return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
+}
+
+template<typename T>
+bool
+OGScalar<T>::fuzzyequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+{
   if(this->getType()!=other->getType())
   {
     return false;
   }
-  if(!SingleValueFuzzyEquals(static_cast<const OGScalar *>(other)->getValue(),this->_value))
+  if(!SingleValueFuzzyEquals(static_cast<const OGScalar *>(other)->getValue(),this->_value,maxabserror,maxrelerror))
   {
     return false;
   }
@@ -600,9 +613,16 @@ template<typename T>
 bool
 OGArray<T>::fuzzyequals(const OGTerminal * other) const
 {
+  return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
+}
+
+template<typename T>
+bool
+OGArray<T>::fuzzyequals(const OGTerminal * other,real16 maxabserror,real16 maxrelerror) const
+{
   if(!fundamentalsEqual(other)) return false;
   const OGArray * typetwiddle = static_cast<const OGArray *>(other);
-  if(!ArrayFuzzyEquals(typetwiddle->getData(),this->getData(),this->getDatalen()))
+  if(!ArrayFuzzyEquals(typetwiddle->getData(),this->getData(),this->getDatalen(),maxabserror,maxrelerror))
   {
     return false;
   }
@@ -1310,7 +1330,14 @@ template<typename T>
 bool
 OGSparseMatrix<T>::fuzzyequals(const OGTerminal * other) const
 {
-  if(!OGArray<T>::fuzzyequals(other))
+  return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
+}
+
+template<typename T>
+bool
+OGSparseMatrix<T>::fuzzyequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+{
+  if(!OGArray<T>::fuzzyequals(other,maxabserror,maxrelerror))
   {
     return false;
   }
