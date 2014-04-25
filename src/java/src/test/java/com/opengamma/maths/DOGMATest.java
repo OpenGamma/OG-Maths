@@ -8,6 +8,7 @@ package com.opengamma.maths;
 
 import static com.opengamma.maths.DOGMA.C;
 import static com.opengamma.maths.DOGMA.D;
+import static com.opengamma.maths.DOGMA.ctranspose;
 import static com.opengamma.maths.DOGMA.disp;
 import static com.opengamma.maths.DOGMA.minus;
 import static com.opengamma.maths.DOGMA.mtimes;
@@ -18,6 +19,7 @@ import static com.opengamma.maths.DOGMA.svd;
 import static com.opengamma.maths.DOGMA.toComplexArrayContainer;
 import static com.opengamma.maths.DOGMA.toDoubleArrayOfArrays;
 import static com.opengamma.maths.DOGMA.toOGTerminal;
+import static com.opengamma.maths.DOGMA.transpose;
 import static com.opengamma.maths.DOGMA.uminus;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
@@ -97,6 +99,43 @@ public class DOGMATest {
       0.0000241128954000, -0.0002411289540002, -0.0004425598485004, 0.0044255984850044, -0.0015300906390015, 0.0153009063900153, 0.0015129371565015, -0.0151293715650151 }, 3, 4)
         .mathsequals(toOGTerminal(pinv(mat))));
   }
+
+  @Test
+  public void TransposeTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(10);
+    assertTrue(D(10.e0).mathsequals(toOGTerminal(transpose(mat))));
+    mat = new OGRealDenseMatrix(new double[] { 1, 2, 3 }, 1, 3);
+    assertTrue(new OGRealDenseMatrix(new double[] { 1, 2, 3 }, 3, 1).mathsequals(toOGTerminal(transpose(mat))));
+    mat = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } });
+    assertTrue(new OGRealDenseMatrix(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, 3, 4).mathsequals(toOGTerminal(transpose(mat))));
+
+    mat = new OGComplexScalar(10, 100);
+    assertTrue(C(10.e0, 100e0).mathsequals(toOGTerminal(transpose(mat))));
+    mat = new OGComplexDenseMatrix(new double[] { 1, 10, 2, 20, 3, 30 }, 1, 3);
+    assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, 20, 3, 30 }, 3, 1).mathsequals(toOGTerminal(transpose(mat))));
+    mat = new OGComplexDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } }, new double[][] { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 }, { 100, 110, 120 } });
+    assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, 20, 3, 30, 4, 40, 5, 50, 6, 60, 7, 70, 8, 80, 9, 90, 10, 100, 11, 110, 12, 120 }, 3, 4).mathsequals(toOGTerminal(transpose(mat))));
+  }
+
+  @Test
+  public void CtransposeTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(10);
+    assertTrue(D(10.e0).mathsequals(toOGTerminal(ctranspose(mat))));
+    mat = new OGRealDenseMatrix(new double[] { 1, 2, 3 }, 1, 3);
+    assertTrue(new OGRealDenseMatrix(new double[] { 1, 2, 3 }, 3, 1).mathsequals(toOGTerminal(ctranspose(mat))));
+    mat = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } });
+    assertTrue(new OGRealDenseMatrix(new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, 3, 4).mathsequals(toOGTerminal(ctranspose(mat))));
+
+    mat = new OGComplexScalar(10, -100);
+    assertTrue(C(10.e0, 100e0).mathsequals(toOGTerminal(ctranspose(mat))));
+    mat = new OGComplexDenseMatrix(new double[] { 1, -10, 2, 20, 3, -30 }, 1, 3);
+    assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, -20, 3, 30 }, 3, 1).mathsequals(toOGTerminal(ctranspose(mat))));
+    mat = new OGComplexDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } }, new double[][] { { -10, 20, -30 }, { 40, -50, 60 }, { -70, 80, -90 }, { 100, -110, 120 } });
+    assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, -20, 3, 30, 4, -40, 5, 50, 6, -60, 7, 70, 8, -80, 9, 90, 10, -100, 11, 110, 12, -120 }, 3, 4).mathsequals(toOGTerminal(ctranspose(mat))));
+  }
+
 
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void PlusBadDataTest() {
