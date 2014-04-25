@@ -315,6 +315,15 @@ OGRealScalar::toReal16ArrayOfArrays() const
   return this->toArrayOfArrays();
 }
 
+complex16**
+OGRealScalar::toComplex16ArrayOfArrays() const
+{
+  complex16 ** tmp = new complex16 * [1];
+  tmp[0] = new complex16[1];
+  tmp[0][0] = this->getValue();
+  return tmp;
+}
+
 OGNumeric*
 OGRealScalar::copy() const
 {

@@ -189,8 +189,15 @@ TEST(TerminalsTest, OGRealScalarTest) {
   delete [] computed[0];
   delete [] computed;
 
-  // check toComplex16ArrayOfArrays, should throw
-  ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
+  // check toComplex16ArrayOfArrays
+  // wire up array for ArrOfArr test
+  complex16 cexpectedtmp[1] = {3.14e0};
+  complex16 ** cexpected = new complex16 * [1];
+  cexpected[0] = &(cexpectedtmp[0]);
+  complex16 ** cmplxcomputed = tmp->toComplex16ArrayOfArrays();
+  ASSERT_TRUE(ArrayOfArraysEquals<complex16>(cexpected,cmplxcomputed,1,1));
+  delete [] cmplxcomputed[0];
+  delete[] cmplxcomputed;
 
   // check visitor
   FakeVisitor * v = new FakeVisitor();
@@ -221,6 +228,7 @@ TEST(TerminalsTest, OGRealScalarTest) {
 
   // clean up
   delete [] expected;
+  delete [] cexpected;
   delete copy;
   delete tmp;
 }

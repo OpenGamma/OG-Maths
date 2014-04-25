@@ -194,6 +194,7 @@ class OGRealScalar: public OGScalar<real16>
   public:
     OGRealScalar(real16 data);
     virtual real16 ** toReal16ArrayOfArrays() const override;
+    virtual complex16 ** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric* copy() const override;
     virtual const OGRealScalar* asOGRealScalar() const override;
     virtual void debug_print() const override;
