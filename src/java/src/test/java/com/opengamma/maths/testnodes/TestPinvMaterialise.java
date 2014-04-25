@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies
+ * Copyright (C) 2014 - present by OpenGamma Inc. and the OpenGamma group of companies
  *
  * Please see distribution for license.
  */
@@ -25,6 +25,7 @@ import com.opengamma.maths.exceptions.MathsException;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.helpers.FuzzyEquals;
 import com.opengamma.maths.materialisers.Materialisers;
+import com.opengamma.maths.nodes.MTIMES;
 import com.opengamma.maths.nodes.PINV;
 
 public class TestPinvMaterialise {
@@ -130,13 +131,32 @@ public class TestPinvMaterialise {
   public void materialiseToOGTerminal(OGNumeric input, OGTerminal expected) {
     OGTerminal answer = Materialisers.toOGTerminal(input);
     if (!expected.mathsequals(answer)) {
-      throw new MathsException("Terminals not equal. Got: " + answer.toString() + " Expected: " + expected.getData()[0]);
+      throw new MathsException("Terminals not equal. Got: " + answer.toString() + " Expected: " + expected.toString());
     }
   }
 
   @Test(dataProvider = "jointdataContainer", expectedExceptions = MathsExceptionIllegalArgument.class)
   public void outsideArgBound(OGExpr input, OGTerminal expected) {
     input.getArg(1);
+  }
+
+  @DataProvider
+  public Object[][] reconstrDataContainer() {
+    OGRealDenseMatrix real = new OGRealDenseMatrix(new double[] { 1, -4, 7, 2, 2, 9, 3, 1, 11 }, 3, 3);
+    OGComplexDenseMatrix complex = new OGComplexDenseMatrix(new double[] { 1, 10, -4, -40, 7, 70, 2, 20, 2, 20, 9, 90, 3, 30, 1, 10, 11, 110 }, 3, 3);
+    Object[][] obj = new Object[2][1];
+    obj[0][0] = real;
+    obj[1][0] = complex;
+    return obj;
+  }
+
+  @Test(dataProvider = "reconstrDataContainer")
+  public void reconstructionTest(OGTerminal A) {
+    OGExpr pinv = new PINV(A);
+    OGExpr AmtimesPinvA = new MTIMES(A, pinv);
+    OGRealDenseMatrix expected = new OGRealDenseMatrix(new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1 }, 3, 3);
+    OGTerminal computed = Materialisers.toOGTerminal(AmtimesPinvA);
+    assertTrue(expected.mathsequals(computed, 1e-14, 1e-14));
   }
 
 }

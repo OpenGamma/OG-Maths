@@ -109,7 +109,6 @@ TEST_P(ReconstructPinvNodeTest, TerminalTypes)
   OGExpr * AtimesPinvA = new MTIMES(A->createOwningCopy(),pinv); // use copy else there's two refs to one terminal floating about
   OGRealMatrix * expected = new OGRealMatrix(new real16[9] {1,0,0,0,1,0,0,0,1},3,3, OWNER);
   runtree(AtimesPinvA);
-  // this is temporary pending ->mathsequals() getting tolerance options
   EXPECT_TRUE(AtimesPinvA->getRegs()[0]->asOGTerminal()->mathsequals(expected, 1e-14, 1e-14));
   delete AtimesPinvA;
   delete expected;
