@@ -213,8 +213,12 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexScalar)
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealScalar)
 {
   DispatchToComplex16ArrayOfArrays * d = new DispatchToComplex16ArrayOfArrays();
-  OGRealScalar * scal = new OGRealScalar(1234);
-  ASSERT_ANY_THROW(d->visit(scal));
+  complex16 value = {1234,0};
+  OGRealScalar * scal = new OGRealScalar(std::real(value));
+  d->visit(scal);
+  ASSERT_TRUE(d->getRows()==1);
+  ASSERT_TRUE(d->getCols()==1);
+  ASSERT_TRUE(SingleValueFuzzyEquals(d->getData()[0][0],value));
   delete d;
   delete scal;
 }
