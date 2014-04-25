@@ -12,6 +12,7 @@ import static com.opengamma.maths.DOGMA.disp;
 import static com.opengamma.maths.DOGMA.minus;
 import static com.opengamma.maths.DOGMA.mtimes;
 import static com.opengamma.maths.DOGMA.norm2;
+import static com.opengamma.maths.DOGMA.pinv;
 import static com.opengamma.maths.DOGMA.plus;
 import static com.opengamma.maths.DOGMA.svd;
 import static com.opengamma.maths.DOGMA.toComplexArrayContainer;
@@ -73,6 +74,28 @@ public class DOGMATest {
     assertTrue(D(-10).mathsequals(toOGTerminal(uminus(mat))));
     mat = new OGRealDenseMatrix(new double[] { 1, 2, 3, 4, 5 });
     assertTrue(new OGRealDenseMatrix(new double[] { -1, -2, -3, -4, -5 }).mathsequals(toOGTerminal(uminus(mat))));
+  }
+
+  @Test
+  public void PinvTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(10);
+    assertTrue(D(1.e0 / 10.e0).mathsequals(toOGTerminal(pinv(mat))));
+    mat = new OGRealDenseMatrix(0);
+    assertTrue(D(0.e0).mathsequals(toOGTerminal(pinv(mat))));
+    mat = new OGRealDenseMatrix(new double[] { 1., -4., 7., -12., 2., 2., 9., 4., 3., 1., 11., 7. }, 4, 3);
+    assertTrue(new OGRealDenseMatrix(new double[] { 0.0142560142560143, -0.1236907236907242, 0.1100683100683104, -0.0598455598455599, 0.5727155727155739, -0.4266409266409274, 0.0299970299970300,
+      0.0800118800118803, 0.0024354024354022, -0.0446985446985447, -0.1545391545391548, 0.1528066528066529 }, 3, 4).mathsequals(toOGTerminal(pinv(mat))));
+
+    mat = C(10, 20);
+    assertTrue(C(0.02, -0.04).mathsequals(toOGTerminal(pinv(mat))));
+    mat = C(0, 0);
+    assertTrue(C(0.e0).mathsequals(toOGTerminal(pinv(mat))));
+    mat = new OGComplexDenseMatrix(new double[] { 1, 10, -4, -40, 7, 70, -12, -120, 2, 20, 2, 20, 9, 90, 4, 40, 3, 30, 1, 10, 11, 110, 7, 70 }, 4, 3);
+    assertTrue(new OGComplexDenseMatrix(new double[] { 0.0001411486560001, -0.0014114865600014, -0.0012246606306012, 0.0122466063060123, 0.0010897852482011, -0.0108978524820109, -0.0005925302955006,
+      0.0059253029550059, 0.0056704512150057, -0.0567045121500567, -0.0042241675905042, 0.0422416759050422, 0.0002970002970003, -0.0029700029700030, 0.0007921968318008, -0.0079219683180079,
+      0.0000241128954000, -0.0002411289540002, -0.0004425598485004, 0.0044255984850044, -0.0015300906390015, 0.0153009063900153, 0.0015129371565015, -0.0151293715650151 }, 3, 4)
+        .mathsequals(toOGTerminal(pinv(mat))));
   }
 
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
