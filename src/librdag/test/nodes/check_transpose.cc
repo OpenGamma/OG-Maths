@@ -48,6 +48,11 @@ INSTANTIATE_NODE_TEST_CASE_P(TRANSPOSETests,TRANSPOSE,
   MATHSEQUAL),
   // transpose(0) = 0
   new CheckUnary<TRANSPOSE>( new OGRealMatrix(new real16[1]{0.e0},1,1, OWNER), new OGRealScalar(0.0), MATHSEQUAL),
+   // transpose vector
+  new CheckUnary<TRANSPOSE>(
+    new OGRealMatrix(new real16[3]{1,2,3},1,3, OWNER),
+    new OGRealMatrix(new real16[3]{1,2,3},3,1, OWNER),
+    MATHSEQUAL),
   // transpose(4x3 system)
   new CheckUnary<TRANSPOSE>(
       new OGRealMatrix(new real16[12] {1.,-4.,7.,-12.,2.,2.,9.,4.,3.,1.,11.,7.},4,3, OWNER),
@@ -66,6 +71,11 @@ INSTANTIATE_NODE_TEST_CASE_P(TRANSPOSETests,TRANSPOSE,
   new CheckUnary<TRANSPOSE>( new OGComplexScalar({1.0,1.0}), new OGComplexScalar({1.0,1.0}), MATHSEQUAL),
   // transpose(10-10i) = 10-10i
   new CheckUnary<TRANSPOSE>( new OGComplexScalar({10.0,-10.0}), new OGComplexScalar({10.0,-10.0}), MATHSEQUAL),
+   // transpose vector
+  new CheckUnary<TRANSPOSE>(
+    new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER),
+    new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER),
+    MATHSEQUAL),
   // transpose(4x3 system)
   new CheckUnary<TRANSPOSE>(
       new OGComplexMatrix(new complex16[12]{{1,-10}, {-4,40}, {7,-70}, {-12,120}, {2,-20}, {2,-20}, {9,-90}, {4,-40}, {3,-30}, {1,-10}, {11,-110}, {7,-70}},4,3, OWNER),
