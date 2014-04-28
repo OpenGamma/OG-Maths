@@ -209,8 +209,11 @@ endif()
 set(BIN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 
 # Add version info file
+if(NOT DEFINED BUILDNUMBER)
+  set(BUILDNUMBER local)
+endif()
 add_custom_target(verinfo
-                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/lib/og-maths-${PLATFORM_CODE}-sha1.txt
+                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/verinfo.yaml ${JAR_VERSION} ${LAPACK_BUILDDIR}/verinfo.yaml ${BUILDNUMBER}
                   COMMENT "Generating version info")
 
 add_subdirectory(src)
