@@ -107,7 +107,6 @@ TEST_P(ReconstructTransposeNodeTest, TerminalTypes)
   OGExpr * t = new TRANSPOSE(A);
   OGExpr * ttA = new TRANSPOSE(t); // use copy else there's two refs to one terminal floating about
   runtree(ttA);
-  // this is temporary pending ->mathsequals() getting tolerance options
   EXPECT_TRUE(ttA->getRegs()[0]->asOGTerminal()->mathsequals(A));
   delete ttA;
 }
