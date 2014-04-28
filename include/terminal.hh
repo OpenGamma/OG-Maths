@@ -447,7 +447,14 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual OGTerminal * createComplexOwningCopy() const override;
 };
 
-
+/**
+ * Creates a non-templated OGMatrix object based on the type of data \a T.
+ * e.g. creates an OGRealMatrix from real16 type \a data.
+ * @param data the data from which an OGMatrix shall be constructed.
+ * @param rows the number of rows in the matrix.
+ * @param cols the number of columns in the matrix.
+ * @return a non-templated OGMatrix object.
+ */
 template<typename T>
 OGTerminal * makeConcreteDenseMatrix(T * data, int rows, int cols, DATA_ACCESS access);
 // PTS
@@ -456,6 +463,12 @@ OGTerminal * makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACC
 template<>
 OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access);
 
+/**
+ * Creates a non-templated OGScalar object based on the type of data \a T.
+ * e.g. creates an OGRealScalar from a real16 type \a data.
+ * @param data the data from which an OGScalar shall be constructed.
+ * @return a non-templated OGScalar object.
+ */
 template<typename T>
 OGTerminal * makeConcreteScalar(T data);
 // PTS
