@@ -18,11 +18,11 @@ endif(APPLE OR WIN32)
 project (og_maths)
 
 # check command line is sensible
-if(LAPACK_EXPORT)
-  set(LAPACK_BUILDINFO ${LAPACK_EXPORT})
+if(LAPACK_BUILDDIR)
+  set(LAPACK_BUILDINFO ${LAPACK_BUILDDIR}/LAPACK_EXPORTS.cmake)
 else()
 #This is a temporary thing. Expect later to add in ExternalProject_add to get the code!!
-  message( FATAL_ERROR "LAPACK_EXPORT must be defined on the command line. e.g. -DLAPACK_EXPORT=\"/path/to/LAPACK_EXPORT.cmake\"" )
+  message( FATAL_ERROR "LAPACK_BUILDDIR must be defined: e.g. -DLAPACK_BUILDDIR=\"/path/to/OG-Lapack/build\"" )
 endif()
 
 
