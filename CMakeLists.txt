@@ -55,12 +55,23 @@ set(maven_VERSION_PATCH 0)
 set(maven_VERSION
   ${maven_VERSION_MAJOR}.${maven_VERSION_MINOR}.${maven_VERSION_PATCH})
 
+# Construct platform code
+if(WIN32)
+  set(PLATFORM_CODE win)
+else()
+  if(APPLE)
+    set(PLATFORM_CODE osx)
+  else()
+    set(PLATFORM_CODE lnx)
+  endif()
+endif()
+
 # JAR VARIABLES
 set(JARDIR ${CMAKE_BINARY_DIR}/jars)
 
 set(JAR_VERSION "${maven_VERSION}-SNAPSHOT")
 
-set(JAR_NAME_NO_EXTN "og-maths-${JAR_VERSION}" )
+set(JAR_NAME_NO_EXTN "og-maths-${PLATFORM_CODE}-${JAR_VERSION}" )
 set(JAR_SOURCES_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-sources" )
 set(JAR_TEST_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-tests" )
 set(JAR_JAVADOC_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-javadoc" )
@@ -198,15 +209,6 @@ endif()
 set(BIN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 
 # Add version info file
-if(WIN32)
-  set(PLATFORM_CODE win)
-else()
-  if(APPLE)
-    set(PLATFORM_CODE osx)
-  else()
-    set(PLATFORM_CODE lnx)
-  endif()
-endif()
 add_custom_target(verinfo
                   ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/lib/og-maths-${PLATFORM_CODE}-sha1.txt
                   COMMENT "Generating version info")
