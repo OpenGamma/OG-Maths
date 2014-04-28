@@ -144,7 +144,7 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<complex16> const 
     this->setRows(1);
     this->setCols(1);
 }
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16> const SUPPRESS_UNUSED  *thing)
+void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16> const *thing)
 {
     this->setData(thing->toComplex16ArrayOfArrays());
     this->setRows(1);
