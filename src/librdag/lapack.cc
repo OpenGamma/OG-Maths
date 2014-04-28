@@ -300,7 +300,7 @@ template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV,
     }
     else
     {
-      message << "LAPACK::xgetrf, matrix is singular at pivot [" << *INFO << "]";
+      message << "LAPACK::xgetrf, matrix is singular at pivot [" << (*INFO - 1) << "]";
     }
     throw rdag_error(message.str());
   }

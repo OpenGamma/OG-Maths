@@ -149,6 +149,16 @@ class MTIMES: public OGBinaryExpr
     virtual ExprType_t getType() const override;
 };
 
+class LU: public OGUnaryExpr
+{
+  public:
+    LU(const OGNumeric* arg);
+    virtual OGNumeric* copy() const override;
+    virtual const LU* asLU() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+};
+
 } // namespace librdag
 
 #endif // _EXPRESSIONBASE_HH

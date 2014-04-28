@@ -285,6 +285,31 @@ TEST(VirtualCopyTest, NEGATE) {
   delete negate2;
 }
 
+TEST(VirtualCopyTest, NORM2) {
+  double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+  OGRealMatrix *realMat = new OGRealMatrix(matData, 3, 2);
+  NORM2 *norm1 = new NORM2(realMat);
+  NORM2 const *norm2 = norm1->copy()->asNORM2();
+  ASSERT_NE(nullptr, norm2);
+  const ArgContainer& a1 = norm1->getArgs();
+  const ArgContainer& a2 = norm2->getArgs();
+  EXPECT_EQ(a1.size(), a2.size());
+  const OGNumeric* s1arg1 = a1[0];
+  const OGNumeric* s2arg1 = a2[0];
+  EXPECT_NE(s1arg1, s2arg1);
+  const OGRealMatrix* s1m = s1arg1->asOGRealMatrix();
+  const OGRealMatrix* s2m = s2arg1->asOGRealMatrix();
+  ASSERT_NE(nullptr, s1m);
+  ASSERT_NE(nullptr, s2m);
+  EXPECT_EQ(s1m->getData(), s2m->getData());
+  EXPECT_EQ(s1m->getRows(), s2m->getRows());
+  EXPECT_EQ(s1m->getCols(), s2m->getCols());
+  EXPECT_EQ(s1m->getDatalen(), s2m->getDatalen());
+  delete norm1;
+  delete norm2;
+}
+
+
 TEST(VirtualCopyTest, SVD) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGRealMatrix *realMat = new OGRealMatrix(matData, 3, 2);
@@ -307,6 +332,30 @@ TEST(VirtualCopyTest, SVD) {
   EXPECT_EQ(s1m->getDatalen(), s2m->getDatalen());
   delete svd1;
   delete svd2;
+}
+
+TEST(VirtualCopyTest, LU) {
+  double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+  OGRealMatrix *realMat = new OGRealMatrix(matData, 3, 2);
+  LU *lu1 = new LU(realMat);
+  LU const *lu2 = lu1->copy()->asLU();
+  ASSERT_NE(nullptr, lu2);
+  const ArgContainer& a1 = lu1->getArgs();
+  const ArgContainer& a2 = lu2->getArgs();
+  EXPECT_EQ(a1.size(), a2.size());
+  const OGNumeric* s1arg1 = a1[0];
+  const OGNumeric* s2arg1 = a2[0];
+  EXPECT_NE(s1arg1, s2arg1);
+  const OGRealMatrix* s1m = s1arg1->asOGRealMatrix();
+  const OGRealMatrix* s2m = s2arg1->asOGRealMatrix();
+  ASSERT_NE(nullptr, s1m);
+  ASSERT_NE(nullptr, s2m);
+  EXPECT_EQ(s1m->getData(), s2m->getData());
+  EXPECT_EQ(s1m->getRows(), s2m->getRows());
+  EXPECT_EQ(s1m->getCols(), s2m->getCols());
+  EXPECT_EQ(s1m->getDatalen(), s2m->getDatalen());
+  delete lu1;
+  delete lu2;
 }
 
 TEST(VirtualCopyTest, SELECTRESULT) {

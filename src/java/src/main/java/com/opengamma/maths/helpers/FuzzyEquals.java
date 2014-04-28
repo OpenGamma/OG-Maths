@@ -192,6 +192,21 @@ public class FuzzyEquals {
    */
   public static boolean ArrayFuzzyEquals(double[][] arr1, double[][] arr2)
   {
+    return ArrayFuzzyEquals(arr1, arr2, default_tolerance, default_tolerance);
+  }
+
+  /**
+   * Checks if two double precision floating point array of arrays are approximately "equal"
+   * Equal means the arrays have values the are considered fuzzy equals appearing in the same order and the arrays the the same dimension.
+   * @param arr1 the first value
+   * @param arr2 the second value
+   * @param maxabserror determines the minimum threshold for "equal" in terms of the two numbers being very small in magnitude.
+   * @param maxrelerror determines the minimum threshold for "equal" in terms of the relative magnitude of the numbers.
+   *  i.e. invariant of the magnitude of the numbers what is the maximum level of magnitude difference acceptable.
+   * @return true if they are considered equal, else false
+   */
+  public static boolean ArrayFuzzyEquals(double[][] arr1, double[][] arr2, double maxabserror, double maxrelerror)
+  {
     if (arr1.length != arr2.length)
     {
       return false;
@@ -203,7 +218,7 @@ public class FuzzyEquals {
       {
         return false;
       }
-      if (ArrayFuzzyEquals(arr1[k], arr2[k], default_tolerance, default_tolerance) == false)
+      if (ArrayFuzzyEquals(arr1[k], arr2[k], maxabserror, maxrelerror) == false)
       {
         return false;
       }

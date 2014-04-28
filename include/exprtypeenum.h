@@ -48,6 +48,7 @@ typedef enum
   PINV_ENUM            = 0X0125L ,
   TRANSPOSE_ENUM       = 0x0133L ,
   CTRANSPOSE_ENUM      = 0x0137L ,
+  LU_ENUM              = 0x0139L ,
 
 #include "exprenum.hh"
 } ExprType_t;

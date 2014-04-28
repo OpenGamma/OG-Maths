@@ -327,7 +327,7 @@ SVD::asSVD() const
 void
 SVD::debug_print() const
 {
-  cout << "SVD node (functionality not yet implemented)" << endl;
+  cout << "SVD node" << endl;
 }
 
 ExprType_t
@@ -335,6 +335,37 @@ SVD::getType() const
 {
   return SVD_ENUM;
 }
+
+/**
+ * LU node
+ */
+
+LU::LU(const OGNumeric* arg): OGUnaryExpr{arg} {}
+
+OGNumeric*
+LU::copy() const
+{
+  return new LU(_args[0]->copy());
+}
+
+const LU*
+LU::asLU() const
+{
+  return this;
+}
+
+void
+LU::debug_print() const
+{
+  cout << "LU node" << endl;
+}
+
+ExprType_t
+LU::getType() const
+{
+  return LU_ENUM;
+}
+
 
 /**
  * MTIMES node

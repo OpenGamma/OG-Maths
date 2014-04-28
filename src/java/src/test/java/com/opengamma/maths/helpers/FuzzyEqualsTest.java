@@ -93,16 +93,29 @@ public class FuzzyEqualsTest {
   @Test
   public void EqualsTest_ArrayOfArraysFuzzyEqualsDouble() {
 
-    double data[][] = {{ 1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0, 8.e0},{9.e0, 10.e0, 11.e0, 12.e0}};
-    double same[][] = {{ 1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0, 8.e0},{9.e0, 10.e0, 11.e0, 12.e0}};
-    double diffvalue[][] = {{ -1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0, 8.e0},{9.e0, 10.e0, 11.e0, 12.e0}};
-    double diffrowlen[][] = {{ 1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0},{9.e0, 10.e0, 11.e0, 12.e0}};
-    double diffrowcount[][] = {{ 1.0e0, 2.0e0, 3.0e0, 4.0e0 },{5.e0, 6.e0, 7.e0, 8.e0}};
+    double data[][] = { { 1.0e0, 2.0e0, 3.0e0, 4.0e0 }, { 5.e0, 6.e0, 7.e0, 8.e0 }, { 9.e0, 10.e0, 11.e0, 12.e0 } };
+    double same[][] = { { 1.0e0, 2.0e0, 3.0e0, 4.0e0 }, { 5.e0, 6.e0, 7.e0, 8.e0 }, { 9.e0, 10.e0, 11.e0, 12.e0 } };
+    double diffvalue[][] = { { -1.0e0, 2.0e0, 3.0e0, 4.0e0 }, { 5.e0, 6.e0, 7.e0, 8.e0 }, { 9.e0, 10.e0, 11.e0, 12.e0 } };
+    double diffrowlen[][] = { { 1.0e0, 2.0e0, 3.0e0, 4.0e0 }, { 5.e0, 6.e0, 7.e0 }, { 9.e0, 10.e0, 11.e0, 12.e0 } };
+    double diffrowcount[][] = { { 1.0e0, 2.0e0, 3.0e0, 4.0e0 }, { 5.e0, 6.e0, 7.e0, 8.e0 } };
 
     assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffvalue));
     assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffrowlen));
     assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffrowcount));
     assertTrue(FuzzyEquals.ArrayFuzzyEquals(data, same));
+
+    assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffvalue, FuzzyEquals.getDefaultTolerance(), FuzzyEquals.getDefaultTolerance()));
+    assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffrowlen, FuzzyEquals.getDefaultTolerance(), FuzzyEquals.getDefaultTolerance()));
+    assertFalse(FuzzyEquals.ArrayFuzzyEquals(data, diffrowcount, FuzzyEquals.getDefaultTolerance(), FuzzyEquals.getDefaultTolerance()));
+    assertTrue(FuzzyEquals.ArrayFuzzyEquals(data, same, FuzzyEquals.getDefaultTolerance(), FuzzyEquals.getDefaultTolerance()));
+
+    // same value as it trips the return true on "difference less than abs tol" branch
+    assertTrue(FuzzyEquals.ArrayFuzzyEquals(new double[][] { { FuzzyEquals.getEps() } }, new double[][] { { 2.e0 * FuzzyEquals.getEps() } }, FuzzyEquals.getDefaultTolerance(),
+        FuzzyEquals.getDefaultTolerance()));
+
+    // same value as it trips the return true on "difference less than relative error" branch
+    assertTrue(FuzzyEquals.ArrayFuzzyEquals(new double[][] { { 1.e308 } }, new double[][] { { 9.99999999999999e0 * 1.e307 } }, FuzzyEquals.getDefaultTolerance(), FuzzyEquals.getDefaultTolerance()));
+
   }
 
   @Test

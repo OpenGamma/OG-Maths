@@ -9,6 +9,7 @@ package com.opengamma.maths;
 import com.opengamma.maths.datacontainers.OGNumeric;
 import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.datacontainers.other.ComplexArrayContainer;
+import com.opengamma.maths.datacontainers.other.OGLUResult;
 import com.opengamma.maths.datacontainers.other.OGSVDResult;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
@@ -16,6 +17,7 @@ import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.materialisers.Materialisers;
 import com.opengamma.maths.nativeloader.NativeLibraries;
 import com.opengamma.maths.nodes.CTRANSPOSE;
+import com.opengamma.maths.nodes.LU;
 import com.opengamma.maths.nodes.MTIMES;
 import com.opengamma.maths.nodes.NEGATE;
 import com.opengamma.maths.nodes.NORM2;
@@ -117,6 +119,10 @@ public final class DOGMA {
 
   public static OGSVDResult svd(OGNumeric arg0) {
     return new OGSVDResult(new SVD(arg0));
+  }
+  
+  public static OGLUResult lu(OGNumeric arg0) {
+    return new OGLUResult(new LU(arg0));
   }
 
   // materialisers

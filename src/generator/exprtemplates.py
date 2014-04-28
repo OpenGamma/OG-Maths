@@ -181,6 +181,7 @@ class TRANSPOSE;
 class CTRANSPOSE;
 class SVD;
 class MTIMES;
+class LU;
 
 %(fwd_decls)s
 
@@ -203,6 +204,7 @@ class OGNumeric: private Uncopyable
     virtual const CTRANSPOSE* asCTRANSPOSE() const;
     virtual const SVD* asSVD() const;
     virtual const MTIMES* asMTIMES() const;
+    virtual const LU* asLU() const;
 %(cast_methods)s
     virtual const OGTerminal* asOGTerminal() const;
     virtual const OGRealScalar* asOGRealScalar() const;
