@@ -29,7 +29,17 @@ class __NODE##TEST: public UnaryOpTest<__NODE>{};\
 TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
   CheckUnary<__NODE> * impl = GetParam();\
   impl->execute();\
-  ASSERT_TRUE(impl->resultCorrect());\
+  bool result = impl->resultCorrect();\
+  EXPECT_TRUE(result);\
+  if(result==false)\
+  {\
+    cout << "_______________________________________" << std::endl;\
+    cout << "Test failure:" << std::endl << "Expected:" << std::endl;\
+    impl->getResultPair()->second->asOGTerminal()->debug_print();\
+    cout << "Calculated:" << std::endl;\
+    impl->getResultPair()->first->asOGTerminal()->debug_print();\
+    cout << "_______________________________________" << std::endl;\
+  }\
   delete impl;\
 }
 
@@ -41,7 +51,17 @@ class __NODE##TEST: public BinaryOpTest<__NODE>{};\
 TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
   CheckBinary<__NODE> * impl = GetParam();\
   impl->execute();\
-  ASSERT_TRUE(impl->resultCorrect());\
+  bool result = impl->resultCorrect();\
+  EXPECT_TRUE(result);\
+  if(result==false)\
+  {\
+    cout << "_______________________________________" << std::endl;\
+    cout << "Test failure:" << std::endl << "Expected:" << std::endl;\
+    impl->getResultPair()->second->asOGTerminal()->debug_print();\
+    cout << "Calculated:" << std::endl;\
+    impl->getResultPair()->first->asOGTerminal()->debug_print();\
+    cout << "_______________________________________" << std::endl;\
+  }\
   delete impl;\
 }
 

@@ -40,6 +40,24 @@ OGNumeric::asNORM2() const
   return nullptr;
 }
 
+const PINV*
+OGNumeric::asPINV() const
+{
+  return nullptr;
+}
+
+const TRANSPOSE*
+OGNumeric::asTRANSPOSE() const
+{
+  return nullptr;
+}
+
+const CTRANSPOSE*
+OGNumeric::asCTRANSPOSE() const
+{
+  return nullptr;
+}
+
 const SVD*
 OGNumeric::asSVD() const
 {

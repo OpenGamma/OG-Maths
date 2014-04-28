@@ -18,10 +18,10 @@ typedef enum
 
   // Type unknown
   UNKNOWN_EXPR_ENUM = 0x0000L ,
- 
+
   // Is a node type mask
-  IS_NODE_MASK = 0xFF00L,  
-  
+  IS_NODE_MASK = 0xFF00L,
+
   /*
   * Data container tokens, low 8 bits only, max prime 251_d = 0x00FB
   */
@@ -45,6 +45,10 @@ typedef enum
   NORM2_ENUM           = 0X0115L ,
   SVD_ENUM             = 0X0119L ,
   MTIMES_ENUM          = 0X011BL ,
+  PINV_ENUM            = 0X0125L ,
+  TRANSPOSE_ENUM       = 0x0133L ,
+  CTRANSPOSE_ENUM      = 0x0137L ,
+
 #include "exprenum.hh"
 } ExprType_t;
 

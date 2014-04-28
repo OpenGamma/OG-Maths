@@ -29,7 +29,6 @@ nodes = [ UnimplementedUnary('ABS'),
           UnimplementedUnary('CONJ'),
           UnimplementedUnary('COS'),
           UnimplementedUnary('COSH'),
-          UnimplementedUnary('CTRANSPOSE'),
           UnimplementedUnary('DIAG'),
           UnimplementedUnary('EIG'),
           UnimplementedUnary('ERF'),
@@ -51,7 +50,6 @@ nodes = [ UnimplementedUnary('ABS'),
           UnimplementedUnary('SINH'),
           UnimplementedUnary('SQRT'),
           UnimplementedUnary('TAN'),
-          UnimplementedUnary('TRANSPOSE'),
           UnimplementedUnary('WILKINSON'),
           UnimplementedBinary('HORZCAT'),
           UnimplementedBinary('MLDIVIDE'),
@@ -65,9 +63,12 @@ nodes = [ UnimplementedUnary('ABS'),
 # The list of nodes to generate headers and wiring for, but not the implementations
 custom_nodes = [
                 UnaryExpressionRunner('NORM2', 'NORM2_ENUM'),
+                UnaryExpressionRunner('PINV', 'PINV_ENUM'),
                 UnaryExpressionRunner('SVD', 'SVD_ENUM'),
                 SelectResultRunner('SELECTRESULT', 'SELECTRESULT_ENUM'),
-                BinaryExpressionRunner('MTIMES','MTIMES_ENUM')
+                BinaryExpressionRunner('MTIMES','MTIMES_ENUM'),
+                UnaryExpressionRunner('TRANSPOSE','TRANSPOSE_ENUM'),
+                UnaryExpressionRunner('CTRANSPOSE','CTRANSPOSE_ENUM')
                ]
 
 # The list of terminals

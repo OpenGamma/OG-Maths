@@ -107,6 +107,12 @@ OGTerminal::getConvertTo() const
 bool
 OGTerminal::mathsequals(const OGTerminal * other) const
 {
+  return this->mathsequals(other, FuzzyEquals_default_maxabserror, FuzzyEquals_default_maxrelerror);
+}
+
+bool
+OGTerminal::mathsequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+{
   OGTerminal * thisconv = nullptr;
   OGTerminal * otherconv = nullptr;
   bool ret = false;
@@ -124,7 +130,7 @@ OGTerminal::mathsequals(const OGTerminal * other) const
     otherconv = other->asFullOGComplexMatrix();
     thisconv = this->asFullOGComplexMatrix();
   }
-  if(thisconv->fuzzyequals(otherconv))
+  if(thisconv->fuzzyequals(otherconv, maxabserror, maxrelerror))
   {
     ret = true;
   }
@@ -232,11 +238,18 @@ template<typename T>
 bool
 OGScalar<T>::fuzzyequals(const OGTerminal * other) const
 {
+  return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
+}
+
+template<typename T>
+bool
+OGScalar<T>::fuzzyequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+{
   if(this->getType()!=other->getType())
   {
     return false;
   }
-  if(!SingleValueFuzzyEquals(static_cast<const OGScalar *>(other)->getValue(),this->_value))
+  if(!SingleValueFuzzyEquals(static_cast<const OGScalar *>(other)->getValue(),this->_value,maxabserror,maxrelerror))
   {
     return false;
   }
@@ -300,6 +313,15 @@ real16**
 OGRealScalar::toReal16ArrayOfArrays() const
 {
   return this->toArrayOfArrays();
+}
+
+complex16**
+OGRealScalar::toComplex16ArrayOfArrays() const
+{
+  complex16 ** tmp = new complex16 * [1];
+  tmp[0] = new complex16[1];
+  tmp[0][0] = this->getValue();
+  return tmp;
 }
 
 OGNumeric*
@@ -600,9 +622,16 @@ template<typename T>
 bool
 OGArray<T>::fuzzyequals(const OGTerminal * other) const
 {
+  return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
+}
+
+template<typename T>
+bool
+OGArray<T>::fuzzyequals(const OGTerminal * other,real16 maxabserror,real16 maxrelerror) const
+{
   if(!fundamentalsEqual(other)) return false;
   const OGArray * typetwiddle = static_cast<const OGArray *>(other);
-  if(!ArrayFuzzyEquals(typetwiddle->getData(),this->getData(),this->getDatalen()))
+  if(!ArrayFuzzyEquals(typetwiddle->getData(),this->getData(),this->getDatalen(),maxabserror,maxrelerror))
   {
     return false;
   }
@@ -735,6 +764,7 @@ void
 OGMatrix<T>::debug_print() const
 {
   cout << std::endl << "OGMatrix<T>:" << std::endl;
+  cout << std::endl << "OWNING STATUS:" << this->getDataAccess() << std::endl;
   int rows = this->getRows();
   for(int i = 0 ; i < rows; i++)
   {
@@ -1309,7 +1339,14 @@ template<typename T>
 bool
 OGSparseMatrix<T>::fuzzyequals(const OGTerminal * other) const
 {
-  if(!OGArray<T>::fuzzyequals(other))
+  return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
+}
+
+template<typename T>
+bool
+OGSparseMatrix<T>::fuzzyequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+{
+  if(!OGArray<T>::fuzzyequals(other,maxabserror,maxrelerror))
   {
     return false;
   }
@@ -1498,13 +1535,6 @@ OGComplexSparseMatrix::createComplexOwningCopy() const
 
 
 // Concrete template factory for dense matrices
-
-template<typename T>
-OGTerminal * makeConcreteDenseMatrix(T * data, int rows, int cols, DATA_ACCESS access)
-{
-  throw rdag_error("Concrete type unknown");
-}
-
 template<>
 OGTerminal * makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access)
 {
@@ -1517,5 +1547,17 @@ OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_
   return new OGComplexMatrix(data, rows, cols, access);
 }
 
+// Concrete template factory for scalars
+template<>
+OGTerminal * makeConcreteScalar(real16 data)
+{
+  return new OGRealScalar(data);
+}
+
+template<>
+OGTerminal * makeConcreteScalar(complex16 data)
+{
+  return new OGComplexScalar(data);
+}
 
 } // namespace librdag

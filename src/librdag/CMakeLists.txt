@@ -24,11 +24,15 @@ set(RDAG_SOURCES containers.cc
                  lapack.cc
                  numericbase.cc
                  numerictypes.cc
+                 runtree.cc
                  terminal.cc
+                 runners/ctransposerunner.cc
+                 runners/mtimesrunner.cc
+                 runners/norm2runner.cc
+                 runners/pinvrunner.cc
                  runners/selectresultrunner.cc
                  runners/svdrunner.cc
-                 runners/norm2runner.cc
-                 runners/mtimesrunner.cc
+                 runners/transposerunner.cc
                  ${RDAG_GENERATED})
 
 include(${LAPACK_BUILDINFO})

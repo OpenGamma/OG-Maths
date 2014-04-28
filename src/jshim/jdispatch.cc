@@ -144,9 +144,11 @@ void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<complex16> const 
     this->setRows(1);
     this->setCols(1);
 }
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16> const SUPPRESS_UNUSED  *thing)
+void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16> const *thing)
 {
-    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16>)");
+    this->setData(thing->toComplex16ArrayOfArrays());
+    this->setRows(1);
+    this->setCols(1);
 }
 void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int> const SUPPRESS_UNUSED *thing)
 {

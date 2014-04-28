@@ -176,6 +176,9 @@ class OGExpr;
 class COPY;
 class SELECTRESULT;
 class NORM2;
+class PINV;
+class TRANSPOSE;
+class CTRANSPOSE;
 class SVD;
 class MTIMES;
 
@@ -195,6 +198,9 @@ class OGNumeric: private Uncopyable
     virtual const COPY* asCOPY() const;
     virtual const SELECTRESULT* asSELECTRESULT() const;
     virtual const NORM2* asNORM2() const;
+    virtual const PINV* asPINV() const;
+    virtual const TRANSPOSE* asTRANSPOSE() const;
+    virtual const CTRANSPOSE* asCTRANSPOSE() const;
     virtual const SVD* asSVD() const;
     virtual const MTIMES* asMTIMES() const;
 %(cast_methods)s

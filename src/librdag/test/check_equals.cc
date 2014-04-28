@@ -48,7 +48,7 @@ TEST(EqualsTest, SingleValueFuzzyEqualsReal16) {
   ASSERT_TRUE(SingleValueFuzzyEquals(neg0.d,neg0.d));
 
   // same value as it trips the return true on "difference less than abs tol" branch
-  ASSERT_TRUE(SingleValueFuzzyEquals(DBL_EPSILON,2.e0*DBL_EPSILON));
+  ASSERT_TRUE(SingleValueFuzzyEquals(1.1e0*DBL_EPSILON,2.e0*DBL_EPSILON));
 
   // same value as it trips the return true on "difference less than relative error" branch
   ASSERT_TRUE(SingleValueFuzzyEquals(1.e308,9.99999999999999e0*1.e307));

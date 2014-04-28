@@ -15,6 +15,9 @@
 using namespace std;
 namespace librdag {
 
+const real16 FuzzyEquals_default_maxabserror = std::numeric_limits<real16>::epsilon();
+const real16 FuzzyEquals_default_maxrelerror = 10*std::numeric_limits<real16>::epsilon();
+
 template <typename T> bool ArrayBitEquals(T * arr1, T * arr2, int count)
 {
   assert(count>=0);

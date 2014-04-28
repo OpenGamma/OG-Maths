@@ -98,6 +98,37 @@ class NORM2: public OGUnaryExpr
 };
 
 
+class PINV: public OGUnaryExpr
+{
+  public:
+    PINV(const OGNumeric* arg);
+    virtual OGNumeric* copy() const override;
+    virtual const PINV* asPINV() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+};
+
+class TRANSPOSE: public OGUnaryExpr
+{
+  public:
+    TRANSPOSE(const OGNumeric* arg);
+    virtual OGNumeric* copy() const override;
+    virtual const TRANSPOSE* asTRANSPOSE() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+};
+
+class CTRANSPOSE: public OGUnaryExpr
+{
+  public:
+    CTRANSPOSE(const OGNumeric* arg);
+    virtual OGNumeric* copy() const override;
+    virtual const CTRANSPOSE* asCTRANSPOSE() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+};
+
+
 class SVD: public OGUnaryExpr
 {
   public:
