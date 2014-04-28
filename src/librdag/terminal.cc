@@ -1535,13 +1535,6 @@ OGComplexSparseMatrix::createComplexOwningCopy() const
 
 
 // Concrete template factory for dense matrices
-
-template<typename T>
-OGTerminal * makeConcreteDenseMatrix(T * data, int rows, int cols, DATA_ACCESS access)
-{
-  throw rdag_error("Concrete type unknown");
-}
-
 template<>
 OGTerminal * makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access)
 {
@@ -1555,13 +1548,6 @@ OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_
 }
 
 // Concrete template factory for scalars
-
-template<typename T>
-OGTerminal * makeConcreteScalar(T data)
-{
-  throw rdag_error("Concrete type unknown");
-}
-
 template<>
 OGTerminal * makeConcreteScalar(real16 data)
 {
