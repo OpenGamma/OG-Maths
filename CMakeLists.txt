@@ -257,6 +257,10 @@ else()
                     COMMENT "Generating Java test coverage report")
 endif()
 
+# Add testing of blob combiner
+add_test(NAME CombineJarvester
+         WORKING_DIRECTORY ${og_maths_SOURCE_DIR}/combine
+         COMMAND ${PYTHON_EXECUTABLE} test_combine.py)
 
 # Installation to local maven repository
 add_custom_target(maven_install
