@@ -9,7 +9,7 @@ the current platform. Version info is a yaml file containing
 the revision number, build number, version number, project name,
 and list of artifacts."""
 
-import platform, sys, subprocess
+import platform, sys, subprocess, time
 from yaml import load, dump
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -57,7 +57,9 @@ def generate_verinfo(project, version, revision, lapack_verinfo_file, buildnumbe
         pass
     d = { 'project': 'OG-Maths', 'revision': revision, 'version': version, \
           'platforms': [platform_code()], 'artifacts': artifacts,
-          'subprojects': subprojects, 'buildnumber': buildnumber }
+          'subprojects': subprojects, 'buildnumber': buildnumber,
+          'localtime': time.strftime('%Y/%m/%d %H:%M:%S'),
+          'timestamp': time.time() }
     return d
 
 def main():
