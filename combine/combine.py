@@ -110,19 +110,25 @@ def construct_combined_verinfo(verinfos, buildnumber):
     for s in ref['subprojects']:
         newverinfo['subprojects'][s['project']] = s['revision']
 
-    # Add platform build numbers
-    # First some space to put the build numbers of sub projects
-    subprojects = {}
-    for s in ref['subprojects']:
-        subprojects[s['project']] = {}
-    # Now the empty dict for build numbers
-    newverinfo['buildnumbers'] = { 'subprojects': subprojects }
-    # And populate these with actual numbers
-    for blob, verinfo in verinfos.iteritems():
-        platform = verinfo['platforms'][0]
-        newverinfo['buildnumbers'][platform] = verinfo['buildnumber']
-        for subproject in verinfo['subprojects']:
-            newverinfo['buildnumbers']['subprojects'][subproject['project']][platform] = subproject['buildnumber']
+    # Add the timestamps, localtimes, and buildnumbers keys - these consist of all of the
+    # values from the constituent verinfos
+    def construct_combined_key(srckey):
+        ckey = '%ss' % srckey
+        # Create a dict for the combined keys to be stored
+        subprojects = {}
+        for s in ref['subprojects']:
+            subprojects[s['project']] = {}
+        newverinfo[ckey] = { 'subprojects': subprojects }
+        # Populate the combined key's dict
+        for blob, verinfo in verinfos.iteritems():
+            platform = verinfo['platforms'][0]
+            newverinfo[ckey][platform] = verinfo[srckey]
+            for subproject in verinfo['subprojects']:
+                newverinfo[ckey]['subprojects'][subproject['project']][platform] = subproject[srckey]
+
+    construct_combined_key('buildnumber')
+    construct_combined_key('timestamp')
+    construct_combined_key('localtime')
     
     # Add the build number of the combined blob
     newverinfo['buildnumber'] = int(buildnumber)
