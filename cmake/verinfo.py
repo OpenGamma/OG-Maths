@@ -7,7 +7,7 @@
 """This tool creates a version info file for an OG-Maths build on
 the current platform. Version info is a yaml file containing
 the revision number, build number, version number, project name,
-and list of artifacts."""
+timestamp/local time, and list of artifacts."""
 
 import platform, sys, subprocess, time
 from yaml import load, dump
