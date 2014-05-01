@@ -18,11 +18,11 @@ endif(APPLE OR WIN32)
 project (og_maths)
 
 # check command line is sensible
-if(LAPACK_EXPORT)
-  set(LAPACK_BUILDINFO ${LAPACK_EXPORT})
+if(LAPACK_BUILDDIR)
+  set(LAPACK_BUILDINFO ${LAPACK_BUILDDIR}/LAPACK_EXPORTS.cmake)
 else()
 #This is a temporary thing. Expect later to add in ExternalProject_add to get the code!!
-  message( FATAL_ERROR "LAPACK_EXPORT must be defined on the command line. e.g. -DLAPACK_EXPORT=\"/path/to/LAPACK_EXPORT.cmake\"" )
+  message( FATAL_ERROR "LAPACK_BUILDDIR must be defined: e.g. -DLAPACK_BUILDDIR=\"/path/to/OG-Lapack/build\"" )
 endif()
 
 
@@ -55,12 +55,23 @@ set(maven_VERSION_PATCH 0)
 set(maven_VERSION
   ${maven_VERSION_MAJOR}.${maven_VERSION_MINOR}.${maven_VERSION_PATCH})
 
+# Construct platform code
+if(WIN32)
+  set(PLATFORM_CODE win)
+else()
+  if(APPLE)
+    set(PLATFORM_CODE osx)
+  else()
+    set(PLATFORM_CODE lnx)
+  endif()
+endif()
+
 # JAR VARIABLES
 set(JARDIR ${CMAKE_BINARY_DIR}/jars)
 
 set(JAR_VERSION "${maven_VERSION}-SNAPSHOT")
 
-set(JAR_NAME_NO_EXTN "og-maths-${JAR_VERSION}" )
+set(JAR_NAME_NO_EXTN "og-maths-${PLATFORM_CODE}-${JAR_VERSION}" )
 set(JAR_SOURCES_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-sources" )
 set(JAR_TEST_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-tests" )
 set(JAR_JAVADOC_NAME_NO_EXTN "${JAR_NAME_NO_EXTN}-javadoc" )
@@ -198,17 +209,11 @@ endif()
 set(BIN_INCLUDE_DIR ${CMAKE_BINARY_DIR}/include)
 
 # Add version info file
-if(WIN32)
-  set(PLATFORM_CODE win)
-else()
-  if(APPLE)
-    set(PLATFORM_CODE osx)
-  else()
-    set(PLATFORM_CODE lnx)
-  endif()
+if(NOT DEFINED BUILDNUMBER)
+  set(BUILDNUMBER local)
 endif()
 add_custom_target(verinfo
-                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/lib/og-maths-${PLATFORM_CODE}-sha1.txt
+                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/verinfo.yaml ${JAR_VERSION} ${LAPACK_BUILDDIR}/verinfo.yaml ${BUILDNUMBER}
                   COMMENT "Generating version info")
 
 add_subdirectory(src)
@@ -252,6 +257,10 @@ else()
                     COMMENT "Generating Java test coverage report")
 endif()
 
+# Add testing of blob combiner
+add_test(NAME CombineJarvester
+         WORKING_DIRECTORY ${og_maths_SOURCE_DIR}/combine
+         COMMAND ${PYTHON_EXECUTABLE} test_combine.py)
 
 # Installation to local maven repository
 add_custom_target(maven_install
