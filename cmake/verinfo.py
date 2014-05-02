@@ -9,7 +9,7 @@ the current platform. Version info is a yaml file containing
 the revision number, build number, version number, project name,
 timestamp/local time, and list of artifacts."""
 
-import platform, sys, subprocess, time
+import sys, subprocess, time
 from buildutils import platform_code
 from yaml import load, dump
 try:
