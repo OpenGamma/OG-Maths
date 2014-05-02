@@ -393,8 +393,12 @@ function(add_jar _TARGET_NAME)
                         DEPENDS ${jar_native_libraries} ${_add_jar_DEPENDS}
                         COMMENT "Copying native libraries to the build directory")
       set_platform_code(NATIVE_PLATFORM)
+      set(_copyrtl_args)
+      if (GCC_LIB_FOLDER)
+        set(_copyrtl_args "-l ${GCC_LIB_FOLDER}")
+      endif()
       add_custom_target(copyrtl
-                        ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/syslibs.py -o ${_dest}/${NATIVE_PLATFORM}
+                        ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/syslibs.py -o ${_dest}/${NATIVE_PLATFORM} ${_copyrtl_args}
                         COMMENT "Copying GCC runtime libraries to the build directory"
                         DEPENDS copylibs)
       list(APPEND _JAVA_NATIVE_FILES lib)
