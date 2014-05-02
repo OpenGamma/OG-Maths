@@ -4,9 +4,12 @@
 # Please see distribution for license.
 #
 
-"""Copies the GCC runtime libraries into the jar libraries build folder."""
+"""Copies the GCC runtime libraries into the jar libraries build folder.
 
-import argparse, os, shutil, sys
+Subsequently this program fixes the linkage of libraries in the JAR folder to
+use an appropriate rpath on Linux and OS X."""
+
+import argparse, os, shutil, subprocess, sys
 from buildutils import platform_code
 
 libs = {}
@@ -29,6 +32,19 @@ def get_lib_folder(args):
     p = platform_code()
     return args.lib_location or os.environ.get('GCC_LIB_FOLDER') or default_gcc_lib_folder[p]
 
+def fix_linux_linkage(args):
+    files = os.listdir(args.output)
+    for f in files:
+        print 'Patching RUNPATH to $ORIGIN for %s' % f
+        process = subprocess.Popen(['patchelf', '--set-rpath', '$ORIGIN', f], cwd=args.output)
+        out, err = process.communicate()
+        retcode = process.poll()
+        if retcode:
+            raise RuntimeError('patchelf of %s failed. Retcode: %s, output: %s' % (f, retcode, out))
+
+def fix_osx_linkage(args):
+    raise NotImplementedError('OS X linkage fixing is not yet implemented.')
+
 def main(args):
     gcc_lib_folder = get_lib_folder(args)
     print "GCC libraries are at %s" % gcc_lib_folder
@@ -38,6 +54,10 @@ def main(args):
         dest = os.path.join(args.output, lib)
         print "Copying %s to %s" % (src, dest)
         shutil.copyfile(src, dest)
+    if p == 'lnx':
+        fix_linux_linkage(args)
+    elif p == 'osx':
+        fix_osx_linkage(args)
 
 if __name__ == '__main__':
     sys.exit(main(get_parser().parse_args()))
