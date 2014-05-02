@@ -17,6 +17,7 @@ set(JAVA_FILES
     DOGMA.java
     nodes/COPY.java
     nodes/CTRANSPOSE.java
+    nodes/LU.java
     nodes/MTIMES.java
     nodes/NEGATE.java
     nodes/NODE.java
@@ -56,6 +57,7 @@ set(JAVA_FILES
     datacontainers/other/OGResult.java
     datacontainers/other/ComplexArrayContainer.java
     datacontainers/other/OGSVDResult.java
+    datacontainers/other/OGLUResult.java
     datacontainers/lazy/OGExpr.java
     datacontainers/lazy/OGExprVariadicReturn.java
     datacontainers/OGNumeric.java

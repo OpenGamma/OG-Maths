@@ -33,6 +33,7 @@ set(RDAG_SOURCES containers.cc
                  runners/selectresultrunner.cc
                  runners/svdrunner.cc
                  runners/transposerunner.cc
+                 runners/lurunner.cc
                  ${RDAG_GENERATED})
 
 include(${LAPACK_BUILDINFO})

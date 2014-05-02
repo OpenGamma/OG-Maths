@@ -39,6 +39,17 @@ extern "C"
 #endif
 void F77FUNC(zscal)(int * N, complex16 * DA, complex16* DX, int * INCX);
 
+// Standard xSWAP
+#ifdef __cplusplus
+extern "C" 
+#endif
+void F77FUNC(dswap)(int * N, real16 * DX, int * INCX, real16 * DY, int * INCY);
+#ifdef __cplusplus
+extern "C" 
+#endif
+void F77FUNC(zswap)(int * N, complex16 * DX, int * INCX, complex16 * DY, int * INCY);
+
+
 // Standard xGEMV
 #ifdef __cplusplus
 extern "C" 
@@ -91,6 +102,16 @@ void F77FUNC(dtrcon)(char * NORM, char * UPLO, char * DIAG, int * N, real16 * A,
 extern "C" 
 #endif
 void F77FUNC(ztrcon)(char * NORM, char * UPLO, char * DIAG, int * N, complex16 * A, int * LDA, real16 * RCOND, complex16 * WORK, real16 * IWORK, int * INFO);
+
+// LUP decomposition
+#ifdef __cplusplus
+extern "C" 
+#endif
+void F77FUNC(dgetrf)(int * M, int * N, real16 * A, int * LDA, int * IPIV, int *INFO);
+#ifdef __cplusplus
+extern "C" 
+#endif
+void F77FUNC(zgetrf)(int * M, int * N, complex16 * A, int * LDA, int * IPIV, int *INFO);
 
 
 // solves a triangular system of the form : A * X = B  or  A**T * X = B

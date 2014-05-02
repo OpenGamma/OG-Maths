@@ -41,7 +41,6 @@ nodes = [ UnimplementedUnary('ABS'),
           UnimplementedUnary('IMAG'),
           UnimplementedUnary('INVHILB'),
           UnimplementedUnary('LOG'),
-          UnimplementedUnary('LU'),
           PrefixOpRunner('NEGATE', 'NEGATE_ENUM', '-'),
           UnimplementedUnary('NORMCDF'),
           UnimplementedUnary('REAL'),
@@ -68,7 +67,8 @@ custom_nodes = [
                 SelectResultRunner('SELECTRESULT', 'SELECTRESULT_ENUM'),
                 BinaryExpressionRunner('MTIMES','MTIMES_ENUM'),
                 UnaryExpressionRunner('TRANSPOSE','TRANSPOSE_ENUM'),
-                UnaryExpressionRunner('CTRANSPOSE','CTRANSPOSE_ENUM')
+                UnaryExpressionRunner('CTRANSPOSE','CTRANSPOSE_ENUM'),
+                UnaryExpressionRunner('LU','LU_ENUM'),
                ]
 
 # The list of terminals

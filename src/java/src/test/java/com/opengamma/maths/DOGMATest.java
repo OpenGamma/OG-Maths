@@ -10,6 +10,7 @@ import static com.opengamma.maths.DOGMA.C;
 import static com.opengamma.maths.DOGMA.D;
 import static com.opengamma.maths.DOGMA.ctranspose;
 import static com.opengamma.maths.DOGMA.disp;
+import static com.opengamma.maths.DOGMA.lu;
 import static com.opengamma.maths.DOGMA.minus;
 import static com.opengamma.maths.DOGMA.mtimes;
 import static com.opengamma.maths.DOGMA.norm2;
@@ -30,6 +31,7 @@ import com.opengamma.maths.datacontainers.OGNumeric;
 import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
+import com.opengamma.maths.datacontainers.other.OGLUResult;
 import com.opengamma.maths.datacontainers.other.OGSVDResult;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
@@ -133,9 +135,9 @@ public class DOGMATest {
     mat = new OGComplexDenseMatrix(new double[] { 1, -10, 2, 20, 3, -30 }, 1, 3);
     assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, -20, 3, 30 }, 3, 1).mathsequals(toOGTerminal(ctranspose(mat))));
     mat = new OGComplexDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } }, new double[][] { { -10, 20, -30 }, { 40, -50, 60 }, { -70, 80, -90 }, { 100, -110, 120 } });
-    assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, -20, 3, 30, 4, -40, 5, 50, 6, -60, 7, 70, 8, -80, 9, 90, 10, -100, 11, 110, 12, -120 }, 3, 4).mathsequals(toOGTerminal(ctranspose(mat))));
+    assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, -20, 3, 30, 4, -40, 5, 50, 6, -60, 7, 70, 8, -80, 9, 90, 10, -100, 11, 110, 12, -120 }, 3, 4)
+        .mathsequals(toOGTerminal(ctranspose(mat))));
   }
-
 
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void PlusBadDataTest() {
@@ -193,6 +195,13 @@ public class DOGMATest {
     OGTerminal mat = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } });
     OGSVDResult res = svd(mat);
     assertTrue(mat.mathsequals(toOGTerminal(mtimes(res.getU(), res.getS(), res.getVT())), 1e-14, 1e-14));
+  }
+
+  @Test
+  public void LUTest() {
+    OGTerminal mat = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, -5, 6 }, { 7, 8, -9 }, { -10, 11, -12 }, { -13, -14, -15 } });
+    OGLUResult res = lu(mat);
+    assertTrue(mat.mathsequals(toOGTerminal(mtimes(res.getL(), res.getU())), 1e-14, 1e-14));
   }
 
   @Test

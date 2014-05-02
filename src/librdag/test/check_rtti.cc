@@ -24,6 +24,10 @@ void check_rtti(OGNumeric* node, string name)
   CHECK_CAST(MTIMES);
   CHECK_CAST(NEGATE);
   CHECK_CAST(SVD);
+  CHECK_CAST(LU);
+  CHECK_CAST(PINV);
+  CHECK_CAST(TRANSPOSE);
+  CHECK_CAST(CTRANSPOSE);
   CHECK_CAST(SELECTRESULT);
   CHECK_CAST(OGRealScalar);
   CHECK_CAST(OGComplexScalar);
@@ -106,6 +110,26 @@ TEST_F(RTTIBinaryTest, TestMTIMES) {
 TEST_F(RTTIUnaryTest, TestNEGATE) {
   node = new NEGATE(arg);
   check_rtti(node, "NEGATE");
+}
+
+TEST_F(RTTIUnaryTest, TestLU) {
+  node = new LU(arg);
+  check_rtti(node, "LU");
+}
+
+TEST_F(RTTIUnaryTest, TestPINV) {
+  node = new PINV(arg);
+  check_rtti(node, "PINV");
+}
+
+TEST_F(RTTIUnaryTest, TestTRANSPOSE) {
+  node = new TRANSPOSE(arg);
+  check_rtti(node, "TRANSPOSE");
+}
+
+TEST_F(RTTIUnaryTest, TestCTRANSPOSE) {
+  node = new CTRANSPOSE(arg);
+  check_rtti(node, "CTRANSPOSE");
 }
 
 // Not using the fixture because SELECTRESULT requires specific arg types

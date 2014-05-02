@@ -70,6 +70,12 @@ OGNumeric::asMTIMES() const
   return nullptr;
 }
 
+const LU*
+OGNumeric::asLU() const
+{
+  return nullptr;
+}
+
 const OGExpr*
 OGNumeric::asOGExpr() const
 {
