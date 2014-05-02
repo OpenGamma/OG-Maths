@@ -24,7 +24,7 @@ template<typename T> void lu_dense_runner(RegContainer& reg, const OGMatrix<T>* 
 {
   int m = arg->getRows();
   int n = arg->getCols();
-  int lda = m > 1 ? m : 1;
+  int lda = m;
   int minmn = m > n ? n : m;
   int mn = m * n;
   int info = 0;
