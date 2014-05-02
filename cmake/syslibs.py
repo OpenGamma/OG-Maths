@@ -43,7 +43,41 @@ def fix_linux_linkage(args):
             raise RuntimeError('patchelf of %s failed. Retcode: %s, output: %s' % (f, retcode, out))
 
 def fix_osx_linkage(args):
-    raise NotImplementedError('OS X linkage fixing is not yet implemented.')
+    libdir = args.output
+    # Get the install name of each library
+    install_names = {}
+    for name in os.listdir(libdir):
+        install_names[name] = subprocess.check_output(['otool','-D',name], cwd=libdir).split()[1]
+
+    # Compute the new install name of each library
+    new_install_names = {}
+    for name, old_install_name in install_names.iteritems():
+        install_name = '@loader_path/%s' % old_install_name.split('/')[-1]
+        new_install_names[name] = (old_install_name, install_name)
+
+    # Change the install name of each library
+    for name in new_install_names.keys():
+        old, new = new_install_names[name]
+        print 'Changing install name of %s from %s to %s' % (name, old, new)
+        subprocess.check_output(['install_name_tool','-id','%s' % new, name], cwd=libdir)
+
+    # Change the linkage of each library to the new install names
+    for lib in install_names.keys():
+        linkage = subprocess.check_output(['otool','-L',lib], cwd=libdir).split('\n')
+        dylines = [ l.strip().split()[0] for l in linkage if l.find('compatibility') != -1 ]
+        dymap = {}
+        for l in dylines:
+            k = l.split('/')[-1]
+            dymap[k] = l
+        for name, old in dymap.iteritems():
+            try:
+                new = new_install_names[name][1]
+            except KeyError:
+                # Because we're not changing system lib names, not every lib the library links
+                # to will be found
+                continue
+            print 'Changing linkage of %s from %s to %s' % (lib, old, new)
+            subprocess.check_output(['install_name_tool','-change','%s' % old, '%s' % new, lib], cwd=libdir)
 
 def main(args):
     gcc_lib_folder = get_lib_folder(args)
