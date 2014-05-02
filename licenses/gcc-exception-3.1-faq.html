@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<!-- start of server/head-include-1.html -->
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:webmasters@gnu.org" />
+<link rel="icon" type="image/png" href="/graphics/gnu-head-mini.png" />
+<meta name="ICBM" content="42.355469,-71.058627" />
+<meta name="DC.title" content="gnu.org" />
+<!-- end of server/head-include-1.html -->
+
+<!-- end of server/header.html -->
+
+<!-- Parent-Version: 1.77 -->
+<title>GCC Runtime Library Exception Rationale and FAQ
+- GNU Project - Free Software Foundation</title>
+<!-- begin translist file -->
+
+
+<!-- end translist file -->
+
+<!-- start of server/banner.html -->
+<!-- start of head-include-2.html -->
+
+<link rel="stylesheet" href="/combo.css" media="screen" />
+<link rel="stylesheet" href="/mini.css" media="handheld" />
+<link rel="stylesheet" href="/layout.css" media="screen" />
+
+<link rel="stylesheet" href="/print.css" media="print" />
+
+<!-- end of head-include-2.html -->
+
+</head>
+<body>
+<div class="inner">
+<!-- start of server/body-include-1.html -->
+
+<div id="toplinks">
+ <a href="#content">Skip to main text</a>
+</div> <!-- /toplinks -->
+
+<div id="searcher">
+ <form method="get" action="//www.gnu.org/cgi-bin/estseek.cgi">
+  <div>
+  <input name="phrase" id="phrase" type="text" size="18" accesskey="s"
+         value="Why GNU/Linux?" onfocus="this.value=''" />
+  <input type="submit" value="Search" />
+  </div>
+ </form>
+</div><!-- /searcher -->
+
+<div id="translations">
+<p>
+<span dir="ltr" class="original"><a lang="en" hreflang="en" href="/licenses/gcc-exception-3.1-faq.en.html">English</a>&nbsp;[en]</span>&nbsp;&nbsp;
+<span dir="ltr"><a lang="de" hreflang="de" href="/licenses/gcc-exception-3.1-faq.de.html">Deutsch</a>&nbsp;[de]</span>&nbsp;&nbsp;
+<span dir="ltr"><a lang="fr" hreflang="fr" href="/licenses/gcc-exception-3.1-faq.fr.html">français</a>&nbsp;[fr]</span>&nbsp;&nbsp;
+<span dir="ltr"><a lang="ja" hreflang="ja" href="/licenses/gcc-exception-3.1-faq.ja.html">日本語</a>&nbsp;[ja]</span>&nbsp;&nbsp;
+<span dir="ltr"><a lang="ru" hreflang="ru" href="/licenses/gcc-exception-3.1-faq.ru.html">русский</a>&nbsp;[ru]</span>&nbsp;&nbsp;
+</p>
+</div>
+
+<!-- end of server/body-include-1.html -->
+
+<!-- start of server/body-include-2 -->
+
+<div id="header">
+<div id="fsf-frame">
+<p id="join-fsf"><a href="https://www.fsf.org/associate/support_freedom?referrer=4052">JOIN&nbsp;THE&nbsp;FSF</a></p><hr />
+<div id="fssbox">
+<p><a href="http://www.fsf.org/fss">GNU/FSF Newsletter</a></p>
+<form action="https://crm.fsf.org/civicrm/profile/create&amp;reset=1&amp;gid=31" method="post">
+ <div>
+  <input name="postURL" type="hidden" value="" />
+  <input type="hidden" name="group[25]" value="1" />
+  <input name="cancelURL" type="hidden" value="https://crm.fsf.org/civicrm/profile?reset=1&amp;gid=31" />
+  <input name="_qf_default" type="hidden" value="Edit:cancel" />
+ </div>
+ <p>
+  <input type="text" id="frmEmail" name="email-Primary" size="18" maxlength="80"
+         value="email address" onfocus="this.value=''"/>
+  <input type="submit" name="_qf_Edit_next" value="Sign up" />
+ </p>
+</form>
+</div><!-- /fssbox -->
+</div><!-- /fsf-frame -->
+
+<div id="gnu-banner">
+ <a href="/">
+ <img src="/graphics/heckert_gnu.small.png" alt=" [A GNU head] " /><strong>GNU</strong> Operating System</a>
+</div><!-- /gnu-banner -->
+<p id="fsf-support">Sponsored by the <a href="#mission-statement">Free Software Foundation</a></p>
+
+</div><!-- /header -->
+
+<div id="navigation">
+
+ <ul>
+  <li id="tabAboutGNU"><a href="/gnu/gnu.html">About&nbsp;GNU</a></li>
+  <li id="tabPhilosophy"><a href="/philosophy/philosophy.html">Philosophy</a></li>
+  <li id="tabLicenses"><a href="/licenses/licenses.html">Licenses</a></li>
+  <li id="tabEducation"><a href="/education/education.html">Education</a></li>
+  <li id="tabSoftware"><a href="/software/software.html">Software</a></li>
+  <li id="tabDoc"><a href="/doc/doc.html">Documentation</a></li>
+  <li id="tabHelp"><a href="/help/help.html">Help&nbsp;GNU</a></li>
+ </ul>
+
+</div><!--  /navigation -->
+<!-- end of server/body-include-2 -->
+
+<div id="content">
+<!-- end of server/banner.html -->
+
+<h2>GCC Runtime Library Exception Rationale and FAQ</h2>
+
+<h3>Introduction</h3>
+
+<p>On June 29th, 2007 the Free Software Foundation released GPLv3.  It
+was immediately adopted by fifteen GNU projects, and more made the
+switch in the following months.  Most of the GCC codebase migrated to
+the new license in the 4.2.2 release, and now we are preparing to
+finish that process.</p>
+
+<p>The licenses for some libraries that accompany GCC have not been
+changed yet.  These libraries are automatically used by the object
+code that GCC produces.  Because of that, if these libraries were
+simply distributed only under the terms of the GPL, all the object
+code that GCC produces would have to be distributed under the same
+terms.  However, the FSF decided long ago to allow developers to use
+GCC's libraries to compile any program, regardless of its license.
+Developing nonfree software is not good for society, and we have no
+obligation to make it easier.  We decided to permit this because
+forbidding it seemed likely to backfire, and because using small
+libraries to limit the use of GCC seemed like the tail wagging the
+dog.</p>
+
+<p>Therefore, these libraries have always had license exceptions that
+allow people to distribute the object code GCC produces under any
+license.  We are now moving these libraries to GPLv3 and updating
+their exceptions.  Our fundamental policy has not changed; the new
+license is meant to permit all the uses of GCC that were permitted
+before.  However, we have decided to use this opportunity to update
+the exception to accomplish three goals:</p>
+
+<ul>
+<li><p>Take advantage of GPLv3's new provisions.  GPLv3 features a number
+of new terms which benefit all software.  These include section 7,
+which establishes a framework for providing license exceptions.  In
+order for GCC to get the most benefit from GPLv3, we need to update
+the exception to take these new terms into account, and work within
+the parameters of section 7.</p></li>
+<li><p>Lay the groundwork for a plugin infrastructure in GCC.  For a while
+now, the GCC developers have considered adding a plugin framework to
+the compiler.  This would make it easier for others to contribute to
+the project, and accelerate the development of new compilation
+techniques for GCC.  However, there have also been concerns that
+unscrupulous developers could write plugins that called out to
+proprietary software to transform the compiled code&mdash;effectively
+creating proprietary extensions to GCC and defeating the purpose of
+the GPL.  The updated exception prevents such abuse, enabling the
+GCC team to look forward to plugin developments.</p></li>
+<li><p>Make exceptions throughout the GCC code base consistent.  Over the
+years, as new files were added to GCC that needed to carry this
+license exception, we reviewed and updated the language to help
+clarify it and address new concerns.  As a result, there are now
+many different exception texts in GCC that provide the same basic
+permissions.  Now all of those files will be able to use the single
+new exception text that we've prepared, making it easier to perform
+legal reviews on the code.</p></li>
+</ul>
+
+<p>As with GPLv3, we worked hard to listen to various users' concerns
+while we drafted this, and address them appropriately.  All told, we
+have spent more than a year on this process.  The Free Software
+Foundation and the GCC Steering Committee would like to thank Richard
+Fontana, Bradley Kuhn, and Karen Sandler at the Software Freedom Law
+Center for all their hard work and assistance with the exception.  The
+changes here will strengthen the GCC community, and we look forward to
+the compiler developments it will enable.</p>
+
+<p>Because GCC is such a crucial part of developers' lives, we're
+expecting lots of questions about these changes, and we want to make
+sure that they're addressed.  Below we've addressed specific concerns
+that we expect users will have.  If you have questions about the new
+exception that aren't mentioned here, please feel free to contact us
+at <a href="mailto:licensing@fsf.org">&lt;licensing@fsf.org&gt;</a>.</p>
+
+<h3>How the Exception Works</h3>
+
+<p>The permission you need&mdash;to convey the object code from these GCC
+libraries under your own project's license&mdash;is primarily contained in
+section 1:</p>
+
+<blockquote>
+  <p>You have permission to propagate a work of Target Code formed by
+  combining the Runtime Library with Independent Modules, even if such
+  propagation would otherwise violate the terms of GPLv3, provided
+  that all Target Code was generated by Eligible Compilation
+  Processes.  You may then convey such a combination under terms of
+  your choice, consistent with the licensing of the Independent
+  Modules.</p>
+</blockquote>
+
+<p>This section uses many defined terms, and their specific meanings are
+integral to how the exception works.  This section looks at how these
+terms relate to common scenarios.</p>
+
+<p>When you write your software, it consists of a set of source code
+files.  Each file is an &ldquo;Independent Module,&rdquo; as long as
+it doesn't contain any source from the GCC libraries.</p>
+
+<p>When you compile those source code files, they usually go through a
+series of steps: source code generation, preprocessing, compilation to
+low-level code, assembling, and linking.  Not all projects follow all
+these steps, depending on what language you're using and how it's
+written, but they'll always go in this order, and everyone using GCC
+will go through the process of compiling high-level code into some
+low-level language such as assembly code or Java bytecode.  This phase
+is when GCC combines or links your own code with code from the GCC
+libraries.  We call it the &ldquo;Compilation Process.&rdquo; The
+output you get from it is called &ldquo;Target Code,&rdquo; as long as
+that output is not used as compiler intermediate representation, or to
+create such an intermediate representation.</p>
+
+<p>In order to take advantage of this permission, the Compilation
+Process that you use to create Target Code has to be
+&ldquo;Eligible,&rdquo; which means that it does not involve both GCC
+and GPL-incompatible software.  It's important to remember that the
+Compilation Process starts when you feed <em>any</em> high-level code
+to GCC, and ends as soon as it generates anything that can be
+considered Target Code.  Because of that, as long as GCC isn't writing
+out intermediate representation, your Compilation Process can still be
+Eligible even if you use GCC in conjunction with GPL-incompatible
+assemblers, linkers, or high-level source generators: those programs
+aren't involved in the Compilation Process as it's defined here.  The
+only place you can't use GPL-incompatible software with GCC is when
+it's performing the core compilation work.</p>
+
+<p>So, if you use GCC, with or without GPL-compatible enhancements, that
+would be an Eligible Compilation Process.  If you only use
+GPL-incompatible compiler tools, that would be an Eligible Compilation
+Process as well.  (It's not uncommon for people who build software for
+GNU/Linux to link against the GCC libraries even if they're using a
+different compiler.)  However, if you used GCC in conjunction with
+GPL-incompatible software during the process of transforming
+high-level code to low-level code, that would <em>not</em> be an Eligible
+Compilation Process.  This would happen if, for example, you used GCC
+with a proprietary plugin.</p>
+
+<p>As long as you use an Eligible Compilation Process, then you have
+permission to take the Target Code that GCC generates and propagate it
+&ldquo;under terms of your choice.&rdquo;</p>
+
+<p>If you did use GPL-incompatible software in conjunction with GCC
+during the Compilation Process, you would not be able to take
+advantage of this permission.  Since all of the object code that GCC
+generates is derived from these GPLed libraries, that means you would
+be required to follow the terms of the GPL when propagating any of
+that object code.  You could not use GCC to develop your own
+GPL-incompatible software.</p>
+
+<h3>Frequently Asked Questions</h3>
+
+<dl>
+<dt>I am using a standard release of GCC (such as one provided by the
+FSF, or with my operating system) to compile GPL-incompatible
+software.  How does this change affect me?</dt>
+
+<dd><p>It should not affect you at all.  Unless you've configured GCC
+to output intermediate representation&mdash;which is rare&mdash;the
+new exception is designed to ensure that you have no license
+obligations when you do this, just as the old exceptions
+were.</p></dd>
+
+<dt>Who does this change affect?</dt>
+
+<dd><p>Nobody who is currently using GCC should be affected by this change.
+The only changes in policy are meant to prevent developers from making
+certain modifications to GCC that <em>will</em> become feasible in the future.
+The FSF has been working closely with GCC developers to learn more about
+the many different ways people use GCC today, and ensure that they will all
+be able to continue those activities under the new exception.</p></dd>
+
+<dt>I use GCC in conjunction with proprietary preprocessors and/or source
+generators to compile my program.  Can I still take advantage of the
+exception?</dt>
+
+<dd><p>Yes.  The Compilation Process can start with any &ldquo;code
+entirely represented in a high-level, non-intermediate
+language.&rdquo; This includes code generated by a preprocessor or
+other proprietary software.  As such, the Compilation Process in this
+case does not involve any proprietary software; it qualifies as
+Eligible, and the exception is available for this program.</p></dd>
+
+<dt>I use GCC in conjunction with proprietary assemblers and/or linkers to
+compile my program.  Can I still take advantage of the exception?</dt>
+
+<dd><p>Yes.  The Compilation Process ends when the compiler generates
+Target Code, which includes output that is &ldquo;suitable for input
+to an assembler, loader, linker and/or execution phase.&rdquo; In
+other words, the Compilation Process in this case is over when you
+have assembly code or unlinked object files from GCC, and so it does
+not involve any proprietary software.  It qualifies as Eligible, and
+the exception is thus available for this program.</p></dd>
+
+<dt>I use GCC to compile parts of my program, and a proprietary
+compiler to compile other parts.  The pieces are combined afterward,
+during assembler or linking phases.  Can I still take advantage of the
+exception?</dt>
+
+<dd><p>Yes.  In this case, each Independent Module is turned into Target Code
+through an Eligible Compilation Process.  Even though different modules
+will go through different processes, the exception is still available
+for this program.</p></dd>
+
+<dt>I use a proprietary compiler toolchain without any parts of GCC to
+compile my program, and link it with libstdc++.  My program itself
+does not include any runtime library code the same way that
+GCC-compiled programs include libgcc.  Can I still take advantage of
+the exception?</dt>
+
+<dd><p>Yes.  While combining libgcc with GCC-compiled object code is
+probably the most common way the exception is used, neither the GPL
+nor the GCC Runtime Library Exception distinguish between static
+linking, dynamic linking, and other methods for combining code in
+their conditions.  The same permissions are available to you, under
+the same terms, no matter which method you use.</p>
+
+<p>Note that if you distribute libstdc++ as an independent library,
+you will need to follow the terms of the GPL when doing so.  For
+example, if you distribute the library itself in object code form, you
+will need to provide source code to your recipients using one of the
+methods listed in section 6 of GPLv3.  But as long as you are eligible
+to take advantage of the GCC Runtime Library Exception's permissions
+for your own program, the GPL's terms do not extend to it.</p></dd>
+
+<dt>Why is compiler intermediate representation excluded from the
+definition of &ldquo;Target Code?&rdquo;</dt>
+
+<dd><p>When we first considered adding a plugin infrastructure to GCC, we
+were deeply concerned about the possibility that someone would write a
+plugin that would merely save GCC's internal, low-level compilation
+data structures to disk.  With that done, other software would be able
+to optimize or otherwise improve that code without being directly
+connected to GCC.  It may have been difficult for us to argue that
+those programs should be subject to the GPL's copyleft, so we wanted
+to discourage these sorts of arrangements.</p>
+
+<p>We do that by excluding such output from the definition of Target
+Code.  Because of this, even if someone writes a plugin that saves
+this information to disk, any programs that change the structures
+before GCC writes out Target Code will be involved in the Compilation
+Process.  If that program is proprietary, the exception will not be
+available to any software compiled with it; the object code that GCC
+ultimately creates will have to be distributed under the terms of the
+GPL.</p></dd>
+
+<dt>If I write some code in assembly language, can I combine that with
+other object code compiled normally, and still take advantage of the
+exception?</dt>
+
+<dd><p>Yes, as long as all of the object code was compiled through an
+Eligible Compilation Process.  The process of running hand-written
+assembly through an assembler is a Compilation Process, since it
+&ldquo;transforms code entirely represented in [a] non-intermediate
+language[] designed for human-written code... into Target
+Code.&rdquo;</p></dd>
+
+<dt>What libraries does the GCC Runtime Library Exception cover?</dt>
+
+<dd><p>The GCC Runtime Library Exception covers any file that has a
+notice in its license headers stating that the exception applies.
+This includes libgcc, libstdc++, libfortran, libgomp, libdecnumber,
+libgcov, and other libraries distributed with GCC.</p></dd>
+
+<dt>Will Classpath use this new exception?</dt>
+
+<dd><p>Even though Classpath's current exception serves a similar purpose,
+we are not updating it at this time.  Because of recent developments
+in the free software Java community, the priorities for Classpath's
+licensing policies are different from other GCC libraries, and we are
+evaluating it separately.</p></dd></dl>
+</div><!-- for id="content", starts in the include above -->
+
+              <!-- begin server/footer-text.html -->
+<div id="fsf-links">
+ <ul>
+  <li><a href="/">GNU&nbsp;home&nbsp;page</a></li>
+  <li><a href="http://www.fsf.org/">FSF&nbsp;home&nbsp;page</a></li>
+  <li><a href="/graphics/graphics.html">GNU&nbsp;Art</a></li>
+  <li><a href="/fun/fun.html">GNU&nbsp;Fun</a></li>
+  <li><a href="/people/people.html">GNU's&nbsp;Who?</a></li>
+  <li><a href="http://directory.fsf.org">Free&nbsp;Software&nbsp;Directory</a></li>
+  <li><a href="/server/sitemap.html">Site&nbsp;map</a></li>
+ </ul>
+</div><!-- /fsf-links -->
+
+<div id="mission-statement">
+
+<blockquote>
+<p><a href="http://www.fsf.org"><img id="fsfbanner"
+src="/graphics/fsf-logo-notext.png" alt=" [FSF logo] "/></a><strong>&ldquo;Our
+mission is to preserve, protect and promote the freedom to use, study,
+copy, modify, and redistribute computer software, and to defend the
+rights of Free Software users.&rdquo;</strong></p>
+</blockquote>
+
+<p>The <a href="http://www.fsf.org">Free Software Foundation</a> is
+the principal organizational sponsor of the GNU Operating System.
+<strong>Support GNU and the FSF</strong> by <a
+href="http://shop.fsf.org/">buying manuals and gear</a>, <a
+href="https://my.fsf.org/associate/support_freedom?referrer=4052">
+<strong>joining the FSF</strong></a> as an associate member, or making
+a <strong>donation</strong>, either <a
+href="http://donate.fsf.org/">directly to the FSF</a> or <a
+href="http://flattr.com/thing/313733/gnuproject-on-Flattr">via
+Flattr</a>.</p>
+
+<p id="backtotop"><a href="#header">back to top</a></p>
+
+</div><!-- /mission-statement -->
+<!-- end server/footer-text.html -->
+
+
+<div id="footer">
+<div class="unprintable">
+
+<p>Please send general FSF &amp; GNU inquiries to <a
+href="mailto:gnu@gnu.org">&lt;gnu@gnu.org&gt;</a>.  There are also <a
+href="/contact/">other ways to contact</a> the FSF.  Broken links and other
+corrections or suggestions can be sent to <a
+href="mailto:webmasters@gnu.org">&lt;webmasters@gnu.org&gt;</a>.</p>
+
+<p><!-- TRANSLATORS: Ignore the original text in this paragraph,
+        replace it with the translation of these two:
+
+        We work hard and do our best to provide accurate, good quality
+        translations.  However, we are not exempt from imperfection.
+        Please send your comments and general suggestions in this regard
+        to <a href="mailto:web-translators@gnu.org">
+        &lt;web-translators@gnu.org&gt;</a>.</p>
+
+        <p>For information on coordinating and submitting translations of
+        our web pages, see <a
+        href="/server/standards/README.translations.html">Translations
+        README</a>. -->
+Please see the <a
+href="/server/standards/README.translations.html">Translations README</a> for
+information on coordinating and submitting translations of this article.</p>
+</div>
+
+<p>Copyright &copy; 2014 Free Software Foundation, Inc.</p>
+
+<p>This page is licensed under a <a rel="license"
+href="http://creativecommons.org/licenses/by-nd/3.0/us/">Creative
+Commons Attribution-NoDerivs 3.0 United States License</a>.</p>
+
+<!-- start of server/bottom-notes.html -->
+<div class="unprintable">
+<p><a href="http://www.fsf.org/about/dmca-notice">Copyright Infringement
+Notification</a>&nbsp;|&nbsp;<a
+href="/accessibility/accessibility.html">Accessibility</a></p>
+
+
+</div>
+<!-- end of server/bottom-notes.html -->
+
+
+<p class="unprintable">Updated:
+<!-- timestamp start -->
+$Date: 2014/04/12 12:39:50 $
+<!-- timestamp end -->
+</p>
+</div>
+</div>
+</body>
+</html>

@@ -5,16 +5,7 @@
 #
 
 include(CMakeParseArguments)
-
-macro(set_platform_folder)
-  if(APPLE)
-    set(native_platform "mac")
-  elseif(WIN32)
-    set(native_platform "win")
-  elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(native_platform "lin")
-  endif()
-endmacro()
+include(NativeLibraryUtils)
 
 set(jar_native_libraries CACHE INTERNAL "Native libraries to be built into the JAR")
 
@@ -24,7 +15,7 @@ macro(jar_native_library lib)
   get_property(_version TARGET ${lib} PROPERTY VERSION)
   get_property(_location TARGET ${lib} PROPERTY LOCATION)
   get_property(_ncfg TARGET ${lib} PROPERTY IMPORTED_SONAME_NOCONFIG)
-  set_platform_folder()
+  set_platform_code(NATIVE_PLATFORM)
 
   # if the lib is imported, we know what it is called!
   if(_ncfg)
@@ -46,7 +37,7 @@ macro(jar_native_library lib)
   endif()
 
   set(_src ${_location})
-  set(_dest ${CMAKE_BINARY_DIR}/lib/${native_platform}/${_output_name})
+  set(_dest ${CMAKE_BINARY_DIR}/lib/${NATIVE_PLATFORM}/${_output_name})
   add_custom_command(OUTPUT  ${_dest}
                      COMMAND cmake -E copy_if_different
                      ARGS    ${_src} ${_dest}

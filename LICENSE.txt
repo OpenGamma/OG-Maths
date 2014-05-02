@@ -29,3 +29,16 @@ The file 'include/fake_jni.h' is based on code from Android
 and it is licensed under the Apache Software License v2.0, see
 'licenses/APLv2.0.txt' for license text.
 
+The GNU Compiler Collection:
+Binary distributions of this project include the GCC runtime libraries libgcc_s,
+libgfortran, libstdc++ and libquadmath, which are covered by the GNU General
+Public License (GPL) version 3 with the GCC Runtime Library Exception. Target
+Code is created using an Eligible Compilation Process.  The GNU GPL v3 text is
+in licenses/GCCv3.txt. The GCC Runtime Library Exception is in
+licenses/gcc-exception-3.1.html, retrieved from
+http://www.gnu.org/licenses/gcc-exception-3.1.html on 02/05/2014. The GCC
+Runtime Library Exception FAQ, which clarifies that Target Code produced under
+an Eligible Compilation Process may be distributed in binary form alongside the
+GCC Runtime Libraries is at licenses/gcc-exception-3.1-faq.html, and was
+retrieved from https://www.gnu.org/licenses/gcc-exception-3.1-faq.html on
+02/05/2014.

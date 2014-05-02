@@ -79,8 +79,10 @@ cd build
 Next run CMake. It is required that the path to the OG-Lapack exports file is provided ([build OG-Lapack locally first!](https://github.com/OpenGamma/OG-Lapack/)) so that the build can link against the LAPACK libraries and include them in the built JAR. This is done with the `LAPACK_EXPORT` CMake variable. Invocation of CMake:
 
 ```
-cmake .. -DLAPACK_EXPORT=<path_to_og_lapack>/build/LAPACK_EXPORTS.cmake
+cmake .. -DLAPACK_EXPORT=<path_to_og_lapack>/build/LAPACK_EXPORTS.cmake -DGCC_LIB_FOLDER=<path to gcc RTLs>
 ```
+
+The build process includes the GCC runtime libraries, which are copied from `GCC_LIB_FOLDER`. As an alternative to specifying the location as an argument to CMake, the environment variable `GCC_LIB_FOLDER` may also be set to specify the location. Specifying the location on the command line overrides the value stored in the environment variable.
 
 Build with:
 

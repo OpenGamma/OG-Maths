@@ -7,9 +7,10 @@
 """This tool creates a version info file for an OG-Maths build on
 the current platform. Version info is a yaml file containing
 the revision number, build number, version number, project name,
-and list of artifacts."""
+timestamp/local time, and list of artifacts."""
 
-import platform, sys, subprocess, time
+import sys, subprocess, time
+from buildutils import platform_code
 from yaml import load, dump
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
@@ -25,17 +26,6 @@ def jarname(version, suffix):
     else:
         suffix = '-%s' % suffix
     return 'jars/og-maths-%s-%s%s.jar' % (platform_code(), version, suffix)
-
-def platform_code():
-    """Returns the current platform code, following the usual convention
-    for OG-Maths."""
-    p = platform.system()
-    if p == 'Linux':
-        return 'lnx'
-    elif p == 'Darwin':
-        return 'osx'
-    else:
-        return 'win'
 
 def get_subprojects(lapack_verinfo_file):
     """Returns a list of verinfo data for the OG-Maths subprojects. At the

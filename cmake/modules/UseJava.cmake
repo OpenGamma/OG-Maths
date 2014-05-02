@@ -208,6 +208,7 @@
 #  License text for the above reference.)
 
 include(CMakeParseArguments)
+include(NativeLibraryUtils)
 
 # define helper scripts
 set(_JAVA_CLASS_FILELIST_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/UseJavaClassFilelist.cmake)
@@ -391,8 +392,17 @@ function(add_jar _TARGET_NAME)
                         cmake -E copy_directory ${_src} ${_dest}
                         DEPENDS ${jar_native_libraries} ${_add_jar_DEPENDS}
                         COMMENT "Copying native libraries to the build directory")
+      set_platform_code(NATIVE_PLATFORM)
+      set(_copyrtl_args)
+      if (GCC_LIB_FOLDER)
+        set(_copyrtl_args "-l ${GCC_LIB_FOLDER}")
+      endif()
+      add_custom_target(copyrtl
+                        ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/syslibs.py -o ${_dest}/${NATIVE_PLATFORM} ${_copyrtl_args}
+                        COMMENT "Copying GCC runtime libraries to the build directory"
+                        DEPENDS copylibs)
       list(APPEND _JAVA_NATIVE_FILES lib)
-      list(APPEND _JAVA_DEPENDS copylibs)
+      list(APPEND _JAVA_DEPENDS copyrtl)
     endif()
 
     # create an empty java_class_filelist
