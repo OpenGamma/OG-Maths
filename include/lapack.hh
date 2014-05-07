@@ -48,7 +48,7 @@ template<typename T> real16 xlansy(char * NORM, char * UPLO, int * N, T * A, int
 template<typename T> void xpotrf(char * UPLO, int * N, T * A, int * LDA, int * INFO);
 template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
 template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV, int *INFO);
-
+template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, T * WORK, int * LWORK, int * INFO );
 }
 
 /**
@@ -205,6 +205,16 @@ template<typename T> void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, T 
  * @param INFO as LAPACK dgetrf INFO
  */
 template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV, int *INFO);
+
+/**
+ * xgetri() computes the inverse of a matrix via LU decomposition
+ * @param N as LAPACK dgetri N
+ * @param A  data type specific with intent as LAPACK dgetri A
+ * @param LDA as LAPACK dgetri LDA
+ * @param IPIV as LAPACK dgetri IPIV
+ * @param INFO as LAPACK dgetri INFO
+ */
+template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, int * INFO );
 
 /**
  * xtrcon general triangular matrix condition number estimate

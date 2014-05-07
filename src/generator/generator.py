@@ -63,6 +63,7 @@ nodes = [ UnimplementedUnary('ABS'),
 custom_nodes = [
                 UnaryExpressionRunner('NORM2', 'NORM2_ENUM'),
                 UnaryExpressionRunner('PINV', 'PINV_ENUM'),
+                UnaryExpressionRunner('INV', 'INV_ENUM'),
                 UnaryExpressionRunner('SVD', 'SVD_ENUM'),
                 SelectResultRunner('SELECTRESULT', 'SELECTRESULT_ENUM'),
                 BinaryExpressionRunner('MTIMES','MTIMES_ENUM'),

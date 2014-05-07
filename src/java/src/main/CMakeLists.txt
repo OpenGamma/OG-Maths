@@ -17,6 +17,7 @@ set(JAVA_FILES
     DOGMA.java
     nodes/COPY.java
     nodes/CTRANSPOSE.java
+    nodes/INV.java
     nodes/LU.java
     nodes/MTIMES.java
     nodes/NEGATE.java

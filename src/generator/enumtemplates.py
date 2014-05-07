@@ -51,6 +51,7 @@ public enum ExprEnum {
   TRANSPOSE_ENUM    (0x0133L),
   CTRANSPOSE_ENUM   (0x0137L),
   LU_ENUM           (0x0139L),
+  INV_ENUM          (0x013DL),
 
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
 %(generated_nodes)s;

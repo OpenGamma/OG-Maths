@@ -244,6 +244,38 @@ PINV::getType() const
 
 
 /**
+ * INV node
+ */
+
+INV::INV(const OGNumeric* arg): OGUnaryExpr{arg} {}
+
+OGNumeric*
+INV::copy() const
+{
+
+  return new INV(_args[0]->copy());
+}
+
+const INV*
+INV::asINV() const
+{
+  return this;
+}
+
+void
+INV::debug_print() const
+{
+        cout << "INV base class" << endl;
+}
+
+ExprType_t
+INV::getType() const
+{
+  return INV_ENUM;
+}
+
+
+/**
  * TRANSPOSE node
  */
 

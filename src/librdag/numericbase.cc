@@ -46,6 +46,12 @@ OGNumeric::asPINV() const
   return nullptr;
 }
 
+const INV*
+OGNumeric::asINV() const
+{
+  return nullptr;
+}
+
 const TRANSPOSE*
 OGNumeric::asTRANSPOSE() const
 {
