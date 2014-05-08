@@ -395,7 +395,7 @@ function(add_jar _TARGET_NAME)
       set_platform_code(NATIVE_PLATFORM)
       set(_copyrtl_args)
       if (GCC_LIB_FOLDER)
-        set(_copyrtl_args "-l ${GCC_LIB_FOLDER}")
+        set(_copyrtl_args "-l${GCC_LIB_FOLDER}")
       endif()
       add_custom_target(copyrtl
                         ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/syslibs.py -o ${_dest}/${NATIVE_PLATFORM} ${_copyrtl_args}

@@ -39,7 +39,7 @@ Generally recent versions of the requirements are preferred:
 * gfortran (we test with GCC 4.8.2)
 * A C++ compiler supporting C++11 (we test with GCC 4.8.2)
 * A C compiler supporting C99 (we test with GCC 4.8.2)
-* Python 2.7 with argparse and yaml modules (we test with Python 2.7)
+* Python 2.6 or 2.7 with argparse and yaml modules (we test with Python 2.6 on Linux and 2.7 on Windows/OS X)
 * JDK 7 (we test with Oracle JDK 1.7.0_51 and 1.7.0_u21)
 * Maven (we test with 3.0.5)
 
