@@ -128,12 +128,14 @@ TEST(INVTests, WarnOnSingularInput)
   // real space
   mat = new OGRealMatrix(rsingular3x3,3,3,VIEWER);
   inv = new INV(mat);
+  runtree(inv);
   // TODO: assert warn check goes here
   delete inv;
 
   // complex space
   mat = new OGComplexMatrix(csingular3x3,3,3,VIEWER);
   inv = new INV(mat);
+  runtree(inv);
   // TODO: assert warn check goes here
   delete inv;
 
