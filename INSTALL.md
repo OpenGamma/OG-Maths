@@ -45,7 +45,7 @@ Generally recent versions of the requirements are preferred:
 
 * Platform specific tools:
   * Linux users will need the 'readelf' and 'patchelf' tools.
-  * OS X users will need the 'otool' tool.
+  * OS X users will need the 'otool' and 'install_name_tool' tools.
 
 #### Operating Systems
 
