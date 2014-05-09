@@ -43,6 +43,10 @@ Generally recent versions of the requirements are preferred:
 * JDK 7 (we test with Oracle JDK 1.7.0_51 and 1.7.0_u21)
 * Maven (we test with 3.0.5)
 
+* Platform specific tools:
+  * Linux users will need the 'readelf' and 'patchelf' tools.
+  * OS X users will need the 'otool' and 'install_name_tool' tools.
+
 #### Operating Systems
 
 * Windows 7/8 (we test on Windows 7)
