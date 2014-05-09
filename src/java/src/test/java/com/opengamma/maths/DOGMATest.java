@@ -126,13 +126,23 @@ public class DOGMATest {
     assert (caught == true);
 
     mat = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 1, 2, 3 }, { -4, -5, 6 } });
-    disp(toOGTerminal(inv(mat)));
+    // TODO: assert warn raised on singular
+    toOGTerminal(inv(mat));
 
     mat = C(10, 20);
     assertTrue(C(0.02, -0.04).mathsequals(toOGTerminal(inv(mat))));
     mat = C(0, 0);
     assertTrue(C(Double.POSITIVE_INFINITY).mathsequals(toOGTerminal(inv(mat))));
 
+    mat = new OGComplexDenseMatrix(new double[] { 1., 10., -4., -40., 7., 70., 2., 20., 2., 20., 9., 90., 3., 30., 1., 10., 11., 11. }, 3, 3);
+    assertTrue(new OGComplexDenseMatrix(new double[] { 0.0015906219620334, -0.0048867825577376, 0.0026942738518561, 0.0088704319348774, 0.0009739401444214, -0.0372879941007054, -0.0019412404140251,
+      0.0183104604339916, 0.0011167112286758, -0.0147484293321016, -0.0000973940144421, 0.0037287994100705, 0.0000779152115537, -0.0029830395280564, 0.0002532244375496, -0.0096948784661834,
+      -0.0001947880288843, 0.0074575988201411 }, 3, 3).mathsequals(toOGTerminal(inv(mat))));
+
+    mat = new OGComplexDenseMatrix(new double[][] { { 1, 2, 3 }, { 1, 2, 3 }, { -4, -5, 6 } }, new double[][] { { 10, 20, 30 }, { 10, 20, 30 }, { -40, -50, 60 } });
+    // TODO: assert warn raised on singular
+    toOGTerminal(inv(mat));
+    
   }
 
   @Test
