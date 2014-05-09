@@ -27,6 +27,7 @@ set(RDAG_SOURCES containers.cc
                  runtree.cc
                  terminal.cc
                  runners/ctransposerunner.cc
+                 runners/invrunner.cc
                  runners/mtimesrunner.cc
                  runners/norm2runner.cc
                  runners/pinvrunner.cc

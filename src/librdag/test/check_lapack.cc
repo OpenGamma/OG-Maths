@@ -486,6 +486,88 @@ TEST(LAPACKTest_xtrtrs, ztrtrs) {
   delete [] A;
 }
 
+
+// Check successful templating of dgetri.
+TEST(LAPACKTest_xgetri, dgetri) {
+  int n = 4;
+  int INFO = 0;
+
+  // this is the decomp of rcondok5x4[1:16] from dgetrf
+  real16 * A = new real16[16]{10,0.5000000000000000,0.9000000000000000,0.8000000000000000,19,-0.5000000000000000,0.2000000000000028,0.4000000000000021,29,-4.5000000000000000,-6.1999999999999886,0.0645161290322571,21,-2.5000000000000000,-3.3999999999999950,12.4193548387096779};
+
+  real16 * expectedA = new real16[16]{4.2701298701298649,-2.2883116883116852,0.0493506493506489,-0.0311688311688309,-2.2883116883116852,1.4519480519480503,-0.1584415584415583,-0.0051948051948053,0.0493506493506489,-0.1584415584415583,0.1532467532467533,-0.0441558441558442,-0.0311688311688309,-0.0051948051948053,-0.0441558441558442,0.0805194805194805};
+
+  // this is the decomp of rsingular3x3 from dgetrf
+  real16 * Asingular = new real16[9] {10., 0.1, 0.10000000000000001, 20., -0., -0., 30.,-0.,-0.};
+
+  int * ipiv = new int[4]{3,3,3,4};
+
+  real16 * Acpy = new real16[16];
+  std::copy(A,A+n*n,Acpy);
+  lapack::xgetri(&n,Acpy,&n,ipiv,&INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expectedA,Acpy,16,1e-14,1e-14));
+
+  // check throw on bad arg
+  std::copy(A,A+n*n,Acpy);
+  n = -1;
+  EXPECT_THROW(lapack::xgetri(&n,Acpy,&n,ipiv,&INFO), rdag_error);
+
+  // check throw on singular
+  n=3;
+  ipiv[0]=2;ipiv[1]=2;ipiv[2]=3;
+  std::copy(Asingular,Asingular+n*n,Acpy);
+  EXPECT_THROW(lapack::xgetri(&n,Acpy,&n,ipiv,&INFO), rdag_error);
+
+  delete [] ipiv;
+  delete [] A;
+  delete [] Acpy;
+  delete [] expectedA;
+  delete [] Asingular;
+}
+
+// Check successful templating of zgetri.
+TEST(LAPACKTest_xgetri, zgetri) {
+  int n = 4;
+  int INFO = 0;
+
+  // this is the decomp of ccondok5x4[1:16] from zgetrf
+  complex16 * A = new complex16[16]{{10,-20}, {0.5,0}, {0.8999999999999999,0}, {      0.8,0}, {19,-38}, {-0.5,1}, {0.1999999999999957,0}, {0.4000000000000021,0}, {29,-58}, {     -4.5,9}, {     -6.2000000000000171,12.4000000000000341}, {0.0645161290322568,0}, {21,-42}, {-2.5,5}, {     -3.4000000000000092,6.8000000000000185}, {12.4193548387096779,-24.8387096774193559}};
+
+
+  complex16 * expectedA = new complex16[16]{{0.8540259740259719, 1.7080519480519438}, {-0.4576623376623363,-0.9153246753246725}, {0.0098701298701297, 0.0197402597402595}, {-0.0062337662337663,-0.0124675324675326}, {-0.4576623376623364,-0.9153246753246728}, {0.2903896103896096, 0.5807792207792192}, {-0.0316883116883116,-0.0633766233766232}, {-0.0010389610389610,-0.0020779220779220}, {0.0098701298701298, 0.0197402597402595}, {-0.0316883116883116,-0.0633766233766233}, {0.0306493506493506, 0.0612987012987013}, {-0.0088311688311688,-0.0176623376623377}, {-0.0062337662337662,-0.0124675324675325}, {-0.0010389610389610,-0.0020779220779221}, {-0.0088311688311688,-0.0176623376623377}, {0.0161038961038961, 0.0322077922077922}};
+
+  // this is the decomp of csingular3x3 from zgetrf
+  complex16 * Asingular = new complex16[9] {{10.,100.},{0.1,0.1},{20.,200.},{-0.,-0.},{30.,300.}, 0.,0.};
+
+  int * ipiv = new int[4]{3,3,3,4};
+
+  complex16 * Acpy = new complex16[16];
+  std::copy(A,A+n*n,Acpy);
+  lapack::xgetri(&n,Acpy,&n,ipiv,&INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expectedA,Acpy,16,1e-14,1e-14));
+
+  // check throw on bad arg
+  std::copy(A,A+n*n,Acpy);
+  n = -1;
+  EXPECT_THROW(lapack::xgetri(&n,Acpy,&n,ipiv,&INFO), rdag_error);
+
+  // check throw on singular
+  n=3;
+  ipiv[0]=2;ipiv[1]=2;ipiv[2]=3;
+  std::copy(Asingular,Asingular+n*n,Acpy);
+  EXPECT_THROW(lapack::xgetri(&n,Acpy,&n,ipiv,&INFO), rdag_error);
+
+  delete [] ipiv;
+  delete [] A;
+  delete [] Acpy;
+  delete [] expectedA;
+  delete [] Asingular;
+}
+
+
+
 // Check successful templating of dpotrf.
 TEST(LAPACKTest_xpotrf, dpotrf) {
   int n=4;

@@ -108,6 +108,17 @@ class PINV: public OGUnaryExpr
     virtual ExprType_t getType() const override;
 };
 
+class INV: public OGUnaryExpr
+{
+  public:
+    INV(const OGNumeric* arg);
+    virtual OGNumeric* copy() const override;
+    virtual const INV* asINV() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+};
+
+
 class TRANSPOSE: public OGUnaryExpr
 {
   public:

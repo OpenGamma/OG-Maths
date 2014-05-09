@@ -23,6 +23,7 @@ add_multitarget_library(testhelper
 
 set(TESTS
     check_ctranspose
+    check_inv
     check_lu
     check_mtimes
     check_norm2

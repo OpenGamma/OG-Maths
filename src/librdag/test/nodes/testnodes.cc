@@ -196,6 +196,9 @@ template class UnaryOpTest<NORM2>;
 template class CheckUnary<PINV>;
 template class UnaryOpTest<PINV>;
 
+template class CheckUnary<INV>;
+template class UnaryOpTest<INV>;
+
 template class CheckUnary<TRANSPOSE>;
 template class UnaryOpTest<TRANSPOSE>;
 

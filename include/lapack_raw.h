@@ -113,6 +113,15 @@ extern "C"
 #endif
 void F77FUNC(zgetrf)(int * M, int * N, complex16 * A, int * LDA, int * IPIV, int *INFO);
 
+// inverse based on LU
+#ifdef __cplusplus
+extern "C" 
+#endif
+void F77FUNC(dgetri)(int * N, real16 * A, int * LDA, int * IPIV, real16 * WORK, int * LWORK, int * INFO );
+#ifdef __cplusplus
+extern "C" 
+#endif
+void F77FUNC(zgetri)(int * N, complex16 * A, int * LDA, int * IPIV, complex16 * WORK, int * LWORK, int * INFO );
 
 // solves a triangular system of the form : A * X = B  or  A**T * X = B
 #ifdef __cplusplus

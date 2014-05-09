@@ -17,6 +17,7 @@ import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.materialisers.Materialisers;
 import com.opengamma.maths.nativeloader.NativeLibraries;
 import com.opengamma.maths.nodes.CTRANSPOSE;
+import com.opengamma.maths.nodes.INV;
 import com.opengamma.maths.nodes.LU;
 import com.opengamma.maths.nodes.MTIMES;
 import com.opengamma.maths.nodes.NEGATE;
@@ -70,6 +71,10 @@ public final class DOGMA {
 
   public static OGNumeric pinv(OGNumeric arg0) {
     return new PINV(arg0);
+  }
+
+  public static OGNumeric inv(OGNumeric arg0) {
+    return new INV(arg0);
   }
 
   public static OGNumeric transpose(OGNumeric arg0) {

@@ -146,6 +146,17 @@ namespace detail
   {
     F77FUNC(zgetrf)(M,N,A,LDA,IPIV,INFO);
   }
+
+  //xGETRI specialisations
+  template<> void xgetri(int * N, real16 * A, int * LDA, int * IPIV, real16 * WORK, int * LWORK, int * INFO )
+  {
+    F77FUNC(dgetri)(N,A,LDA,IPIV,WORK,LWORK,INFO);
+  }
+
+  template<> void xgetri(int * N, complex16 * A, int * LDA, int * IPIV, complex16 * WORK, int * LWORK, int * INFO )
+  {
+    F77FUNC(zgetri)(N,A,LDA,IPIV,WORK,LWORK,INFO);
+  }
 }
 
 // f77 constants
@@ -296,17 +307,63 @@ template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV,
     stringstream message;
     if(*INFO<0)
     {
-      message << "Input to LAPACK::xgetrf call incorrect at arg: " << *INFO;
+      message << "Input to LAPACK::xgetrf call incorrect at arg: " << *INFO << ".";
     }
     else
     {
-      message << "LAPACK::xgetrf, matrix is singular at pivot [" << (*INFO - 1) << "]";
+      message << "LAPACK::xgetrf, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
     }
     throw rdag_error(message.str());
   }
 }
 template void xgetrf<real16>(int * M, int * N, real16 * A, int * LDA, int * IPIV, int *INFO);
 template void xgetrf<complex16>(int * M, int * N, complex16 * A, int * LDA, int * IPIV, int *INFO);
+
+template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, int * INFO)
+{
+  set_xerbla_death_switch(lapack::izero);
+  T worktmp;
+  int lwork = -1; // -1 to trigger size query
+
+  // Workspace size query
+  detail::xgetri(N, A, LDA, IPIV, &worktmp, &lwork, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::xgetri call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+  // else { continue }. NOTE: Workspace query doesn't care about validity of inversion,
+  // will check on true call below.
+
+
+  // Allocate work space based on queried value
+  lwork = (int)std::real(worktmp);
+  T * work = new T[lwork];
+
+  // the actual call
+  detail::xgetri(N, A, LDA, IPIV, work, &lwork, INFO);
+  if(*INFO!=0)
+  {
+    stringstream message;
+    delete [] work;
+    if(*INFO<0)
+    {
+      message << "Input to LAPACK::xgetri call incorrect at arg: " << *INFO << ".";
+    }
+    else
+    {
+      message << "LAPACK::xgetri, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
+    }
+    throw rdag_error(message.str());
+  }
+
+
+  // normal return
+  delete [] work;
+}
+template void xgetri<real16>(int * N, real16 * A, int * LDA, int * IPIV, int * INFO);
+template void xgetri<complex16>(int * N, complex16 * A, int * LDA, int * IPIV, int * INFO);
 
 
 template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, real16 * A, int * LDA, real16 * RCOND, int * INFO)

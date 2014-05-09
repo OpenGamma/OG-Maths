@@ -69,7 +69,7 @@ INSTANTIATE_NODE_TEST_CASE_P(PINVTests,PINV,
   new CheckUnary<PINV>( new OGComplexScalar({0,1.0}), new OGComplexScalar({0,-1.0}), MATHSEQUAL),
   // pinv(0+0i) = 0
   new CheckUnary<PINV>( new OGComplexScalar({0,0}), new OGComplexScalar({0,0}), MATHSEQUAL),
-  // pinv(1+1i) = 0.5+0.5i
+  // pinv(1+1i) = 0.5-0.5i
   new CheckUnary<PINV>( new OGComplexScalar({1.0,1.0}), new OGComplexScalar({0.5,-0.5}), MATHSEQUAL),
   // pinv(full rank system) [condition number ~= 13]
   new CheckUnary<PINV>(
