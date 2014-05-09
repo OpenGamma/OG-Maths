@@ -27,12 +27,12 @@ namespace librdag
 class Walker
 {
     int level;
-    librdag::Visitor * visitor;
+    Visitor * visitor;
   public:
     Walker();
     ~Walker();
-    librdag::OGNumeric * walk(librdag::OGNumeric* numeric_expr_types);
-    void talkandwalk(librdag::OGNumeric const * numeric_expr_types);
+    pOGNumeric walk(pOGNumeric numeric_expr_types);
+    void talkandwalk(pOGNumeric numeric_expr_types);
 };
 
 /**
@@ -116,14 +116,17 @@ Walker::~Walker()
   delete visitor;
 }
 
-librdag::OGNumeric * Walker::walk(librdag::OGNumeric * numeric_expr_types)
+pOGNumeric
+Walker::walk(pOGNumeric numeric_expr_types)
 {
   printf("Walking DAG.\n");
   this->talkandwalk(numeric_expr_types);
   printf("Finished Walking DAG.\n");
   return numeric_expr_types;
 }
-void Walker::talkandwalk(librdag::OGNumeric const * numeric_expr_types)
+
+void
+Walker::talkandwalk(pOGNumeric numeric_expr_types)
 {
   level++;
   const char ch = ' ';
@@ -132,49 +135,42 @@ void Walker::talkandwalk(librdag::OGNumeric const * numeric_expr_types)
   level--;
 }
 
-const OGTerminal*
-entrypt(const OGNumeric* expr)
+pOGTerminal
+entrypt(pOGNumeric expr)
 {
   // Sort out LAPACK so xerbla calls don't kill the processes.
   int zero = 0;
   set_xerbla_death_switch(&zero);
 
-  const OGTerminal* asTerminal = expr->asOGTerminal();
-  if (asTerminal!=nullptr)
+  pOGTerminal terminal = expr->asOGTerminal();
+  if (terminal != pOGTerminal{})
   {
-    // If we were passed a terminal, return a copy of it.
-    // Slightly fiddly because we get an OGNumeric* back from copy.
-    return asTerminal->copy()->asOGTerminal();
+    // If we were passed a terminal, simply return it.
+    return terminal;
   }
   else
   {
-    ExecutionList* el = new ExecutionList(expr);
-    Dispatcher * disp = new Dispatcher();
+    ExecutionList el{expr};
+    Dispatcher disp;
     
     DEBUG_PRINT("Dispatching from entrypt\n");
 
-    for (auto it = el->begin(); it != el->end(); ++it)
+    for (auto it = el.begin(); it != el.end(); ++it)
     {
-      const OGExpr* exprToDispatch = (*it)->asOGExpr();
-      if (exprToDispatch != nullptr)
+      pOGExpr expr = (*it)->asOGExpr();
+      if (expr != pOGExpr{})
       {
-        disp->dispatch(exprToDispatch);
+        disp.dispatch(expr);
       }
     }
 
     const RegContainer& regs = expr->asOGExpr()->getRegs();
-    
-    // Make a copy of the result because it gets blown away by the deletion of the tree
-    const OGNumeric * answer = regs[0]->copy();
-    const OGTerminal * returnTerm = answer->asOGTerminal();
-    
-    if(returnTerm==nullptr)
+    if(regs[0]->asOGTerminal() == nullptr)
     {
       throw rdag_error("Evaluated terminal is not casting asOGTerminal correctly.");
     }
-    delete disp;
-    delete el;
-    return returnTerm;
+
+    return static_pointer_cast<const OGTerminal, const OGNumeric>(regs[0]);
   }
 }
 

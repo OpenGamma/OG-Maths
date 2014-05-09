@@ -17,31 +17,26 @@ using namespace librdag;
 
 TEST(RunTree, ThrowDueToBadOp)
 {
-    OGRealScalar * s1 = new OGRealScalar(10);
-    OGRealMatrix * m1 = new OGRealMatrix(new real16[2]{1,2},2,1,OWNER);
-    OGRealMatrix * m2 = new OGRealMatrix(new real16[2]{1,2},2,1,OWNER);
+    pOGNumeric s1 = pOGNumeric{new OGRealScalar(10)};
+    pOGNumeric m1 = pOGNumeric{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
+    pOGNumeric m2 = pOGNumeric{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
 
-    OGExpr * s1m1 = new MTIMES(s1,m1);
-    OGExpr * s1m1m2 = new MTIMES(s1m1,m2);
+    pOGExpr s1m1 = pOGExpr{new MTIMES(s1,m1)};
+    pOGExpr s1m1m2 = pOGExpr{new MTIMES(s1m1,m2)};
     EXPECT_THROW(runtree(s1m1m2),rdag_error);
-
-    delete s1m1m2;
 }
 
 TEST(RunTree, ExecOk)
 {
-    OGRealScalar * s1 = new OGRealScalar(10);
-    OGRealMatrix * m1 = new OGRealMatrix(new real16[2]{1,2},1,2,OWNER);
-    OGRealMatrix * m2 = new OGRealMatrix(new real16[2]{1,2},2,1,OWNER);
+    pOGNumeric s1 = pOGNumeric{new OGRealScalar(10)};
+    pOGNumeric m1 = pOGNumeric{new OGRealMatrix(new real16[2]{1,2},1,2,OWNER)};
+    pOGNumeric m2 = pOGNumeric{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
 
-    OGExpr * s1m1 = new MTIMES(s1,m1);
-    OGExpr * s1m1m2 = new MTIMES(s1m1,m2);
+    pOGExpr s1m1 = pOGExpr{new MTIMES(s1,m1)};
+    pOGExpr s1m1m2 = pOGExpr{new MTIMES(s1m1,m2)};
 
     runtree(s1m1m2);
 
-    OGRealScalar * expected = new OGRealScalar(50);
+    pOGTerminal expected = pOGTerminal{new OGRealScalar(50)};
     EXPECT_TRUE(s1m1m2->getRegs()[0]->asOGTerminal()->mathsequals(expected));
-
-    delete s1m1m2;
-    delete expected;
 }

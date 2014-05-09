@@ -13,8 +13,7 @@ set_source_files_properties(${RDAG_GENERATED} PROPERTIES GENERATED TRUE)
 
 # The RDAG library.
 
-set(RDAG_SOURCES containers.cc
-                 convertto.cc
+set(RDAG_SOURCES convertto.cc
                  entrypt.cc
                  equals.cc
                  exceptions.cc

@@ -6,14 +6,13 @@
 
 #include <vector>
 #include "expressionbase.hh"
-#include "containers.hh"
 #include "jvmmanager.hh"
 
-using librdag::OGNumeric;
+using librdag::pOGNumeric;
 
 namespace convert {
 
-OGNumeric* createExpression(jobject obj);
-OGNumeric* translateNode(JNIEnv* env, jobject obj, const OGNumeric* arg0 = nullptr, const OGNumeric* arg1 = nullptr);
+pOGNumeric createExpression(jobject obj);
+pOGNumeric translateNode(JNIEnv* env, jobject obj, pOGNumeric arg0 = pOGNumeric{}, pOGNumeric arg1 = pOGNumeric{});
 
 } // namespace convert

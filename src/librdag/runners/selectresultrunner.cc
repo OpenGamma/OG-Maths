@@ -20,15 +20,15 @@ namespace librdag {
  */
 
 void*
-SELECTRESULTRunner::eval(RegContainer& reg, const RegContainer& arg0, OGIntegerScalar const * arg1) const
+SELECTRESULTRunner::eval(RegContainer& reg, const RegContainer& arg0, pOGIntegerScalar arg1) const
 {
   return run(reg, arg0, arg1);
 }
 
 void*
-SELECTRESULTRunner::run(RegContainer& reg0, const RegContainer& arg0, const OGIntegerScalar* arg1) const
+SELECTRESULTRunner::run(RegContainer& reg0, const RegContainer& arg0, pOGIntegerScalar arg1) const
 {
-  reg0.push_back(arg0[arg1->getValue()]->copy());
+  reg0.push_back(arg0[arg1->getValue()]);
   return nullptr;
 }
 

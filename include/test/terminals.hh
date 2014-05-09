@@ -16,9 +16,10 @@
 
 #include "terminal.hh"
 
+using namespace librdag;
+
 namespace testinternal {
 
-using namespace librdag;
 
 const OGTerminal* ogreal = new OGRealScalar(1.0);
 const OGTerminal* ogcomplex = new OGComplexScalar(complex16(1.0, 2.0));
@@ -52,15 +53,15 @@ const OGComplexSparseMatrix *ogcomplexsparsematrix = new OGComplexSparseMatrix(c
  * List of terminals that can be used for instantiating value-parameterised test
  * cases over terminals
  */
-const librdag::OGTerminal* terminals[] = { testinternal::ogreal,
-                                           testinternal::ogcomplex,
-                                           testinternal::ogint,
-                                           testinternal::ogrealmatrix,
-                                           testinternal::ogcomplexmatrix,
-                                           testinternal::ogrealdiagonalmatrix,
-                                           testinternal::ogcomplexdiagonalmatrix,
-                                           testinternal::ogrealsparsematrix,
-                                           testinternal::ogcomplexsparsematrix };
+pOGTerminal terminals[] = { pOGTerminal{testinternal::ogreal},
+                            pOGTerminal{testinternal::ogcomplex},
+                            pOGTerminal{testinternal::ogint},
+                            pOGTerminal{testinternal::ogrealmatrix},
+                            pOGTerminal{testinternal::ogcomplexmatrix},
+                            pOGTerminal{testinternal::ogrealdiagonalmatrix},
+                            pOGTerminal{testinternal::ogcomplexdiagonalmatrix},
+                            pOGTerminal{testinternal::ogrealsparsematrix},
+                            pOGTerminal{testinternal::ogcomplexsparsematrix} };
 
 
 #endif

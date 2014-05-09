@@ -10,7 +10,6 @@
 #include "expressionbase.hh"
 #include "execution.hh"
 #include "dispatch.hh"
-#include "containers.hh"
 
 using namespace std;
 using namespace librdag;
@@ -18,21 +17,20 @@ using namespace librdag;
 namespace testnodes {
 
 // Check node impl
-template<typename T> CheckNode<T>::CheckNode(OGNumeric * expected, CompareMethod comparisonMethod)
+template<typename T> CheckNode<T>::CheckNode(pOGNumeric expected, CompareMethod comparisonMethod)
 {
   _expected = expected;
   _comparisonMethod = comparisonMethod;
 }
 
-template<typename T> CheckNode<T>::~CheckNode()
-{
-  delete this->_expected;
-}
+template<typename T>
+CheckNode<T>::~CheckNode() {}
 
-template<typename T> const OGNumeric *
+template<typename T>
+pOGNumeric
 CheckNode<T>::getExpected() const
 {
-  return this->_expected;
+  return _expected;
 }
 
 template<typename T> bool CheckNode<T>::resultCorrect() const
@@ -55,39 +53,35 @@ CheckNode<T>::getComparisonMethod() const
 
 
 // CheckUnary impls
-template<typename T> CheckUnary<T>::CheckUnary(OGNumeric * input, OGNumeric * expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
+template<typename T> CheckUnary<T>::CheckUnary(pOGNumeric input, pOGNumeric expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
 {
   _input = input;
 }
 
 template<typename T> CheckUnary<T>::~CheckUnary()
 {
-  delete this->_resultPair->first; // this is the owning copy
-  delete this->_resultPair;
+  delete _resultPair;
 }
 
 template<typename T> ResultPair *
 CheckUnary<T>::getResultPair() const
 {
-  return this->_resultPair;
+  return _resultPair;
 }
 
 template<typename T> void
 CheckUnary<T>::execute()
 {
-  T * node = new T(_input);
-  ExecutionList * el1 = new ExecutionList(node);
-  for (auto it = el1->begin(); it != el1->end(); ++it)
+  pOGNumeric node = pOGNumeric{new T(_input)};
+  ExecutionList el = ExecutionList{node};
+  Dispatcher v;
+  for (auto it = el.begin(); it != el.end(); ++it)
   {
-    Dispatcher * v = new Dispatcher();
-    v->dispatch(*it);
-    delete v;
+    v.dispatch(*it);
   }
-  const RegContainer& regs = node->getRegs();
-  const OGNumeric * answer = regs[0];
-  this->_resultPair = new ResultPair(answer->asOGTerminal()->createOwningCopy(), this->getExpected());
-  delete node;
-  delete el1;
+  const RegContainer& regs = node->asOGExpr()->getRegs();
+  pOGNumeric answer = regs[0];
+  _resultPair = new ResultPair(answer, this->getExpected());
 }
 
 template<typename T> bool
@@ -120,7 +114,7 @@ template<typename T> void
 UnaryOpTest<T>::TearDown() {}
 
 // CheckBinary impls
-template<typename T> CheckBinary<T>::CheckBinary(OGNumeric * first_input, OGNumeric * second_input, OGNumeric * expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
+template<typename T> CheckBinary<T>::CheckBinary(pOGNumeric first_input, pOGNumeric second_input, pOGNumeric expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
 {
   _first_input = first_input;
   _second_input = second_input;
@@ -128,7 +122,6 @@ template<typename T> CheckBinary<T>::CheckBinary(OGNumeric * first_input, OGNume
 
 template<typename T> CheckBinary<T>::~CheckBinary()
 {
-  delete this->_resultPair->first; // this is the owning copy
   delete this->_resultPair;
 }
 
@@ -141,19 +134,16 @@ CheckBinary<T>::getResultPair() const
 template<typename T> void
 CheckBinary<T>::execute()
 {
-  T * node = new T(_first_input, _second_input);
-  ExecutionList * el1 = new ExecutionList(node);
-  for (auto it = el1->begin(); it != el1->end(); ++it)
+  pOGNumeric node = pOGNumeric{new T(_first_input, _second_input)};
+  ExecutionList el = ExecutionList{node};
+  Dispatcher v;
+  for (auto it = el.begin(); it != el.end(); ++it)
   {
-    Dispatcher * v = new Dispatcher();
-    v->dispatch(*it);
-    delete v;
+    v.dispatch(*it);
   }
-  const RegContainer& regs = node->getRegs();
-  const OGNumeric* answer = regs[0];
-  this->_resultPair = new ResultPair(answer->asOGTerminal()->createOwningCopy(), this->getExpected());
-  delete node;
-  delete el1;
+  const RegContainer& regs = node->asOGExpr()->getRegs();
+  pOGNumeric answer = regs[0];
+  _resultPair = new ResultPair(answer, this->getExpected());
 }
 
 template<typename T> bool

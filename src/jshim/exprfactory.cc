@@ -9,6 +9,7 @@
 #include "exprfactory.hh"
 #include "jvmmanager.hh"
 #include "debug.h"
+#include "exceptions.hh"
 
 namespace convert {
 
@@ -85,7 +86,7 @@ struct jnode
  * @param obj a Java OGNumeric type
  * @return the equivalent RDAG expression
  */
-OGNumeric* createExpression(jobject jexpr)
+pOGNumeric createExpression(jobject jexpr)
 {
   JNIEnv* env = nullptr;
   JVMManager::getEnv((void **) &env);
@@ -191,13 +192,13 @@ OGNumeric* createExpression(jobject jexpr)
   // This node is the root of the expression tree.
 
   // Holds partially-constructed expressions that form part of our arguments.
-  stack<OGNumeric*> exprStack;
+  stack<pOGNumeric> exprStack;
 
   for(auto node: jexprs)
   {
-    OGNumeric* numeric;
-    const OGNumeric* arg0;
-    const OGNumeric* arg1;
+    pOGNumeric numeric;
+    pOGNumeric arg0;
+    pOGNumeric arg1;
 
     switch (node.nArgs)
     {

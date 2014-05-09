@@ -19,10 +19,53 @@ namespace convert {
 
 using namespace librdag;  
 
-jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inputData, int rows, int cols);
-jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols);
-jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols);
+class Real16AoA
+{
+  public:
+    Real16AoA(const pOGNumeric& node);
+    Real16AoA& operator=(const Real16AoA&) = delete;
+    Real16AoA(const Real16AoA&) = delete;
+    Real16AoA& operator=(Real16AoA&& other);
+    Real16AoA(Real16AoA&& other);
+    ~Real16AoA();
 
+    jobjectArray toJDoubleAoA(JNIEnv* env) const;
+    real16** getData() const;
+    int getRows() const;
+    int getCols() const;
+  private:
+    real16** _data;
+    int _rows;
+    int _cols;
+};
+
+class Complex16AoA
+{
+  public:
+    Complex16AoA(const pOGNumeric& node);
+    Complex16AoA& operator=(const Complex16AoA&) = delete;
+    Complex16AoA(const Complex16AoA&) = delete;
+    Complex16AoA& operator=(Complex16AoA&& other);
+    Complex16AoA(Complex16AoA&& other);
+    ~Complex16AoA();
+
+    jobjectArray realPartToJDoubleAoA(JNIEnv* env) const;
+    jobjectArray imagPartToJDoubleAoA(JNIEnv* env) const;
+    complex16** getData() const;
+    int getRows() const;
+    int getCols() const;
+  private:
+    complex16** _data;
+    int _rows;
+    int _cols;
+};
+
+
+//jobjectArray convertReal16AoA2JDoubleArrOfArr(JNIEnv * env, Real16AoA arr);
+//jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols);
+//jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols);
+
+/**
 class DLLEXPORT_C DispatchToReal16ArrayOfArrays: public librdag::Visitor
 {
   public:
@@ -49,9 +92,9 @@ class DLLEXPORT_C DispatchToReal16ArrayOfArrays: public librdag::Visitor
     int cols;
     
 };
+**/
 
-
-
+/*
 class DLLEXPORT_C DispatchToComplex16ArrayOfArrays: public librdag::Visitor
 {
   public:
@@ -76,7 +119,7 @@ class DLLEXPORT_C DispatchToComplex16ArrayOfArrays: public librdag::Visitor
     complex16 ** _data = nullptr;
     int rows;
     int cols;    
-};
+};*/
   
 class DLLEXPORT_C DispatchToOGTerminal: public librdag::Visitor
 {

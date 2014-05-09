@@ -25,49 +25,39 @@ using ::testing::Values;
 
 TEST(SELECTRESULTTests,CheckBehaviour)
 {
-  OGTerminal* one = new OGRealScalar(1.0);
-  OGTerminal* r0 = new OGRealScalar(10.0);
-  SVD* svd = new SVD(r0);
+  pOGTerminal one = pOGTerminal{new OGRealScalar(1.0)};
+  pOGTerminal r0 = pOGTerminal{new OGRealScalar(10.0)};
+  pOGExpr svd = pOGExpr{new SVD(r0)};
 
-  Dispatcher * d = new Dispatcher();
+  Dispatcher d;
 
   // Check selecting 0 (U)
-  SELECTRESULT* s0 = new SELECTRESULT(svd, new OGIntegerScalar(0));
-  ExecutionList* el0 = new ExecutionList(s0);
-  for (auto it = el0->begin(); it != el0->end(); ++it)
+  pOGExpr s0 = pOGExpr{new SELECTRESULT(svd, pOGNumeric{new OGIntegerScalar(0)})};
+  ExecutionList el0 = ExecutionList{s0};
+  for (auto it = el0.begin(); it != el0.end(); ++it)
   {
-    d->dispatch(*it);
+    d.dispatch(*it);
   }
-  const OGNumeric * answer = s0->getRegs()[0];
+  pOGNumeric answer = s0->getRegs()[0];
   EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 1 (S)
-  SELECTRESULT* s1 = new SELECTRESULT(svd->copy(), new OGIntegerScalar(1));
-  ExecutionList* el1 = new ExecutionList(s1);
-  for (auto it = el1->begin(); it != el1->end(); ++it)
+  pOGExpr s1 = pOGExpr{new SELECTRESULT(svd, pOGNumeric{new OGIntegerScalar(1)})};
+  ExecutionList el1 = ExecutionList{s1};
+  for (auto it = el1.begin(); it != el1.end(); ++it)
   {
-    d->dispatch(*it);
+    d.dispatch(*it);
   }
   answer = s1->getRegs()[0];
   EXPECT_TRUE((*r0) ==~ (*(answer->asOGTerminal())));
 
   // Check selecting 2 (V)
-  SELECTRESULT* s2 = new SELECTRESULT(svd->copy(), new OGIntegerScalar(2));
-  ExecutionList* el2 = new ExecutionList(s2);
-  for (auto it = el2->begin(); it != el2->end(); ++it)
+  pOGExpr s2 = pOGExpr{new SELECTRESULT(svd, pOGNumeric{new OGIntegerScalar(2)})};
+  ExecutionList el2 = ExecutionList{s2};
+  for (auto it = el2.begin(); it != el2.end(); ++it)
   {
-    d->dispatch(*it);
+    d.dispatch(*it);
   }
   answer = s2->getRegs()[0];
   EXPECT_TRUE((*one) ==~ (*(answer->asOGTerminal())));
-
-  // Clean up
-  delete one;
-  delete s0;
-  delete d;
-  delete el0;
-  delete s1;
-  delete el1;
-  delete s2;
-  delete el2;
 }

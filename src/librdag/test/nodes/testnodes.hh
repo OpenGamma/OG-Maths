@@ -11,7 +11,6 @@
 #include "expressionbase.hh"
 #include "execution.hh"
 #include "dispatch.hh"
-#include "containers.hh"
 
 using namespace std;
 using namespace librdag;
@@ -74,7 +73,7 @@ TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
 /**
  * Container for results
  */
-typedef pair<const OGNumeric* , const OGNumeric* > ResultPair;
+typedef pair<pOGNumeric, pOGNumeric> ResultPair;
 
 /**
  * Indicate the method used for comparison
@@ -103,7 +102,7 @@ template <typename T> class CheckNode
        * @param expected the expected result.
        * @param comparisonMethod how the results should be compared.
        */
-      CheckNode(OGNumeric * expected, CompareMethod comparisonMethod);
+      CheckNode(pOGNumeric expected, CompareMethod comparisonMethod);
       /**
        * Standard destructor
        */
@@ -125,7 +124,7 @@ template <typename T> class CheckNode
       /**
        * Gets the expected value.
        */
-      virtual const OGNumeric * getExpected() const;
+      virtual pOGNumeric getExpected() const;
       /**
        * Gets the comparison method.
        */
@@ -137,7 +136,7 @@ template <typename T> class CheckNode
      */
     virtual void execute() = 0;
   private:
-    const OGNumeric * _expected;
+    pOGNumeric _expected;
     CompareMethod _comparisonMethod;
 };
 
@@ -154,7 +153,7 @@ template <typename T> class CheckUnary: public CheckNode<T>
      * @param expected the expected value.
      * @param comparisonMethod how the results should be compared.
      */
-    CheckUnary(OGNumeric * input, OGNumeric * expected, CompareMethod comparisonMethod);
+    CheckUnary(pOGNumeric input, pOGNumeric expected, CompareMethod comparisonMethod);
     ~CheckUnary();
     virtual bool comparesCorrectlyTypeInvariant() const override;
     virtual bool comparesCorrectly() const override;
@@ -169,7 +168,7 @@ template <typename T> class CheckUnary: public CheckNode<T>
 
   private:
     ResultPair * _resultPair;
-    OGNumeric * _input;
+    pOGNumeric _input;
 };
 
 /**
@@ -199,7 +198,7 @@ template <typename T> class CheckBinary: public CheckNode<T>
      * @param expected the expected value.
      * @param comparisonMethod how the results should be compared.
      */
-    CheckBinary(OGNumeric * first_input, OGNumeric * second_input, OGNumeric * expected, CompareMethod comparisonMethod);
+    CheckBinary(pOGNumeric first_input, pOGNumeric second_input, pOGNumeric expected, CompareMethod comparisonMethod);
     ~CheckBinary();
     virtual bool comparesCorrectlyTypeInvariant() const override;
     virtual bool comparesCorrectly() const override;
@@ -214,8 +213,8 @@ template <typename T> class CheckBinary: public CheckNode<T>
 
   private:
     ResultPair * _resultPair;
-    OGNumeric * _first_input;
-    OGNumeric * _second_input;
+    pOGNumeric _first_input;
+    pOGNumeric _second_input;
 };
 
 

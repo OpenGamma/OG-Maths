@@ -76,4 +76,30 @@ bool isComplex(const OGTerminal * terminal)
   return !isReal(terminal);
 }
 
+
+bool isScalar(pOGTerminal t)
+{
+  return isScalar(t.get());
 }
+
+bool isMatrix(pOGTerminal t)
+{
+  return isMatrix(t.get());
+}
+
+bool isVector(pOGTerminal t)
+{
+  return isVector(t.get());
+}
+
+bool isReal(pOGTerminal t)
+{
+  return isReal(t.get());
+}
+
+bool isComplex(pOGTerminal t)
+{
+  return isComplex(t.get());
+}
+
+} // end namespace librdag

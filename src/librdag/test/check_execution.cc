@@ -13,25 +13,22 @@
 using namespace std;
 using namespace librdag;
 
-class ExecutionOneNodeTest: public ::testing::TestWithParam<const OGTerminal*> {};
+class ExecutionOneNodeTest: public ::testing::TestWithParam<pOGTerminal> {};
 
 TEST_P(ExecutionOneNodeTest, TerminalTypes)
 {
   // Test "base case" - one node
-  const OGTerminal* node = GetParam();
-  ExecutionList* el1 = new ExecutionList(node);
+  pOGTerminal node = GetParam();
+  ExecutionList el1 = ExecutionList{node};
   // Check size
-  EXPECT_EQ(1, el1->size());
+  EXPECT_EQ(1, el1.size());
   // Check iteration
-  auto it = el1->begin();
+  auto it = el1.begin();
   EXPECT_EQ(node, *it);
   ++it;
-  EXPECT_EQ(it, el1->end());
+  EXPECT_EQ(it, el1.end());
   // Check subscripting
-  EXPECT_EQ(node, (*el1)[0]);
-  // Should free all memory
-  delete el1;
-  delete node;
+  EXPECT_EQ(node, el1[0]);
 }
 
 INSTANTIATE_TEST_CASE_P(ValueParam, ExecutionOneNodeTest, ::testing::ValuesIn(terminals));
@@ -39,38 +36,35 @@ INSTANTIATE_TEST_CASE_P(ValueParam, ExecutionOneNodeTest, ::testing::ValuesIn(te
 TEST(LinearisationTest, UnaryTreeLinearisation)
 {
   // One unary node holding one terminal
-  OGNumeric* real = new OGRealScalar(1.0);
-  OGNumeric* copy = new COPY(real);
-  ExecutionList* el1 = new ExecutionList(copy);
-  EXPECT_EQ(2, el1->size());
+  pOGNumeric real = pOGNumeric{new OGRealScalar(1.0)};
+  pOGNumeric copy = pOGNumeric{new COPY(real)};
+  ExecutionList el1 = ExecutionList(copy);
+  EXPECT_EQ(2, el1.size());
   // Check ordering
-  auto it = el1->begin();
+  auto it = el1.begin();
   EXPECT_EQ(*it, real);
   ++it;
   EXPECT_EQ(*it, copy);
   ++it;
-  EXPECT_EQ(it, el1->end());
+  EXPECT_EQ(it, el1.end());
   // Check subscripting
-  EXPECT_EQ(real, (*el1)[0]);
-  EXPECT_EQ(copy, (*el1)[1]);
-  // Should free all memory
-  delete el1;
-  delete copy;
+  EXPECT_EQ(real, el1[0]);
+  EXPECT_EQ(copy, el1[1]);
 }
 
 TEST(LinearisationTest, BinaryTreeLinearisation)
 {
   // One binary node holding two terminals
-  OGNumeric* real1 = new OGRealScalar(1.0);
-  OGNumeric* real2 = new OGRealScalar(2.0);
-  OGNumeric *plus = new PLUS(real1, real2);
-  ExecutionList* el1 = new ExecutionList(plus);
-  EXPECT_EQ(3, el1->size());
+  pOGNumeric real1 = pOGNumeric{new OGRealScalar(1.0)};
+  pOGNumeric real2 = pOGNumeric{new OGRealScalar(2.0)};
+  pOGNumeric plus = pOGNumeric{new PLUS(real1, real2)};
+  ExecutionList el1 = ExecutionList(plus);
+  EXPECT_EQ(3, el1.size());
   // Check ordering. We iterate over the list and get
   // its contents first.
-  const OGNumeric* nodes[3];
+  pOGNumeric nodes[3];
   int i = 0;
-  for (auto it = el1->begin(); it != el1->end(); ++it)
+  for (auto it = el1.begin(); it != el1.end(); ++it)
   {
     nodes[i] = *it;
     ++i;
@@ -83,12 +77,9 @@ TEST(LinearisationTest, BinaryTreeLinearisation)
   EXPECT_TRUE(   (nodes[0] == real1 && nodes[1] == real2)
               || (nodes[1] == real1 && nodes[0] == real2) );
   // Check subscripting is the same as the iteration order
-  EXPECT_EQ(nodes[0], (*el1)[0]);
-  EXPECT_EQ(nodes[1], (*el1)[1]);
-  EXPECT_EQ(nodes[2], (*el1)[2]);
-  // Should free all memory
-  delete el1;
-  delete plus;
+  EXPECT_EQ(nodes[0], el1[0]);
+  EXPECT_EQ(nodes[1], el1[1]);
+  EXPECT_EQ(nodes[2], el1[2]);
 }
 
 TEST(LinearisationTest, BinaryUnaryLinearisation)
@@ -102,16 +93,16 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
    *          \
    *           2.0
    */
-  OGNumeric* real1 = new OGRealScalar(1.0);
-  OGNumeric* real2 = new OGRealScalar(2.0);
-  OGNumeric* copy = new COPY(real2);
-  OGNumeric *plus = new PLUS(real1, copy);
-  ExecutionList *el1 = new ExecutionList(plus);
+  pOGNumeric real1 = pOGNumeric{new OGRealScalar(1.0)};
+  pOGNumeric real2 = pOGNumeric{new OGRealScalar(2.0)};
+  pOGNumeric copy = pOGNumeric{new COPY(real2)};
+  pOGNumeric plus = pOGNumeric{new PLUS(real1, copy)};
+  ExecutionList el1 = ExecutionList(plus);
   // Check ordering. We iterate over the list and get
   // its contents first.
-  const OGNumeric* nodes[4];
+  pOGNumeric nodes[4];
   int i = 0;
-  for (auto it = el1->begin(); it != el1->end(); ++it)
+  for (auto it = el1.begin(); it != el1.end(); ++it)
   {
     nodes[i] = *it;
     ++i;
@@ -129,9 +120,6 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
   // Check subscripting order is the same as iteration order
   for (int j = 0; j<4; ++j)
   {
-    EXPECT_EQ(nodes[j], (*el1)[j]);
+    EXPECT_EQ(nodes[j], el1[j]);
   }
-  // Should free all memory
-  delete el1;
-  delete plus;
 }

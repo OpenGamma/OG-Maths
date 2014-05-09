@@ -31,21 +31,21 @@ class ConvertTo
 {
   public:
     ConvertTo();
-    OGRealMatrix * convertToOGRealMatrix(OGRealScalar const * thing) const;
-    OGRealMatrix * convertToOGRealMatrix(OGIntegerScalar const * thing) const;
-    OGRealMatrix * convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const;
-    OGRealMatrix * convertToOGRealMatrix(OGLogicalMatrix const * thing) const;
-    OGRealMatrix * convertToOGRealMatrix(OGRealSparseMatrix const * thing) const;
+    pOGRealMatrix convertToOGRealMatrix(pOGRealScalar thing) const;
+    pOGRealMatrix convertToOGRealMatrix(pOGIntegerScalar thing) const;
+    pOGRealMatrix convertToOGRealMatrix(pOGRealDiagonalMatrix thing) const;
+    pOGRealMatrix convertToOGRealMatrix(pOGLogicalMatrix thing) const;
+    pOGRealMatrix convertToOGRealMatrix(pOGRealSparseMatrix thing) const;
 
-    OGComplexMatrix * convertToOGComplexMatrix(OGRealScalar const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGIntegerScalar const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGComplexScalar const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGRealDiagonalMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGComplexDiagonalMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGRealSparseMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGComplexSparseMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGRealMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGLogicalMatrix const * thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGRealScalar thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGIntegerScalar thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGComplexScalar thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGRealDiagonalMatrix thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGComplexDiagonalMatrix thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGRealSparseMatrix thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGComplexSparseMatrix thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGRealMatrix thing) const;
+    pOGComplexMatrix convertToOGComplexMatrix(pOGLogicalMatrix thing) const;
 };
 
 }

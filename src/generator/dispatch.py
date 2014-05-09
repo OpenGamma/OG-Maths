@@ -19,8 +19,7 @@ from dispatchtemplates import dispatch_header, dispatcher_class, dispatcher_forw
                               dispatchbinaryop_eval, dispatchbinaryop_eval_case_arg0, \
                               dispatchbinaryop_eval_case_arg1, dispatchbinaryop_terminal_method, \
                               dispatchop_class, dispatchbinaryop_conv_arg, dispatchop_methods, \
-                              dispatchbinaryop_noconv_arg, dispatchbinaryop_deletion, \
-                              dispatcher_select_implementation
+                              dispatchbinaryop_noconv_arg, dispatcher_select_implementation
 
 class Dispatcher(object):
     """Generates the Dispatcher class definition and method implementations"""
@@ -172,11 +171,9 @@ class DispatchBinaryOp(object):
                 if t0.typename == type_to_convert_to:
                     d = { 'argno': '0', 'nodetype': type_to_convert_to }
                     conv0 = dispatchbinaryop_noconv_arg % d
-                    deletions = ''
                 else:
                     d = { 'argno': '0', 'typetoconvertto': type_to_convert_to }
                     conv0 = dispatchbinaryop_conv_arg %d
-                    deletions = dispatchbinaryop_deletion % { 'argno': '0' }
                 # Check if we need to convert arg1 at all and act accordingly
                 if t1.typename == type_to_convert_to:
                     d = { 'argno': '1', 'nodetype': type_to_convert_to }
@@ -184,12 +181,10 @@ class DispatchBinaryOp(object):
                 else:
                     d = { 'argno': '1', 'typetoconvertto': type_to_convert_to }
                     conv1 = dispatchbinaryop_conv_arg %d
-                    deletions += dispatchbinaryop_deletion % { 'argno': '1' }
                 d = { 'node0type': t0.typename, 'node0enumtype': t0.enumname,
                       'node1type': t1.typename, 'node1enumtype': t1.enumname,
                       'conv0': conv0,
-                      'conv1': conv1,
-                      'deletions': deletions }
+                      'conv1': conv1 }
                 eval_arg1_cases += dispatchbinaryop_eval_case_arg1 % d
                 if t0.typename not in self._backstop_terminals or t0 != t1:
                     terminal_methods += dispatchbinaryop_terminal_method %d

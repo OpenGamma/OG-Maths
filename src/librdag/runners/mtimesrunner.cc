@@ -24,7 +24,9 @@
 
 namespace librdag {
 
-template<typename T> void * mtimes_dense_runner(RegContainer& reg0, const OGMatrix<T>* arg0, const OGMatrix<T>* arg1)
+template<typename T>
+void*
+mtimes_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, shared_ptr<const OGMatrix<T>> arg1)
 {
   int colsArray1 = arg0->getCols();
   int colsArray2 = arg1->getCols();
@@ -38,7 +40,7 @@ template<typename T> void * mtimes_dense_runner(RegContainer& reg0, const OGMatr
   // Fortran vars
   T fp_one = 1.e0;
 
-  OGTerminal * ret = nullptr;
+  pOGNumeric ret;
 
   if (colsArray1 == 1 && rowsArray1 == 1) { // We have scalar * matrix
     T deref = data1[0];
@@ -87,23 +89,23 @@ template<typename T> void * mtimes_dense_runner(RegContainer& reg0, const OGMatr
 
 
 // MTIMES runner:
-void * MTIMESRunner::run(RegContainer& reg0, const OGComplexMatrix * arg0, const OGComplexMatrix * arg1) const
+void * MTIMESRunner::run(RegContainer& reg0, pOGComplexMatrix arg0, pOGComplexMatrix arg1) const
 {
-  mtimes_dense_runner(reg0, arg0, arg1);
+  mtimes_dense_runner<complex16>(reg0, arg0, arg1);
   return nullptr;
 }
 
 
-void * MTIMESRunner::run(RegContainer& reg0, const OGRealMatrix*    arg0, const OGRealMatrix*    arg1) const
+void * MTIMESRunner::run(RegContainer& reg0, pOGRealMatrix arg0, pOGRealMatrix arg1) const
 {
-  mtimes_dense_runner(reg0, arg0, arg1);
+  mtimes_dense_runner<real16>(reg0, arg0, arg1);
   return nullptr;
 }
 
 void *
-MTIMESRunner::run(RegContainer& reg0, const OGRealScalar* arg0, const OGRealScalar* arg1) const
+MTIMESRunner::run(RegContainer& reg0, pOGRealScalar arg0, pOGRealScalar arg1) const
 {
-    OGTerminal * ret = new OGRealScalar(arg0->getValue()*arg1->getValue());
+    pOGNumeric ret = pOGNumeric{new OGRealScalar(arg0->getValue()*arg1->getValue())};
     reg0.push_back(ret);
     return nullptr;
 }

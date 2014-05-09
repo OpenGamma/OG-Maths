@@ -17,202 +17,204 @@ namespace convert
 using namespace librdag;
 
 /**
- * DispatchToReal16ArrayOfArrays
+ * Real16AoA
  */
 
-DispatchToReal16ArrayOfArrays::~DispatchToReal16ArrayOfArrays()
+Real16AoA::Real16AoA(const pOGNumeric& node)
 {
-    real16 ** arr = this->getData();
-    if(arr)
+  ExprType_t type = node->getType();
+  switch(type)
+  {
+  case REAL_SCALAR_ENUM:
+    _data = node->asOGTerminal()->toReal16ArrayOfArrays();
+    _rows = 1;
+    _cols = 1;
+    break;
+  case REAL_MATRIX_ENUM:
+  case REAL_DIAGONAL_MATRIX_ENUM:
+  case REAL_SPARSE_MATRIX_ENUM:
+    _data = node->asOGTerminal()->toReal16ArrayOfArrays();
+    _rows = node->asOGTerminal()->getRows();
+    _cols = node->asOGTerminal()->getCols();
+    break;
+  default:
+    stringstream message;
+    message << "Unknown type for dispatchToReal16AoA. Type is " << type << ".";
+    throw convert_error(message.str());
+  }
+}
+
+Real16AoA::Real16AoA(Real16AoA&& o): _data{o._data}, _rows{o._rows}, _cols{o._cols}
+{
+  o._data = nullptr;
+}
+
+Real16AoA&
+Real16AoA::operator=(Real16AoA&& o)
+{
+  _data = o._data;
+  o._data = nullptr;
+  _rows = o._rows;
+  _cols = o._cols;
+  return *this;
+}
+
+Real16AoA::~Real16AoA()
+{
+  if (_data != nullptr)
+  {
+    for(int i = 0; i < _rows; i++)
     {
-
-        for(int i=0; i<this->getRows(); i++)
-        {
-            delete[] arr[i];
-        }
-        delete[] arr;
+        delete[] _data[i];
     }
+    delete[] _data;
+  }
 }
 
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr const SUPPRESS_UNUSED *thing)
+jobjectArray
+Real16AoA::toJDoubleAoA(JNIEnv* env) const
 {
-    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGExpr)");
+ jobjectArray returnVal = JVMManager::newObjectArray(env, _rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
+  for(int i = 0; i < _rows; i++)
+  {
+    jdoubleArray tmp = JVMManager::newDoubleArray(env, _cols);
+    env->SetDoubleArrayRegion(tmp, 0, _cols, _data[i]);
+    env->SetObjectArrayElement(returnVal, i, tmp);
+  }
+  return returnVal;
 }
 
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<real16> const  *thing)
+
+real16**
+Real16AoA::getData() const
 {
-    this->setData(thing->toReal16ArrayOfArrays());
-    this->setRows(1);
-    this->setCols(1);
+  return _data;
 }
 
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16> const SUPPRESS_UNUSED  *thing)
+int
+Real16AoA::getRows() const
 {
-    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<complex16>)");
-}
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int> const SUPPRESS_UNUSED  *thing)
-{
-    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGScalar<int>)");
+  return _rows;
 }
 
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<real16> const *thing)
+int
+Real16AoA::getCols() const
 {
-    this->setData(thing->toReal16ArrayOfArrays());
-    this->setRows(thing->getRows());
-    this->setCols(thing->getCols());
-}
-
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16> const SUPPRESS_UNUSED *thing)
-{
-    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGMatrix<complex16>)");
-}
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16> const *thing)
-{
-    this->setData(thing->toReal16ArrayOfArrays());
-    this->setRows(thing->getRows());
-    this->setCols(thing->getCols());
-}
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16> const SUPPRESS_UNUSED  *thing)
-{
-    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16>)");
-}
-
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGSparseMatrix<real16> const *thing)
-{
-    this->setData(thing->toReal16ArrayOfArrays());
-    this->setRows(thing->getRows());
-    this->setCols(thing->getCols());
-}
-void DispatchToReal16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16> const SUPPRESS_UNUSED  *thing)
-{
-    throw convert_error("DispatchToReal16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16>)");
-}
-
-void DispatchToReal16ArrayOfArrays::setData(real16 ** data)
-{
-    this->_data = data;
-}
-
-void DispatchToReal16ArrayOfArrays::setRows(int rows)
-{
-    this->rows = rows;
-}
-
-void DispatchToReal16ArrayOfArrays::setCols(int cols)
-{
-    this->cols = cols;
-}
-
-real16 ** DispatchToReal16ArrayOfArrays::getData()
-{
-    return this->_data;
-}
-
-int DispatchToReal16ArrayOfArrays::getRows()
-{
-    return this->rows;
-}
-
-int DispatchToReal16ArrayOfArrays::getCols()
-{
-    return this->cols;
+  return _cols;
 }
 
 /**
- * DispatchToComplex16ArrayOfArrays
+ * Complex16AoA
  */
 
-DispatchToComplex16ArrayOfArrays::~DispatchToComplex16ArrayOfArrays()
+Complex16AoA::Complex16AoA(const pOGNumeric& node)
 {
-    complex16 ** arr = this->getData();
-    if(arr)
+  ExprType_t type = node->getType();
+  switch(type)
+  {
+  case REAL_SCALAR_ENUM:
+  case COMPLEX_SCALAR_ENUM:
+    _data = node->asOGTerminal()->toComplex16ArrayOfArrays();
+    _rows = 1;
+    _cols = 1;
+    break;
+  case REAL_MATRIX_ENUM:
+  case COMPLEX_MATRIX_ENUM:
+  case COMPLEX_DIAGONAL_MATRIX_ENUM:
+  case COMPLEX_SPARSE_MATRIX_ENUM:
+    _data = node->asOGTerminal()->toComplex16ArrayOfArrays();
+    _rows = node->asOGTerminal()->getRows();
+    _cols = node->asOGTerminal()->getCols();
+    break;
+  default:
+    stringstream message;
+    message << "Unknown type for dispatchToReal16AoA. Type is " << type << ".";
+    throw convert_error(message.str());
+  }
+}
+
+Complex16AoA::Complex16AoA(Complex16AoA&& o): _data{o._data}, _rows{o._rows}, _cols{o._cols}
+{
+  o._data = nullptr;
+}
+
+Complex16AoA&
+Complex16AoA::operator=(Complex16AoA&& o)
+{
+  _data = o._data;
+  o._data = nullptr;
+  _rows = o._rows;
+  _cols = o._cols;
+  return *this;
+}
+
+Complex16AoA::~Complex16AoA()
+{
+  if (_data != nullptr)
+  {
+    for(int i = 0; i < _rows; i++)
     {
-        for(int i=0; i<this->getRows(); i++)
-        {
-            delete[] arr[i];
-        }
-        delete[] arr;
+        delete[] _data[i];
     }
+    delete[] _data;
+  }
 }
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGExpr const SUPPRESS_UNUSED *thing)
+
+jobjectArray
+Complex16AoA::realPartToJDoubleAoA(JNIEnv* env) const
 {
-    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGExpr)");
+  jobjectArray returnVal = JVMManager::newObjectArray(env, _rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
+  real16 * aRow = new real16[_cols];
+  for(int i = 0; i < _rows; i++)
+  {
+    jdoubleArray tmp = JVMManager::newDoubleArray(env, _cols);
+    for(int j = 0; j < _cols; j++)
+    {
+      aRow[j] = std::real(_data[i][j]);
+    }
+    env->SetDoubleArrayRegion(tmp, 0, _cols, aRow);
+    env->SetObjectArrayElement(returnVal, i, tmp);
+  }
+  delete aRow;
+  return returnVal;
 }
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<complex16> const *thing)
+
+jobjectArray
+Complex16AoA::imagPartToJDoubleAoA(JNIEnv* env) const
 {
-    this->setData(thing->toComplex16ArrayOfArrays());
-    this->setRows(1);
-    this->setCols(1);
+  jobjectArray returnVal = JVMManager::newObjectArray(env, _rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
+  real16 * aRow = new real16[_cols];
+  for(int i = 0; i < _rows; i++)
+  {
+    jdoubleArray tmp = JVMManager::newDoubleArray(env, _cols);
+    for(int j = 0; j < _cols; j++)
+    {
+      aRow[j]=std::imag(_data[i][j]);
+    }
+    env->SetDoubleArrayRegion(tmp, 0, _cols, aRow);
+    env->SetObjectArrayElement(returnVal, i, tmp);
+  }
+  delete aRow;
+  return returnVal;
 }
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<real16> const *thing)
+
+
+complex16**
+Complex16AoA::getData() const
 {
-    this->setData(thing->toComplex16ArrayOfArrays());
-    this->setRows(1);
-    this->setCols(1);
+  return _data;
 }
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int> const SUPPRESS_UNUSED *thing)
+
+int
+Complex16AoA::getRows() const
 {
-    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGScalar<int>)");
+  return _rows;
 }
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<complex16> const *thing)
+
+int
+Complex16AoA::getCols() const
 {
-    DEBUG_PRINT("DispatchToComplex16ArrayOfArrays Visitor: librdag::OGMatrix<complex16> branch\n");
-    this->setData(thing->toComplex16ArrayOfArrays());
-    this->setRows(thing->getRows());
-    this->setCols(thing->getCols());
-}
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGMatrix<real16> const SUPPRESS_UNUSED *thing)
-{
-    DEBUG_PRINT("DispatchToComplex16ArrayOfArrays Visitor: librdag::OGMatrix<real16> branch\n");
-    this->setData(thing->toComplex16ArrayOfArrays());
-    this->setRows(thing->getRows());
-    this->setCols(thing->getCols());
-}
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
-{
-    DEBUG_PRINT("Visitor: librdag::OGMatrix<complex16> branch\n");
-    this->setData(thing->toComplex16ArrayOfArrays());
-    this->setRows(thing->getRows());
-    this->setCols(thing->getCols());
-}
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16> const SUPPRESS_UNUSED *thing)
-{
-    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGDiagonalMatrix<real16>)");
-}
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<complex16> const *thing)
-{
-    DEBUG_PRINT("Visitor: librdag::OGMatrix<complex16> branch\n");
-    this->setData(thing->toComplex16ArrayOfArrays());
-    this->setRows(thing->getRows());
-    this->setCols(thing->getCols());
-}
-void DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<real16> const SUPPRESS_UNUSED *thing)
-{
-    throw convert_error("DispatchToComplex16ArrayOfArrays::visit(librdag::OGSparseMatrix<real16>)");
-}
-void DispatchToComplex16ArrayOfArrays::setData(complex16 ** data)
-{
-    this->_data = data;
-}
-void DispatchToComplex16ArrayOfArrays::setRows(int rows)
-{
-    this->rows = rows;
-}
-void DispatchToComplex16ArrayOfArrays::setCols(int cols)
-{
-    this->cols = cols;
-}
-complex16 ** DispatchToComplex16ArrayOfArrays::getData()
-{
-    return this->_data;
-}
-int DispatchToComplex16ArrayOfArrays::getRows()
-{
-    return this->rows;
-}
-int DispatchToComplex16ArrayOfArrays::getCols()
-{
-    return this->cols;
+  return _cols;
 }
 
 /**
@@ -232,26 +234,6 @@ jdoubleArray convertCreal16Arr2JDoubleArr(JNIEnv * env, real16 * inputData, int 
 {
   jdoubleArray returnVal = JVMManager::newDoubleArray(env, len);
   env->SetDoubleArrayRegion(returnVal, 0, len, inputData);
-  return returnVal;
-}
-
-/*
- * Converts a real16 ** to a java double[][]
- * @param env, the JNI environment pointer
- * @param inputData, the real16 array of arrays to convert
- * @param rows the number of rows in the array
- * @param cols the number of columns in the array
- * @return a jobjectArray which is a double[][] equivalent of {@code inputData}
- */
-jobjectArray convertCreal16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, real16 ** inputData, int rows, int cols)
-{
-  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  for(int i = 0; i < rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
-    env->SetDoubleArrayRegion(tmp, 0, cols, inputData[i]);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
   return returnVal;
 }
 
@@ -276,48 +258,6 @@ jdoubleArray extractComplexPartOfComplex16Arr2JDoubleArr(JNIEnv* env, complex16*
     imags[i] = std::imag(inputData[i]);
   }
   env->SetDoubleArrayRegion(returnVal, 0, len, imags);
-  return returnVal;
-}
-
-/**
- *
- */
-jobjectArray extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
-{
-  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  real16 * aRow = new real16[cols];
-  for(int i = 0; i < rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
-    for(int j = 0; j < cols; j++)
-    {
-      aRow[j]=std::real(inputData[i][j]);
-    }
-    env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
-  delete aRow;
-  return returnVal;
-}
-
-/**
-*
-*/
-jobjectArray extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(JNIEnv * env, complex16 ** inputData, int rows, int cols)
-{
-  jobjectArray returnVal = JVMManager::newObjectArray(env, rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  real16 * aRow = new real16[cols];
-  for(int i = 0; i < rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, cols);
-    for(int j = 0; j < cols; j++)
-    {
-      aRow[j]=std::imag(inputData[i][j]);
-    }
-    env->SetDoubleArrayRegion(tmp, 0, cols, aRow);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
-  delete aRow;
   return returnVal;
 }
 
@@ -364,7 +304,7 @@ DispatchToOGTerminal::visit(librdag::OGMatrix<real16> const *thing)
 {
   jclass cls = JVMManager::getOGRealDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealDenseMatrixClazz_init();
-  jobjectArray darr = convertCreal16ArrOfArr2JDoubleArrOfArr(_env, thing->toReal16ArrayOfArrays(), thing->getRows(), thing->getCols());
+  jobjectArray darr = Real16AoA{pOGNumeric{thing->createOwningCopy()}}.toJDoubleAoA(_env);
   jobject newobject = _env->NewObject(cls, constructor, darr);
   setObject(newobject);
 }
@@ -374,12 +314,10 @@ DispatchToOGTerminal::visit(librdag::OGMatrix<complex16> const *thing)
 {
   jclass cls = JVMManager::getOGComplexDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGComplexDenseMatrixClazz_init();
-  complex16** values = thing->toComplex16ArrayOfArrays();
-  int rows = thing->getRows();
-  int cols = thing->getCols();
-  jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(_env, values, rows, cols);
-  jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(_env, values, rows, cols);
-  jobject newobject = _env->NewObject(cls, constructor, realPart, complexPart);
+  Complex16AoA c = Complex16AoA{pOGNumeric{thing->createOwningCopy()}};
+  jobjectArray realPart = c.realPartToJDoubleAoA(_env);
+  jobjectArray imagPart = c.imagPartToJDoubleAoA(_env);
+  jobject newobject = _env->NewObject(cls, constructor, realPart, imagPart);
   setObject(newobject);
 }
 

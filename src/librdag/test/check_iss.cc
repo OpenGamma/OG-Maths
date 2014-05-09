@@ -18,22 +18,20 @@ using namespace librdag;
 class issTest : public ::testing::Test
 {
   protected:
-    OGRealScalar * _ogrealscalar = nullptr;
-    OGComplexScalar * _ogcomplexscalar = nullptr;
-    OGIntegerScalar * _ogintegerscalar = nullptr;
-    OGRealMatrix * _ogrealmatrix = nullptr;
-    OGComplexMatrix * _ogcomplexmatrix = nullptr;
-    OGLogicalMatrix * _oglogicalmatrix = nullptr;
-    OGRealDiagonalMatrix * _ogrealdiagonalmatrix = nullptr;
-    OGComplexDiagonalMatrix * _ogcomplexdiagonalmatrix = nullptr;
-    OGRealSparseMatrix * _ogrealsparsematrix = nullptr;
-    OGComplexSparseMatrix * _ogcomplexsparsematrix = nullptr;
-    OGRealMatrix * _ogowningrealmatrix = nullptr;
-    OGComplexMatrix * _ogowningcomplexmatrix = nullptr;
-    OGRealMatrix * _ogrealvector1 = nullptr;
-    OGRealMatrix * _ogrealvector2 = nullptr;
-    OGComplexMatrix * _ogcomplexvector1 = nullptr;
-    OGComplexMatrix * _ogcomplexvector2 = nullptr;
+    pOGRealScalar _ogrealscalar = nullptr;
+    pOGComplexScalar _ogcomplexscalar = nullptr;
+    pOGIntegerScalar _ogintegerscalar = nullptr;
+    pOGRealMatrix _ogrealmatrix = nullptr;
+    pOGComplexMatrix _ogcomplexmatrix = nullptr;
+    pOGLogicalMatrix _oglogicalmatrix = nullptr;
+    pOGRealDiagonalMatrix _ogrealdiagonalmatrix = nullptr;
+    pOGComplexDiagonalMatrix _ogcomplexdiagonalmatrix = nullptr;
+    pOGRealSparseMatrix _ogrealsparsematrix = nullptr;
+    pOGComplexSparseMatrix _ogcomplexsparsematrix = nullptr;
+    pOGRealMatrix _ogrealvector1 = nullptr;
+    pOGRealMatrix _ogrealvector2 = nullptr;
+    pOGComplexMatrix _ogcomplexvector1 = nullptr;
+    pOGComplexMatrix _ogcomplexvector2 = nullptr;
     real16 * r_data;
     complex16 * c_data;
     int * colPtr;
@@ -44,22 +42,20 @@ class issTest : public ::testing::Test
     c_data = new complex16[1]{{12,34}};
     rowIdx = new int[1]{0};
     colPtr = new int[2]{0,1};
-    _ogrealscalar = new OGRealScalar(12);
-    _ogcomplexscalar = new OGComplexScalar({12,34});
-    _ogintegerscalar = new OGIntegerScalar(4);
-    _ogrealmatrix = new OGRealMatrix(r_data,1,1);
-    _ogcomplexmatrix = new OGComplexMatrix(c_data,1,1);
-    _oglogicalmatrix = new OGLogicalMatrix(r_data,1,1);
-    _ogrealdiagonalmatrix = new OGRealDiagonalMatrix(r_data,1,1);
-    _ogcomplexdiagonalmatrix = new OGComplexDiagonalMatrix(c_data,1,1);
-    _ogrealsparsematrix = new OGRealSparseMatrix(colPtr,rowIdx,r_data,1,1);
-    _ogcomplexsparsematrix = new OGComplexSparseMatrix(colPtr,rowIdx,c_data,1,1);
-    _ogowningrealmatrix = new OGRealMatrix(new real16[1]{1},1,1, OWNER);
-    _ogowningcomplexmatrix = new OGComplexMatrix(new complex16[1]{{1,2}},1,1, OWNER);
-    _ogrealvector1 = new OGRealMatrix(new real16[3]{1,2,3},1,3, OWNER);
-    _ogrealvector2 = new OGRealMatrix(new real16[3]{1,2,3},3,1, OWNER);
-    _ogcomplexvector1 = new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER);
-    _ogcomplexvector2 = new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER);
+    _ogrealscalar = pOGRealScalar{new OGRealScalar(12)};
+    _ogcomplexscalar = pOGComplexScalar{new OGComplexScalar({12,34})};
+    _ogintegerscalar = pOGIntegerScalar{new OGIntegerScalar(4)};
+    _ogrealmatrix = pOGRealMatrix{new OGRealMatrix(r_data,1,1)};
+    _ogcomplexmatrix = pOGComplexMatrix{new OGComplexMatrix(c_data,1,1)};
+    _oglogicalmatrix = pOGLogicalMatrix{new OGLogicalMatrix(r_data,1,1)};
+    _ogrealdiagonalmatrix = pOGRealDiagonalMatrix{new OGRealDiagonalMatrix(r_data,1,1)};
+    _ogcomplexdiagonalmatrix = pOGComplexDiagonalMatrix{new OGComplexDiagonalMatrix(c_data,1,1)};
+    _ogrealsparsematrix = pOGRealSparseMatrix{new OGRealSparseMatrix(colPtr,rowIdx,r_data,1,1)};
+    _ogcomplexsparsematrix = pOGComplexSparseMatrix{new OGComplexSparseMatrix(colPtr,rowIdx,c_data,1,1)};
+    _ogrealvector1 = pOGRealMatrix{new OGRealMatrix(new real16[3]{1,2,3},1,3, OWNER)};
+    _ogrealvector2 = pOGRealMatrix{new OGRealMatrix(new real16[3]{1,2,3},3,1, OWNER)};
+    _ogcomplexvector1 = pOGComplexMatrix{new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER)};
+    _ogcomplexvector2 = pOGComplexMatrix{new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER)};
   }
 
   virtual void TearDown()
@@ -68,22 +64,6 @@ class issTest : public ::testing::Test
     delete [] c_data;
     delete [] rowIdx;
     delete [] colPtr;
-    delete _ogrealscalar;
-    delete _ogcomplexscalar;
-    delete _ogintegerscalar;
-    delete _ogrealmatrix;
-    delete _ogcomplexmatrix;
-    delete _oglogicalmatrix;
-    delete _ogrealdiagonalmatrix;
-    delete _ogcomplexdiagonalmatrix;
-    delete _ogrealsparsematrix;
-    delete _ogcomplexsparsematrix;
-    delete _ogowningrealmatrix;
-    delete _ogowningcomplexmatrix;
-    delete _ogrealvector1;
-    delete _ogrealvector2;
-    delete _ogcomplexvector1;
-    delete _ogcomplexvector2;
   }
 };
 
@@ -99,8 +79,6 @@ TEST_F(issTest, isReal)
   ASSERT_FALSE(isReal(_ogcomplexdiagonalmatrix));
   ASSERT_TRUE (isReal(_ogrealsparsematrix));
   ASSERT_FALSE(isReal(_ogcomplexsparsematrix));
-  ASSERT_TRUE (isReal(_ogowningrealmatrix));
-  ASSERT_FALSE(isReal(_ogowningcomplexmatrix));
 }
 
 TEST_F(issTest, isComplex)
@@ -115,8 +93,6 @@ TEST_F(issTest, isComplex)
   ASSERT_TRUE(isComplex(_ogcomplexdiagonalmatrix));
   ASSERT_FALSE (isComplex(_ogrealsparsematrix));
   ASSERT_TRUE(isComplex(_ogcomplexsparsematrix));
-  ASSERT_FALSE (isComplex(_ogowningrealmatrix));
-  ASSERT_TRUE(isComplex(_ogowningcomplexmatrix));
 }
 
 
@@ -132,8 +108,6 @@ TEST_F(issTest, isScalar)
   ASSERT_FALSE(isScalar(_ogcomplexdiagonalmatrix));
   ASSERT_FALSE(isScalar(_ogrealsparsematrix));
   ASSERT_FALSE(isScalar(_ogcomplexsparsematrix));
-  ASSERT_FALSE(isScalar(_ogowningrealmatrix));
-  ASSERT_FALSE(isScalar(_ogowningcomplexmatrix));
 }
 
 TEST_F(issTest, isVector)
@@ -148,8 +122,6 @@ TEST_F(issTest, isVector)
   ASSERT_FALSE(isVector(_ogcomplexdiagonalmatrix));
   ASSERT_FALSE(isVector(_ogrealsparsematrix));
   ASSERT_FALSE(isVector(_ogcomplexsparsematrix));
-  ASSERT_FALSE(isVector(_ogowningrealmatrix));
-  ASSERT_FALSE(isVector(_ogowningcomplexmatrix));
   ASSERT_TRUE(isVector(_ogrealvector1));
   ASSERT_TRUE(isVector(_ogrealvector2));
   ASSERT_TRUE(isVector(_ogcomplexvector1));
@@ -168,6 +140,4 @@ TEST_F(issTest, isMatrix)
   ASSERT_TRUE (isMatrix(_ogcomplexdiagonalmatrix));
   ASSERT_TRUE (isMatrix(_ogrealsparsematrix));
   ASSERT_TRUE (isMatrix(_ogcomplexsparsematrix));
-  ASSERT_TRUE (isMatrix(_ogowningrealmatrix));
-  ASSERT_TRUE (isMatrix(_ogowningcomplexmatrix));
 }

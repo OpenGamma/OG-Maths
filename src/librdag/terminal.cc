@@ -47,22 +47,22 @@ OGTerminal::toComplex16ArrayOfArrays() const
   throw rdag_error("OGTerminal::toComplex16ArrayOfArrays() called but not implemented");
 }
 
-const OGTerminal*
+pOGTerminal
 OGTerminal::asOGTerminal() const
 {
-  return this;
+  return static_pointer_cast<const OGTerminal, const OGNumeric>(shared_from_this());
 }
 
 bool
-OGTerminal::operator==(const OGTerminal&  other) const
+OGTerminal::operator==(const pOGTerminal& other) const
 {
-  return this->equals(&other);
+  return this->equals(other);
 }
 
 bool
-OGTerminal::operator!=(const OGTerminal&  other) const
+OGTerminal::operator!=(const pOGTerminal& other) const
 {
-  return !(this->equals(&other));
+  return !(this->equals(other));
 }
 
 detail::FuzzyCompareOGTerminalContainer&
@@ -73,28 +73,35 @@ OGTerminal::operator~(void) const
 
 bool OGTerminal::operator==(const detail::FuzzyCompareOGTerminalContainer& thing) const
 {
-  return this->fuzzyequals(thing.getTerminal());
+  return this->fuzzyequals(pOGTerminal{thing.getTerminal()});
 }
 
 bool OGTerminal::operator!=(const detail::FuzzyCompareOGTerminalContainer& thing) const
 {
-  return !(this->fuzzyequals(thing.getTerminal()));
+  return !(this->fuzzyequals(pOGTerminal{thing.getTerminal()}));
 }
 
 OGTerminal::OGTerminal()
 {
-  _fuzzyref = new detail::FuzzyCompareOGTerminalContainer(this);
+  //_fuzzyref = new detail::FuzzyCompareOGTerminalContainer(asOGTerminal());
   _converter = new ConvertTo();
 }
 
 OGTerminal::~OGTerminal()
 {
-  delete _fuzzyref;
+  if (_fuzzyref != nullptr)
+  {
+    delete _fuzzyref;
+  }
   delete _converter;
 }
 
 detail::FuzzyCompareOGTerminalContainer&
 OGTerminal::getFuzzyContainer() const{
+  if (_fuzzyref == nullptr)
+  {
+    _fuzzyref = new detail::FuzzyCompareOGTerminalContainer(asOGTerminal());
+  }
   return *_fuzzyref;
 }
 
@@ -111,10 +118,16 @@ OGTerminal::mathsequals(const OGTerminal * other) const
 }
 
 bool
+OGTerminal::mathsequals(pOGTerminal other) const
+{
+  return mathsequals(other.get());
+}
+
+bool
 OGTerminal::mathsequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
 {
-  OGTerminal * thisconv = nullptr;
-  OGTerminal * otherconv = nullptr;
+  pOGTerminal thisconv; 
+  pOGTerminal otherconv;
   bool ret = false;
   if((this->getRows()!=other->getRows())||(this->getCols()!=other->getCols()))
   {
@@ -134,9 +147,13 @@ OGTerminal::mathsequals(const OGTerminal * other, real16 maxabserror, real16 max
   {
     ret = true;
   }
-  delete thisconv;
-  delete otherconv;
   return ret;
+}
+
+bool
+OGTerminal::mathsequals(pOGTerminal other, real16 maxabserror, real16 maxrelerror) const
+{
+  return mathsequals(other.get(), maxabserror, maxrelerror);
 }
 
 bool
@@ -150,17 +167,14 @@ OGTerminal::operator%(const OGTerminal& other) const
 /**
  * FuzzyCompareOGTerminalContainer
  */
-detail::FuzzyCompareOGTerminalContainer::FuzzyCompareOGTerminalContainer(const OGTerminal * terminal)
-{
-  this->_terminal = terminal;
-}
+detail::FuzzyCompareOGTerminalContainer::FuzzyCompareOGTerminalContainer(const pOGTerminal& terminal): _terminal{terminal} {}
 
 detail::FuzzyCompareOGTerminalContainer::~FuzzyCompareOGTerminalContainer(){}
 
-const OGTerminal *
+const weak_ptr<const OGTerminal>
 detail::FuzzyCompareOGTerminalContainer::getTerminal() const
 {
-  return this->_terminal;
+  return _terminal;
 }
 
 
@@ -221,13 +235,13 @@ OGScalar<T>::toArrayOfArrays() const
 
 template<typename T>
 bool
-OGScalar<T>::equals(const OGTerminal * other) const
+OGScalar<T>::equals(pOGTerminal other) const
 {
   if(this->getType()!=other->getType())
   {
     return false;
   }
-  if(static_cast<const OGScalar *>(other)->getValue()!=this->_value)
+  if(static_pointer_cast<const OGScalar<T>, const OGTerminal>(other)->getValue()!=this->_value)
   {
     return false;
   }
@@ -236,20 +250,20 @@ OGScalar<T>::equals(const OGTerminal * other) const
 
 template<typename T>
 bool
-OGScalar<T>::fuzzyequals(const OGTerminal * other) const
+OGScalar<T>::fuzzyequals(const pOGTerminal& other) const
 {
   return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
 }
 
 template<typename T>
 bool
-OGScalar<T>::fuzzyequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+OGScalar<T>::fuzzyequals(const pOGTerminal& other, real16 maxabserror, real16 maxrelerror) const
 {
   if(this->getType()!=other->getType())
   {
     return false;
   }
-  if(!SingleValueFuzzyEquals(static_cast<const OGScalar *>(other)->getValue(),this->_value,maxabserror,maxrelerror))
+  if(!SingleValueFuzzyEquals(static_pointer_cast<const OGScalar<T>, const OGTerminal>(other)->getValue(),this->_value,maxabserror,maxrelerror))
   {
     return false;
   }
@@ -257,14 +271,14 @@ OGScalar<T>::fuzzyequals(const OGTerminal * other, real16 maxabserror, real16 ma
 }
 
 template<typename T>
-OGRealMatrix *
+pOGRealMatrix
 OGScalar<T>::asFullOGRealMatrix() const
 {
   throw rdag_error("Cannot asFullOGRealMatrix() template OGScalar<T> class.");
 }
 
 template<typename T>
-OGComplexMatrix  *
+pOGComplexMatrix
 OGScalar<T>::asFullOGComplexMatrix() const
 {
   throw rdag_error("Cannot asFullOGComplexMatrix() template OGScalar<T> class.");
@@ -292,7 +306,7 @@ OGScalar<T>::debug_print() const
 }
 
 template<typename T>
-OGNumeric *
+pOGNumeric
 OGScalar<T>::copy() const
 {
   throw rdag_error("Cannot copy() template OGScalar<T> class.");
@@ -324,16 +338,16 @@ OGRealScalar::toComplex16ArrayOfArrays() const
   return tmp;
 }
 
-OGNumeric*
+pOGNumeric
 OGRealScalar::copy() const
 {
-  return new OGRealScalar(this->getValue());
+  return pOGNumeric{new OGRealScalar(this->getValue())};
 }
 
-const OGRealScalar*
+pOGRealScalar
 OGRealScalar::asOGRealScalar() const
 {
-  return this;
+  return static_pointer_cast<const OGRealScalar, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -348,16 +362,16 @@ OGRealScalar::getType() const
   return REAL_SCALAR_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGRealScalar::asFullOGRealMatrix() const
 {
-  return getConvertTo()->convertToOGRealMatrix(this);
+  return getConvertTo()->convertToOGRealMatrix(asOGRealScalar());
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGRealScalar::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(this);
+  return getConvertTo()->convertToOGComplexMatrix(asOGRealScalar());
 }
 
 OGTerminal *
@@ -384,16 +398,16 @@ OGComplexScalar::toComplex16ArrayOfArrays() const
   return this->toArrayOfArrays();
 }
 
-OGNumeric*
+pOGNumeric
 OGComplexScalar::copy() const
 {
-  return new OGComplexScalar(this->getValue());
+  return pOGNumeric{new OGComplexScalar(this->getValue())};
 }
 
-const OGComplexScalar*
+pOGComplexScalar
 OGComplexScalar::asOGComplexScalar() const
 {
-  return this;
+  return static_pointer_cast<const OGComplexScalar, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -408,16 +422,16 @@ OGComplexScalar::getType() const
   return COMPLEX_SCALAR_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGComplexScalar::asFullOGRealMatrix() const
 {
   throw rdag_error("Cannot represent complex data in linear memory of type real16");
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGComplexScalar::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(this);
+  return getConvertTo()->convertToOGComplexMatrix(asOGComplexScalar());
 }
 
 OGTerminal *
@@ -439,16 +453,16 @@ OGComplexScalar::createComplexOwningCopy() const
 
 OGIntegerScalar::OGIntegerScalar(int data): OGScalar<int>(data) {}
 
-OGNumeric*
+pOGNumeric
 OGIntegerScalar::copy() const
 {
-  return new OGIntegerScalar(this->getValue());
+  return pOGNumeric{new OGIntegerScalar(this->getValue())};
 }
 
-const OGIntegerScalar*
+pOGIntegerScalar
 OGIntegerScalar::asOGIntegerScalar() const
 {
-  return this;
+  return static_pointer_cast<const OGIntegerScalar, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -463,16 +477,16 @@ OGIntegerScalar::getType() const
   return INTEGER_SCALAR_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGIntegerScalar::asFullOGRealMatrix() const
 {
-  return getConvertTo()->convertToOGRealMatrix(this);
+  return getConvertTo()->convertToOGRealMatrix(asOGIntegerScalar());
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGIntegerScalar::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(this);
+  return getConvertTo()->convertToOGComplexMatrix(asOGIntegerScalar());
 }
 
 OGTerminal *
@@ -587,13 +601,13 @@ OGArray<T>::setDatalen(int datalen)
 
 template<typename T>
 bool
-OGArray<T>::fundamentalsEqual(const OGTerminal * other) const
+OGArray<T>::fundamentalsEqual(const pOGTerminal& other) const
 {
   if(this->getType()!=other->getType())
   {
     return false;
   }
-  const OGArray * typetwiddle = static_cast<const OGArray *>(other);
+  const shared_ptr<const OGArray<T>> typetwiddle = static_pointer_cast<const OGArray<T>, const OGTerminal>(other);
   if(typetwiddle ->getRows()!=this->getRows())
   {
     return false;
@@ -607,10 +621,31 @@ OGArray<T>::fundamentalsEqual(const OGTerminal * other) const
 
 template<typename T>
 bool
-OGArray<T>::equals(const OGTerminal * other) const
+OGArray<T>::fundamentalsEqual(const OGTerminal* other) const
+{
+  if(this->getType()!=other->getType())
+  {
+    return false;
+  }
+  const OGArray<T>* typetwiddle = static_cast<const OGArray<T>*>(other);
+  if(typetwiddle ->getRows()!=this->getRows())
+  {
+    return false;
+  }
+  if(typetwiddle ->getCols()!=this->getCols())
+  {
+    return false;
+  }
+  return true;
+}
+
+
+template<typename T>
+bool
+OGArray<T>::equals(pOGTerminal other) const
 {
   if(!fundamentalsEqual(other)) return false;
-  const OGArray * typetwiddle = static_cast<const OGArray *>(other);
+  const shared_ptr<const OGArray> typetwiddle = static_pointer_cast<const OGArray, const OGTerminal>(other);
   if(!ArrayBitEquals(typetwiddle->getData(),this->getData(),this->getDatalen()))
   {
     return false;
@@ -620,22 +655,22 @@ OGArray<T>::equals(const OGTerminal * other) const
 
 template<typename T>
 bool
-OGArray<T>::fuzzyequals(const OGTerminal * other) const
-{
-  return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
-}
-
-template<typename T>
-bool
-OGArray<T>::fuzzyequals(const OGTerminal * other,real16 maxabserror,real16 maxrelerror) const
+OGArray<T>::fuzzyequals(const pOGTerminal& other,real16 maxabserror,real16 maxrelerror) const
 {
   if(!fundamentalsEqual(other)) return false;
-  const OGArray * typetwiddle = static_cast<const OGArray *>(other);
+  const shared_ptr<const OGArray<T>> typetwiddle = static_pointer_cast<const OGArray<T>, const OGTerminal>(other);
   if(!ArrayFuzzyEquals(typetwiddle->getData(),this->getData(),this->getDatalen(),maxabserror,maxrelerror))
   {
     return false;
   }
   return true;
+}
+
+template<typename T>
+bool
+OGArray<T>::fuzzyequals(const pOGTerminal& other) const
+{
+  return fuzzyequals(other, FuzzyEquals_default_maxabserror, FuzzyEquals_default_maxrelerror);
 }
 
 template<typename T>
@@ -654,7 +689,7 @@ debug_print() const
 }
 
 template<typename T>
-OGNumeric *
+pOGNumeric
 OGArray<T>::
 copy() const
 {
@@ -670,7 +705,7 @@ accept(Visitor SUPPRESS_UNUSED &v) const
 }
 
 template<typename T>
-OGRealMatrix *
+pOGRealMatrix
 OGArray<T>::
 asFullOGRealMatrix() const
 {
@@ -679,7 +714,7 @@ asFullOGRealMatrix() const
 }
 
 template<typename T>
-OGComplexMatrix *
+pOGComplexMatrix
 OGArray<T>::
 asFullOGComplexMatrix() const
 {
@@ -753,10 +788,10 @@ OGMatrix<T>::toArrayOfArrays() const
 }
 
 template<typename T>
-OGNumeric*
+pOGNumeric
 OGMatrix<T>::copy() const
 {
-  return new OGMatrix<T>(this->getData(), this->getRows(), this->getCols());
+  return pOGNumeric{new OGMatrix<T>(this->getData(), this->getRows(), this->getCols())};
 }
 
 template<typename T>
@@ -786,12 +821,12 @@ OGMatrix<T>::createOwningCopy() const
 }
 
 template<typename T>
-OGComplexMatrix *
+pOGComplexMatrix
 OGMatrix<T>::asFullOGComplexMatrix() const
 {
   complex16 * newdata = new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return new OGComplexMatrix(newdata,this->getRows(),this->getCols(),OWNER);
+  return pOGComplexMatrix{new OGComplexMatrix(newdata,this->getRows(),this->getCols(),OWNER)};
 }
 
 template<typename T>
@@ -860,16 +895,16 @@ template class OGMatrix<complex16>;
  * OGRealMatrix
  */
 
-OGNumeric*
+pOGNumeric
 OGRealMatrix::copy() const
 {
-  return new OGRealMatrix(this->getData(), this->getRows(), this->getCols());
+  return pOGNumeric{new OGRealMatrix(this->getData(), this->getRows(), this->getCols())};
 }
 
-const OGRealMatrix*
+pOGRealMatrix
 OGRealMatrix::asOGRealMatrix() const
 {
-  return this;
+  return static_pointer_cast<const OGRealMatrix, const OGNumeric>(shared_from_this());
 }
 
 ExprType_t
@@ -878,18 +913,18 @@ OGRealMatrix::getType() const
   return REAL_MATRIX_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGRealMatrix::asFullOGRealMatrix() const
 {
   real16 * ret = new real16[this->getDatalen()];
   memcpy(ret,this->getData(),this->getDatalen()*sizeof(real16));
-  return new OGRealMatrix(ret,this->getRows(),this->getCols(),OWNER);
+  return pOGRealMatrix{new OGRealMatrix(ret,this->getRows(),this->getCols(),OWNER)};
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGRealMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(this);
+  return getConvertTo()->convertToOGComplexMatrix(asOGRealMatrix());
 }
 
 OGTerminal *
@@ -911,10 +946,10 @@ OGRealMatrix::createComplexOwningCopy() const
 /**
  * Logical Matrix
  */
-const OGLogicalMatrix *
+pOGLogicalMatrix
 OGLogicalMatrix::asOGLogicalMatrix() const
 {
-  return this;
+  return static_pointer_cast<const OGLogicalMatrix, const OGNumeric>(shared_from_this());
 }
 
 
@@ -928,16 +963,16 @@ OGComplexMatrix::toComplex16ArrayOfArrays() const
   return this->toArrayOfArrays();
 }
 
-OGNumeric*
+pOGNumeric
 OGComplexMatrix::copy() const
 {
-  return new OGComplexMatrix(this->getData(), this->getRows(), this->getCols());
+  return pOGNumeric{new OGComplexMatrix(this->getData(), this->getRows(), this->getCols())};
 }
 
-const OGComplexMatrix*
+pOGComplexMatrix
 OGComplexMatrix::asOGComplexMatrix() const
 {
-  return this;
+  return static_pointer_cast<const OGComplexMatrix, const OGNumeric>(shared_from_this());
 }
 
 ExprType_t
@@ -946,20 +981,20 @@ OGComplexMatrix::getType() const
   return COMPLEX_MATRIX_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGComplexMatrix::asFullOGRealMatrix() const
 {
   throw rdag_error("Cannot represent complex data in linear memory of type real16");
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGComplexMatrix::asFullOGComplexMatrix() const
 {
   int len = this->getDatalen();
   complex16 * data = this->getData();
   complex16 * ret = new complex16[len];
   memcpy(ret,data,len*sizeof(complex16));
-  return new OGComplexMatrix(ret,this->getRows(),this->getCols(),OWNER);
+  return pOGComplexMatrix{new OGComplexMatrix(ret,this->getRows(),this->getCols(),OWNER)};
 }
 
 OGTerminal *
@@ -1076,16 +1111,16 @@ OGRealDiagonalMatrix::toReal16ArrayOfArrays() const
   return this->toArrayOfArrays();
 }
 
-OGNumeric*
+pOGNumeric
 OGRealDiagonalMatrix::copy() const
 {
-  return new OGRealDiagonalMatrix(this->getData(), this->getRows(), this->getCols());
+  return pOGNumeric{new OGRealDiagonalMatrix(this->getData(), this->getRows(), this->getCols())};
 }
 
-const OGRealDiagonalMatrix*
+pOGRealDiagonalMatrix
 OGRealDiagonalMatrix::asOGRealDiagonalMatrix() const
 {
-  return this;
+  return static_pointer_cast<const OGRealDiagonalMatrix, const OGNumeric>(shared_from_this());
 }
 
 ExprType_t
@@ -1094,16 +1129,16 @@ OGRealDiagonalMatrix::getType() const
   return REAL_DIAGONAL_MATRIX_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGRealDiagonalMatrix::asFullOGRealMatrix() const
 {
-    return getConvertTo()->convertToOGRealMatrix(this);
+    return getConvertTo()->convertToOGRealMatrix(asOGRealDiagonalMatrix());
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGRealDiagonalMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(this);
+  return getConvertTo()->convertToOGComplexMatrix(asOGRealDiagonalMatrix());
 }
 
 OGTerminal *
@@ -1170,16 +1205,16 @@ OGComplexDiagonalMatrix::toComplex16ArrayOfArrays() const
   return this->toArrayOfArrays();
 }
 
-OGNumeric*
+pOGNumeric
 OGComplexDiagonalMatrix::copy() const
 {
-  return new OGComplexDiagonalMatrix(this->getData(), this->getRows(), this->getCols());
+  return pOGNumeric{new OGComplexDiagonalMatrix(this->getData(), this->getRows(), this->getCols())};
 }
 
-const OGComplexDiagonalMatrix*
+pOGComplexDiagonalMatrix
 OGComplexDiagonalMatrix::asOGComplexDiagonalMatrix() const
 {
-  return this;
+  return static_pointer_cast<const OGComplexDiagonalMatrix, const OGNumeric>(shared_from_this());
 }
 
 
@@ -1189,16 +1224,16 @@ OGComplexDiagonalMatrix::getType() const
   return COMPLEX_DIAGONAL_MATRIX_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGComplexDiagonalMatrix::asFullOGRealMatrix() const
 {
   throw rdag_error("Cannot represent complex data in linear memory of type real16");
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGComplexDiagonalMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(this);
+  return getConvertTo()->convertToOGComplexMatrix(asOGComplexDiagonalMatrix());
 }
 
 
@@ -1317,13 +1352,13 @@ OGSparseMatrix<T>::toArrayOfArrays() const{
 
 template<typename T>
 bool
-OGSparseMatrix<T>::equals(const OGTerminal * other) const
+OGSparseMatrix<T>::equals(pOGTerminal other) const
 {
   if(!OGArray<T>::equals(other))
   {
     return false;
   }
-  const OGSparseMatrix * typetwiddle = static_cast<const OGSparseMatrix<T> *>(other);
+  shared_ptr<const OGSparseMatrix<T>> typetwiddle = static_pointer_cast<const OGSparseMatrix<T>, const OGTerminal>(other);
   if(!ArrayBitEquals(typetwiddle->getColPtr(),this->getColPtr(),this->getCols()+1))
   {
     return false;
@@ -1337,20 +1372,13 @@ OGSparseMatrix<T>::equals(const OGTerminal * other) const
 
 template<typename T>
 bool
-OGSparseMatrix<T>::fuzzyequals(const OGTerminal * other) const
-{
-  return this->fuzzyequals(other,FuzzyEquals_default_maxabserror,FuzzyEquals_default_maxrelerror);
-}
-
-template<typename T>
-bool
-OGSparseMatrix<T>::fuzzyequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+OGSparseMatrix<T>::fuzzyequals(const pOGTerminal& other, real16 maxabserror, real16 maxrelerror) const
 {
   if(!OGArray<T>::fuzzyequals(other,maxabserror,maxrelerror))
   {
     return false;
   }
-  const OGSparseMatrix * typetwiddle = static_cast<const OGSparseMatrix<T> *>(other);
+  const shared_ptr<const OGSparseMatrix<T>> typetwiddle = static_pointer_cast<const OGSparseMatrix<T>, const OGTerminal>(other);
   if(!ArrayBitEquals(typetwiddle->getColPtr(),this->getColPtr(),this->getCols()+1))
   {
     return false;
@@ -1360,6 +1388,13 @@ OGSparseMatrix<T>::fuzzyequals(const OGTerminal * other, real16 maxabserror, rea
     return false;
   }
   return true;
+}
+
+template<typename T>
+bool
+OGSparseMatrix<T>::fuzzyequals(const pOGTerminal& other) const
+{
+  return fuzzyequals(other, FuzzyEquals_default_maxabserror, FuzzyEquals_default_maxrelerror);
 }
 
 template class OGSparseMatrix<real16>;
@@ -1397,17 +1432,17 @@ OGRealSparseMatrix::toReal16ArrayOfArrays() const
   return this->toArrayOfArrays();
 }
 
-OGNumeric*
+pOGNumeric
 OGRealSparseMatrix::copy() const
 {
-  return new OGRealSparseMatrix(this->getColPtr(), this->getRowIdx(), this->getData(),
-                                this->getRows(), this->getCols());
+  return pOGNumeric{new OGRealSparseMatrix(this->getColPtr(), this->getRowIdx(), this->getData(),
+                                           this->getRows(), this->getCols())};
 }
 
-const OGRealSparseMatrix*
+pOGRealSparseMatrix
 OGRealSparseMatrix::asOGRealSparseMatrix() const
 {
-  return this;
+  return static_pointer_cast<const OGRealSparseMatrix, const OGNumeric>(shared_from_this());
 }
 
 ExprType_t
@@ -1416,16 +1451,16 @@ OGRealSparseMatrix::getType() const
   return REAL_SPARSE_MATRIX_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGRealSparseMatrix::asFullOGRealMatrix() const
 {
-  return getConvertTo()->convertToOGRealMatrix(this);
+  return getConvertTo()->convertToOGRealMatrix(asOGRealSparseMatrix());
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGRealSparseMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(this);
+  return getConvertTo()->convertToOGComplexMatrix(asOGRealSparseMatrix());
 }
 
 OGTerminal *
@@ -1484,17 +1519,17 @@ OGComplexSparseMatrix::toComplex16ArrayOfArrays() const
   return this->toArrayOfArrays();
 }
 
-OGNumeric*
+pOGNumeric
 OGComplexSparseMatrix::copy() const
 {
-  return new OGComplexSparseMatrix(this->getColPtr(), this->getRowIdx(), this->getData(),
-                                   this->getRows(), this->getCols());
+  return pOGNumeric{new OGComplexSparseMatrix(this->getColPtr(), this->getRowIdx(), this->getData(),
+                                              this->getRows(), this->getCols())};
 }
 
-const OGComplexSparseMatrix*
+pOGComplexSparseMatrix
 OGComplexSparseMatrix::asOGComplexSparseMatrix() const
 {
-  return this;
+  return static_pointer_cast<const OGComplexSparseMatrix, const OGNumeric>(shared_from_this());
 }
 
 ExprType_t
@@ -1503,16 +1538,16 @@ OGComplexSparseMatrix::getType() const
   return COMPLEX_SPARSE_MATRIX_ENUM;
 }
 
-OGRealMatrix *
+pOGRealMatrix
 OGComplexSparseMatrix::asFullOGRealMatrix() const
 {
   throw rdag_error("Cannot represent complex data in linear memory of type real16");
 }
 
-OGComplexMatrix *
+pOGComplexMatrix
 OGComplexSparseMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(this);
+  return getConvertTo()->convertToOGComplexMatrix(asOGComplexSparseMatrix());
 }
 
 OGTerminal *
@@ -1536,28 +1571,28 @@ OGComplexSparseMatrix::createComplexOwningCopy() const
 
 // Concrete template factory for dense matrices
 template<>
-OGTerminal * makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access)
+pOGNumeric makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access)
 {
-  return new OGRealMatrix(data, rows, cols, access);
+  return pOGNumeric{new OGRealMatrix(data, rows, cols, access)};
 }
 
 template<>
-OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access)
+pOGNumeric makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access)
 {
-  return new OGComplexMatrix(data, rows, cols, access);
+  return pOGNumeric{new OGComplexMatrix(data, rows, cols, access)};
 }
 
 // Concrete template factory for scalars
 template<>
-OGTerminal * makeConcreteScalar(real16 data)
+pOGNumeric makeConcreteScalar(real16 data)
 {
-  return new OGRealScalar(data);
+  return pOGNumeric{new OGRealScalar(data)};
 }
 
 template<>
-OGTerminal * makeConcreteScalar(complex16 data)
+pOGNumeric makeConcreteScalar(complex16 data)
 {
-  return new OGComplexScalar(data);
+  return pOGNumeric{new OGComplexScalar(data)};
 }
 
 } // namespace librdag

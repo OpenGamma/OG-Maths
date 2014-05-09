@@ -10,7 +10,7 @@
 
 namespace librdag {
 
-void runtree(OGNumeric * root)
+void runtree(pOGNumeric root)
 {
   // create dispatcher
   Dispatcher * d = new Dispatcher();
