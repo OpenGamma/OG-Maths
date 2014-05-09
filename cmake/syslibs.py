@@ -9,7 +9,7 @@
 Subsequently this program fixes the linkage of libraries in the JAR folder to
 use an appropriate rpath on Linux and OS X."""
 
-import argparse, os, shutil, subprocess, sys
+import argparse, os, shutil, subprocess, sys, re
 from buildutils import platform_code
 
 libs = {}
@@ -21,6 +21,9 @@ default_gcc_lib_folder = {}
 default_gcc_lib_folder['lnx'] = '/opt/gcc/4.8.2/lib64'
 default_gcc_lib_folder['osx'] = '/opt/local/lib/gcc48'
 default_gcc_lib_folder['win'] = 'C:\\BuildSystem\\mingw-builds\\x64-4.8.1-win32-seh-rev2\\mingw64\\bin'
+
+# The pattern for spotting a linux lib is GNU_PRELINKED as found in the DSO dynamic section
+pat_gnu_prelinked = re.compile('GNU_PRELINKED');
 
 def get_parser():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -35,7 +38,26 @@ def get_lib_folder(args):
 def fix_linux_linkage(args):
     files = os.listdir(args.output)
     for f in files:
-        print 'Patching RUNPATH to $ORIGIN for %s' % f
+        # Check the system lib to see if it is "prelinked", dynamic section of DSO will
+        # contain string "GNU_PRELINKED" if so.
+        process = subprocess.Popen(['readelf', '-d', f], cwd=args.output, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        retcode = process.poll()
+        if retcode:
+            raise RuntimeError('readelf of %s failed. Retcode: %s, stdout: %s, stderr: %s' % (f, retcode, out, err))
+
+        # Check if there's a match in stdout of 'readelf -d' for the "GNU_PRELINKED" line
+        if pat_gnu_prelinked.search(out):
+            # invoke un-prelink command on library
+            print 'Un-prelinking library: %s' % f
+            process = subprocess.Popen(['prelink', '-u', f], cwd=args.output, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = process.communicate()
+            retcode = process.poll()
+            if retcode:
+                raise RuntimeError('prelink -u (un-prelink) of %s failed. Retcode: %s, stdout: %s, stderr: %s' % (f, retcode, out, err))
+
+        # Patch the RUNPATH to $ORIGIN post potential un-prelink else the un-prelink won't work
+        print 'Patching RUNPATH to $ORIGIN for: %s' % f
         process = subprocess.Popen(['patchelf', '--set-rpath', '$ORIGIN', f], cwd=args.output)
         out, err = process.communicate()
         retcode = process.poll()
