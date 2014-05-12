@@ -42,3 +42,11 @@ an Eligible Compilation Process may be distributed in binary form alongside the
 GCC Runtime Libraries is at licenses/gcc-exception-3.1-faq.html, and was
 retrieved from https://www.gnu.org/licenses/gcc-exception-3.1-faq.html on
 02/05/2014.
+
+CMake:
+The files 'cmake/modules/UseJavaClassFilelist.cmake' and
+'cmake/modules/UseJavaSymlinks.cmake' are from CMake
+(https://github.com/Kitware/CMake) and are licensed under the the BSD 3-Clause
+License, see 'licenses/CMake_BSD3c.txt'. The file 'cmake/modules/UseJava.cmake'
+is based on code from CMake (https://github.com/Kitware/CMake) and it is
+licensed under the the BSD 3-Clause License, see 'licenses/CMake_BSD3c.txt'.
