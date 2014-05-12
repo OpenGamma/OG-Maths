@@ -74,6 +74,17 @@ public class Materialisers {
    * @param level the level at which to start indents (usually 0)
    */
   public static void printTree(OGNumeric arg, StringBuffer buf, int level) {
+    printTree(arg, buf, level, false);
+  }
+
+  /**
+   * Naively print the tree associated with arg
+   * @param arg the root of the tree
+   * @param buf a buffer in which to hold the printed tree
+   * @param level the level at which to start indents (usually 0)
+   * @param verboseTerminals true to print contents of terminals
+   */
+  public static void printTree(OGNumeric arg, StringBuffer buf, int level, boolean verboseTerminals) {
     Catchers.catchNullFromArgList(arg, 1);
     Catchers.catchNullFromArgList(buf, 2);
     Catchers.catchCondition(level < 0, "Level must be >= 0");
@@ -84,13 +95,17 @@ public class Materialisers {
       buf.append(new String(new char[level]).replace("\0", tab) + arg.getClass());
       buf.append("\n");
       for (int i = 0; i < expr.getExprs().length; i++) {
-        printTree(expr.getExprs()[i], buf, level);
+        printTree(expr.getExprs()[i], buf, level, verboseTerminals);
       }
       break;
     }
     if ((OGArray.class.isAssignableFrom(arg.getClass()))) {
       buf.append(new String(new char[level]).replace("\0", tab) + arg.getClass() + "\n");
     }
+    if ((OGScalar.class.isAssignableFrom(arg.getClass()))) {
+      buf.append(new String(new char[level]).replace("\0", tab) + arg.getClass() + "\n");
+    }
+    buf.append(arg.toString());
     level--;
   }
 
