@@ -37,7 +37,7 @@ For many operations, industry-standard, battle-tested native code libraries incl
 
 The OG-Maths library is open source software using the Apache License v2, and includes components provided under other licences. For a full list of licences and the source files to which they pertain, see [LICENSE.txt](LICENSE.txt). The company behind OG-Maths ([OpenGamma](http://www.opengamma.com)) also offers support and some additional commercial components. (The commercial components typically have dependencies with restrictive licensing incompatible with open source.) This README only refers to the open source components.
 
-**NOTE: Prior to version #### there are missing license notations, details of the licenses which apply to these prior versions can be found in [LICENSE.txt](LICENSE.txt).**
+**NOTE: All commits prior to SHA [89b92660bd6b5af768df8e977f11e2e36f3e6fe7](https://github.com/OpenGamma/OG-Maths/commit/89b92660bd6b5af768df8e977f11e2e36f3e6fe7) are missing one or more license notations, details of the licenses which apply to these prior versions can be found in the most current version of [LICENSE.txt](LICENSE.txt).**
 
 
 Copyright (C) 2013 - present by OpenGamma Inc. and the OpenGamma group of companies.
