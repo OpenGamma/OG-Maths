@@ -66,6 +66,12 @@ set(JAVA_FILES
     datacontainers/scalar/OGRealScalar.java
     datacontainers/scalar/OGComplexScalar.java
     datacontainers/scalar/OGIntegerScalar.java
+    fuzzer/DataCreator.java
+    fuzzer/Fuzzer.java
+    fuzzer/FuzzerMain.java
+    fuzzer/FuzzingThread.java
+    fuzzer/ThreadedTreeFuzzer.java
+    fuzzer/TreeFuzzer.java
     )
 
 foreach(JFILE ${JAVA_FILES})

@@ -8,7 +8,10 @@ package com.opengamma.maths.fuzzer;
 import java.util.Random;
 
 import com.opengamma.maths.datacontainers.OGTerminal;
+import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
+import com.opengamma.maths.datacontainers.matrix.OGComplexDiagonalMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
+import com.opengamma.maths.datacontainers.matrix.OGRealDiagonalMatrix;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
@@ -64,12 +67,12 @@ public class DataCreator {
       lrows = intGt0();
       lcols = lrows;
     } else {
-      // some times create random rows and cols
+      // sometimes create random rows and cols
       lrows = intGt0();
       lcols = intGt0();
     }
 
-    final int typecount = 3;
+    final int typecount = 6;
     switch (_rand.nextInt(typecount)) {
       case 0:
         return new OGRealScalar(_rand.nextDouble());
@@ -77,6 +80,12 @@ public class DataCreator {
         return new OGComplexScalar(_rand.nextDouble(), _rand.nextDouble());
       case 2:
         return new OGRealDenseMatrix(getRandomData(lrows * lcols), lrows, lcols);
+      case 3:
+        return new OGComplexDenseMatrix(getRandomData(2 * lrows * lcols), lrows, lcols);
+      case 4:
+        return new OGRealDiagonalMatrix(getRandomData(Math.min(lcols,lrows)), lrows, lcols);
+      case 5:
+        return new OGComplexDiagonalMatrix(getRandomData(2 * Math.min(lcols,lrows)), lrows, lcols);
       default:
         throw new MathsExceptionIllegalArgument("Unknown value to type switch, value was " + typecount);
     }

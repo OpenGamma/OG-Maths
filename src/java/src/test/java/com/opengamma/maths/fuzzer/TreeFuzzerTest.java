@@ -1,6 +1,11 @@
 package com.opengamma.maths.fuzzer;
 
+import static java.nio.file.Files.createTempDirectory;
 import static org.testng.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import org.testng.annotations.Test;
 
@@ -9,7 +14,6 @@ import com.opengamma.maths.datacontainers.OGNumeric;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.datacontainers.other.OGLUResult;
 import com.opengamma.maths.datacontainers.other.OGSVDResult;
-import com.opengamma.maths.materialisers.Materialisers;
 
 /**
  * Tests the TreeFuzzer class
@@ -31,7 +35,7 @@ public class TreeFuzzerTest {
     //  /  \
     // 10  20
     tree = DOGMA.plus(DOGMA.D(10), DOGMA.D(20));
-    assertTrue(fuzzer.treeSize(tree, 0) == 3);
+    assertTrue(fuzzer.treeRefCount(tree, 0) == 3);
 
     // Tree is
     //     PLUS
@@ -40,7 +44,7 @@ public class TreeFuzzerTest {
     //  /  \   /  \
     // 10  20 10  20
     tree = DOGMA.plus(tree, tree);
-    assertTrue(fuzzer.treeSize(tree, 0) == 7);
+    assertTrue(fuzzer.treeRefCount(tree, 0) == 7);
 
     // Tree is
     //
@@ -55,7 +59,7 @@ public class TreeFuzzerTest {
     // 10  20 10  20
     OGLUResult res = DOGMA.lu(tree);
     tree = res.getU();
-    assertTrue(fuzzer.treeSize(tree, 0) == 10);
+    assertTrue(fuzzer.treeRefCount(tree, 0) == 10);
   }
 
   @Test
@@ -64,7 +68,22 @@ public class TreeFuzzerTest {
     int maxTreeRefs = 100;
     int maxDataSize = 10;
     TreeFuzzer fuzzer = new TreeFuzzer(rngSeed, maxTreeRefs, maxDataSize);
-    fuzzer.fuzz(60);
+    fuzzer.fuzz(2);
+  }
+
+  @Test
+  public void checkThreadedFuzzer() {
+    int maxTreeRefs = 500;
+    int maxDataSize = 20;
+    int nthreads = 8;
+    long runtime = 5;
+    Fuzzer fuzzer = null;
+    try {
+      fuzzer = new ThreadedTreeFuzzer(runtime, maxTreeRefs, maxDataSize, nthreads, true, Files.createTempDirectory("og-maths-logs-").toFile());
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+    fuzzer.fuzz(runtime);
   }
 
   @Test
