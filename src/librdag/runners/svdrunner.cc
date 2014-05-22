@@ -27,7 +27,7 @@ template<typename T> void svd_dense_runner(RegContainer& reg, const OGMatrix<T>*
   int lda = m > 1 ? m : 1;
   int ldu = lda;
   int minmn = m > n ? n : m;
-  int ldvt = minmn;
+  int ldvt = n;
   int info = 0;
 
   T * U = new T[ldu*m];
