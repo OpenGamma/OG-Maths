@@ -6,10 +6,6 @@
 
 package com.opengamma.maths.fuzzer;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
@@ -43,7 +39,7 @@ public class TreeFuzzer implements Fuzzer {
   /**
    * Stack element references. Basically points to arbitrary node in the graph
    */
-  private List<OGNumeric> _stackRefs = new ArrayList<>();
+  private FixedSizeFIFO<OGNumeric> _stackRefs = new FixedSizeFIFO<>();
 
   /**
    * The methods available.

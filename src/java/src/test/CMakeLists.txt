@@ -46,6 +46,7 @@ set(JAVA_FILES
     datacontainers/other/ComplexArrayContainerTest.java
     fuzzer/FuzzerMainTest.java
     fuzzer/TreeFuzzerTest.java
+    fuzzer/FixedSizeFIFOTest.java
     )
 
 foreach(JFILE ${JAVA_FILES})

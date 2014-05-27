@@ -72,6 +72,7 @@ set(JAVA_FILES
     fuzzer/FuzzingThread.java
     fuzzer/ThreadedTreeFuzzer.java
     fuzzer/TreeFuzzer.java
+    fuzzer/FixedSizeFIFO.java
     )
 
 foreach(JFILE ${JAVA_FILES})
