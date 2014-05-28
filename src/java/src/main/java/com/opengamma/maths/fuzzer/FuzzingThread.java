@@ -23,7 +23,7 @@ public class FuzzingThread implements Runnable {
   private long _seed;
 
   /**
-   * Set to true when logging
+   * Set to true when logging.
    */
   private boolean _logging;
 
@@ -33,15 +33,23 @@ public class FuzzingThread implements Runnable {
   private RandomAccessFile _logFile;
 
   /**
-   * 
-   * @param seed
-   * @param maxTreeRefs
-   * @param maxDataSize
+   * Construct a FuzzingThread.
+   * @param seed the RNG seed to use with this thread.
+   * @param maxTreeRefs the maximum number of refs for trees in this thread.
+   * @param maxDataSize the maximum data size for trees in this thread.
    */
   public FuzzingThread(long seed, int maxTreeRefs, int maxDataSize) {
     this(seed, maxTreeRefs, maxDataSize, false, null);
   }
 
+  /**
+   * Construct a FuzzingThread.
+   * @param seed the RNG seed to use with this thread.
+   * @param maxTreeRefs the maximum number of refs for trees in this thread.
+   * @param maxDataSize the maximum data size for trees in this thread.
+   * @param logging true if logging should take place
+   * @param log the file in which to write logs
+   */
   public FuzzingThread(long seed, int maxTreeRefs, int maxDataSize, boolean logging, RandomAccessFile log) {
     _fuzzer = new TreeFuzzer(seed, maxTreeRefs, maxDataSize, logging, log);
     _seed = seed;
@@ -61,5 +69,37 @@ public class FuzzingThread implements Runnable {
    */
   public long getExecutionsPerformed() {
     return _fuzzer.getExecutionsPerformed();
+  }
+
+  /**
+   * Gets the fuzzer.
+   * @return the fuzzer
+   */
+  public TreeFuzzer getFuzzer() {
+    return _fuzzer;
+  }
+
+  /**
+   * Gets the seed.
+   * @return the seed
+   */
+  public long getSeed() {
+    return _seed;
+  }
+
+  /**
+   * Gets the logging switch.
+   * @return the logging switch
+   */
+  public boolean isLogging() {
+    return _logging;
+  }
+
+  /**
+   * Gets the logFile.
+   * @return the logFile
+   */
+  public RandomAccessFile getLogFile() {
+    return _logFile;
   }
 }

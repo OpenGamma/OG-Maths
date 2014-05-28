@@ -25,7 +25,14 @@ public class FixedSizeFIFO<T> {
    */
   public static int DEFAULT_CAPACITY = 100;
 
+  /**
+   * The capacity of this container
+   */
   private int _capacity;
+  
+  /**
+   * The list that acts as backing storage for this container.
+   */
   private List<T> _backing;
 
   /**

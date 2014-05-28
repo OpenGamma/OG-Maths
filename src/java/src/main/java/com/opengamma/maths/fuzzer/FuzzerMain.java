@@ -21,20 +21,20 @@ import com.beust.jcommander.ParameterException;
 public class FuzzerMain {
 
   /**
-   * Hidden default ctor
+   * Hidden default ctor.
    */
   private FuzzerMain() {
   }
 
   /**
-   * Singleton reference holder
+   * Singleton reference holder.
    */
   private static class FuzzerMainRefHolder {
     private static final FuzzerMain s_ref = new FuzzerMain();
   }
 
   /**
-   * Gets the singleton instance of this class/
+   * Gets the singleton instance of this class.
    */
   public static FuzzerMain getInstance() {
     return FuzzerMainRefHolder.s_ref;
@@ -99,10 +99,13 @@ public class FuzzerMain {
     }
   }
 
+  /**
+   * Ref to the arg parser class.
+   */
   private CLIArgs _argParser;
 
   /**
-   * Parses the args to the main and mainEntry methods
+   * Parses the args to the main and mainEntry methods.
    * @param args the args to parse
    * @param killOnUsage if true, the executing with the "-h" flag will halt execution and print usage.
    */

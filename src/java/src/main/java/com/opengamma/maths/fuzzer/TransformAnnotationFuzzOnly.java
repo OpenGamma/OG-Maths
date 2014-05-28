@@ -18,13 +18,22 @@ import com.opengamma.maths.helpers.TestGroups;
 
 @Test
 @Listeners(TransformAnnotationFuzzOnly.class)
+/**
+ * Transforms TestNG annotations of that are members of the group "TestGroups.FUZZER".
+ */
 public class TransformAnnotationFuzzOnly implements IAnnotationTransformer {
 
+  /**
+   * Whether to run the fuzzer tests.
+   */
   private boolean _runFuzzTests = false;
 
+  /**
+   * Constructor to set transformer internal state.
+   */
   public TransformAnnotationFuzzOnly() {
-    String _commandLineConfig = System.getProperty("runFuzzerTests");
-    if (_commandLineConfig != null) { // if specified on command line, run fuzzer tests
+    String commandLineConfig = System.getProperty("runFuzzerTests");
+    if (commandLineConfig != null) { // if specified on command line, run fuzzer tests
       _runFuzzTests = true;
     }
   }
@@ -43,9 +52,9 @@ public class TransformAnnotationFuzzOnly implements IAnnotationTransformer {
   }
 
   /**
-   * Checks an annotation to see if it has groups that contain "FUZZ".
+   * Checks an annotation to see if it has groups that contain "TestGroups.FUZZER".
    * @param annotation the annotation to check.
-   * @return true if "FUZZ" is found, false else.
+   * @return true if "TestGroups.FUZZER" is found, false else.
    */
   private boolean annotationContainsFuzzGroup(ITestAnnotation annotation) {
     String[] groups = annotation.getGroups();

@@ -10,40 +10,78 @@ import java.util.Random;
 import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGComplexDiagonalMatrix;
+import com.opengamma.maths.datacontainers.matrix.OGComplexSparseMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGRealDiagonalMatrix;
+import com.opengamma.maths.datacontainers.matrix.OGRealSparseMatrix;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 
+/**
+ * A class that creates OGTerminal data types.
+ */
 public class DataCreator {
+  
+  /**
+   * The maximum size of the data [fmax(rows,cols)].
+   */
   private int _maxsize;
-  private Random _rand;
-  private int _rows;
-  private int _cols;
 
   /**
-   * Creates a new DataCreato_rand 
+   * The RNG.
+   */
+  private Random _rand;
+
+  /**
+   * Creates a new DataCreator.
    * @param maxDataSize the maximum dimension of a matrix
    * @param seed the random seed used in creating the matrices
    */
   public DataCreator(int maxDataSize, long seed) {
     _maxsize = maxDataSize;
     _rand = new Random(seed);
-    _rows = _rand.nextInt(_maxsize);
-    _cols = _rows;
   }
 
   /**
-   * Gets an array of random doubles of a given length
+   * Gets an array of random doubles of a given length.
    * @param length the number of double required
    * @return a new array of random doubles of length {@code length}
    */
   private double[] getRandomData(int length) {
     double[] data = new double[length];
     for (int i = 0; i < length; i++) {
-      data[i] = _rand.nextDouble();
+      if (_rand.nextBoolean()) {
+        data[i] = _rand.nextInt();
+      } else {
+        data[i] = -_rand.nextInt();
+      }
     }
+    return data;
+  }
+
+  /**
+   * Gets an array of arrays of random doubles with many zeros present, of a given size.
+   * @param rows the number of rows in the data.
+   * @param cols the number of columns in the data.
+   * @return a new array of random doubles of length {@code length}
+   */
+  private double[][] getRandomSparseData(int rows, int cols) {
+    double[][] data = new double[rows][cols];
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        if (_rand.nextBoolean()) {
+          if (_rand.nextBoolean()) {
+            data[i][j] = _rand.nextInt();
+          } else {
+            data[i][j] = -_rand.nextInt();
+          }
+        } else {
+          data[i][j] = 0;
+        }
+      }
+    }
+    data[0][0] = 1; // set this to prevent entirely empty matrices
     return data;
   }
 
@@ -63,7 +101,7 @@ public class DataCreator {
     int lrows, lcols;
 
     //  largely create square things
-    if (_rand.nextInt() % 10 == 0) {
+    if (_rand.nextInt() % 3 != 0) {
       lrows = intGt0();
       lcols = lrows;
     } else {
@@ -72,7 +110,7 @@ public class DataCreator {
       lcols = intGt0();
     }
 
-    final int typecount = 6;
+    final int typecount = 8;
     switch (_rand.nextInt(typecount)) {
       case 0:
         return new OGRealScalar(_rand.nextDouble());
@@ -83,9 +121,13 @@ public class DataCreator {
       case 3:
         return new OGComplexDenseMatrix(getRandomData(2 * lrows * lcols), lrows, lcols);
       case 4:
-        return new OGRealDiagonalMatrix(getRandomData(Math.min(lcols,lrows)), lrows, lcols);
+        return new OGRealDiagonalMatrix(getRandomData(Math.min(lcols, lrows)), lrows, lcols);
       case 5:
-        return new OGComplexDiagonalMatrix(getRandomData(2 * Math.min(lcols,lrows)), lrows, lcols);
+        return new OGComplexDiagonalMatrix(getRandomData(2 * Math.min(lcols, lrows)), lrows, lcols);
+      case 6:
+        return new OGRealSparseMatrix(getRandomSparseData(lrows, lcols));
+      case 7:
+        return new OGComplexSparseMatrix(getRandomSparseData(lrows, lcols), getRandomSparseData(lrows, lcols));
       default:
         throw new MathsExceptionIllegalArgument("Unknown value to type switch, value was " + typecount);
     }

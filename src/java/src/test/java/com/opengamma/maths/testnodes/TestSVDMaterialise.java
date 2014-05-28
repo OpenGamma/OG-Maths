@@ -31,44 +31,53 @@ public class TestSVDMaterialise {
   static OGRealDenseMatrix real_matrix = new OGRealDenseMatrix(new double[][] { { 1, 2 }, { 3, 4 }, { 5, 6 } });
   static OGComplexDenseMatrix complex_matrix = new OGComplexDenseMatrix(new double[][] { { 1, 2 }, { 3, 4 }, { 5, 6 } }, new double[][] { { 10, 20 }, { 30, 40 }, { 50, 60 } });
 
+  static OGRealDenseMatrix real_hvector = new OGRealDenseMatrix(new double[] { 1, 2, 3 }, 1, 3);
+
   @DataProvider
   public Object[][] realdataContainer() {
-    Object[][] obj = new Object[1][4];
+    Object[][] obj = new Object[2][4];
 
     obj[0][0] = new SVD(real_matrix);
     obj[0][1] = new OGRealDenseMatrix(new double[][] { { -0.2298476964000714, 0.8834610176985253, 0.4082482904638627 }, { -0.5247448187602936, 0.2407824921325463, -0.8164965809277263 },
       { -0.8196419411205156, -0.4018960334334317, 0.4082482904638631 } });
     obj[0][2] = new OGRealDiagonalMatrix(new double[] { 9.5255180915651074, 0.5143005806586441 }, 3, 2);
     obj[0][3] = new OGRealDenseMatrix(new double[][] { { -0.6196294838293402, -0.7848944532670524 }, { -0.7848944532670524, 0.6196294838293402 } });
-   
+
+    obj[1][0] = new SVD(real_hvector); // [MAT-404] picked up by the fuzzer, test to demonstrate fix.
+    obj[1][1] = new OGRealDenseMatrix(1);
+    obj[1][2] = new OGRealDiagonalMatrix(new double[] { 3.74165738677394, 0, 0 }, 1, 3);
+    obj[1][3] = new OGRealDenseMatrix(new double[][] { { 0.2672612419124243, 0.5345224838248488, 0.8017837257372732 }, { -0.5345224838248488, 0.7745419205884383, -0.3381871191173427 },
+      { -0.8017837257372732, -0.3381871191173426, 0.4927193213239860 } });
+
     return obj;
   };
-  
+
   @DataProvider
   public Object[][] complexdataContainer() {
     Object[][] obj = new Object[1][4];
 
     obj[0][0] = new SVD(complex_matrix);
     double[][] rp, ip;
-    rp = new double[][] {{     -0.0228707006002169,     -0.0879076568710847,      0.3147401422050641},{     -0.0522140610036492,     -0.0239587534423321,     -0.6294802844101258},{     -0.0815574214070819,      0.0399901499864153,      0.3147401422050625}};
-    ip = new double[][] {{     -0.2287070060021659,     -0.8790765687107978,      0.2600102104752862},{     -0.5221406100364927,     -0.2395875344233279,     -0.5200204209505755},{     -0.8155742140708198,      0.3999014998641418,      0.2600102104752883}};
-    obj[0][1] = new OGComplexDenseMatrix(rp,ip);
-    obj[0][2] = new OGRealDiagonalMatrix(new double[] { 95.7302720469661779,      5.1686568674896343}, 3, 2);
-    double [] d = new double[] {-0.6196294838293402,0,0.7848944532670524,-0.e0,-0.7848944532670524,0,-0.6196294838293402,0};
-    obj[0][3] = new OGComplexDenseMatrix(d,2,2);
-   
+    rp = new double[][] { { -0.0228707006002169, -0.0879076568710847, 0.3147401422050641 }, { -0.0522140610036492, -0.0239587534423321, -0.6294802844101258 },
+      { -0.0815574214070819, 0.0399901499864153, 0.3147401422050625 } };
+    ip = new double[][] { { -0.2287070060021659, -0.8790765687107978, 0.2600102104752862 }, { -0.5221406100364927, -0.2395875344233279, -0.5200204209505755 },
+      { -0.8155742140708198, 0.3999014998641418, 0.2600102104752883 } };
+    obj[0][1] = new OGComplexDenseMatrix(rp, ip);
+    obj[0][2] = new OGRealDiagonalMatrix(new double[] { 95.7302720469661779, 5.1686568674896343 }, 3, 2);
+    double[] d = new double[] { -0.6196294838293402, 0, 0.7848944532670524, -0.e0, -0.7848944532670524, 0, -0.6196294838293402, 0 };
+    obj[0][3] = new OGComplexDenseMatrix(d, 2, 2);
+
     return obj;
   };
-  
+
   @DataProvider
   public Object[][] jointdataContainer() {
     Object[][] obj = new Object[2][];
     obj[0] = realdataContainer()[0];
     obj[1] = complexdataContainer()[0];
     return obj;
-    
+
   }
-  
 
   /**
    * Check SVD will materialise to a double[][] correctly from a real space result.
@@ -91,7 +100,7 @@ public class TestSVDMaterialise {
       throw new MathsException("VT not equal. Got: " + VT[0][0] + " Expected: " + expectedVT.getData()[0]);
     }
   }
-  
+
   /**
    * Check SVD will materialise to a {@code ComplexArrayContainer} correctly from a complex space result.
    */
@@ -104,7 +113,7 @@ public class TestSVDMaterialise {
     if (!FuzzyEquals.ArrayFuzzyEquals(Materialisers.toComplexArrayContainer(expectedU).getReal(), U.getReal())) {
       throw new MathsException("U not equal. Got: " + U.toString() + " Expected: " + expectedU.toString());
     }
-    
+
     if (!FuzzyEquals.ArrayFuzzyEquals(Materialisers.toComplexArrayContainer(expectedU).getImag(), U.getImag())) {
       throw new MathsException("U not equal. Got: " + U.toString() + " Expected: " + expectedU.toString());
     }
@@ -116,7 +125,7 @@ public class TestSVDMaterialise {
     if (!FuzzyEquals.ArrayFuzzyEquals(Materialisers.toComplexArrayContainer(expectedVT).getReal(), VT.getReal())) {
       throw new MathsException("VT not equal. Got: " + VT.toString() + " Expected: " + expectedVT.toString());
     }
-    
+
     if (!FuzzyEquals.ArrayFuzzyEquals(Materialisers.toComplexArrayContainer(expectedVT).getImag(), VT.getImag())) {
       throw new MathsException("VT not equal. Got: " + VT.toString() + " Expected: " + expectedVT.toString());
     }
@@ -154,7 +163,7 @@ public class TestSVDMaterialise {
     OGNumeric S = input.getS();
     OGNumeric VT = input.getVT();
 
-   OGTerminal reconstructedMatrix =  Materialisers.toOGTerminal(new MTIMES(new MTIMES(U, S), VT));
+    OGTerminal reconstructedMatrix = Materialisers.toOGTerminal(new MTIMES(new MTIMES(U, S), VT));
     if (!FuzzyEquals.ArrayFuzzyEquals(Materialisers.toOGTerminal(input.getArg(0)).getData(), reconstructedMatrix.getData(), 1e-15, 4e-14)) { // numerical fuzz on recontruction
       throw new MathsException("Arrays not equal. Got: " + reconstructedMatrix.toString() + "\n Expected: " + Materialisers.toOGTerminal(input.getArg(0)).toString());
     }

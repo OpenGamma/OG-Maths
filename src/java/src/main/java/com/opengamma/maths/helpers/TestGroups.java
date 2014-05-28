@@ -13,7 +13,7 @@ public final class TestGroups {
 
   /**
    * TestNG 'fuzzer' group.
-   * Will only if "-DrunFuzzerTests" is supplied on the command line.
+   * Will only run if "-DrunFuzzerTests" is supplied on the command line.
    */
   public static final String FUZZER = "fuzzer";
 

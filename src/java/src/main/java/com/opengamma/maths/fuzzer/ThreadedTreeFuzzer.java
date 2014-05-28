@@ -15,14 +15,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Generates pseudo-random trees and runs them
+ * Generates pseudo-random trees and runs them.
  */
 public class ThreadedTreeFuzzer implements Fuzzer {
 
   /**
    * debug flag
    */
-  int debug = 0;
+  int _debug = 0;
 
   /**
    * The start seed for the RNG.
@@ -115,7 +115,7 @@ public class ThreadedTreeFuzzer implements Fuzzer {
   }
 
   /**
-   * Timer task for a thread for the purposes of collecting live statistics.
+   * Timer task for a thread for the purposes of displaying live statistics whilst debugging.
    */
   private class ThreadTimerTask extends TimerTask {
     private FuzzingThread _thread;
@@ -162,9 +162,11 @@ public class ThreadedTreeFuzzer implements Fuzzer {
     long test = runtime * S_SECOND;
     long stopTime = startTime + test > startTime ? startTime + test : Long.MAX_VALUE;
 
-    // poll the first thread for threads/s count.
-    Timer t = new Timer();
-    t.schedule(new ThreadTimerTask(fuzzyThread[0]), 1000, 1000);
+    if (_debug > 0) {
+      // poll the first thread for threads/s count.
+      Timer t = new Timer();
+      t.schedule(new ThreadTimerTask(fuzzyThread[0], true), 1000, 1000);
+    }
     // spin
     while (System.nanoTime() < stopTime) {
     }
@@ -174,7 +176,7 @@ public class ThreadedTreeFuzzer implements Fuzzer {
 
     // report
     long elapsedInSeconds = (elapsed / S_SECOND);
-    if (debug > 0) {
+    if (_debug > 0) {
       System.out.println("Time elapsed: " + elapsedInSeconds + "s.");
     }
     long execs = 0L;
@@ -183,7 +185,7 @@ public class ThreadedTreeFuzzer implements Fuzzer {
       tpt[k] = fuzzyThread[k].getExecutionsPerformed();
       execs += tpt[k];
     }
-    if (debug > 0) {
+    if (_debug > 0) {
       System.out.println(_nthreads + " threads processed " + execs + " trees at approx: " + (execs / elapsedInSeconds) + " trees/s.");
     }
     return new FuzzerResult(_nthreads, tpt, seeds, elapsedInSeconds, _maxTreeRefs, _maxDataSize);
