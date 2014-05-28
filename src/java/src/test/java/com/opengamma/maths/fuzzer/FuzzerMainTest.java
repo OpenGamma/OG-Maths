@@ -96,8 +96,8 @@ public class FuzzerMainTest {
   }
 
   @Test
-  public void Test1() {
-    String[] ArgString = new String[] { "-t", "2", "-c", "4", "-l" };
+  public void TestSensibleCombo() {
+    String[] ArgString = new String[] { "-t", "5", "-c", "4", "-l", "-p" };
     fm.mainEntry(ArgString);
   }
 

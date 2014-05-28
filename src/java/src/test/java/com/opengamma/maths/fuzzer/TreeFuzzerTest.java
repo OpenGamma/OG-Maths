@@ -1,9 +1,7 @@
 package com.opengamma.maths.fuzzer;
 
-import static java.nio.file.Files.createTempDirectory;
 import static org.testng.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 

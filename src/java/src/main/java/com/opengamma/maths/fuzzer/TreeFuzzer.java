@@ -62,6 +62,11 @@ public class TreeFuzzer implements Fuzzer {
   private int _maxDataSize;
 
   /**
+   * The initial seed used in the RNG.
+   */
+  private long _seed;
+
+  /**
    * List of method names that aren't part of the fuzzer invocation
    */
   static List<String> _bannedMethods;
@@ -107,6 +112,11 @@ public class TreeFuzzer implements Fuzzer {
   private RandomAccessFile _log;
 
   /**
+   * The number of executions completed.
+   */
+  private long _executionsPerformed = 0L;
+
+  /**
    * Sets up internal state of dogma methods via reflection.
    * @param seed the seed for the RNG.
    * @param maxTreeRefs the maximum number of references allowable in a tree.
@@ -130,6 +140,7 @@ public class TreeFuzzer implements Fuzzer {
     Catchers.catchCondition(maxDataSize < 1, "maxDataSize should be >= 1");
     Catchers.catchCondition((logging == true && log == null), "Logging is requested but not log file has been provided.");
 
+    _seed = seed;
     _rand = new Random(seed);
     _maxTreeRefs = maxTreeRefs;
     _maxDataSize = maxDataSize;
@@ -213,7 +224,7 @@ public class TreeFuzzer implements Fuzzer {
   /**
    * {@inheritDoc}
    */
-  public final void fuzz(final long time) {
+  public final FuzzerResult fuzz(final long time) {
     // the local data providing class.
     DataCreator dataCreator = new DataCreator(_maxDataSize, _rand.nextInt());
 
@@ -252,6 +263,9 @@ public class TreeFuzzer implements Fuzzer {
           }
           exprstrbuf.setLength(0);
         }
+        // count execution as run
+        _executionsPerformed++;
+        // execute tree
         executeTree(expr);
       }
       if (_debuglevel > 0) {
@@ -262,9 +276,8 @@ public class TreeFuzzer implements Fuzzer {
       if (_debuglevel > 0) {
         System.out.println("Elapsed time whilst executing trees: " + elapsed + "s.");
       }
-
     }
-
+    return new FuzzerResult(_executionsPerformed, _seed, elapsed, _maxTreeRefs, _maxDataSize);
   }
 
   /**
@@ -396,6 +409,14 @@ public class TreeFuzzer implements Fuzzer {
     }
     // finally, return the expression
     return (OGNumeric) ret;
+  }
+
+  /**
+   * Gets the number executions performed.
+   * @return the number of executions performed.
+   */
+  public long getExecutionsPerformed() {
+    return _executionsPerformed;
   }
 
 }

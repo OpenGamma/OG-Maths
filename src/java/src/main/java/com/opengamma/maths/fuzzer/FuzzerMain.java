@@ -66,6 +66,9 @@ public class FuzzerMain {
     @Parameter(names = { "--logDirectory", "-ld" }, description = "The directory in which to place logs. Provision of this flag automatically switches on logging (-l).")
     private String logDir;
 
+    @Parameter(names = { "--printStats", "-p" }, description = "Provision of this flag automatically switches on printing stats to STDOUT.")
+    private boolean printStats;
+
     @Parameter(names = { "--help", "-h" }, help = true)
     private boolean help;
   }
@@ -151,6 +154,7 @@ public class FuzzerMain {
     long time = _argParser.maxtime;
     boolean loggingOn = _argParser.loggingOn;
     String logDirStr = _argParser.logDir;
+    boolean printStats = _argParser.printStats;
     File logDir = null;
 
     // provision of logging dir switches on logging
@@ -170,6 +174,9 @@ public class FuzzerMain {
     }
 
     Fuzzer fuzzer = new ThreadedTreeFuzzer(rngSeed, maxDataRefs, maxDataSize, nthreads, loggingOn, logDir);
-    fuzzer.fuzz(time);
+    FuzzerResult result = fuzzer.fuzz(time);
+    if (printStats) {
+      System.out.println(result.toString());
+    }
   }
 }

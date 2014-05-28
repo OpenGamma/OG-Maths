@@ -52,7 +52,14 @@ public class FuzzingThread implements Runnable {
   @Override
   public void run() {
     // run indefinitely
-    System.out.println("Running thread with seed: " + _seed + ".");
     _fuzzer.fuzz(Long.MAX_VALUE);
+  }
+
+  /**
+   * Gets the number executions performed.
+   * @return the number of executions performed.
+   */
+  public long getExecutionsPerformed() {
+    return _fuzzer.getExecutionsPerformed();
   }
 }

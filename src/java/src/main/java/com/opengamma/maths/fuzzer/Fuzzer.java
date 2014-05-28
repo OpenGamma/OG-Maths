@@ -14,6 +14,7 @@ public interface Fuzzer {
   /**
    * Invoke fuzzer for a give length of time.
    * @param time the amount of time the fuzzer should be run for in seconds.
+   * @return a fuzzer result holding stats about the fuzz.
    */
-  void fuzz(long time);
+  FuzzerResult fuzz(long time);
 }
