@@ -12,6 +12,7 @@ import com.opengamma.maths.datacontainers.OGNumeric;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.datacontainers.other.OGLUResult;
 import com.opengamma.maths.datacontainers.other.OGSVDResult;
+import com.opengamma.maths.helpers.TestGroups;
 
 /**
  * Tests the TreeFuzzer class
@@ -60,17 +61,22 @@ public class TreeFuzzerTest {
     assertTrue(fuzzer.treeRefCount(tree, 0) == 10);
   }
 
-  @Test
-  public void checkFuzzer() {
+  /*
+   * The following two tests are demonstrations of the fuzzer interfaces 
+   */
+
+  @Test(groups = TestGroups.FUZZER)
+  public void DemoSingleTreeFuzzer() {
     long rngSeed = 0L;
-    int maxTreeRefs = 100;
-    int maxDataSize = 10;
+    int maxTreeRefs = 500;
+    int maxDataSize = 20;
+    long runtime = 5;
     TreeFuzzer fuzzer = new TreeFuzzer(rngSeed, maxTreeRefs, maxDataSize);
-    fuzzer.fuzz(2);
+    fuzzer.fuzz(runtime);
   }
 
-  @Test
-  public void checkThreadedFuzzer() {
+  @Test(groups = TestGroups.FUZZER)
+  public void DemoThreadedTreeFuzzer() {
     int maxTreeRefs = 500;
     int maxDataSize = 20;
     int nthreads = 8;
@@ -82,12 +88,5 @@ public class TreeFuzzerTest {
       throw new RuntimeException(ex);
     }
     fuzzer.fuzz(runtime);
-  }
-
-  @Test
-  public void bug() {
-    OGRealDenseMatrix foo = new OGRealDenseMatrix(new double[] { 1, 2, 3 }, 1, 3);
-    OGSVDResult res = DOGMA.svd(foo);
-    DOGMA.toOGTerminal(res.getVT());
   }
 }

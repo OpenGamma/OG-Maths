@@ -169,6 +169,8 @@ set(TESTNG_TEST TestNG)
 set(NATIVE_SELF_TEST NativeLibrariesSelfTest)
 set(JAVA_TESTS_REGEX "\"(${TESTNG_TEST})|(${NATIVE_SELF_TEST})\"")
 set(DEBUG_TESTS_REGEX "\".*dbg$$\"")
+# testng annotation listeners
+set(TESTNG_LISTENERS "com.opengamma.maths.fuzzer.TransformAnnotationFuzzOnly")
 
 # Coverage - must build underneath the source dir for this to work.
 # This should be run before make test to avoid gathering coverage info
@@ -225,16 +227,16 @@ if (WIN32)
   # Test each target
   foreach(TARGET ${TARGET_TYPES})
     if(SUPPORT_${TARGET})
-      add_test(${TESTNG_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -Xcheck:jni -DinstructionSet=${TARGET} -verbose org.testng.TestNG -testjar ${PATH_AND_JAR_TEST_NAME})
+      add_test(${TESTNG_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -Xcheck:jni -DinstructionSet=${TARGET} -verbose org.testng.TestNG -listener ${TESTNG_LISTENERS} -testjar ${PATH_AND_JAR_TEST_NAME})
       set_tests_properties(${TESTNG_TEST}_${TARGET} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
     endif()
   endforeach()
   # Test with no target specified
-  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -Xcheck:jni -verbose org.testng.TestNG -testjar ${PATH_AND_JAR_TEST_NAME})
+  add_test(${TESTNG_TEST} ${Java_JAVA_EXECUTABLE} -Xcheck:jni -verbose org.testng.TestNG -listener ${TESTNG_LISTENERS} -testjar ${PATH_AND_JAR_TEST_NAME})
   set_tests_properties(${TESTNG_TEST} PROPERTIES ENVIRONMENT "CLASSPATH=${CLASSPATH}")
 else()
   set(JAVA_CP ${CMAKE_JAVA_INCLUDE_PATH}:${PATH_AND_JAR_NAME}:${PATH_AND_JAR_TEST_NAME})
-  set(JAVA_TESTNG_ARGS -Xcheck:jni -verbose -cp ${JAVA_CP} org.testng.TestNG -testjar ${PATH_AND_JAR_TEST_NAME})
+  set(JAVA_TESTNG_ARGS -Xcheck:jni -verbose -cp ${JAVA_CP} org.testng.TestNG -listener ${TESTNG_LISTENERS} -testjar ${PATH_AND_JAR_TEST_NAME})
   # Test each target
   foreach(TARGET ${TARGET_TYPES})
     if(SUPPORT_${TARGET})
