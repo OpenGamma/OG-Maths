@@ -152,34 +152,34 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
   delete[] A;
   delete[] perm;
 
-  pOGNumeric cL = makeConcreteDenseMatrix(L, m, minmn, OWNER);
-  pOGNumeric cU = makeConcreteDenseMatrix(U, minmn, n, OWNER);
+  OGNumeric::Ptr cL = makeConcreteDenseMatrix(L, m, minmn, OWNER);
+  OGNumeric::Ptr cU = makeConcreteDenseMatrix(U, minmn, n, OWNER);
 
   reg.push_back(cL);
   reg.push_back(cU);
 }
 
 void *
-LURunner::run(RegContainer& reg, pOGRealScalar arg) const
+LURunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
   // single real space lu is just l=1, u=value
-  reg.push_back(pOGNumeric{new OGRealScalar(1.e0)});
+  reg.push_back(OGNumeric::Ptr{new OGRealScalar(1.e0)});
   if(arg->getValue()==0.e0)
   {
     cerr << "Warning: singular system detected in LU decomposition" << std::endl;
   }
-  reg.push_back(pOGNumeric{new OGRealScalar(arg->getValue())});
+  reg.push_back(OGNumeric::Ptr{new OGRealScalar(arg->getValue())});
   return nullptr;
 }
 void *
-LURunner::run(RegContainer& reg, pOGRealMatrix arg) const
+LURunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
   lu_dense_runner<real16>(reg, arg);
   return nullptr;
 }
 
 void *
-LURunner::run(RegContainer& reg, pOGComplexMatrix arg) const
+LURunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
 {
   lu_dense_runner<complex16>(reg, arg);
   return nullptr;

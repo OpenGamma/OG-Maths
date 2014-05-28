@@ -86,7 +86,7 @@ struct jnode
  * @param obj a Java OGNumeric type
  * @return the equivalent RDAG expression
  */
-pOGNumeric createExpression(jobject jexpr)
+OGNumeric::Ptr createExpression(jobject jexpr)
 {
   JNIEnv* env = nullptr;
   JVMManager::getEnv((void **) &env);
@@ -192,13 +192,13 @@ pOGNumeric createExpression(jobject jexpr)
   // This node is the root of the expression tree.
 
   // Holds partially-constructed expressions that form part of our arguments.
-  stack<pOGNumeric> exprStack;
+  stack<OGNumeric::Ptr> exprStack;
 
   for(auto node: jexprs)
   {
-    pOGNumeric numeric;
-    pOGNumeric arg0;
-    pOGNumeric arg1;
+    OGNumeric::Ptr numeric;
+    OGNumeric::Ptr arg0;
+    OGNumeric::Ptr arg1;
 
     switch (node.nArgs)
     {

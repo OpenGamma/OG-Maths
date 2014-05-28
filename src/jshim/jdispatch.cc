@@ -20,7 +20,7 @@ using namespace librdag;
  * Real16AoA
  */
 
-Real16AoA::Real16AoA(const pOGNumeric& node)
+Real16AoA::Real16AoA(const OGNumeric::Ptr& node)
 {
   ExprType_t type = node->getType();
   switch(type)
@@ -107,7 +107,7 @@ Real16AoA::getCols() const
  * Complex16AoA
  */
 
-Complex16AoA::Complex16AoA(const pOGNumeric& node)
+Complex16AoA::Complex16AoA(const OGNumeric::Ptr& node)
 {
   ExprType_t type = node->getType();
   switch(type)
@@ -304,7 +304,7 @@ DispatchToOGTerminal::visit(librdag::OGMatrix<real16> const *thing)
 {
   jclass cls = JVMManager::getOGRealDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealDenseMatrixClazz_init();
-  jobjectArray darr = Real16AoA{pOGNumeric{thing->createOwningCopy()}}.toJDoubleAoA(_env);
+  jobjectArray darr = Real16AoA{OGNumeric::Ptr{thing->createOwningCopy()}}.toJDoubleAoA(_env);
   jobject newobject = _env->NewObject(cls, constructor, darr);
   setObject(newobject);
 }
@@ -314,7 +314,7 @@ DispatchToOGTerminal::visit(librdag::OGMatrix<complex16> const *thing)
 {
   jclass cls = JVMManager::getOGComplexDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGComplexDenseMatrixClazz_init();
-  Complex16AoA c = Complex16AoA{pOGNumeric{thing->createOwningCopy()}};
+  Complex16AoA c = Complex16AoA{OGNumeric::Ptr{thing->createOwningCopy()}};
   jobjectArray realPart = c.realPartToJDoubleAoA(_env);
   jobjectArray imagPart = c.imagPartToJDoubleAoA(_env);
   jobject newobject = _env->NewObject(cls, constructor, realPart, imagPart);

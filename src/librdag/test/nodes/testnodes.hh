@@ -73,7 +73,7 @@ TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
 /**
  * Container for results
  */
-typedef pair<pOGNumeric, pOGNumeric> ResultPair;
+typedef pair<OGNumeric::Ptr, OGNumeric::Ptr> ResultPair;
 
 /**
  * Indicate the method used for comparison
@@ -102,7 +102,7 @@ template <typename T> class CheckNode
        * @param expected the expected result.
        * @param comparisonMethod how the results should be compared.
        */
-      CheckNode(pOGNumeric expected, CompareMethod comparisonMethod);
+      CheckNode(OGNumeric::Ptr expected, CompareMethod comparisonMethod);
       /**
        * Standard destructor
        */
@@ -124,7 +124,7 @@ template <typename T> class CheckNode
       /**
        * Gets the expected value.
        */
-      virtual pOGNumeric getExpected() const;
+      virtual OGNumeric::Ptr getExpected() const;
       /**
        * Gets the comparison method.
        */
@@ -136,7 +136,7 @@ template <typename T> class CheckNode
      */
     virtual void execute() = 0;
   private:
-    pOGNumeric _expected;
+    OGNumeric::Ptr _expected;
     CompareMethod _comparisonMethod;
 };
 
@@ -153,7 +153,7 @@ template <typename T> class CheckUnary: public CheckNode<T>
      * @param expected the expected value.
      * @param comparisonMethod how the results should be compared.
      */
-    CheckUnary(pOGNumeric input, pOGNumeric expected, CompareMethod comparisonMethod);
+    CheckUnary(OGNumeric::Ptr input, OGNumeric::Ptr expected, CompareMethod comparisonMethod);
     ~CheckUnary();
     virtual bool comparesCorrectlyTypeInvariant() const override;
     virtual bool comparesCorrectly() const override;
@@ -168,7 +168,7 @@ template <typename T> class CheckUnary: public CheckNode<T>
 
   private:
     ResultPair * _resultPair;
-    pOGNumeric _input;
+    OGNumeric::Ptr _input;
 };
 
 /**
@@ -198,7 +198,7 @@ template <typename T> class CheckBinary: public CheckNode<T>
      * @param expected the expected value.
      * @param comparisonMethod how the results should be compared.
      */
-    CheckBinary(pOGNumeric first_input, pOGNumeric second_input, pOGNumeric expected, CompareMethod comparisonMethod);
+    CheckBinary(OGNumeric::Ptr first_input, OGNumeric::Ptr second_input, OGNumeric::Ptr expected, CompareMethod comparisonMethod);
     ~CheckBinary();
     virtual bool comparesCorrectlyTypeInvariant() const override;
     virtual bool comparesCorrectly() const override;
@@ -213,8 +213,8 @@ template <typename T> class CheckBinary: public CheckNode<T>
 
   private:
     ResultPair * _resultPair;
-    pOGNumeric _first_input;
-    pOGNumeric _second_input;
+    OGNumeric::Ptr _first_input;
+    OGNumeric::Ptr _second_input;
 };
 
 

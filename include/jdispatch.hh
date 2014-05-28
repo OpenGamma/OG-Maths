@@ -22,7 +22,7 @@ using namespace librdag;
 class Real16AoA
 {
   public:
-    Real16AoA(const pOGNumeric& node);
+    Real16AoA(const OGNumeric::Ptr& node);
     Real16AoA& operator=(const Real16AoA&) = delete;
     Real16AoA(const Real16AoA&) = delete;
     Real16AoA& operator=(Real16AoA&& other);
@@ -42,7 +42,7 @@ class Real16AoA
 class Complex16AoA
 {
   public:
-    Complex16AoA(const pOGNumeric& node);
+    Complex16AoA(const OGNumeric::Ptr& node);
     Complex16AoA& operator=(const Complex16AoA&) = delete;
     Complex16AoA(const Complex16AoA&) = delete;
     Complex16AoA& operator=(Complex16AoA&& other);

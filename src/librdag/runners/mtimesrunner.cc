@@ -40,7 +40,7 @@ mtimes_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, shar
   // Fortran vars
   T fp_one = 1.e0;
 
-  pOGNumeric ret;
+  OGNumeric::Ptr ret;
 
   if (colsArray1 == 1 && rowsArray1 == 1) { // We have scalar * matrix
     T deref = data1[0];
@@ -89,23 +89,23 @@ mtimes_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, shar
 
 
 // MTIMES runner:
-void * MTIMESRunner::run(RegContainer& reg0, pOGComplexMatrix arg0, pOGComplexMatrix arg1) const
+void * MTIMESRunner::run(RegContainer& reg0, OGComplexMatrix::Ptr arg0, OGComplexMatrix::Ptr arg1) const
 {
   mtimes_dense_runner<complex16>(reg0, arg0, arg1);
   return nullptr;
 }
 
 
-void * MTIMESRunner::run(RegContainer& reg0, pOGRealMatrix arg0, pOGRealMatrix arg1) const
+void * MTIMESRunner::run(RegContainer& reg0, OGRealMatrix::Ptr arg0, OGRealMatrix::Ptr arg1) const
 {
   mtimes_dense_runner<real16>(reg0, arg0, arg1);
   return nullptr;
 }
 
 void *
-MTIMESRunner::run(RegContainer& reg0, pOGRealScalar arg0, pOGRealScalar arg1) const
+MTIMESRunner::run(RegContainer& reg0, OGRealScalar::Ptr arg0, OGRealScalar::Ptr arg1) const
 {
-    pOGNumeric ret = pOGNumeric{new OGRealScalar(arg0->getValue()*arg1->getValue())};
+    OGNumeric::Ptr ret = OGNumeric::Ptr{new OGRealScalar(arg0->getValue()*arg1->getValue())};
     reg0.push_back(ret);
     return nullptr;
 }

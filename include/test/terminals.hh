@@ -53,15 +53,15 @@ const OGComplexSparseMatrix *ogcomplexsparsematrix = new OGComplexSparseMatrix(c
  * List of terminals that can be used for instantiating value-parameterised test
  * cases over terminals
  */
-pOGTerminal terminals[] = { pOGTerminal{testinternal::ogreal},
-                            pOGTerminal{testinternal::ogcomplex},
-                            pOGTerminal{testinternal::ogint},
-                            pOGTerminal{testinternal::ogrealmatrix},
-                            pOGTerminal{testinternal::ogcomplexmatrix},
-                            pOGTerminal{testinternal::ogrealdiagonalmatrix},
-                            pOGTerminal{testinternal::ogcomplexdiagonalmatrix},
-                            pOGTerminal{testinternal::ogrealsparsematrix},
-                            pOGTerminal{testinternal::ogcomplexsparsematrix} };
+OGTerminal::Ptr terminals[] = { OGTerminal::Ptr{testinternal::ogreal},
+                            OGTerminal::Ptr{testinternal::ogcomplex},
+                            OGTerminal::Ptr{testinternal::ogint},
+                            OGTerminal::Ptr{testinternal::ogrealmatrix},
+                            OGTerminal::Ptr{testinternal::ogcomplexmatrix},
+                            OGTerminal::Ptr{testinternal::ogrealdiagonalmatrix},
+                            OGTerminal::Ptr{testinternal::ogcomplexdiagonalmatrix},
+                            OGTerminal::Ptr{testinternal::ogrealsparsematrix},
+                            OGTerminal::Ptr{testinternal::ogcomplexsparsematrix} };
 
 
 #endif

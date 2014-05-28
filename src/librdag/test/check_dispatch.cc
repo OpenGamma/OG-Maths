@@ -18,7 +18,7 @@
 using namespace std;
 using namespace librdag;
 
-void dispatchfn(pOGNumeric thing)
+void dispatchfn(OGNumeric::Ptr thing)
 {
     Dispatcher * v = new Dispatcher();
     v->dispatch(thing);
@@ -27,9 +27,9 @@ void dispatchfn(pOGNumeric thing)
 
 TEST(DispatchTest, SimpleTest) {
     // One binary node holding two terminals
-  pOGNumeric real1 = pOGNumeric{new OGRealScalar(1.0)};
-  pOGNumeric real2 = pOGNumeric{new OGRealScalar(2.0)};
-  pOGNumeric plus = pOGNumeric{new PLUS(real1, real2)};
+  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  OGNumeric::Ptr real2 = OGNumeric::Ptr{new OGRealScalar(2.0)};
+  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, real2)};
   ExecutionList el1 = ExecutionList{plus};
   int counter = 0;
   for (auto it: el1)
@@ -38,6 +38,6 @@ TEST(DispatchTest, SimpleTest) {
     dispatchfn(it);
   }
   const RegContainer& reg = plus->asOGExpr()->getRegs();
-  pOGNumeric answer = reg[0];
+  OGNumeric::Ptr answer = reg[0];
   answer->debug_print();
 }

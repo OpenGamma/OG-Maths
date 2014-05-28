@@ -17,7 +17,7 @@ using namespace librdag;
 namespace testnodes {
 
 // Check node impl
-template<typename T> CheckNode<T>::CheckNode(pOGNumeric expected, CompareMethod comparisonMethod)
+template<typename T> CheckNode<T>::CheckNode(OGNumeric::Ptr expected, CompareMethod comparisonMethod)
 {
   _expected = expected;
   _comparisonMethod = comparisonMethod;
@@ -27,7 +27,7 @@ template<typename T>
 CheckNode<T>::~CheckNode() {}
 
 template<typename T>
-pOGNumeric
+OGNumeric::Ptr
 CheckNode<T>::getExpected() const
 {
   return _expected;
@@ -53,7 +53,7 @@ CheckNode<T>::getComparisonMethod() const
 
 
 // CheckUnary impls
-template<typename T> CheckUnary<T>::CheckUnary(pOGNumeric input, pOGNumeric expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
+template<typename T> CheckUnary<T>::CheckUnary(OGNumeric::Ptr input, OGNumeric::Ptr expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
 {
   _input = input;
 }
@@ -72,7 +72,7 @@ CheckUnary<T>::getResultPair() const
 template<typename T> void
 CheckUnary<T>::execute()
 {
-  pOGNumeric node = pOGNumeric{new T(_input)};
+  OGNumeric::Ptr node = OGNumeric::Ptr{new T(_input)};
   ExecutionList el = ExecutionList{node};
   Dispatcher v;
   for (auto it = el.begin(); it != el.end(); ++it)
@@ -80,7 +80,7 @@ CheckUnary<T>::execute()
     v.dispatch(*it);
   }
   const RegContainer& regs = node->asOGExpr()->getRegs();
-  pOGNumeric answer = regs[0];
+  OGNumeric::Ptr answer = regs[0];
   _resultPair = new ResultPair(answer, this->getExpected());
 }
 
@@ -114,7 +114,7 @@ template<typename T> void
 UnaryOpTest<T>::TearDown() {}
 
 // CheckBinary impls
-template<typename T> CheckBinary<T>::CheckBinary(pOGNumeric first_input, pOGNumeric second_input, pOGNumeric expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
+template<typename T> CheckBinary<T>::CheckBinary(OGNumeric::Ptr first_input, OGNumeric::Ptr second_input, OGNumeric::Ptr expected, CompareMethod comparisonMethod):CheckNode<T>(expected, comparisonMethod)
 {
   _first_input = first_input;
   _second_input = second_input;
@@ -134,7 +134,7 @@ CheckBinary<T>::getResultPair() const
 template<typename T> void
 CheckBinary<T>::execute()
 {
-  pOGNumeric node = pOGNumeric{new T(_first_input, _second_input)};
+  OGNumeric::Ptr node = OGNumeric::Ptr{new T(_first_input, _second_input)};
   ExecutionList el = ExecutionList{node};
   Dispatcher v;
   for (auto it = el.begin(); it != el.end(); ++it)
@@ -142,7 +142,7 @@ CheckBinary<T>::execute()
     v.dispatch(*it);
   }
   const RegContainer& regs = node->asOGExpr()->getRegs();
-  pOGNumeric answer = regs[0];
+  OGNumeric::Ptr answer = regs[0];
   _resultPair = new ResultPair(answer, this->getExpected());
 }
 

@@ -16,7 +16,7 @@ namespace librdag {
 class OGNumeric;
 
 // Internal data structure for the ExecutionList.
-typedef std::vector<pOGNumeric> _ExpressionList;
+typedef std::vector<OGNumeric::Ptr> _ExpressionList;
 
 // An ExecutionList holds a list of expression nodes that are in order such that
 // no node has inputs that are computed by a node further down the list. Thus,
@@ -24,13 +24,13 @@ typedef std::vector<pOGNumeric> _ExpressionList;
 class ExecutionList
 {
   public:
-    ExecutionList(pOGNumeric tree);
+    ExecutionList(OGNumeric::Ptr tree);
     ~ExecutionList();
     typedef typename _ExpressionList::const_iterator citerator;
     size_t size();
     citerator begin();
     citerator end();
-    pOGNumeric operator[](size_t n);
+    OGNumeric::Ptr operator[](size_t n);
   private:
     _ExpressionList* _execList;
     ExecutionList() = delete;

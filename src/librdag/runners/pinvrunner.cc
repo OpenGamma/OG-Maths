@@ -26,17 +26,17 @@
 namespace librdag {
 
 void *
-PINVRunner::run(RegContainer& reg, pOGRealScalar arg) const
+PINVRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
-  pOGNumeric ret;
+  OGNumeric::Ptr ret;
   real16 x = arg->getValue();
   if(x == 0.e0)
   {
-    ret = pOGNumeric{new OGRealScalar(0.e0)};
+    ret = OGNumeric::Ptr{new OGRealScalar(0.e0)};
   }
   else
   {
-    ret = pOGNumeric{new OGRealScalar(1.e0/x)};
+    ret = OGNumeric::Ptr{new OGRealScalar(1.e0/x)};
   }
   reg.push_back(ret);
   return nullptr;
@@ -58,7 +58,7 @@ template<typename T>
 void
 pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 {
-  pOGNumeric ret; // the returned item
+  OGNumeric::Ptr ret; // the returned item
 
   // Matrix in scalar context, i.e. a 1x1 matrix, pinv is simply value**-1
   if(arg->getRows()==1 && arg->getCols()==1)
@@ -83,15 +83,15 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     const int minmn = m > n ? n : m;
 
     // Perform SVD on a copy of the argument, since it will get destroyed
-    pOGExpr svd = pOGExpr{new SVD(pOGNumeric{arg->createOwningCopy()})};
+    OGExpr::Ptr svd = OGExpr::Ptr{new SVD(OGNumeric::Ptr{arg->createOwningCopy()})};
 
     // run the tree
     runtree(svd);
 
     // svd regs now hold [U,S,V**T]
-    pOGNumeric numericU = svd->getRegs()[0];
-    pOGNumeric numericS = svd->getRegs()[1];
-    pOGNumeric numericVT = svd->getRegs()[2];
+    OGNumeric::Ptr numericU = svd->getRegs()[0];
+    OGNumeric::Ptr numericS = svd->getRegs()[1];
+    OGNumeric::Ptr numericVT = svd->getRegs()[2];
 
     // walk S matrix, see if we have anything that is numerically zero.
     // go backwards as singular values are ordered descending.
@@ -118,17 +118,17 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 
     // create a new transposed inverted diag matrix.
     // this matrix is just a viewer of S, numericS is the owner
-    pOGNumeric invS = pOGNumeric{new OGRealDiagonalMatrix(S,n,m)};
+    OGNumeric::Ptr invS = OGNumeric::Ptr{new OGRealDiagonalMatrix(S,n,m)};
 
     // need to transpose U
-    pOGNumeric ctransposeU = pOGNumeric{new CTRANSPOSE(numericU)};
+    OGNumeric::Ptr ctransposeU = OGNumeric::Ptr{new CTRANSPOSE(numericU)};
 
     // need to transpose VT
-    pOGNumeric ctransposeVT = pOGNumeric{new CTRANSPOSE(numericVT)};
+    OGNumeric::Ptr ctransposeVT = OGNumeric::Ptr{new CTRANSPOSE(numericVT)};
 
     // multiply back together as [(V**T)**T * inv(S) * U**T]
-    pOGNumeric VTS = pOGNumeric{new MTIMES(ctransposeVT, invS)};
-    pOGNumeric VTSUT = pOGNumeric{new MTIMES(VTS, ctransposeU)};
+    OGNumeric::Ptr VTS = OGNumeric::Ptr{new MTIMES(ctransposeVT, invS)};
+    OGNumeric::Ptr VTSUT = OGNumeric::Ptr{new MTIMES(VTS, ctransposeU)};
 
     // run the tree
     runtree(VTSUT);
@@ -142,14 +142,14 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 }
 
 void *
-PINVRunner::run(RegContainer& reg, pOGRealMatrix arg) const
+PINVRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
   pinv_dense_runner<real16>(reg, arg);
   return nullptr;
 }
 
 void *
-PINVRunner::run(RegContainer& reg, pOGComplexMatrix arg) const
+PINVRunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
 {
   pinv_dense_runner<complex16>(reg, arg);
   return nullptr;

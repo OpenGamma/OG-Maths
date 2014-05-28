@@ -8,11 +8,11 @@
 #include "expressionbase.hh"
 #include "jvmmanager.hh"
 
-using librdag::pOGNumeric;
+using librdag::OGNumeric;
 
 namespace convert {
 
-pOGNumeric createExpression(jobject obj);
-pOGNumeric translateNode(JNIEnv* env, jobject obj, pOGNumeric arg0 = pOGNumeric{}, pOGNumeric arg1 = pOGNumeric{});
+OGNumeric::Ptr createExpression(jobject obj);
+OGNumeric::Ptr translateNode(JNIEnv* env, jobject obj, OGNumeric::Ptr arg0 = OGNumeric::Ptr{}, OGNumeric::Ptr arg1 = OGNumeric::Ptr{});
 
 } // namespace convert

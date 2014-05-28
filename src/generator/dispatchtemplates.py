@@ -65,7 +65,7 @@ class Dispatcher
   public:
     Dispatcher();
     virtual ~Dispatcher();
-    void dispatch(pOGNumeric thing) const;
+    void dispatch(OGNumeric::Ptr thing) const;
 
     // Specific terminal dispatches
 %(dispatcher_terminal_dispatches)s
@@ -83,7 +83,7 @@ class %(nodetype)sRunner;
 """
 
 dispatcher_dispatch_prototype = """\
-    virtual void dispatch(p%(nodetype)s thing) const;
+    virtual void dispatch(%(nodetype)s::Ptr thing) const;
 """
 
 dispatcher_private_member = """\
@@ -115,17 +115,17 @@ template<typename T> class DispatchUnaryOp: public DispatchOp<T>
     virtual ~DispatchUnaryOp();
 
     // will run the operation
-    T eval(RegContainer& reg, pOGTerminal arg) const;
+    T eval(RegContainer& reg, OGTerminal::Ptr arg) const;
     // Methods for specific terminals
 %(dispatchunaryop_terminal_methods)s
     // Backstop methods for generic implementation
-    virtual T run(RegContainer& reg, pOGRealMatrix arg) const = 0;
-    virtual T run(RegContainer& reg, pOGComplexMatrix arg) const = 0;
+    virtual T run(RegContainer& reg, OGRealMatrix::Ptr arg) const = 0;
+    virtual T run(RegContainer& reg, OGComplexMatrix::Ptr arg) const = 0;
 };
 """
 
 dispatchunaryop_run = """\
-    virtual T run(RegContainer& reg, p%(nodetype)s arg) const;
+    virtual T run(RegContainer& reg, %(nodetype)s::Ptr arg) const;
 """
 
 dispatchbinaryop_class = """\
@@ -138,18 +138,18 @@ template<typename T> class  DispatchBinaryOp: public DispatchOp<T>
     using DispatchOp<T>::getConvertTo;
     virtual ~DispatchBinaryOp();
     // will run the operation
-    T eval(RegContainer& reg0, pOGTerminal arg0, pOGTerminal arg1) const;
+    T eval(RegContainer& reg0, OGTerminal::Ptr arg0, OGTerminal::Ptr arg1) const;
 
     // Methods for specific terminals
 %(dispatchbinaryop_terminal_methods)s
     // Required backstop impls
-    virtual T run(RegContainer& reg0, pOGComplexMatrix arg0, pOGComplexMatrix arg1) const = 0;
-    virtual T run(RegContainer& reg0, pOGRealMatrix arg0, pOGRealMatrix arg1) const = 0;
+    virtual T run(RegContainer& reg0, OGComplexMatrix::Ptr arg0, OGComplexMatrix::Ptr arg1) const = 0;
+    virtual T run(RegContainer& reg0, OGRealMatrix::Ptr arg0, OGRealMatrix::Ptr arg1) const = 0;
 };
 """
 
 dispatchbinaryop_run = """\
-    virtual T run(RegContainer& reg0, p%(node0type)s arg0, p%(node1type)s arg1) const;
+    virtual T run(RegContainer& reg0, %(node0type)s::Ptr arg0, %(node1type)s::Ptr arg1) const;
 """
 
 # Dispatch cc file
@@ -249,7 +249,7 @@ Dispatcher::~Dispatcher(){
 
 dispatcher_dispatch_numeric = """\
 void
-Dispatcher::dispatch(pOGNumeric thing) const
+Dispatcher::dispatch(OGNumeric::Ptr thing) const
 {
   DEBUG_PRINT("Dispatching...\\n");
   ExprType_t ID = thing->getType();
@@ -295,7 +295,7 @@ dispatcher_case = """\
 # The SUPPRESS_UNUSED is needed because not all nodes are implemented yet.
 dispatcher_dispatch = """\
 void
-Dispatcher::dispatch(p%(nodetype)s SUPPRESS_UNUSED thing) const
+Dispatcher::dispatch(%(nodetype)s::Ptr SUPPRESS_UNUSED thing) const
 {
 %(dispatch_implementation)s
 }
@@ -304,15 +304,15 @@ Dispatcher::dispatch(p%(nodetype)s SUPPRESS_UNUSED thing) const
 dispatcher_binary_implementation = """\
   const ArgContainer& args = thing->getArgs();
   RegContainer& regs = thing->getRegs();
-  pOGNumeric arg0 = args[0];
-  pOGNumeric arg1 = args[1];
-  pOGTerminal arg0t = arg0->asOGTerminal();
-  pOGTerminal arg1t = arg1->asOGTerminal();
-  if (arg0t == pOGTerminal{})
+  OGNumeric::Ptr arg0 = args[0];
+  OGNumeric::Ptr arg1 = args[1];
+  OGTerminal::Ptr arg0t = arg0->asOGTerminal();
+  OGTerminal::Ptr arg1t = arg1->asOGTerminal();
+  if (arg0t == OGTerminal::Ptr{})
   {
     arg0t = arg0->asOGExpr()->getRegs()[0]->asOGTerminal();
   }
-  if (arg1t == pOGTerminal{})
+  if (arg1t == OGTerminal::Ptr{})
   {
     arg1t = arg1->asOGExpr()->getRegs()[0]->asOGTerminal();
   }
@@ -322,9 +322,9 @@ dispatcher_binary_implementation = """\
 dispatcher_unary_implementation = """\
   const ArgContainer& args = thing->getArgs();
   RegContainer& regs = thing->getRegs();
-  pOGNumeric arg = args[0];
-  pOGTerminal argt = arg->asOGTerminal();
-  if (argt == pOGTerminal{})
+  OGNumeric::Ptr arg = args[0];
+  OGTerminal::Ptr argt = arg->asOGTerminal();
+  if (argt == OGTerminal::Ptr{})
   {
     argt = arg->asOGExpr()->getRegs()[0]->asOGTerminal();
   }
@@ -334,10 +334,10 @@ dispatcher_unary_implementation = """\
 dispatcher_select_implementation = """\
   const ArgContainer& args = thing->getArgs();
   RegContainer& regs = thing->getRegs();
-  pOGNumeric arg0 = args[0];
-  pOGNumeric arg1 = args[1];
+  OGNumeric::Ptr arg0 = args[0];
+  OGNumeric::Ptr arg1 = args[1];
   const RegContainer& arg0r = arg0->asOGExpr()->getRegs();
-  pOGIntegerScalar arg1i = arg1->asOGIntegerScalar();
+  OGIntegerScalar::Ptr arg1i = arg1->asOGIntegerScalar();
   this->_%(nodetype)sRunner->eval(regs, arg0r, arg1i);
 """
 
@@ -382,7 +382,7 @@ DispatchUnaryOp<T>::~DispatchUnaryOp() {}
 dispatchunaryop_eval = """\
 template<typename T>
 T
-DispatchUnaryOp<T>::eval(RegContainer& reg, pOGTerminal arg) const
+DispatchUnaryOp<T>::eval(RegContainer& reg, OGTerminal::Ptr arg) const
 {
   ExprType_t argID = arg->getType();
   T ret = nullptr;
@@ -406,9 +406,9 @@ dispatchunaryop_eval_case = """\
 dispatchunaryop_terminal_method = """\
 template<typename T>
 T
-DispatchUnaryOp<T>::run(RegContainer& reg, p%(nodetype)s arg) const
+DispatchUnaryOp<T>::run(RegContainer& reg, %(nodetype)s::Ptr arg) const
 {
-  p%(typetoconvertto)s conv = this->getConvertTo()->convertTo%(typetoconvertto)s(arg);
+  %(typetoconvertto)s::Ptr conv = this->getConvertTo()->convertTo%(typetoconvertto)s(arg);
   T ret = run(reg, conv);
   return ret;
 }
@@ -432,7 +432,7 @@ DispatchBinaryOp<T>::~DispatchBinaryOp(){}
 dispatchbinaryop_eval = """\
 template <typename T>
 T
-DispatchBinaryOp<T>::eval(RegContainer& reg0, pOGTerminal arg0, pOGTerminal arg1) const
+DispatchBinaryOp<T>::eval(RegContainer& reg0, OGTerminal::Ptr arg0, OGTerminal::Ptr arg1) const
 {
   ExprType_t arg0ID = arg0->getType();
   ExprType_t arg1ID = arg1->getType();
@@ -474,8 +474,8 @@ dispatchbinaryop_terminal_method = """\
 template<typename T>
 T
 DispatchBinaryOp<T>::run(RegContainer& reg0,
-                         p%(node0type)s arg0,
-                         p%(node1type)s arg1) const
+                         %(node0type)s::Ptr arg0,
+                         %(node1type)s::Ptr arg1) const
 {
 %(conv0)s
 %(conv1)s
@@ -485,9 +485,9 @@ DispatchBinaryOp<T>::run(RegContainer& reg0,
 """
 
 dispatchbinaryop_conv_arg = """\
-  p%(typetoconvertto)s conv%(argno)s = this->getConvertTo()->convertTo%(typetoconvertto)s(arg%(argno)s);
+  %(typetoconvertto)s::Ptr conv%(argno)s = this->getConvertTo()->convertTo%(typetoconvertto)s(arg%(argno)s);
 """
 
 dispatchbinaryop_noconv_arg = """\
-  p%(nodetype)s conv%(argno)s = arg%(argno)s;
+  %(nodetype)s::Ptr conv%(argno)s = arg%(argno)s;
 """

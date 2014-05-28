@@ -13,7 +13,7 @@ namespace librdag {
 
 enum class Direction { UP, DOWN };
 
-ExecutionList::ExecutionList(pOGNumeric tree)
+ExecutionList::ExecutionList(OGNumeric::Ptr tree)
 {
   // Procedural construction of an execution list. The algorithm performs
   // a depth-first traversal of the tree, pushing nodes on to the execution
@@ -26,7 +26,7 @@ ExecutionList::ExecutionList(pOGNumeric tree)
   _execList = new _ExpressionList();
 
   // treePos contains the list of nodes we've visited but not finished with
-  stack<pOGNumeric> treePos;
+  stack<OGNumeric::Ptr> treePos;
   // argPos records how far down the arg of the node in a given position we've got
   stack<size_t> argPos;
 
@@ -40,7 +40,7 @@ ExecutionList::ExecutionList(pOGNumeric tree)
   while (!treePos.empty())
   {
     // Get the next work item
-    pOGNumeric current = treePos.top();
+    OGNumeric::Ptr current = treePos.top();
 
     ExprType_t type = current->getType();
     if (!(type & IS_NODE_MASK))
@@ -122,7 +122,7 @@ ExecutionList::end()
   return _execList->end();
 }
 
-pOGNumeric
+OGNumeric::Ptr
 ExecutionList::operator[](size_t n)
 {
   return _execList->operator[](n);

@@ -31,8 +31,8 @@ class Walker
   public:
     Walker();
     ~Walker();
-    pOGNumeric walk(pOGNumeric numeric_expr_types);
-    void talkandwalk(pOGNumeric numeric_expr_types);
+    OGNumeric::Ptr walk(OGNumeric::Ptr numeric_expr_types);
+    void talkandwalk(OGNumeric::Ptr numeric_expr_types);
 };
 
 /**
@@ -116,8 +116,8 @@ Walker::~Walker()
   delete visitor;
 }
 
-pOGNumeric
-Walker::walk(pOGNumeric numeric_expr_types)
+OGNumeric::Ptr
+Walker::walk(OGNumeric::Ptr numeric_expr_types)
 {
   printf("Walking DAG.\n");
   this->talkandwalk(numeric_expr_types);
@@ -126,7 +126,7 @@ Walker::walk(pOGNumeric numeric_expr_types)
 }
 
 void
-Walker::talkandwalk(pOGNumeric numeric_expr_types)
+Walker::talkandwalk(OGNumeric::Ptr numeric_expr_types)
 {
   level++;
   const char ch = ' ';
@@ -135,15 +135,15 @@ Walker::talkandwalk(pOGNumeric numeric_expr_types)
   level--;
 }
 
-pOGTerminal
-entrypt(pOGNumeric expr)
+OGTerminal::Ptr
+entrypt(OGNumeric::Ptr expr)
 {
   // Sort out LAPACK so xerbla calls don't kill the processes.
   int zero = 0;
   set_xerbla_death_switch(&zero);
 
-  pOGTerminal terminal = expr->asOGTerminal();
-  if (terminal != pOGTerminal{})
+  OGTerminal::Ptr terminal = expr->asOGTerminal();
+  if (terminal != OGTerminal::Ptr{})
   {
     // If we were passed a terminal, simply return it.
     return terminal;
@@ -157,8 +157,8 @@ entrypt(pOGNumeric expr)
 
     for (auto it = el.begin(); it != el.end(); ++it)
     {
-      pOGExpr expr = (*it)->asOGExpr();
-      if (expr != pOGExpr{})
+      OGExpr::Ptr expr = (*it)->asOGExpr();
+      if (expr != OGExpr::Ptr{})
       {
         disp.dispatch(expr);
       }

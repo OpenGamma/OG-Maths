@@ -17,11 +17,11 @@ bool isVector(const OGTerminal *);
 bool isReal(const OGTerminal *);
 bool isComplex(const OGTerminal *);
 
-bool isScalar(pOGTerminal);
-bool isMatrix(pOGTerminal);
-bool isVector(pOGTerminal);
-bool isReal(pOGTerminal);
-bool isComplex(pOGTerminal);
+bool isScalar(OGTerminal::Ptr);
+bool isMatrix(OGTerminal::Ptr);
+bool isVector(OGTerminal::Ptr);
+bool isReal(OGTerminal::Ptr);
+bool isComplex(OGTerminal::Ptr);
 
 
 

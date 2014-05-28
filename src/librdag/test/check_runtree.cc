@@ -17,26 +17,26 @@ using namespace librdag;
 
 TEST(RunTree, ThrowDueToBadOp)
 {
-    pOGNumeric s1 = pOGNumeric{new OGRealScalar(10)};
-    pOGNumeric m1 = pOGNumeric{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
-    pOGNumeric m2 = pOGNumeric{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
+    OGNumeric::Ptr s1 = OGNumeric::Ptr{new OGRealScalar(10)};
+    OGNumeric::Ptr m1 = OGNumeric::Ptr{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
+    OGNumeric::Ptr m2 = OGNumeric::Ptr{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
 
-    pOGExpr s1m1 = pOGExpr{new MTIMES(s1,m1)};
-    pOGExpr s1m1m2 = pOGExpr{new MTIMES(s1m1,m2)};
+    OGExpr::Ptr s1m1 = OGExpr::Ptr{new MTIMES(s1,m1)};
+    OGExpr::Ptr s1m1m2 = OGExpr::Ptr{new MTIMES(s1m1,m2)};
     EXPECT_THROW(runtree(s1m1m2),rdag_error);
 }
 
 TEST(RunTree, ExecOk)
 {
-    pOGNumeric s1 = pOGNumeric{new OGRealScalar(10)};
-    pOGNumeric m1 = pOGNumeric{new OGRealMatrix(new real16[2]{1,2},1,2,OWNER)};
-    pOGNumeric m2 = pOGNumeric{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
+    OGNumeric::Ptr s1 = OGNumeric::Ptr{new OGRealScalar(10)};
+    OGNumeric::Ptr m1 = OGNumeric::Ptr{new OGRealMatrix(new real16[2]{1,2},1,2,OWNER)};
+    OGNumeric::Ptr m2 = OGNumeric::Ptr{new OGRealMatrix(new real16[2]{1,2},2,1,OWNER)};
 
-    pOGExpr s1m1 = pOGExpr{new MTIMES(s1,m1)};
-    pOGExpr s1m1m2 = pOGExpr{new MTIMES(s1m1,m2)};
+    OGExpr::Ptr s1m1 = OGExpr::Ptr{new MTIMES(s1,m1)};
+    OGExpr::Ptr s1m1m2 = OGExpr::Ptr{new MTIMES(s1m1,m2)};
 
     runtree(s1m1m2);
 
-    pOGTerminal expected = pOGTerminal{new OGRealScalar(50)};
+    OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(50)};
     EXPECT_TRUE(s1m1m2->getRegs()[0]->asOGTerminal()->mathsequals(expected));
 }

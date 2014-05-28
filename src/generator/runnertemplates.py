@@ -57,18 +57,18 @@ class %(nodename)sRunner: public DispatchVoidBinaryOp, private Uncopyable
 {
   public:
     using DispatchBinaryOp<void *>::run;
-    virtual void * run(RegContainer& reg0, pOGComplexMatrix arg0, pOGComplexMatrix arg1) const override;
-    virtual void * run(RegContainer& reg0, pOGRealMatrix    arg0, pOGRealMatrix    arg1) const override;
-    virtual void * run(RegContainer& reg0, pOGRealScalar    arg0, pOGRealScalar    arg1) const override;
+    virtual void * run(RegContainer& reg0, OGComplexMatrix::Ptr arg0, OGComplexMatrix::Ptr arg1) const override;
+    virtual void * run(RegContainer& reg0, OGRealMatrix::Ptr    arg0, OGRealMatrix::Ptr    arg1) const override;
+    virtual void * run(RegContainer& reg0, OGRealScalar::Ptr    arg0, OGRealScalar::Ptr    arg1) const override;
 };
 
 """
 
 binary_runner_function =  """\
 void *
-%(nodename)sRunner::run(RegContainer& reg0, p%(arg0type)s arg0, p%(arg1type)s arg1) const
+%(nodename)sRunner::run(RegContainer& reg0, %(arg0type)s::Ptr arg0, %(arg1type)s::Ptr arg1) const
 {
-  pOGNumeric ret;
+  OGNumeric::Ptr ret;
 %(implementation)s
   reg0.push_back(ret);
   return nullptr;
@@ -82,8 +82,8 @@ integer_parameter_runner_class_definition = """\
 class %(nodename)sRunner: public DispatchVoidOp, private Uncopyable
 {
   public:
-    virtual void* eval(RegContainer& reg, const RegContainer& arg0, pOGIntegerScalar arg1) const;
-    virtual void* run(RegContainer& reg0, const RegContainer& arg0, pOGIntegerScalar arg1) const;
+    virtual void* eval(RegContainer& reg, const RegContainer& arg0, OGIntegerScalar::Ptr arg1) const;
+    virtual void* run(RegContainer& reg0, const RegContainer& arg0, OGIntegerScalar::Ptr arg1) const;
 };
 
 """
@@ -91,7 +91,7 @@ class %(nodename)sRunner: public DispatchVoidOp, private Uncopyable
 # Infix runner
 
 infix_scalar_runner_implementation = """\
-  ret = pOGNumeric{new %(returntype)s(arg0->getValue() %(symbol)s arg1->getValue())};\
+  ret = OGNumeric::Ptr{new %(returntype)s(arg0->getValue() %(symbol)s arg1->getValue())};\
 """
 
 infix_matrix_runner_implementation = """\
@@ -173,7 +173,7 @@ infix_matrix_runner_implementation = """\
     }
   }
 
-  ret = pOGNumeric{new %(returntype)s(newData, newRows, newCols, OWNER)};
+  ret = OGNumeric::Ptr{new %(returntype)s(newData, newRows, newCols, OWNER)};
 """
 
 # Unary runner
@@ -182,17 +182,17 @@ unary_runner_class_definition = """\
 class %(nodename)sRunner: public DispatchVoidUnaryOp, private Uncopyable
 {
   public:
-    virtual void * run(RegContainer& reg, pOGRealScalar    arg) const override;
-    virtual void * run(RegContainer& reg, pOGRealMatrix    arg) const override;
-    virtual void * run(RegContainer& reg, pOGComplexMatrix arg) const override;
+    virtual void * run(RegContainer& reg, OGRealScalar::Ptr    arg) const override;
+    virtual void * run(RegContainer& reg, OGRealMatrix::Ptr    arg) const override;
+    virtual void * run(RegContainer& reg, OGComplexMatrix::Ptr arg) const override;
 };
 """
 
 unary_runner_function = """\
 void *
-%(nodename)sRunner::run(RegContainer& reg, p%(argtype)s arg) const
+%(nodename)sRunner::run(RegContainer& reg, %(argtype)s::Ptr arg) const
 {
-  pOGNumeric ret;
+  OGNumeric::Ptr ret;
 %(implementation)s
   reg.push_back(ret);
   return nullptr;
@@ -203,7 +203,7 @@ void *
 # Prefix runner
 
 prefix_scalar_runner_implementation = """\
-  ret = pOGNumeric{new %(returntype)s(%(symbol)s(arg->getValue()))};\
+  ret = OGNumeric::Ptr{new %(returntype)s(%(symbol)s(arg->getValue()))};\
 """
 
 prefix_matrix_runner_implementation = """\
@@ -214,13 +214,13 @@ prefix_matrix_runner_implementation = """\
   {
     newData[i] = %(symbol)sdata[i];
   }
-  ret = pOGNumeric{new %(returntype)s(newData, arg->getRows(), arg->getCols(), OWNER)};
+  ret = OGNumeric::Ptr{new %(returntype)s(newData, arg->getRows(), arg->getCols(), OWNER)};
 """
 
 # UnaryFunction runner
 
 unaryfunction_scalar_runner_implementation = """\
-  ret = pOGNumeric{new %(returntype)s(%(function)s(arg->getValue()))};\
+  ret = OGNumeric::Ptr{new %(returntype)s(%(function)s(arg->getValue()))};\
 """
 
 unaryfunction_matrix_runner_implementation = """\
@@ -231,7 +231,7 @@ unaryfunction_matrix_runner_implementation = """\
   {
     newData[i] = %(function)s(data[i]);
   }
-  ret = pOGNumeric{new %(returntype)s(newData, arg->getRows(), arg->getCols(), OWNER)};
+  ret = OGNumeric::Ptr{new %(returntype)s(newData, arg->getRows(), arg->getCols(), OWNER)};
 
 """
 
@@ -239,7 +239,7 @@ unaryfunction_matrix_runner_implementation = """\
 
 unimplementedunary_runner_function = """\
 void *
-%(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED & reg, p%(argtype)s SUPPRESS_UNUSED arg) const
+%(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED & reg, %(argtype)s::Ptr SUPPRESS_UNUSED arg) const
 {
   throw rdag_error("Unimplemented unary expression node");
   return nullptr;
@@ -249,8 +249,8 @@ void *
 unimplementedbinary_runner_function =  """\
 void *
 %(nodename)sRunner::run(RegContainer SUPPRESS_UNUSED & reg0,
-                        p%(arg0type)s SUPPRESS_UNUSED arg0,
-                        p%(arg1type)s SUPPRESS_UNUSED arg1) const
+                        %(arg0type)s::Ptr SUPPRESS_UNUSED arg0,
+                        %(arg1type)s::Ptr SUPPRESS_UNUSED arg1) const
 {
   throw rdag_error("Unimplemented unary expression node");
   return nullptr;

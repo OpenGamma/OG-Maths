@@ -13,12 +13,12 @@
 using namespace std;
 using namespace librdag;
 
-class ExecutionOneNodeTest: public ::testing::TestWithParam<pOGTerminal> {};
+class ExecutionOneNodeTest: public ::testing::TestWithParam<OGTerminal::Ptr> {};
 
 TEST_P(ExecutionOneNodeTest, TerminalTypes)
 {
   // Test "base case" - one node
-  pOGTerminal node = GetParam();
+  OGTerminal::Ptr node = GetParam();
   ExecutionList el1 = ExecutionList{node};
   // Check size
   EXPECT_EQ(1, el1.size());
@@ -36,8 +36,8 @@ INSTANTIATE_TEST_CASE_P(ValueParam, ExecutionOneNodeTest, ::testing::ValuesIn(te
 TEST(LinearisationTest, UnaryTreeLinearisation)
 {
   // One unary node holding one terminal
-  pOGNumeric real = pOGNumeric{new OGRealScalar(1.0)};
-  pOGNumeric copy = pOGNumeric{new COPY(real)};
+  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  OGNumeric::Ptr copy = OGNumeric::Ptr{new COPY(real)};
   ExecutionList el1 = ExecutionList(copy);
   EXPECT_EQ(2, el1.size());
   // Check ordering
@@ -55,14 +55,14 @@ TEST(LinearisationTest, UnaryTreeLinearisation)
 TEST(LinearisationTest, BinaryTreeLinearisation)
 {
   // One binary node holding two terminals
-  pOGNumeric real1 = pOGNumeric{new OGRealScalar(1.0)};
-  pOGNumeric real2 = pOGNumeric{new OGRealScalar(2.0)};
-  pOGNumeric plus = pOGNumeric{new PLUS(real1, real2)};
+  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  OGNumeric::Ptr real2 = OGNumeric::Ptr{new OGRealScalar(2.0)};
+  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, real2)};
   ExecutionList el1 = ExecutionList(plus);
   EXPECT_EQ(3, el1.size());
   // Check ordering. We iterate over the list and get
   // its contents first.
-  pOGNumeric nodes[3];
+  OGNumeric::Ptr nodes[3];
   int i = 0;
   for (auto it = el1.begin(); it != el1.end(); ++it)
   {
@@ -93,14 +93,14 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
    *          \
    *           2.0
    */
-  pOGNumeric real1 = pOGNumeric{new OGRealScalar(1.0)};
-  pOGNumeric real2 = pOGNumeric{new OGRealScalar(2.0)};
-  pOGNumeric copy = pOGNumeric{new COPY(real2)};
-  pOGNumeric plus = pOGNumeric{new PLUS(real1, copy)};
+  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  OGNumeric::Ptr real2 = OGNumeric::Ptr{new OGRealScalar(2.0)};
+  OGNumeric::Ptr copy = OGNumeric::Ptr{new COPY(real2)};
+  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, copy)};
   ExecutionList el1 = ExecutionList(plus);
   // Check ordering. We iterate over the list and get
   // its contents first.
-  pOGNumeric nodes[4];
+  OGNumeric::Ptr nodes[4];
   int i = 0;
   for (auto it = el1.begin(); it != el1.end(); ++it)
   {

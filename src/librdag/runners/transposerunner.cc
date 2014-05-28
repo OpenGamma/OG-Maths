@@ -23,9 +23,9 @@
 namespace librdag {
 
 void *
-TRANSPOSERunner::run(RegContainer& reg, pOGRealScalar arg) const
+TRANSPOSERunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
-  pOGNumeric ret = pOGNumeric{new OGRealScalar(arg->getValue())};
+  OGNumeric::Ptr ret = OGNumeric::Ptr{new OGRealScalar(arg->getValue())};
   reg.push_back(ret);
   return nullptr;
 }
@@ -34,7 +34,7 @@ template<typename T>
 void
 transpose_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 {
-  pOGNumeric ret; // the returned item
+  OGNumeric::Ptr ret; // the returned item
 
   // Matrix in scalar context, i.e. a 1x1 matrix, transpose is simply value
   if(arg->getRows()==1 && arg->getCols()==1)
@@ -71,14 +71,14 @@ transpose_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 }
 
 void *
-TRANSPOSERunner::run(RegContainer& reg, pOGRealMatrix arg) const
+TRANSPOSERunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
   transpose_dense_runner<real16>(reg, arg);
   return nullptr;
 }
 
 void *
-TRANSPOSERunner::run(RegContainer& reg, pOGComplexMatrix arg) const
+TRANSPOSERunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
 {
   transpose_dense_runner<complex16>(reg, arg);
   return nullptr;

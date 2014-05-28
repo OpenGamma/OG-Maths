@@ -77,27 +77,27 @@ bool isComplex(const OGTerminal * terminal)
 }
 
 
-bool isScalar(pOGTerminal t)
+bool isScalar(OGTerminal::Ptr t)
 {
   return isScalar(t.get());
 }
 
-bool isMatrix(pOGTerminal t)
+bool isMatrix(OGTerminal::Ptr t)
 {
   return isMatrix(t.get());
 }
 
-bool isVector(pOGTerminal t)
+bool isVector(OGTerminal::Ptr t)
 {
   return isVector(t.get());
 }
 
-bool isReal(pOGTerminal t)
+bool isReal(OGTerminal::Ptr t)
 {
   return isReal(t.get());
 }
 
-bool isComplex(pOGTerminal t)
+bool isComplex(OGTerminal::Ptr t)
 {
   return isComplex(t.get());
 }

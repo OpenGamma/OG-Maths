@@ -18,20 +18,20 @@ using namespace librdag;
 class issTest : public ::testing::Test
 {
   protected:
-    pOGRealScalar _ogrealscalar = nullptr;
-    pOGComplexScalar _ogcomplexscalar = nullptr;
-    pOGIntegerScalar _ogintegerscalar = nullptr;
-    pOGRealMatrix _ogrealmatrix = nullptr;
-    pOGComplexMatrix _ogcomplexmatrix = nullptr;
-    pOGLogicalMatrix _oglogicalmatrix = nullptr;
-    pOGRealDiagonalMatrix _ogrealdiagonalmatrix = nullptr;
-    pOGComplexDiagonalMatrix _ogcomplexdiagonalmatrix = nullptr;
-    pOGRealSparseMatrix _ogrealsparsematrix = nullptr;
-    pOGComplexSparseMatrix _ogcomplexsparsematrix = nullptr;
-    pOGRealMatrix _ogrealvector1 = nullptr;
-    pOGRealMatrix _ogrealvector2 = nullptr;
-    pOGComplexMatrix _ogcomplexvector1 = nullptr;
-    pOGComplexMatrix _ogcomplexvector2 = nullptr;
+    OGRealScalar::Ptr _ogrealscalar = nullptr;
+    OGComplexScalar::Ptr _ogcomplexscalar = nullptr;
+    OGIntegerScalar::Ptr _ogintegerscalar = nullptr;
+    OGRealMatrix::Ptr _ogrealmatrix = nullptr;
+    OGComplexMatrix::Ptr _ogcomplexmatrix = nullptr;
+    OGLogicalMatrix::Ptr _oglogicalmatrix = nullptr;
+    OGRealDiagonalMatrix::Ptr _ogrealdiagonalmatrix = nullptr;
+    OGComplexDiagonalMatrix::Ptr _ogcomplexdiagonalmatrix = nullptr;
+    OGRealSparseMatrix::Ptr _ogrealsparsematrix = nullptr;
+    OGComplexSparseMatrix::Ptr _ogcomplexsparsematrix = nullptr;
+    OGRealMatrix::Ptr _ogrealvector1 = nullptr;
+    OGRealMatrix::Ptr _ogrealvector2 = nullptr;
+    OGComplexMatrix::Ptr _ogcomplexvector1 = nullptr;
+    OGComplexMatrix::Ptr _ogcomplexvector2 = nullptr;
     real16 * r_data;
     complex16 * c_data;
     int * colPtr;
@@ -42,20 +42,20 @@ class issTest : public ::testing::Test
     c_data = new complex16[1]{{12,34}};
     rowIdx = new int[1]{0};
     colPtr = new int[2]{0,1};
-    _ogrealscalar = pOGRealScalar{new OGRealScalar(12)};
-    _ogcomplexscalar = pOGComplexScalar{new OGComplexScalar({12,34})};
-    _ogintegerscalar = pOGIntegerScalar{new OGIntegerScalar(4)};
-    _ogrealmatrix = pOGRealMatrix{new OGRealMatrix(r_data,1,1)};
-    _ogcomplexmatrix = pOGComplexMatrix{new OGComplexMatrix(c_data,1,1)};
-    _oglogicalmatrix = pOGLogicalMatrix{new OGLogicalMatrix(r_data,1,1)};
-    _ogrealdiagonalmatrix = pOGRealDiagonalMatrix{new OGRealDiagonalMatrix(r_data,1,1)};
-    _ogcomplexdiagonalmatrix = pOGComplexDiagonalMatrix{new OGComplexDiagonalMatrix(c_data,1,1)};
-    _ogrealsparsematrix = pOGRealSparseMatrix{new OGRealSparseMatrix(colPtr,rowIdx,r_data,1,1)};
-    _ogcomplexsparsematrix = pOGComplexSparseMatrix{new OGComplexSparseMatrix(colPtr,rowIdx,c_data,1,1)};
-    _ogrealvector1 = pOGRealMatrix{new OGRealMatrix(new real16[3]{1,2,3},1,3, OWNER)};
-    _ogrealvector2 = pOGRealMatrix{new OGRealMatrix(new real16[3]{1,2,3},3,1, OWNER)};
-    _ogcomplexvector1 = pOGComplexMatrix{new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER)};
-    _ogcomplexvector2 = pOGComplexMatrix{new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER)};
+    _ogrealscalar = OGRealScalar::Ptr{new OGRealScalar(12)};
+    _ogcomplexscalar = OGComplexScalar::Ptr{new OGComplexScalar({12,34})};
+    _ogintegerscalar = OGIntegerScalar::Ptr{new OGIntegerScalar(4)};
+    _ogrealmatrix = OGRealMatrix::Ptr{new OGRealMatrix(r_data,1,1)};
+    _ogcomplexmatrix = OGComplexMatrix::Ptr{new OGComplexMatrix(c_data,1,1)};
+    _oglogicalmatrix = OGLogicalMatrix::Ptr{new OGLogicalMatrix(r_data,1,1)};
+    _ogrealdiagonalmatrix = OGRealDiagonalMatrix::Ptr{new OGRealDiagonalMatrix(r_data,1,1)};
+    _ogcomplexdiagonalmatrix = OGComplexDiagonalMatrix::Ptr{new OGComplexDiagonalMatrix(c_data,1,1)};
+    _ogrealsparsematrix = OGRealSparseMatrix::Ptr{new OGRealSparseMatrix(colPtr,rowIdx,r_data,1,1)};
+    _ogcomplexsparsematrix = OGComplexSparseMatrix::Ptr{new OGComplexSparseMatrix(colPtr,rowIdx,c_data,1,1)};
+    _ogrealvector1 = OGRealMatrix::Ptr{new OGRealMatrix(new real16[3]{1,2,3},1,3, OWNER)};
+    _ogrealvector2 = OGRealMatrix::Ptr{new OGRealMatrix(new real16[3]{1,2,3},3,1, OWNER)};
+    _ogcomplexvector1 = OGComplexMatrix::Ptr{new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER)};
+    _ogcomplexvector2 = OGComplexMatrix::Ptr{new OGComplexMatrix(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER)};
   }
 
   virtual void TearDown()

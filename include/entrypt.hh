@@ -8,10 +8,11 @@
 #define _ENTRYPT_H
 
 #include "numeric.hh"
+#include "terminal.hh"
 
 namespace librdag {
 
-pOGTerminal entrypt(pOGNumeric expr);
+OGTerminal::Ptr entrypt(OGNumeric::Ptr expr);
 
 } // namespace librdag
 

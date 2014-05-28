@@ -110,8 +110,8 @@ class FakeVisitor: public librdag::Visitor
  * Check OGTerminal base class behaves
  */
 TEST(TerminalsTest, OGTerminalTest) {
-  pOGTerminal terminal = pOGTerminal{new OGRealScalar(3.14e0)};
-  pOGExpr expr = pOGExpr{new NEGATE(terminal)};
+  OGTerminal::Ptr terminal = OGTerminal::Ptr{new OGRealScalar(3.14e0)};
+  OGExpr::Ptr expr = OGExpr::Ptr{new NEGATE(terminal)};
   ASSERT_NE(nullptr, terminal->asOGTerminal());
   ASSERT_EQ(nullptr, expr->asOGTerminal());
 
@@ -145,9 +145,9 @@ TEST(TerminalsTest, OGScalarTest) {
 TEST(TerminalsTest, OGRealScalarTest) {
   // test ctor
   real16 value = 3.14e0;
-  pOGRealScalar tmp{new OGRealScalar(value)};
+  OGRealScalar::Ptr tmp{new OGRealScalar(value)};
   // check ctor worked
-  ASSERT_NE(tmp, pOGRealScalar{}); 
+  ASSERT_NE(tmp, OGRealScalar::Ptr{}); 
 
   // check getRows is ok
   ASSERT_EQ(tmp->getRows(), 1);
@@ -197,17 +197,17 @@ TEST(TerminalsTest, OGRealScalarTest) {
   ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGRealScalar
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getValue(),copy->asOGRealScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGRealScalar());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
-  pOGComplexScalar cmplx_tmp{new OGComplexScalar(value)};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGComplexScalar::Ptr cmplx_tmp{new OGComplexScalar(value)};
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
 
   // Check debug string
@@ -226,7 +226,7 @@ TEST(TerminalsTest, OGRealScalarTest) {
 TEST(TerminalsTest, OGComplexScalarTest) {
   // test ctor
   complex16 value = {3.14e0, 0.00159e0};
-  pOGComplexScalar tmp{new OGComplexScalar(value)};
+  OGComplexScalar::Ptr tmp{new OGComplexScalar(value)};
   // check ctor worked
   ASSERT_NE(tmp, nullptr); 
 
@@ -274,16 +274,16 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGComplexScalar
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getValue(),copy->asOGComplexScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGComplexScalar());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningComplexCopy);
 
   // Check debug string
@@ -300,7 +300,7 @@ TEST(TerminalsTest, OGComplexScalarTest) {
 TEST(TerminalsTest, OGIntegerScalarTest) {
   // test ctor
   int value = 3;
-  pOGIntegerScalar tmp{new OGIntegerScalar(value)};
+  OGIntegerScalar::Ptr tmp{new OGIntegerScalar(value)};
   // check ctor worked
   ASSERT_NE(tmp, nullptr); 
 
@@ -326,17 +326,17 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
   ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
   // check copy and asOGIntegerScalar
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getValue(),copy->asOGIntegerScalar()->getValue());
   ASSERT_EQ(copy,copy->asOGIntegerScalar());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
-  pOGComplexScalar cmplx_tmp{new OGComplexScalar(value)};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGComplexScalar::Ptr cmplx_tmp{new OGComplexScalar(value)};
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
 
   // Check debug string
@@ -367,7 +367,7 @@ TEST(TerminalsTest, OGMatrix_T_real16) {
   int rows = 3;
   int cols = 4;
   OGMatrix<real16> * tmp = new OGMatrix<real16>(data,rows,cols);
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   // can't do much here as at present we can't cast via RTTI asFOO() methods to an OGMatrix<T>
   ASSERT_TRUE(*tmp==~*(copy->asOGTerminal()));
   delete tmp;
@@ -378,7 +378,7 @@ TEST(TerminalsTest, OGMatrix_T_complex16) {
   int rows = 3;
   int cols = 4;
   OGMatrix<complex16> * tmp = new OGMatrix<complex16>(data,rows,cols);
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   // can't do much here as at present we can't cast via RTTI asFOO() methods to an OGMatrix<T>
   ASSERT_TRUE(*tmp==~*(copy->asOGTerminal()));
   delete tmp;
@@ -395,7 +395,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
 
   // attempt construct from nullptr, should throw
   real16 * null = nullptr;
-  pOGRealMatrix tmp;
+  OGRealMatrix::Ptr tmp;
   ASSERT_THROW((new OGRealMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
@@ -405,15 +405,15 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   ASSERT_THROW((new OGRealMatrix(data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = pOGRealMatrix{new OGRealMatrix(new real16[2]{10,20},1,2, OWNER)};
-  ASSERT_NE(tmp, pOGRealMatrix{});
+  tmp = OGRealMatrix::Ptr{new OGRealMatrix(new real16[2]{10,20},1,2, OWNER)};
+  ASSERT_NE(tmp, OGRealMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = pOGRealMatrix{new OGRealMatrix(data,rows,cols)};
+  tmp = OGRealMatrix::Ptr{new OGRealMatrix(data,rows,cols)};
 
   // check ctor worked
-  ASSERT_NE(tmp, pOGRealMatrix{});
+  ASSERT_NE(tmp, OGRealMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -477,7 +477,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGRealMatrix
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGRealMatrix()->getData());
   ASSERT_TRUE(ArrayEquals<real16>(tmp->getData(),copy->asOGRealMatrix()->getData(),tmp->getDatalen()));
   ASSERT_EQ(tmp->getRows(),copy->asOGRealMatrix()->getRows());
@@ -485,15 +485,15 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   ASSERT_EQ(copy,copy->asOGRealMatrix());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
   ASSERT_FALSE(tmp->getData()==owningCopy->asOGRealMatrix()->getData()); // make sure the data is unique
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   complex16 * cdata = new complex16[rows*cols]();
   std::copy(data,data+(rows*cols),cdata);
-  pOGComplexMatrix cmplx_tmp{new OGComplexMatrix(cdata, rows, cols, OWNER)};
+  OGComplexMatrix::Ptr cmplx_tmp{new OGComplexMatrix(cdata, rows, cols, OWNER)};
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
   ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexMatrix()->getData())); // make sure the data is unique
 
@@ -514,7 +514,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
-  pOGComplexMatrix tmp;
+  OGComplexMatrix::Ptr tmp;
   ASSERT_THROW((new OGComplexMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
@@ -526,14 +526,14 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_THROW((new OGComplexMatrix(data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = pOGComplexMatrix{new OGComplexMatrix(new complex16[2]{{10,20},{30,40}},1,2, OWNER)};
-  ASSERT_NE(tmp, pOGComplexMatrix{});
+  tmp = OGComplexMatrix::Ptr{new OGComplexMatrix(new complex16[2]{{10,20},{30,40}},1,2, OWNER)};
+  ASSERT_NE(tmp, OGComplexMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = pOGComplexMatrix{new OGComplexMatrix(data,rows,cols)};
+  tmp = OGComplexMatrix::Ptr{new OGComplexMatrix(data,rows,cols)};
   // check ctor worked
-  ASSERT_NE(tmp, pOGComplexMatrix{});
+  ASSERT_NE(tmp, OGComplexMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -590,7 +590,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   delete v;  
 
   // check copy and asOGComplexMatrix
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGComplexMatrix()->getData());
   ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexMatrix()->getData(),tmp->getDatalen()));
   ASSERT_EQ(tmp->getRows(),copy->asOGComplexMatrix()->getRows());
@@ -598,12 +598,12 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_EQ(copy,copy->asOGComplexMatrix());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
   ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexMatrix()->getData()); // make sure the data is unique
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningComplexCopy);
   ASSERT_FALSE(tmp->getData()==owningComplexCopy->asOGComplexMatrix()->getData());
 
@@ -623,7 +623,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
 
   // attempt construct from nullptr, should throw
   real16 * null = nullptr;
-  pOGRealDiagonalMatrix tmp;
+  OGRealDiagonalMatrix::Ptr tmp;
   ASSERT_THROW((new OGRealDiagonalMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
@@ -633,15 +633,15 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   ASSERT_THROW((new OGRealDiagonalMatrix(data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = pOGRealDiagonalMatrix{new OGRealDiagonalMatrix(new real16[2]{10,20},2,2, OWNER)};
-  ASSERT_NE(tmp, pOGRealDiagonalMatrix{});
+  tmp = OGRealDiagonalMatrix::Ptr{new OGRealDiagonalMatrix(new real16[2]{10,20},2,2, OWNER)};
+  ASSERT_NE(tmp, OGRealDiagonalMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = pOGRealDiagonalMatrix{new OGRealDiagonalMatrix(data,rows,cols)};
+  tmp = OGRealDiagonalMatrix::Ptr{new OGRealDiagonalMatrix(data,rows,cols)};
 
   // check ctor worked
-  ASSERT_NE(tmp, pOGRealDiagonalMatrix{});
+  ASSERT_NE(tmp, OGRealDiagonalMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -707,7 +707,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGRealMatrix
-  pOGNumeric  copy = tmp->copy();
+  OGNumeric::Ptr  copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGRealDiagonalMatrix()->getData());
   ASSERT_TRUE(ArrayEquals<real16>(tmp->getData(),copy->asOGRealDiagonalMatrix()->getData(),tmp->getDatalen()));
   ASSERT_EQ(tmp->getRows(),copy->asOGRealDiagonalMatrix()->getRows());
@@ -715,22 +715,22 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   ASSERT_EQ(copy,copy->asOGRealDiagonalMatrix());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
   ASSERT_FALSE(tmp->getData()==owningCopy->asOGRealDiagonalMatrix()->getData()); // make sure the data is unique
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   complex16 * cmplx_data = new complex16[tmp->getDatalen()];
   std::copy(data, data+tmp->getDatalen(), cmplx_data);
-  pOGComplexDiagonalMatrix cmplx_tmp{new OGComplexDiagonalMatrix(cmplx_data, rows, cols, OWNER)};
+  OGComplexDiagonalMatrix::Ptr cmplx_tmp{new OGComplexDiagonalMatrix(cmplx_data, rows, cols, OWNER)};
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
   ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexDiagonalMatrix()->getData())); // make sure the data is unique
 
   // Check debug string
   copy->debug_print();
   // Check debug string for matrix with more rows than cols (swapped rows/cols)
-  tmp = pOGRealDiagonalMatrix{new OGRealDiagonalMatrix(data,cols,rows)};
+  tmp = OGRealDiagonalMatrix::Ptr{new OGRealDiagonalMatrix(data,cols,rows)};
   tmp->debug_print();
 }
 
@@ -746,7 +746,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
 
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
-  pOGComplexDiagonalMatrix tmp;
+  OGComplexDiagonalMatrix::Ptr tmp;
   ASSERT_THROW((new OGComplexDiagonalMatrix(null,rows,cols)), rdag_error);
 
   // attempt construct from bad rows
@@ -756,15 +756,15 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   ASSERT_THROW((new OGComplexDiagonalMatrix(data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = pOGComplexDiagonalMatrix{new OGComplexDiagonalMatrix(new complex16[2]{{10,20},{30,40}},2,2, OWNER)};
-  ASSERT_NE(tmp, pOGComplexDiagonalMatrix{});
+  tmp = OGComplexDiagonalMatrix::Ptr{new OGComplexDiagonalMatrix(new complex16[2]{{10,20},{30,40}},2,2, OWNER)};
+  ASSERT_NE(tmp, OGComplexDiagonalMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = pOGComplexDiagonalMatrix{new OGComplexDiagonalMatrix(data,rows,cols)};
+  tmp = OGComplexDiagonalMatrix::Ptr{new OGComplexDiagonalMatrix(data,rows,cols)};
 
   // check ctor worked
-  ASSERT_NE(tmp, pOGComplexDiagonalMatrix{});
+  ASSERT_NE(tmp, OGComplexDiagonalMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -833,7 +833,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGRealMatrix
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGComplexDiagonalMatrix()->getData());
   ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexDiagonalMatrix()->getData(),tmp->getDatalen()));
   ASSERT_EQ(tmp->getRows(),copy->asOGComplexDiagonalMatrix()->getRows());
@@ -841,19 +841,19 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   ASSERT_EQ(copy,copy->asOGComplexDiagonalMatrix());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
   ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexDiagonalMatrix()->getData()); // make sure the data is unique
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningComplexCopy);
   ASSERT_FALSE(tmp->getData()==owningComplexCopy->asOGComplexDiagonalMatrix()->getData());
 
   // Check debug string
   copy->debug_print();
   // Check debug string for matrix with more rows than cols (swapped rows/cols)
-  tmp = pOGComplexDiagonalMatrix{new OGComplexDiagonalMatrix(data,cols,rows)};
+  tmp = OGComplexDiagonalMatrix::Ptr{new OGComplexDiagonalMatrix(data,cols,rows)};
   tmp->debug_print();
 }
 
@@ -870,7 +870,7 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   int rows = 5;
   int cols = 4;
 
-  pOGRealSparseMatrix tmp;
+  OGRealSparseMatrix::Ptr tmp;
   int * nullintptr = nullptr;
 
   // attempt construct from colptr as null, should throw
@@ -890,15 +890,15 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   ASSERT_THROW((OGRealSparseMatrix(colPtr,rowIdx,data,rows,-1)), rdag_error);
 
     // attempt construct from ok data, own the data and delete it
-  tmp = pOGRealSparseMatrix{new OGRealSparseMatrix(new int[3]{0,2,2}, new int[2]{0,1},new real16[2]{10,20},2,2, OWNER)};
-  ASSERT_NE(tmp, pOGRealSparseMatrix{});
+  tmp = OGRealSparseMatrix::Ptr{new OGRealSparseMatrix(new int[3]{0,2,2}, new int[2]{0,1},new real16[2]{10,20},2,2, OWNER)};
+  ASSERT_NE(tmp, OGRealSparseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = pOGRealSparseMatrix{new OGRealSparseMatrix(colPtr,rowIdx,data,rows,cols)};
+  tmp = OGRealSparseMatrix::Ptr{new OGRealSparseMatrix(colPtr,rowIdx,data,rows,cols)};
 
   // check ctor worked
-  ASSERT_NE(tmp, pOGRealSparseMatrix{});
+  ASSERT_NE(tmp, OGRealSparseMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -969,7 +969,7 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGRealSparseMatrix
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGRealSparseMatrix()->getData());
   ASSERT_TRUE(ArrayEquals(tmp->getData(),copy->asOGRealSparseMatrix()->getData(),tmp->getDatalen()));
   ASSERT_EQ(tmp->getRows(),copy->asOGRealSparseMatrix()->getRows());
@@ -981,14 +981,14 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   ASSERT_EQ(copy,copy->asOGRealSparseMatrix());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
   ASSERT_FALSE(tmp->getData()==owningCopy->asOGRealSparseMatrix()->getData()); // make sure the data is unique
   ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getColPtr()==owningCopy->asOGRealSparseMatrix()->getColPtr()); // make sure the colptr data is unique
   ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getRowIdx()==owningCopy->asOGRealSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()%*owningComplexCopy);
   ASSERT_TRUE(owningComplexCopy->asOGComplexSparseMatrix()!=nullptr); // check type is correct as % was used to compare
   ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexSparseMatrix()->getData())); // make sure the data is unique
@@ -1011,7 +1011,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   int rows = 5;
   int cols = 4;
 
-  pOGComplexSparseMatrix tmp;
+  OGComplexSparseMatrix::Ptr tmp;
   int * nullintptr = nullptr;
 
   // attempt construct from colptr as null, should throw
@@ -1031,15 +1031,15 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_THROW((new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,-1)), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = pOGComplexSparseMatrix{new OGComplexSparseMatrix(new int[3]{0,2,2}, new int[2]{0,1},new complex16[2]{{10,20},{30,40}},2,2, OWNER)};
-  ASSERT_NE(tmp, pOGComplexSparseMatrix{});
+  tmp = OGComplexSparseMatrix::Ptr{new OGComplexSparseMatrix(new int[3]{0,2,2}, new int[2]{0,1},new complex16[2]{{10,20},{30,40}},2,2, OWNER)};
+  ASSERT_NE(tmp, OGComplexSparseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = pOGComplexSparseMatrix{new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,cols)};
+  tmp = OGComplexSparseMatrix::Ptr{new OGComplexSparseMatrix(colPtr,rowIdx,data,rows,cols)};
 
   // check ctor worked
-  ASSERT_NE(tmp, pOGComplexSparseMatrix{});
+  ASSERT_NE(tmp, OGComplexSparseMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -1120,7 +1120,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   delete v;  
 
   // check copy and asOGComplexSparseMatrix
-  pOGNumeric copy = tmp->copy();
+  OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGComplexSparseMatrix()->getData());
   ASSERT_TRUE(ArrayEquals(tmp->getData(),copy->asOGComplexSparseMatrix()->getData(),tmp->getDatalen()));
   ASSERT_EQ(tmp->getRows(),copy->asOGComplexSparseMatrix()->getRows());
@@ -1132,14 +1132,14 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_EQ(copy,copy->asOGComplexSparseMatrix());
 
   // check createOwningCopy
-  pOGTerminal owningCopy{tmp->createOwningCopy()};
+  OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
   ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexSparseMatrix()->getData()); // make sure the data is unique
   ASSERT_FALSE(tmp->asOGComplexSparseMatrix()->getColPtr()==owningCopy->asOGComplexSparseMatrix()->getColPtr()); // make sure the colptr data is unique
   ASSERT_FALSE(tmp->asOGComplexSparseMatrix()->getRowIdx()==owningCopy->asOGComplexSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
 
   // check createComplexOwningCopy
-  pOGTerminal owningComplexCopy{tmp->createComplexOwningCopy()};
+  OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()%*owningComplexCopy);
   ASSERT_TRUE(owningComplexCopy->asOGComplexSparseMatrix()!=nullptr); // check type is correct as % was used to compare
   ASSERT_FALSE(tmp->getData()==(owningComplexCopy->asOGComplexSparseMatrix()->getData())); // make sure the data is unique
@@ -1167,9 +1167,9 @@ public:
     }
     virtual void debug_print() const override {}
     virtual void accept(Visitor SUPPRESS_UNUSED &v) const override {}
-    virtual pOGNumeric copy() const override { return pOGNumeric{}; }
-    virtual pOGRealMatrix asFullOGRealMatrix() const override { return pOGRealMatrix{}; }
-    virtual pOGComplexMatrix asFullOGComplexMatrix() const override { return pOGComplexMatrix{}; }
+    virtual OGNumeric::Ptr copy() const override { return OGNumeric::Ptr{}; }
+    virtual OGRealMatrix::Ptr asFullOGRealMatrix() const override { return OGRealMatrix::Ptr{}; }
+    virtual OGComplexMatrix::Ptr asFullOGComplexMatrix() const override { return OGComplexMatrix::Ptr{}; }
     virtual OGTerminal * createOwningCopy() const override { return nullptr; }
     virtual OGTerminal * createComplexOwningCopy() const override { return nullptr;}
 };

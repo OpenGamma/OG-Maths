@@ -13,15 +13,15 @@
 using namespace std;
 using namespace librdag;
 
-class EntryptOneNodeTest: public ::testing::TestWithParam<pOGTerminal> {};
+class EntryptOneNodeTest: public ::testing::TestWithParam<OGTerminal::Ptr> {};
 
 TEST_P(EntryptOneNodeTest, TerminalTypes)
 {
   // Test "base case" - one node
-  pOGTerminal node = GetParam();
+  OGTerminal::Ptr node = GetParam();
   // Check that result is not null
-  pOGTerminal result = entrypt(node);
-  ASSERT_NE(result, pOGTerminal{});
+  OGTerminal::Ptr result = entrypt(node);
+  ASSERT_NE(result, OGTerminal::Ptr{});
 }
 
 INSTANTIATE_TEST_CASE_P(ValueParam, EntryptOneNodeTest, ::testing::ValuesIn(terminals));
@@ -29,7 +29,7 @@ INSTANTIATE_TEST_CASE_P(ValueParam, EntryptOneNodeTest, ::testing::ValuesIn(term
 /**
  * A TreeResultPair consists of a tree and the terminal it is expected to evaluate to.
  */
-typedef pair<pOGNumeric, pOGTerminal> TreeResultPair;
+typedef pair<OGNumeric::Ptr, OGTerminal::Ptr> TreeResultPair;
 
 /**
  * run_entrypt calls entrypt, checks the result and cleans up. This is common to
@@ -38,10 +38,10 @@ typedef pair<pOGNumeric, pOGTerminal> TreeResultPair;
  */
 void run_entrypt(TreeResultPair param)
 {
-  pOGNumeric node = param.first;
-  pOGTerminal expectedResult = param.second;
-  pOGTerminal result = entrypt(node);
-  ASSERT_NE(result, pOGNumeric{});
+  OGNumeric::Ptr node = param.first;
+  OGTerminal::Ptr expectedResult = param.second;
+  OGTerminal::Ptr result = entrypt(node);
+  ASSERT_NE(result, OGNumeric::Ptr{});
   // PR: There is something very unexpected about this syntax.
   // PR This is super-confusing! Needs API fixing
   EXPECT_TRUE((*result)==(expectedResult));
@@ -59,16 +59,16 @@ TEST_P(EntryptNegateTest, Running)
 
 TreeResultPair negatepair(double v)
 {
-  pOGNumeric negate = pOGNumeric{new NEGATE(pOGNumeric{new OGRealScalar(v)})};
-  pOGTerminal expected = pOGTerminal{new OGRealScalar(-v)};
+  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(OGNumeric::Ptr{new OGRealScalar(v)})};
+  OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(-v)};
   return TreeResultPair(negate, expected);
 }
 
 TreeResultPair doublenegate(double v)
 {
-  pOGNumeric negate = pOGNumeric{new NEGATE(pOGNumeric{new OGRealScalar(v)})};
-  negate = pOGNumeric{new NEGATE(negate)};
-  pOGTerminal expected = pOGTerminal{new OGRealScalar(v)};
+  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(OGNumeric::Ptr{new OGRealScalar(v)})};
+  negate = OGNumeric::Ptr{new NEGATE(negate)};
+  OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(v)};
   return TreeResultPair(negate, expected);
 }
 
@@ -77,9 +77,9 @@ double realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
 
 TreeResultPair negaterealmatrix()
 {
-  pOGNumeric ogrealmatrix = pOGNumeric{new OGRealMatrix(realData, 2, 3)};
-  pOGNumeric negate = pOGNumeric{new NEGATE(ogrealmatrix)};
-  pOGTerminal ogrealnegmatrix = pOGTerminal{new OGRealMatrix(realNegData, 2, 3)};
+  OGNumeric::Ptr ogrealmatrix = OGNumeric::Ptr{new OGRealMatrix(realData, 2, 3)};
+  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(ogrealmatrix)};
+  OGTerminal::Ptr ogrealnegmatrix = OGTerminal::Ptr{new OGRealMatrix(realNegData, 2, 3)};
   return TreeResultPair(negate, ogrealnegmatrix);
 }
 
@@ -90,9 +90,9 @@ complex16 complexNegData[6] = { {-1.0, -2.0}, {-3.0, -4.0},  {-5.0,  -6.0},
 
 TreeResultPair negatecomplexmatrix()
 {
-  pOGNumeric ogcomplexmatrix = pOGNumeric{new OGComplexMatrix(complexData, 2, 3)};
-  pOGNumeric negate = pOGNumeric{new NEGATE(ogcomplexmatrix)};
-  pOGTerminal ogcomplexnegmatrix = pOGTerminal{new OGComplexMatrix(complexNegData, 2, 3)};
+  OGNumeric::Ptr ogcomplexmatrix = OGNumeric::Ptr{new OGComplexMatrix(complexData, 2, 3)};
+  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(ogcomplexmatrix)};
+  OGTerminal::Ptr ogcomplexnegmatrix = OGTerminal::Ptr{new OGComplexMatrix(complexNegData, 2, 3)};
   return TreeResultPair(negate, ogcomplexnegmatrix);
 }
 
@@ -116,22 +116,22 @@ TEST_P(EntryptPlusTest, Running)
 
 TreeResultPair plustestsimple()
 {
-  pOGNumeric plus = pOGNumeric{new PLUS(pOGNumeric{new OGRealScalar(2.0)}, pOGNumeric{new OGRealScalar(3.0)})};
-  pOGTerminal expected = pOGTerminal{new OGRealScalar(2.0+3.0)};
+  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(OGNumeric::Ptr{new OGRealScalar(2.0)}, OGNumeric::Ptr{new OGRealScalar(3.0)})};
+  OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(2.0+3.0)};
   return TreeResultPair(plus, expected);
 }
 
 TreeResultPair plustesttwoplus()
 {
-  pOGNumeric plus = pOGNumeric{new PLUS(pOGNumeric{new OGRealScalar(2.0)}, pOGNumeric{new OGRealScalar(3.0)})};
-  plus = pOGNumeric{new PLUS(pOGNumeric{new OGRealScalar(1.0)}, plus)};
-  pOGTerminal expected = pOGTerminal{new OGRealScalar(1.0+2.0+3.0)};
+  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(OGNumeric::Ptr{new OGRealScalar(2.0)}, OGNumeric::Ptr{new OGRealScalar(3.0)})};
+  plus = OGNumeric::Ptr{new PLUS(OGNumeric::Ptr{new OGRealScalar(1.0)}, plus)};
+  OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(1.0+2.0+3.0)};
   return TreeResultPair(plus, expected);
 }
 
 TreeResultPair plustestbigtree()
 {
-  pOGNumeric bigtree = pOGNumeric{new OGRealScalar(0.0)};
+  OGNumeric::Ptr bigtree = OGNumeric::Ptr{new OGRealScalar(0.0)};
   double sum = 0.0;
   for (int i = 0; i < 5000; ++i)
   {
@@ -139,15 +139,15 @@ TreeResultPair plustestbigtree()
 
     if (i%2 == 0)
     {
-      bigtree = pOGNumeric{new PLUS(pOGNumeric{new OGRealScalar(i)}, bigtree)};
+      bigtree = OGNumeric::Ptr{new PLUS(OGNumeric::Ptr{new OGRealScalar(i)}, bigtree)};
     }
     else
     {
-      bigtree = pOGNumeric{new PLUS(bigtree, pOGNumeric{new OGRealScalar(i)})};
+      bigtree = OGNumeric::Ptr{new PLUS(bigtree, OGNumeric::Ptr{new OGRealScalar(i)})};
     }
   }
 
-  return TreeResultPair(bigtree, pOGTerminal{new OGRealScalar(sum)});
+  return TreeResultPair(bigtree, OGTerminal::Ptr{new OGRealScalar(sum)});
 }
 
 TreeResultPair pluses[] = { plustestsimple(), plustesttwoplus(), plustestbigtree() };

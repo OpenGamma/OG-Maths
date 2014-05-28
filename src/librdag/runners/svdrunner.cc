@@ -61,28 +61,28 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
   delete[] A;
 
   reg.push_back(makeConcreteDenseMatrix(U, m, m, OWNER));
-  reg.push_back(pOGNumeric{new OGRealDiagonalMatrix(S, m, n, OWNER)});
+  reg.push_back(OGNumeric::Ptr{new OGRealDiagonalMatrix(S, m, n, OWNER)});
   reg.push_back(makeConcreteDenseMatrix(VT, n, n, OWNER));
 }
 
 void *
-SVDRunner::run(RegContainer& reg, pOGRealScalar arg) const
+SVDRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
   // real space svd is just u=1, s=value, v=1
-  reg.push_back(pOGNumeric{new OGRealScalar(1.e0)});
-  reg.push_back(pOGNumeric{new OGRealScalar(arg->getValue())});
-  reg.push_back(pOGNumeric{new OGRealScalar(1.e0)});
+  reg.push_back(OGNumeric::Ptr{new OGRealScalar(1.e0)});
+  reg.push_back(OGNumeric::Ptr{new OGRealScalar(arg->getValue())});
+  reg.push_back(OGNumeric::Ptr{new OGRealScalar(1.e0)});
   return nullptr;
 }
 void *
-SVDRunner::run(RegContainer& reg, pOGRealMatrix arg) const
+SVDRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
   svd_dense_runner<real16>(reg, arg);
   return nullptr;
 }
 
 void *
-SVDRunner::run(RegContainer& reg, pOGComplexMatrix arg) const
+SVDRunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
 {
   svd_dense_runner<complex16>(reg, arg);
   return nullptr;

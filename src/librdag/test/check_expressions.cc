@@ -21,8 +21,8 @@ TYPED_TEST_CASE_P(BinaryExprTest);
 
 TYPED_TEST_P(BinaryExprTest, Functionality){
   // Constructor
-  pOGNumeric real = pOGNumeric{new OGRealScalar(3.14)};
-  pOGNumeric complx = pOGNumeric{new OGComplexScalar(complex16(2.7182, 2.7182))};
+  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(3.14)};
+  OGNumeric::Ptr complx = OGNumeric::Ptr{new OGComplexScalar(complex16(2.7182, 2.7182))};
   TypeParam *expr = new TypeParam(real, complx);
   ASSERT_EQ(2, expr->getNArgs());
   const ArgContainer& gotArgs = expr->getArgs();
@@ -54,7 +54,7 @@ TYPED_TEST_CASE_P(UnaryExprTest);
 
 TYPED_TEST_P(UnaryExprTest, Functionality){
   // Constructor
-  pOGNumeric real = pOGNumeric{new OGRealScalar(3.14)};
+  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(3.14)};
   TypeParam *expr = new TypeParam(real);
   ASSERT_EQ(1, expr->getNArgs());
   const ArgContainer& gotArgs = expr->getArgs();
@@ -80,9 +80,9 @@ INSTANTIATE_TYPED_TEST_CASE_P(Unary, UnaryExprTest, UnaryExprTypes);
 
 TEST(OGExprTest, SELECTRESULT){
   // Constructor
-  pOGNumeric real = pOGNumeric{new OGRealScalar(3.14)};
-  pOGNumeric index = pOGNumeric{new OGIntegerScalar(2)};
-  pOGNumeric selectresult = pOGNumeric{new SELECTRESULT(real, index)};
+  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(3.14)};
+  OGNumeric::Ptr index = OGNumeric::Ptr{new OGIntegerScalar(2)};
+  OGNumeric::Ptr selectresult = OGNumeric::Ptr{new SELECTRESULT(real, index)};
   ASSERT_EQ(2, selectresult->asOGExpr()->getNArgs());
   const ArgContainer& gotArgs = selectresult->asOGExpr()->getArgs();
   EXPECT_EQ(real->asOGRealScalar(), (gotArgs[0])->asOGRealScalar());
@@ -96,35 +96,35 @@ TEST(OGExprTest, SELECTRESULT){
   EXPECT_THROW(new SELECTRESULT(real, nullptr), rdag_error);
 
   // Constructor where second argument is not an integer type
-  pOGNumeric realcopy = real->copy();
+  OGNumeric::Ptr realcopy = real->copy();
   EXPECT_THROW(new SELECTRESULT(real, realcopy), rdag_error);
 }
 
 TEST(VirtualCopyTest, RealScalar){
-  pOGNumeric r1 = pOGNumeric{new OGRealScalar(3.142)};
-  pOGNumeric r2 = r1->copy();
+  OGNumeric::Ptr r1 = OGNumeric::Ptr{new OGRealScalar(3.142)};
+  OGNumeric::Ptr r2 = r1->copy();
   EXPECT_EQ(r1->asOGRealScalar()->getValue(), r2->asOGRealScalar()->getValue());
   EXPECT_NE(r1, r2);
 }
 
 TEST(VirtualCopyTest, ComplexScalar){
-  pOGNumeric c1 = pOGNumeric{new OGComplexScalar(complex16(1.0, 2.0))};
-  pOGNumeric c2 = c1->copy();
+  OGNumeric::Ptr c1 = OGNumeric::Ptr{new OGComplexScalar(complex16(1.0, 2.0))};
+  OGNumeric::Ptr c2 = c1->copy();
   EXPECT_EQ(c1->asOGComplexScalar()->getValue(), c2->asOGComplexScalar()->getValue());
   EXPECT_NE(c1, c2);
 }
 
 TEST(VirtualCopyTest, IntegerScalar){
-  pOGNumeric i1 = pOGNumeric{new OGIntegerScalar(7)};
-  pOGNumeric i2 = pOGNumeric{i1->copy()};
+  OGNumeric::Ptr i1 = OGNumeric::Ptr{new OGIntegerScalar(7)};
+  OGNumeric::Ptr i2 = OGNumeric::Ptr{i1->copy()};
   EXPECT_EQ(i1->asOGIntegerScalar()->getValue(), i2->asOGIntegerScalar()->getValue());
   EXPECT_NE(i1, i2);
 }
 
 TEST(VirtualCopyTest, RealMatrix){
   double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  pOGRealMatrix rm1 = pOGRealMatrix{new OGRealMatrix(realData, 2, 3)};
-  pOGRealMatrix rm2 = rm1->copy()->asOGRealMatrix();
+  OGRealMatrix::Ptr rm1 = OGRealMatrix::Ptr{new OGRealMatrix(realData, 2, 3)};
+  OGRealMatrix::Ptr rm2 = rm1->copy()->asOGRealMatrix();
   EXPECT_EQ(rm1->getData(), rm2->getData());
   EXPECT_EQ(rm1->getRows(), rm2->getRows());
   EXPECT_EQ(rm1->getCols(), rm2->getCols());
@@ -135,8 +135,8 @@ TEST(VirtualCopyTest, RealMatrix){
 TEST(VirtualCopyTest, ComplexMatrix){
   complex16 complexData[6] = { {1.0, 2.0}, {3.0, 4.0},  {5.0, 6.0},
                                {7.0, 8.0}, {9.0, 10.0}, {11.0, 12.0} };
-  pOGComplexMatrix cm1 = pOGComplexMatrix{new OGComplexMatrix(complexData, 2, 3)};
-  pOGComplexMatrix cm2 = cm1->copy()->asOGComplexMatrix();
+  OGComplexMatrix::Ptr cm1 = OGComplexMatrix::Ptr{new OGComplexMatrix(complexData, 2, 3)};
+  OGComplexMatrix::Ptr cm2 = cm1->copy()->asOGComplexMatrix();
   EXPECT_EQ(cm1->getData(), cm2->getData());
   EXPECT_EQ(cm1->getRows(), cm2->getRows());
   EXPECT_EQ(cm1->getCols(), cm2->getCols());
@@ -146,8 +146,8 @@ TEST(VirtualCopyTest, ComplexMatrix){
 
 TEST(VirtualCopyTest, RealDiagonalMatrix){
   double rdiagData[3] = { 1.0, 2.0, 3.0 };
-  pOGRealDiagonalMatrix rdm1 = pOGRealDiagonalMatrix{new OGRealDiagonalMatrix(rdiagData, 3, 4)};
-  pOGRealDiagonalMatrix rdm2 = rdm1->copy()->asOGRealDiagonalMatrix();
+  OGRealDiagonalMatrix::Ptr rdm1 = OGRealDiagonalMatrix::Ptr{new OGRealDiagonalMatrix(rdiagData, 3, 4)};
+  OGRealDiagonalMatrix::Ptr rdm2 = rdm1->copy()->asOGRealDiagonalMatrix();
   EXPECT_EQ(rdm1->getData(), rdm2->getData());
   EXPECT_EQ(rdm1->getRows(), rdm2->getRows());
   EXPECT_EQ(rdm1->getCols(), rdm2->getCols());
@@ -157,8 +157,8 @@ TEST(VirtualCopyTest, RealDiagonalMatrix){
 
 TEST(VirtualCopyTest, ComplexDiagonalMatrix){
   complex16 cdiagData[3] = { {1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0} };
-  pOGComplexDiagonalMatrix cdm1 = pOGComplexDiagonalMatrix{new OGComplexDiagonalMatrix(cdiagData, 3, 4)};
-  pOGComplexDiagonalMatrix cdm2 = cdm1->copy()->asOGComplexDiagonalMatrix();
+  OGComplexDiagonalMatrix::Ptr cdm1 = OGComplexDiagonalMatrix::Ptr{new OGComplexDiagonalMatrix(cdiagData, 3, 4)};
+  OGComplexDiagonalMatrix::Ptr cdm2 = cdm1->copy()->asOGComplexDiagonalMatrix();
   EXPECT_EQ(cdm1->getData(), cdm2->getData());
   EXPECT_EQ(cdm1->getRows(), cdm2->getRows());
   EXPECT_EQ(cdm1->getCols(), cdm2->getCols());
@@ -170,8 +170,8 @@ TEST(VirtualCopyTest, RealSparseMatrix){
   int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
   double rsparseData[2] = { 1.0, 2.0 };
-  pOGRealSparseMatrix rsm1 = pOGRealSparseMatrix{new OGRealSparseMatrix(colPtr, rowIdx, rsparseData, 2, 2)};
-  pOGRealSparseMatrix rsm2 = rsm1->copy()->asOGRealSparseMatrix();
+  OGRealSparseMatrix::Ptr rsm1 = OGRealSparseMatrix::Ptr{new OGRealSparseMatrix(colPtr, rowIdx, rsparseData, 2, 2)};
+  OGRealSparseMatrix::Ptr rsm2 = rsm1->copy()->asOGRealSparseMatrix();
   EXPECT_EQ(rsm1->getData(), rsm2->getData());
   EXPECT_EQ(rsm1->getColPtr(), rsm2->getColPtr());
   EXPECT_EQ(rsm1->getRowIdx(), rsm2->getRowIdx());
@@ -184,8 +184,8 @@ TEST(VirtualCopyTest, ComplexSparseMatrix){
   int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
   complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };
-  pOGComplexSparseMatrix csm1 = pOGComplexSparseMatrix{new OGComplexSparseMatrix(colPtr, rowIdx, csparseData, 2, 2)};
-  pOGComplexSparseMatrix csm2 = csm1->copy()->asOGComplexSparseMatrix();
+  OGComplexSparseMatrix::Ptr csm1 = OGComplexSparseMatrix::Ptr{new OGComplexSparseMatrix(colPtr, rowIdx, csparseData, 2, 2)};
+  OGComplexSparseMatrix::Ptr csm2 = csm1->copy()->asOGComplexSparseMatrix();
   EXPECT_EQ(csm1->getData(), csm2->getData());
   EXPECT_EQ(csm1->getColPtr(), csm2->getColPtr());
   EXPECT_EQ(csm1->getRowIdx(), csm2->getRowIdx());
@@ -195,96 +195,96 @@ TEST(VirtualCopyTest, ComplexSparseMatrix){
 }
 
 TEST(VirtualCopyTest, COPY) {
-  pOGNumeric real = pOGNumeric{new OGRealScalar(1.0)};
-  pCOPY copy1 = pCOPY{new COPY(real)};
+  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  COPY::Ptr copy1 = COPY::Ptr{new COPY(real)};
   
   // Check copy is of the correct type
-  pCOPY copy2 = copy1->copy()->asCOPY();
-  ASSERT_NE(pCOPY{}, copy2);
+  COPY::Ptr copy2 = copy1->copy()->asCOPY();
+  ASSERT_NE(COPY::Ptr{}, copy2);
 
   const ArgContainer& a1 = copy1->getArgs();
   const ArgContainer& a2 = copy2->getArgs();
   EXPECT_EQ(a1.size(), a2.size());
-  pOGNumeric c1arg1 = a1[0];
-  pOGNumeric c2arg1 = a2[0];
+  OGNumeric::Ptr c1arg1 = a1[0];
+  OGNumeric::Ptr c2arg1 = a2[0];
   EXPECT_NE(c1arg1, c2arg1);
-  pOGRealScalar c1s = c1arg1->asOGRealScalar();
-  pOGRealScalar c2s = c2arg1->asOGRealScalar();
-  ASSERT_NE(pOGRealScalar{}, c1s);
-  ASSERT_NE(pOGRealScalar{}, c2s);
+  OGRealScalar::Ptr c1s = c1arg1->asOGRealScalar();
+  OGRealScalar::Ptr c2s = c2arg1->asOGRealScalar();
+  ASSERT_NE(OGRealScalar::Ptr{}, c1s);
+  ASSERT_NE(OGRealScalar::Ptr{}, c2s);
   EXPECT_EQ(c1s->getValue(), c2s->getValue());
 }
 
 TEST(VirtualCopyTest, PLUS) {
-  pOGNumeric real1 = pOGNumeric{new OGRealScalar(1.0)};
-  pOGNumeric real2 = pOGNumeric{new OGRealScalar(2.0)};
-  pPLUS plus1 = pPLUS{new PLUS(real1, real2)};
+  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  OGNumeric::Ptr real2 = OGNumeric::Ptr{new OGRealScalar(2.0)};
+  PLUS::Ptr plus1 = PLUS::Ptr{new PLUS(real1, real2)};
   
   // Check copy is of the correct type
-  pPLUS plus2 = plus1->copy()->asPLUS();
-  ASSERT_NE(pPLUS{}, plus2);
+  PLUS::Ptr plus2 = plus1->copy()->asPLUS();
+  ASSERT_NE(PLUS::Ptr{}, plus2);
   
   const ArgContainer& a1 = plus1->getArgs();
   const ArgContainer& a2 = plus2->getArgs();
   EXPECT_EQ(a1.size(), a2.size());
-  pOGNumeric p1arg1 = a1[0];
-  pOGNumeric p2arg1 = a2[0];
+  OGNumeric::Ptr p1arg1 = a1[0];
+  OGNumeric::Ptr p2arg1 = a2[0];
   EXPECT_NE(p1arg1, p2arg1);
-  pOGNumeric p1arg2 = a1[1];
-  pOGNumeric p2arg2 = a2[1];
+  OGNumeric::Ptr p1arg2 = a1[1];
+  OGNumeric::Ptr p2arg2 = a2[1];
   EXPECT_NE(p1arg2, p2arg2);
-  pOGRealScalar p1s1 = p1arg1->asOGRealScalar();
-  pOGRealScalar p2s1 = p2arg1->asOGRealScalar();
-  ASSERT_NE(pOGRealScalar{}, p1s1);
-  ASSERT_NE(pOGRealScalar{}, p2s1);
+  OGRealScalar::Ptr p1s1 = p1arg1->asOGRealScalar();
+  OGRealScalar::Ptr p2s1 = p2arg1->asOGRealScalar();
+  ASSERT_NE(OGRealScalar::Ptr{}, p1s1);
+  ASSERT_NE(OGRealScalar::Ptr{}, p2s1);
   EXPECT_EQ(p1s1->getValue(), p2s1->getValue());
-  pOGRealScalar p1s2 = p1arg2->asOGRealScalar();
-  pOGRealScalar p2s2 = p2arg2->asOGRealScalar();
-  ASSERT_NE(pOGRealScalar{}, p1s2);
-  ASSERT_NE(pOGRealScalar{}, p2s2);
+  OGRealScalar::Ptr p1s2 = p1arg2->asOGRealScalar();
+  OGRealScalar::Ptr p2s2 = p2arg2->asOGRealScalar();
+  ASSERT_NE(OGRealScalar::Ptr{}, p1s2);
+  ASSERT_NE(OGRealScalar::Ptr{}, p2s2);
   EXPECT_EQ(p1s2->getValue(), p1s2->getValue());
 }
 
 TEST(VirtualCopyTest, NEGATE) {
-  pOGNumeric real1 = pOGNumeric{new OGRealScalar(1.0)};
-  pNEGATE negate1 = pNEGATE{new NEGATE(real1)};
+  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  NEGATE::Ptr negate1 = NEGATE::Ptr{new NEGATE(real1)};
   
   // Check that the copy is of the correct type
-  pNEGATE negate2 = negate1->copy()->asNEGATE();
-  ASSERT_NE(pNEGATE{}, negate2);
+  NEGATE::Ptr negate2 = negate1->copy()->asNEGATE();
+  ASSERT_NE(NEGATE::Ptr{}, negate2);
   
   const ArgContainer& a1 = negate1->getArgs();
   const ArgContainer& a2 = negate2->getArgs();
   EXPECT_EQ(a1.size(), a2.size());
-  pOGNumeric n1arg1 = a1[0];
-  pOGNumeric n2arg1 = a2[0];
+  OGNumeric::Ptr n1arg1 = a1[0];
+  OGNumeric::Ptr n2arg1 = a2[0];
   EXPECT_NE(n1arg1, n2arg1);
-  pOGRealScalar n1s1 = n1arg1->asOGRealScalar();
-  pOGRealScalar n2s1 = n2arg1->asOGRealScalar();
-  ASSERT_NE(pOGRealScalar{}, n1s1);
-  ASSERT_NE(pOGRealScalar{}, n2s1);
+  OGRealScalar::Ptr n1s1 = n1arg1->asOGRealScalar();
+  OGRealScalar::Ptr n2s1 = n2arg1->asOGRealScalar();
+  ASSERT_NE(OGRealScalar::Ptr{}, n1s1);
+  ASSERT_NE(OGRealScalar::Ptr{}, n2s1);
   EXPECT_EQ(n1s1->getValue(), n2s1->getValue());
 }
 
 TEST(VirtualCopyTest, NORM2) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  pOGNumeric realMat = pOGNumeric{new OGRealMatrix(matData, 3, 2)};
-  pNORM2 norm1 = pNORM2{new NORM2(realMat)};
+  OGNumeric::Ptr realMat = OGNumeric::Ptr{new OGRealMatrix(matData, 3, 2)};
+  NORM2::Ptr norm1 = NORM2::Ptr{new NORM2(realMat)};
   
   // Check that the copy is of the correct type
-  pNORM2 norm2 = norm1->copy()->asNORM2();
-  ASSERT_NE(pNORM2{}, norm2);
+  NORM2::Ptr norm2 = norm1->copy()->asNORM2();
+  ASSERT_NE(NORM2::Ptr{}, norm2);
   
   const ArgContainer& a1 = norm1->getArgs();
   const ArgContainer& a2 = norm2->getArgs();
   EXPECT_EQ(a1.size(), a2.size());
-  pOGNumeric s1arg1 = a1[0];
-  pOGNumeric s2arg1 = a2[0];
+  OGNumeric::Ptr s1arg1 = a1[0];
+  OGNumeric::Ptr s2arg1 = a2[0];
   EXPECT_NE(s1arg1, s2arg1);
-  pOGRealMatrix s1m = s1arg1->asOGRealMatrix();
-  pOGRealMatrix s2m = s2arg1->asOGRealMatrix();
-  ASSERT_NE(pOGRealMatrix{}, s1m);
-  ASSERT_NE(pOGRealMatrix{}, s2m);
+  OGRealMatrix::Ptr s1m = s1arg1->asOGRealMatrix();
+  OGRealMatrix::Ptr s2m = s2arg1->asOGRealMatrix();
+  ASSERT_NE(OGRealMatrix::Ptr{}, s1m);
+  ASSERT_NE(OGRealMatrix::Ptr{}, s2m);
   EXPECT_EQ(s1m->getData(), s2m->getData());
   EXPECT_EQ(s1m->getRows(), s2m->getRows());
   EXPECT_EQ(s1m->getCols(), s2m->getCols());
@@ -294,23 +294,23 @@ TEST(VirtualCopyTest, NORM2) {
 
 TEST(VirtualCopyTest, SVD) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  pOGNumeric realMat = pOGNumeric{new OGRealMatrix(matData, 3, 2)};
-  pSVD svd1 = pSVD{new SVD(realMat)};
+  OGNumeric::Ptr realMat = OGNumeric::Ptr{new OGRealMatrix(matData, 3, 2)};
+  SVD::Ptr svd1 = SVD::Ptr{new SVD(realMat)};
 
   // Check that the copy is of the correct type
-  pSVD svd2 = svd1->copy()->asSVD();
-  ASSERT_NE(pOGExpr{}, svd2);
+  SVD::Ptr svd2 = svd1->copy()->asSVD();
+  ASSERT_NE(SVD::Ptr{}, svd2);
   
   const ArgContainer& a1 = svd1->getArgs();
   const ArgContainer& a2 = svd2->getArgs();
   EXPECT_EQ(a1.size(), a2.size());
-  pOGNumeric s1arg1 = a1[0];
-  pOGNumeric s2arg1 = a2[0];
+  OGNumeric::Ptr s1arg1 = a1[0];
+  OGNumeric::Ptr s2arg1 = a2[0];
   EXPECT_NE(s1arg1, s2arg1);
-  pOGRealMatrix s1m = s1arg1->asOGRealMatrix();
-  pOGRealMatrix s2m = s2arg1->asOGRealMatrix();
-  ASSERT_NE(pOGRealMatrix{}, s1m);
-  ASSERT_NE(pOGRealMatrix{}, s2m);
+  OGRealMatrix::Ptr s1m = s1arg1->asOGRealMatrix();
+  OGRealMatrix::Ptr s2m = s2arg1->asOGRealMatrix();
+  ASSERT_NE(OGRealMatrix::Ptr{}, s1m);
+  ASSERT_NE(OGRealMatrix::Ptr{}, s2m);
   EXPECT_EQ(s1m->getData(), s2m->getData());
   EXPECT_EQ(s1m->getRows(), s2m->getRows());
   EXPECT_EQ(s1m->getCols(), s2m->getCols());
@@ -319,23 +319,23 @@ TEST(VirtualCopyTest, SVD) {
 
 TEST(VirtualCopyTest, LU) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  pOGNumeric realMat = pOGNumeric{new OGRealMatrix(matData, 3, 2)};
-  pLU lu1 = pLU{new LU(realMat)};
+  OGNumeric::Ptr realMat = OGNumeric::Ptr{new OGRealMatrix(matData, 3, 2)};
+  LU::Ptr lu1 = LU::Ptr{new LU(realMat)};
   
   // Check that the copy is of the correct type
-  pLU lu2 = lu1->copy()->asLU();
-  ASSERT_NE(pOGExpr{}, lu2);
+  LU::Ptr lu2 = lu1->copy()->asLU();
+  ASSERT_NE(LU::Ptr{}, lu2);
   
   const ArgContainer& a1 = lu1->getArgs();
   const ArgContainer& a2 = lu2->getArgs();
   EXPECT_EQ(a1.size(), a2.size());
-  pOGNumeric s1arg1 = a1[0];
-  pOGNumeric s2arg1 = a2[0];
+  OGNumeric::Ptr s1arg1 = a1[0];
+  OGNumeric::Ptr s2arg1 = a2[0];
   EXPECT_NE(s1arg1, s2arg1);
-  pOGRealMatrix s1m = s1arg1->asOGRealMatrix();
-  pOGRealMatrix s2m = s2arg1->asOGRealMatrix();
-  ASSERT_NE(pOGRealMatrix{}, s1m);
-  ASSERT_NE(pOGRealMatrix{}, s2m);
+  OGRealMatrix::Ptr s1m = s1arg1->asOGRealMatrix();
+  OGRealMatrix::Ptr s2m = s2arg1->asOGRealMatrix();
+  ASSERT_NE(OGRealMatrix::Ptr{}, s1m);
+  ASSERT_NE(OGRealMatrix::Ptr{}, s2m);
   EXPECT_EQ(s1m->getData(), s2m->getData());
   EXPECT_EQ(s1m->getRows(), s2m->getRows());
   EXPECT_EQ(s1m->getCols(), s2m->getCols());
@@ -344,33 +344,33 @@ TEST(VirtualCopyTest, LU) {
 
 TEST(VirtualCopyTest, SELECTRESULT) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  pOGNumeric realMat = pOGNumeric{new OGRealMatrix(matData, 3, 2)};
-  pOGExpr svd = pOGExpr{new SVD(realMat)};
-  pOGNumeric i = pOGNumeric{new OGIntegerScalar(0)};
-  pSELECTRESULT sr1 = pSELECTRESULT{new SELECTRESULT(svd, i)};
+  OGNumeric::Ptr realMat = OGNumeric::Ptr{new OGRealMatrix(matData, 3, 2)};
+  OGExpr::Ptr svd = OGExpr::Ptr{new SVD(realMat)};
+  OGNumeric::Ptr i = OGNumeric::Ptr{new OGIntegerScalar(0)};
+  SELECTRESULT::Ptr sr1 = SELECTRESULT::Ptr{new SELECTRESULT(svd, i)};
   
   // Check that the copy is of the correct type
-  pSELECTRESULT sr2 = sr1->copy()->asSELECTRESULT();
-  ASSERT_NE(pSELECTRESULT{}, sr2);
+  SELECTRESULT::Ptr sr2 = sr1->copy()->asSELECTRESULT();
+  ASSERT_NE(SELECTRESULT::Ptr{}, sr2);
   
   const ArgContainer& a1 = sr1->getArgs();
   const ArgContainer& a2 = sr2->getArgs();
   EXPECT_EQ(a1.size(), a2.size());
-  pOGNumeric sr1arg1 = a1[0];
-  pOGNumeric sr2arg1 = a2[0];
+  OGNumeric::Ptr sr1arg1 = a1[0];
+  OGNumeric::Ptr sr2arg1 = a2[0];
   EXPECT_NE(sr1arg1, sr2arg1);
-  pOGNumeric sr1arg2 = a1[1];
-  pOGNumeric sr2arg2 = a2[1];
+  OGNumeric::Ptr sr1arg2 = a1[1];
+  OGNumeric::Ptr sr2arg2 = a2[1];
   EXPECT_NE(sr1arg2, sr2arg2);
-  pSVD sr1svd = sr1arg1->asSVD();
-  pSVD sr2svd = sr2arg1->asSVD();
-  ASSERT_NE(pSVD{}, sr1svd);
-  ASSERT_NE(pSVD{}, sr2svd);
+  SVD::Ptr sr1svd = sr1arg1->asSVD();
+  SVD::Ptr sr2svd = sr2arg1->asSVD();
+  ASSERT_NE(SVD::Ptr{}, sr1svd);
+  ASSERT_NE(SVD::Ptr{}, sr2svd);
   //EXPECT_EQ(m1s1->getValue(), m2s1->getValue()); // Need to recurse
   // in to SVD.
-  pOGIntegerScalar sr1index = sr1arg2->asOGIntegerScalar();
-  pOGIntegerScalar sr2index = sr2arg2->asOGIntegerScalar();
-  ASSERT_NE(pOGIntegerScalar{}, sr1index);
-  ASSERT_NE(pOGIntegerScalar{}, sr2index);
+  OGIntegerScalar::Ptr sr1index = sr1arg2->asOGIntegerScalar();
+  OGIntegerScalar::Ptr sr2index = sr2arg2->asOGIntegerScalar();
+  ASSERT_NE(OGIntegerScalar::Ptr{}, sr1index);
+  ASSERT_NE(OGIntegerScalar::Ptr{}, sr2index);
   EXPECT_EQ(sr1index->getValue(), sr2index->getValue());
 }
