@@ -86,9 +86,9 @@ class JVMManager {
     static void registerReferences();
     static void registerGlobalClassReference(const char* FQclassname, jclass *globalRef);
     static void registerGlobalMethodReference(jclass *globalRef, jmethodID* methodToSet, const char* methodName, const char* methodSignature);
-    static void registerGlobalFieldReference(jclass *globalRef, jfieldID* fieldIDToSet, const char* fieldIDName, const char* fieldIDSignature);    
+    static void registerGlobalFieldReference(jclass *globalRef, jfieldID* fieldIDToSet, const char* fieldIDName, const char* fieldIDSignature);
     static JavaVM* _jvm;
-    thread_local static JNIEnv* _env;
+
     // Classes, methods, and fields
     static jclass _DoubleClazz;
     static jclass _OGNumericClazz;

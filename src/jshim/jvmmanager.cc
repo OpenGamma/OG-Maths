@@ -62,8 +62,10 @@ JVMManager::initialize(JavaVM *jvm)
 {
   VAL64BIT_PRINT("VM pointer", jvm);
 
+  JNIEnv * env;
+
   // Attempt to get env for JNI version 1.2
-  int ret = jvm->GetEnv((void **)&_env, JNI_VERSION_1_2);
+  int ret = jvm->GetEnv((void **)&env, JNI_VERSION_1_2);
   if (ret != JNI_OK)
   {
     throw convert_error("Error getting JNI environment.");
@@ -135,7 +137,7 @@ JVMManager::registerReferences()
   //
 
   registerGlobalFieldReference(&_OGExprEnumClazz, &_OGExprEnumClazz__hashdefined, "_hashDefined", "J");
-  
+
 }
 
 JavaVM*
@@ -148,7 +150,9 @@ void
 JVMManager::registerGlobalFieldReference(jclass * globalRef, jfieldID * fieldToSet, const char * fieldName, const char * fieldSignature)
 {
   jfieldID tmp = nullptr;
-  tmp = _env->GetFieldID(*globalRef, fieldName, fieldSignature);
+  JNIEnv * env;
+  JVMManager::getEnv((void**)&env);
+  tmp = env->GetFieldID(*globalRef, fieldName, fieldSignature);
   if (tmp == nullptr)
   {
     DEBUG_PRINT("ERROR: field %s() not found.\n",fieldName);
@@ -156,7 +160,7 @@ JVMManager::registerGlobalFieldReference(jclass * globalRef, jfieldID * fieldToS
   }
   else
   {
-    *fieldToSet = tmp;    
+    *fieldToSet = tmp;
     DEBUG_PRINT("Field found: %s()\n\t", fieldName);
     VAL64BIT_PRINT("field pointer", fieldToSet);
   }
@@ -166,7 +170,9 @@ void
 JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * methodToSet, const char * methodName, const char * methodSignature)
 {
   jmethodID tmp = nullptr;
-  tmp = _env->GetMethodID(*globalRef, methodName, methodSignature);
+  JNIEnv * env;
+  JVMManager::getEnv((void**)&env);
+  tmp = env->GetMethodID(*globalRef, methodName, methodSignature);
   if (tmp == nullptr)
   {
     DEBUG_PRINT("ERROR: method %s() not found.\n",methodName);
@@ -185,7 +191,9 @@ JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * glob
 {
   jclass tmpClass = nullptr; // tmp class reference
   // find OGNumeric
-  tmpClass = _env->FindClass(FQclassname); // find class
+  JNIEnv * env;
+  JVMManager::getEnv((void**)&env);
+  tmpClass = env->FindClass(FQclassname); // find class
   if(tmpClass==nullptr)
   {
     DEBUG_PRINT("Cannot find class %s in JNI_OnLoad.\n", FQclassname);
@@ -193,7 +201,7 @@ JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * glob
   }
 
   *globalRef = nullptr;
-  *globalRef = (jclass) (_env->NewGlobalRef(tmpClass));
+  *globalRef = (jclass) (env->NewGlobalRef(tmpClass));
   if(*globalRef==nullptr)
   {
     DEBUG_PRINT("Cannot create Global reference for %s.\n",FQclassname);
@@ -290,7 +298,6 @@ jfieldID JVMManager:: getOGExprEnumClazz__hashdefined()
 // Instantiation of JVMManager's fields
 
 JavaVM* JVMManager::_jvm = nullptr;
-thread_local JNIEnv* JVMManager::_env = nullptr;
 jclass JVMManager::_DoubleClazz = nullptr;
 jclass JVMManager::_OGNumericClazz = nullptr;
 jclass JVMManager::_OGExprClazz = nullptr;
