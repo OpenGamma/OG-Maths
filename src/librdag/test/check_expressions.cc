@@ -21,8 +21,8 @@ TYPED_TEST_CASE_P(BinaryExprTest);
 
 TYPED_TEST_P(BinaryExprTest, Functionality){
   // Constructor
-  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(3.14)};
-  OGNumeric::Ptr complx = OGNumeric::Ptr{new OGComplexScalar(complex16(2.7182, 2.7182))};
+  OGNumeric::Ptr real = OGRealScalar::create(3.14);
+  OGNumeric::Ptr complx = OGComplexScalar::create(complex16{2.7182, 2.7182});
   TypeParam *expr = new TypeParam(real, complx);
   ASSERT_EQ(2, expr->getNArgs());
   const ArgContainer& gotArgs = expr->getArgs();
@@ -54,7 +54,7 @@ TYPED_TEST_CASE_P(UnaryExprTest);
 
 TYPED_TEST_P(UnaryExprTest, Functionality){
   // Constructor
-  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(3.14)};
+  OGNumeric::Ptr real = OGRealScalar::create(3.14);
   TypeParam *expr = new TypeParam(real);
   ASSERT_EQ(1, expr->getNArgs());
   const ArgContainer& gotArgs = expr->getArgs();
@@ -80,8 +80,8 @@ INSTANTIATE_TYPED_TEST_CASE_P(Unary, UnaryExprTest, UnaryExprTypes);
 
 TEST(OGExprTest, SELECTRESULT){
   // Constructor
-  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(3.14)};
-  OGNumeric::Ptr index = OGNumeric::Ptr{new OGIntegerScalar(2)};
+  OGNumeric::Ptr real = OGRealScalar::create(3.14);
+  OGNumeric::Ptr index = OGIntegerScalar::create(2);
   OGNumeric::Ptr selectresult = OGNumeric::Ptr{new SELECTRESULT(real, index)};
   ASSERT_EQ(2, selectresult->asOGExpr()->getNArgs());
   const ArgContainer& gotArgs = selectresult->asOGExpr()->getArgs();
@@ -101,21 +101,21 @@ TEST(OGExprTest, SELECTRESULT){
 }
 
 TEST(VirtualCopyTest, RealScalar){
-  OGNumeric::Ptr r1 = OGNumeric::Ptr{new OGRealScalar(3.142)};
+  OGNumeric::Ptr r1 = OGRealScalar::create(3.142);
   OGNumeric::Ptr r2 = r1->copy();
   EXPECT_EQ(r1->asOGRealScalar()->getValue(), r2->asOGRealScalar()->getValue());
   EXPECT_NE(r1, r2);
 }
 
 TEST(VirtualCopyTest, ComplexScalar){
-  OGNumeric::Ptr c1 = OGNumeric::Ptr{new OGComplexScalar(complex16(1.0, 2.0))};
+  OGNumeric::Ptr c1 = OGComplexScalar::create(complex16{1.0, 2.0});
   OGNumeric::Ptr c2 = c1->copy();
   EXPECT_EQ(c1->asOGComplexScalar()->getValue(), c2->asOGComplexScalar()->getValue());
   EXPECT_NE(c1, c2);
 }
 
 TEST(VirtualCopyTest, IntegerScalar){
-  OGNumeric::Ptr i1 = OGNumeric::Ptr{new OGIntegerScalar(7)};
+  OGNumeric::Ptr i1 = OGIntegerScalar::create(7);
   OGNumeric::Ptr i2 = OGNumeric::Ptr{i1->copy()};
   EXPECT_EQ(i1->asOGIntegerScalar()->getValue(), i2->asOGIntegerScalar()->getValue());
   EXPECT_NE(i1, i2);
@@ -123,7 +123,7 @@ TEST(VirtualCopyTest, IntegerScalar){
 
 TEST(VirtualCopyTest, RealMatrix){
   double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGRealMatrix::Ptr rm1 = OGRealMatrix::Ptr{new OGRealMatrix(realData, 2, 3)};
+  OGRealMatrix::Ptr rm1 = OGRealMatrix::create(realData, 2, 3);
   OGRealMatrix::Ptr rm2 = rm1->copy()->asOGRealMatrix();
   EXPECT_EQ(rm1->getData(), rm2->getData());
   EXPECT_EQ(rm1->getRows(), rm2->getRows());
@@ -135,7 +135,7 @@ TEST(VirtualCopyTest, RealMatrix){
 TEST(VirtualCopyTest, ComplexMatrix){
   complex16 complexData[6] = { {1.0, 2.0}, {3.0, 4.0},  {5.0, 6.0},
                                {7.0, 8.0}, {9.0, 10.0}, {11.0, 12.0} };
-  OGComplexMatrix::Ptr cm1 = OGComplexMatrix::Ptr{new OGComplexMatrix(complexData, 2, 3)};
+  OGComplexMatrix::Ptr cm1 = OGComplexMatrix::create(complexData, 2, 3);
   OGComplexMatrix::Ptr cm2 = cm1->copy()->asOGComplexMatrix();
   EXPECT_EQ(cm1->getData(), cm2->getData());
   EXPECT_EQ(cm1->getRows(), cm2->getRows());
@@ -146,7 +146,7 @@ TEST(VirtualCopyTest, ComplexMatrix){
 
 TEST(VirtualCopyTest, RealDiagonalMatrix){
   double rdiagData[3] = { 1.0, 2.0, 3.0 };
-  OGRealDiagonalMatrix::Ptr rdm1 = OGRealDiagonalMatrix::Ptr{new OGRealDiagonalMatrix(rdiagData, 3, 4)};
+  OGRealDiagonalMatrix::Ptr rdm1 = OGRealDiagonalMatrix::create(rdiagData, 3, 4);
   OGRealDiagonalMatrix::Ptr rdm2 = rdm1->copy()->asOGRealDiagonalMatrix();
   EXPECT_EQ(rdm1->getData(), rdm2->getData());
   EXPECT_EQ(rdm1->getRows(), rdm2->getRows());
@@ -157,7 +157,7 @@ TEST(VirtualCopyTest, RealDiagonalMatrix){
 
 TEST(VirtualCopyTest, ComplexDiagonalMatrix){
   complex16 cdiagData[3] = { {1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0} };
-  OGComplexDiagonalMatrix::Ptr cdm1 = OGComplexDiagonalMatrix::Ptr{new OGComplexDiagonalMatrix(cdiagData, 3, 4)};
+  OGComplexDiagonalMatrix::Ptr cdm1 = OGComplexDiagonalMatrix::create(cdiagData, 3, 4);
   OGComplexDiagonalMatrix::Ptr cdm2 = cdm1->copy()->asOGComplexDiagonalMatrix();
   EXPECT_EQ(cdm1->getData(), cdm2->getData());
   EXPECT_EQ(cdm1->getRows(), cdm2->getRows());
@@ -170,7 +170,7 @@ TEST(VirtualCopyTest, RealSparseMatrix){
   int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
   double rsparseData[2] = { 1.0, 2.0 };
-  OGRealSparseMatrix::Ptr rsm1 = OGRealSparseMatrix::Ptr{new OGRealSparseMatrix(colPtr, rowIdx, rsparseData, 2, 2)};
+  OGRealSparseMatrix::Ptr rsm1 = OGRealSparseMatrix::create(colPtr, rowIdx, rsparseData, 2, 2);
   OGRealSparseMatrix::Ptr rsm2 = rsm1->copy()->asOGRealSparseMatrix();
   EXPECT_EQ(rsm1->getData(), rsm2->getData());
   EXPECT_EQ(rsm1->getColPtr(), rsm2->getColPtr());
@@ -184,7 +184,7 @@ TEST(VirtualCopyTest, ComplexSparseMatrix){
   int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
   complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };
-  OGComplexSparseMatrix::Ptr csm1 = OGComplexSparseMatrix::Ptr{new OGComplexSparseMatrix(colPtr, rowIdx, csparseData, 2, 2)};
+  OGComplexSparseMatrix::Ptr csm1 = OGComplexSparseMatrix::create(colPtr, rowIdx, csparseData, 2, 2);
   OGComplexSparseMatrix::Ptr csm2 = csm1->copy()->asOGComplexSparseMatrix();
   EXPECT_EQ(csm1->getData(), csm2->getData());
   EXPECT_EQ(csm1->getColPtr(), csm2->getColPtr());
@@ -195,7 +195,7 @@ TEST(VirtualCopyTest, ComplexSparseMatrix){
 }
 
 TEST(VirtualCopyTest, COPY) {
-  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  OGNumeric::Ptr real = OGRealScalar::create(1.0);
   COPY::Ptr copy1 = COPY::Ptr{new COPY(real)};
   
   // Check copy is of the correct type
@@ -216,8 +216,8 @@ TEST(VirtualCopyTest, COPY) {
 }
 
 TEST(VirtualCopyTest, PLUS) {
-  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
-  OGNumeric::Ptr real2 = OGNumeric::Ptr{new OGRealScalar(2.0)};
+  OGNumeric::Ptr real1 = OGRealScalar::create(1.0);
+  OGNumeric::Ptr real2 = OGRealScalar::create(2.0);
   PLUS::Ptr plus1 = PLUS::Ptr{new PLUS(real1, real2)};
   
   // Check copy is of the correct type
@@ -246,7 +246,7 @@ TEST(VirtualCopyTest, PLUS) {
 }
 
 TEST(VirtualCopyTest, NEGATE) {
-  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  OGNumeric::Ptr real1 = OGRealScalar::create(1.0);
   NEGATE::Ptr negate1 = NEGATE::Ptr{new NEGATE(real1)};
   
   // Check that the copy is of the correct type
@@ -268,7 +268,7 @@ TEST(VirtualCopyTest, NEGATE) {
 
 TEST(VirtualCopyTest, NORM2) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr realMat = OGNumeric::Ptr{new OGRealMatrix(matData, 3, 2)};
+  OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
   NORM2::Ptr norm1 = NORM2::Ptr{new NORM2(realMat)};
   
   // Check that the copy is of the correct type
@@ -294,7 +294,7 @@ TEST(VirtualCopyTest, NORM2) {
 
 TEST(VirtualCopyTest, SVD) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr realMat = OGNumeric::Ptr{new OGRealMatrix(matData, 3, 2)};
+  OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
   SVD::Ptr svd1 = SVD::Ptr{new SVD(realMat)};
 
   // Check that the copy is of the correct type
@@ -319,7 +319,7 @@ TEST(VirtualCopyTest, SVD) {
 
 TEST(VirtualCopyTest, LU) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr realMat = OGNumeric::Ptr{new OGRealMatrix(matData, 3, 2)};
+  OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
   LU::Ptr lu1 = LU::Ptr{new LU(realMat)};
   
   // Check that the copy is of the correct type
@@ -344,9 +344,9 @@ TEST(VirtualCopyTest, LU) {
 
 TEST(VirtualCopyTest, SELECTRESULT) {
   double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr realMat = OGNumeric::Ptr{new OGRealMatrix(matData, 3, 2)};
+  OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
   OGExpr::Ptr svd = OGExpr::Ptr{new SVD(realMat)};
-  OGNumeric::Ptr i = OGNumeric::Ptr{new OGIntegerScalar(0)};
+  OGNumeric::Ptr i = OGIntegerScalar::create(0);
   SELECTRESULT::Ptr sr1 = SELECTRESULT::Ptr{new SELECTRESULT(svd, i)};
   
   // Check that the copy is of the correct type

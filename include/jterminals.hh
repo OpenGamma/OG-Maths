@@ -29,11 +29,12 @@ DLLEXPORT_C jint getIntFromVoidJMethod(jmethodID id, jobject obj);
 class DLLEXPORT_C JOGRealScalar: public OGRealScalar
 {
   public:
-    using OGRealScalar::OGRealScalar;
-    JOGRealScalar(jobject obj);
+    typedef shared_ptr<const JOGRealScalar> Ptr;
+    static JOGRealScalar::Ptr create(jobject obj);
     virtual ~JOGRealScalar() override;
     virtual void debug_print() const override;
   private:
+    JOGRealScalar(jobject obj);
     jobject _backingObject = nullptr;
     real16 * _dataRef = nullptr;
 };
@@ -47,11 +48,12 @@ class DLLEXPORT_C JOGRealScalar: public OGRealScalar
 class DLLEXPORT_C JOGComplexScalar: public OGComplexScalar
 {
   public:
-    using OGComplexScalar::OGComplexScalar;
-    JOGComplexScalar(jobject obj);
+    typedef shared_ptr<const JOGComplexScalar> Ptr;
+    static JOGComplexScalar::Ptr create(jobject obj);
     virtual ~JOGComplexScalar() override;
     virtual void debug_print() const override;
   private:
+    JOGComplexScalar(jobject obj);
     jobject _backingObject = nullptr;
     complex16 * _dataRef = nullptr;
 };
@@ -65,11 +67,12 @@ class DLLEXPORT_C JOGComplexScalar: public OGComplexScalar
 class DLLEXPORT_C JOGIntegerScalar: public OGIntegerScalar
 {
   public:
-    using OGIntegerScalar::OGIntegerScalar;
-    JOGIntegerScalar(jobject obj);
+    typedef shared_ptr<const JOGIntegerScalar> Ptr;
+    static JOGIntegerScalar::Ptr create(jobject obj);
     virtual ~JOGIntegerScalar() override;
     virtual void debug_print() const override;
   private:
+    JOGIntegerScalar(jobject obj);
     jobject _backingObject = nullptr;
     jint* _dataRef = nullptr;
 };
@@ -80,11 +83,12 @@ class DLLEXPORT_C JOGIntegerScalar: public OGIntegerScalar
 class DLLEXPORT_C JOGRealMatrix: public OGRealMatrix
 {
   public:
-    using OGRealMatrix::OGRealMatrix;
-    JOGRealMatrix(jobject obj);
+    typedef shared_ptr<const JOGRealMatrix> Ptr;
+    static JOGRealMatrix::Ptr create(jobject obj);
     virtual ~JOGRealMatrix() override;
     virtual void debug_print() const override;
   private:
+    JOGRealMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 
@@ -94,10 +98,12 @@ class DLLEXPORT_C JOGRealMatrix: public OGRealMatrix
 class DLLEXPORT_C JOGComplexMatrix: public OGComplexMatrix
 {
   public:
-    JOGComplexMatrix(jobject obj);
+    typedef shared_ptr<const JOGComplexMatrix> Ptr;
+    static JOGComplexMatrix::Ptr create(jobject obj);
     virtual ~JOGComplexMatrix() override;
     virtual void debug_print() const override;
   private:
+    JOGComplexMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 
@@ -107,11 +113,12 @@ class DLLEXPORT_C JOGComplexMatrix: public OGComplexMatrix
 class DLLEXPORT_C JOGLogicalMatrix: public OGLogicalMatrix
 {
   public:
-    using OGLogicalMatrix::OGLogicalMatrix;
-    JOGLogicalMatrix(jobject obj);
+    typedef shared_ptr<const JOGLogicalMatrix> Ptr;
+    static JOGLogicalMatrix::Ptr create(jobject obj);
     virtual ~JOGLogicalMatrix() override;
     virtual void debug_print() const override;
   private:
+    JOGLogicalMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 
@@ -121,12 +128,14 @@ class DLLEXPORT_C JOGLogicalMatrix: public OGLogicalMatrix
 class DLLEXPORT_C JOGRealSparseMatrix: public OGRealSparseMatrix
 {
   public:
-    JOGRealSparseMatrix(jobject obj);
+    typedef shared_ptr<const JOGRealSparseMatrix> Ptr;
+    static JOGRealSparseMatrix::Ptr create(jobject obj);
     virtual ~JOGRealSparseMatrix() override;
     virtual void debug_print() const override;
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
   private:
+    JOGRealSparseMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 
@@ -136,12 +145,14 @@ class DLLEXPORT_C JOGRealSparseMatrix: public OGRealSparseMatrix
 class DLLEXPORT_C JOGComplexSparseMatrix: public OGComplexSparseMatrix
 {
   public:
-    JOGComplexSparseMatrix(jobject obj);
+    typedef shared_ptr<const JOGComplexSparseMatrix> Ptr;
+    static JOGComplexSparseMatrix::Ptr create(jobject obj);
     virtual ~JOGComplexSparseMatrix() override;
     virtual void debug_print() const override;
     virtual real16** toReal16ArrayOfArrays() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
   private:
+    JOGComplexSparseMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 
@@ -151,10 +162,12 @@ class DLLEXPORT_C JOGComplexSparseMatrix: public OGComplexSparseMatrix
 class DLLEXPORT_C JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 {
   public:
-    JOGRealDiagonalMatrix(jobject obj);
+    typedef shared_ptr<const JOGRealDiagonalMatrix> Ptr;
+    static JOGRealDiagonalMatrix::Ptr create(jobject obj);
     virtual ~JOGRealDiagonalMatrix() override;
     virtual void debug_print() const override;
   private:
+    JOGRealDiagonalMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 
@@ -164,10 +177,12 @@ class DLLEXPORT_C JOGRealDiagonalMatrix: public OGRealDiagonalMatrix
 class DLLEXPORT_C JOGComplexDiagonalMatrix: public OGComplexDiagonalMatrix
 {
   public:
-    JOGComplexDiagonalMatrix(jobject obj);
+    typedef shared_ptr<const JOGComplexDiagonalMatrix> Ptr;
+    static JOGComplexDiagonalMatrix::Ptr create(jobject obj);
     virtual ~JOGComplexDiagonalMatrix() override;
     virtual void debug_print() const override;
   private:
+    JOGComplexDiagonalMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 

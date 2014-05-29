@@ -56,6 +56,12 @@ JOGRealScalar::JOGRealScalar(jobject obj): OGRealScalar(0.0)
   this->_backingObject = obj;
 }
 
+JOGRealScalar::Ptr
+JOGRealScalar::create(jobject obj)
+{
+  return JOGRealScalar::Ptr{new JOGRealScalar{obj}};
+}
+
 JOGRealScalar::~JOGRealScalar()
 {
   try {
@@ -91,6 +97,14 @@ JOGComplexScalar::JOGComplexScalar(jobject obj): OGComplexScalar(0.0)
   _value = static_cast<complex16 *>(_dataRef)[0];
   this->_backingObject = obj;
 }
+
+JOGComplexScalar::Ptr
+JOGComplexScalar::create(jobject obj)
+{
+  return JOGComplexScalar::Ptr{new JOGComplexScalar{obj}};
+}
+
+
 
 JOGComplexScalar::~JOGComplexScalar()
 {
@@ -139,6 +153,12 @@ JOGIntegerScalar::JOGIntegerScalar(jobject obj): OGIntegerScalar(0)
   this->_backingObject = obj;
 }
 
+JOGIntegerScalar::Ptr
+JOGIntegerScalar::create(jobject obj)
+{
+  return JOGIntegerScalar::Ptr{new JOGIntegerScalar{obj}};
+}
+
 JOGIntegerScalar::~JOGIntegerScalar()
 {
   this->_backingObject = nullptr;
@@ -163,6 +183,12 @@ JOGRealMatrix::JOGRealMatrix(jobject obj): OGRealMatrix
   )
 {
   this->_backingObject = obj;
+}
+
+JOGRealMatrix::Ptr
+JOGRealMatrix::create(jobject obj)
+{
+  return JOGRealMatrix::Ptr{new JOGRealMatrix{obj}};
 }
 
 JOGRealMatrix::~JOGRealMatrix()
@@ -198,6 +224,12 @@ JOGComplexMatrix::JOGComplexMatrix(jobject obj): OGComplexMatrix
   this->_backingObject = obj;
 }
 
+JOGComplexMatrix::Ptr
+JOGComplexMatrix::create(jobject obj)
+{
+  return JOGComplexMatrix::Ptr{new JOGComplexMatrix{obj}};
+}
+
 JOGComplexMatrix::~JOGComplexMatrix() {
   try {
     unbindOGArrayData<complex16, jdoubleArray>(this->getData(), _backingObject);
@@ -228,6 +260,12 @@ JOGLogicalMatrix::JOGLogicalMatrix(jobject obj): OGLogicalMatrix
   )
 {
   this->_backingObject = obj;
+}
+
+JOGLogicalMatrix::Ptr
+JOGLogicalMatrix::create(jobject obj)
+{
+  return JOGLogicalMatrix::Ptr{new JOGLogicalMatrix{obj}};
 }
 
 JOGLogicalMatrix::~JOGLogicalMatrix()
@@ -263,6 +301,12 @@ JOGRealSparseMatrix::JOGRealSparseMatrix(jobject obj): OGRealSparseMatrix
   )
 {
   this->_backingObject = obj;
+}
+
+JOGRealSparseMatrix::Ptr
+JOGRealSparseMatrix::create(jobject obj)
+{
+  return JOGRealSparseMatrix::Ptr{new JOGRealSparseMatrix{obj}};
 }
 
 JOGRealSparseMatrix::~JOGRealSparseMatrix()
@@ -313,6 +357,12 @@ JOGComplexSparseMatrix::JOGComplexSparseMatrix(jobject obj): OGComplexSparseMatr
   this->_backingObject = obj;
 }
 
+JOGComplexSparseMatrix::Ptr
+JOGComplexSparseMatrix::create(jobject obj)
+{
+  return JOGComplexSparseMatrix::Ptr{new JOGComplexSparseMatrix{obj}};
+}
+
 JOGComplexSparseMatrix::~JOGComplexSparseMatrix()
 {
   try {
@@ -360,6 +410,12 @@ JOGRealDiagonalMatrix::JOGRealDiagonalMatrix(jobject obj):OGRealDiagonalMatrix
   this->_backingObject = obj;
 }
 
+JOGRealDiagonalMatrix::Ptr
+JOGRealDiagonalMatrix::create(jobject obj)
+{
+  return JOGRealDiagonalMatrix::Ptr{new JOGRealDiagonalMatrix{obj}};
+}
+
 JOGRealDiagonalMatrix::~JOGRealDiagonalMatrix()
 {
   try {
@@ -391,6 +447,12 @@ JOGComplexDiagonalMatrix::JOGComplexDiagonalMatrix(jobject obj):OGComplexDiagona
   )
 {
   this->_backingObject = obj;
+}
+
+JOGComplexDiagonalMatrix::Ptr
+JOGComplexDiagonalMatrix::create(jobject obj)
+{
+  return JOGComplexDiagonalMatrix::Ptr{new JOGComplexDiagonalMatrix{obj}};
 }
 
 JOGComplexDiagonalMatrix::~JOGComplexDiagonalMatrix()

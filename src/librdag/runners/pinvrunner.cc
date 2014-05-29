@@ -32,11 +32,11 @@ PINVRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
   real16 x = arg->getValue();
   if(x == 0.e0)
   {
-    ret = OGNumeric::Ptr{new OGRealScalar(0.e0)};
+    ret = OGRealScalar::create(0.e0);
   }
   else
   {
-    ret = OGNumeric::Ptr{new OGRealScalar(1.e0/x)};
+    ret = OGRealScalar::create(1.e0/x);
   }
   reg.push_back(ret);
   return nullptr;
@@ -118,7 +118,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 
     // create a new transposed inverted diag matrix.
     // this matrix is just a viewer of S, numericS is the owner
-    OGNumeric::Ptr invS = OGNumeric::Ptr{new OGRealDiagonalMatrix(S,n,m)};
+    OGNumeric::Ptr invS = OGRealDiagonalMatrix::create(S,n,m);
 
     // need to transpose U
     OGNumeric::Ptr ctransposeU = OGNumeric::Ptr{new CTRANSPOSE(numericU)};

@@ -59,16 +59,16 @@ TEST_P(EntryptNegateTest, Running)
 
 TreeResultPair negatepair(double v)
 {
-  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(OGNumeric::Ptr{new OGRealScalar(v)})};
-  OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(-v)};
+  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(OGRealScalar::create(v))};
+  OGTerminal::Ptr expected = OGRealScalar::create(-v);
   return TreeResultPair(negate, expected);
 }
 
 TreeResultPair doublenegate(double v)
 {
-  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(OGNumeric::Ptr{new OGRealScalar(v)})};
+  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(OGRealScalar::create(v))};
   negate = OGNumeric::Ptr{new NEGATE(negate)};
-  OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(v)};
+  OGTerminal::Ptr expected = OGRealScalar::create(v);
   return TreeResultPair(negate, expected);
 }
 
@@ -77,9 +77,9 @@ double realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
 
 TreeResultPair negaterealmatrix()
 {
-  OGNumeric::Ptr ogrealmatrix = OGNumeric::Ptr{new OGRealMatrix(realData, 2, 3)};
+  OGNumeric::Ptr ogrealmatrix = OGRealMatrix::create(realData, 2, 3);
   OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(ogrealmatrix)};
-  OGTerminal::Ptr ogrealnegmatrix = OGTerminal::Ptr{new OGRealMatrix(realNegData, 2, 3)};
+  OGTerminal::Ptr ogrealnegmatrix = OGRealMatrix::create(realNegData, 2, 3);
   return TreeResultPair(negate, ogrealnegmatrix);
 }
 
@@ -90,9 +90,9 @@ complex16 complexNegData[6] = { {-1.0, -2.0}, {-3.0, -4.0},  {-5.0,  -6.0},
 
 TreeResultPair negatecomplexmatrix()
 {
-  OGNumeric::Ptr ogcomplexmatrix = OGNumeric::Ptr{new OGComplexMatrix(complexData, 2, 3)};
+  OGNumeric::Ptr ogcomplexmatrix = OGComplexMatrix::create(complexData, 2, 3);
   OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(ogcomplexmatrix)};
-  OGTerminal::Ptr ogcomplexnegmatrix = OGTerminal::Ptr{new OGComplexMatrix(complexNegData, 2, 3)};
+  OGTerminal::Ptr ogcomplexnegmatrix = OGComplexMatrix::create(complexNegData, 2, 3);
   return TreeResultPair(negate, ogcomplexnegmatrix);
 }
 
@@ -116,22 +116,22 @@ TEST_P(EntryptPlusTest, Running)
 
 TreeResultPair plustestsimple()
 {
-  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(OGNumeric::Ptr{new OGRealScalar(2.0)}, OGNumeric::Ptr{new OGRealScalar(3.0)})};
-  OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(2.0+3.0)};
+  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(OGRealScalar::create(2.0), OGRealScalar::create(3.0))};
+  OGTerminal::Ptr expected = OGRealScalar::create(2.0+3.0);
   return TreeResultPair(plus, expected);
 }
 
 TreeResultPair plustesttwoplus()
 {
-  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(OGNumeric::Ptr{new OGRealScalar(2.0)}, OGNumeric::Ptr{new OGRealScalar(3.0)})};
-  plus = OGNumeric::Ptr{new PLUS(OGNumeric::Ptr{new OGRealScalar(1.0)}, plus)};
-  OGTerminal::Ptr expected = OGTerminal::Ptr{new OGRealScalar(1.0+2.0+3.0)};
+  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(OGRealScalar::create(2.0), OGRealScalar::create(3.0))};
+  plus = OGNumeric::Ptr{new PLUS(OGRealScalar::create(1.0), plus)};
+  OGTerminal::Ptr expected = OGRealScalar::create(1.0+2.0+3.0);
   return TreeResultPair(plus, expected);
 }
 
 TreeResultPair plustestbigtree()
 {
-  OGNumeric::Ptr bigtree = OGNumeric::Ptr{new OGRealScalar(0.0)};
+  OGNumeric::Ptr bigtree = OGRealScalar::create(0.0);
   double sum = 0.0;
   for (int i = 0; i < 5000; ++i)
   {
@@ -139,15 +139,15 @@ TreeResultPair plustestbigtree()
 
     if (i%2 == 0)
     {
-      bigtree = OGNumeric::Ptr{new PLUS(OGNumeric::Ptr{new OGRealScalar(i)}, bigtree)};
+      bigtree = OGNumeric::Ptr{new PLUS(OGRealScalar::create(i), bigtree)};
     }
     else
     {
-      bigtree = OGNumeric::Ptr{new PLUS(bigtree, OGNumeric::Ptr{new OGRealScalar(i)})};
+      bigtree = OGNumeric::Ptr{new PLUS(bigtree, OGRealScalar::create(i))};
     }
   }
 
-  return TreeResultPair(bigtree, OGTerminal::Ptr{new OGRealScalar(sum)});
+  return TreeResultPair(bigtree, OGRealScalar::create(sum));
 }
 
 TreeResultPair pluses[] = { plustestsimple(), plustesttwoplus(), plustestbigtree() };

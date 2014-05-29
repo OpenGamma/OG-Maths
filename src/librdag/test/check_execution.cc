@@ -36,7 +36,7 @@ INSTANTIATE_TEST_CASE_P(ValueParam, ExecutionOneNodeTest, ::testing::ValuesIn(te
 TEST(LinearisationTest, UnaryTreeLinearisation)
 {
   // One unary node holding one terminal
-  OGNumeric::Ptr real = OGNumeric::Ptr{new OGRealScalar(1.0)};
+  OGNumeric::Ptr real = OGRealScalar::create(1.0);
   OGNumeric::Ptr copy = OGNumeric::Ptr{new COPY(real)};
   ExecutionList el1 = ExecutionList(copy);
   EXPECT_EQ(2, el1.size());
@@ -55,8 +55,8 @@ TEST(LinearisationTest, UnaryTreeLinearisation)
 TEST(LinearisationTest, BinaryTreeLinearisation)
 {
   // One binary node holding two terminals
-  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
-  OGNumeric::Ptr real2 = OGNumeric::Ptr{new OGRealScalar(2.0)};
+  OGNumeric::Ptr real1 = OGRealScalar::create(1.0);
+  OGNumeric::Ptr real2 = OGRealScalar::create(2.0);
   OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, real2)};
   ExecutionList el1 = ExecutionList(plus);
   EXPECT_EQ(3, el1.size());
@@ -93,8 +93,8 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
    *          \
    *           2.0
    */
-  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
-  OGNumeric::Ptr real2 = OGNumeric::Ptr{new OGRealScalar(2.0)};
+  OGNumeric::Ptr real1 = OGRealScalar::create(1.0);
+  OGNumeric::Ptr real2 = OGRealScalar::create(2.0);
   OGNumeric::Ptr copy = OGNumeric::Ptr{new COPY(real2)};
   OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, copy)};
   ExecutionList el1 = ExecutionList(plus);

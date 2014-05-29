@@ -91,7 +91,7 @@ class %(nodename)sRunner: public DispatchVoidOp, private Uncopyable
 # Infix runner
 
 infix_scalar_runner_implementation = """\
-  ret = OGNumeric::Ptr{new %(returntype)s(arg0->getValue() %(symbol)s arg1->getValue())};\
+  ret = %(returntype)s::create(arg0->getValue() %(symbol)s arg1->getValue());\
 """
 
 infix_matrix_runner_implementation = """\
@@ -173,7 +173,7 @@ infix_matrix_runner_implementation = """\
     }
   }
 
-  ret = OGNumeric::Ptr{new %(returntype)s(newData, newRows, newCols, OWNER)};
+  ret = %(returntype)s::create(newData, newRows, newCols, OWNER);
 """
 
 # Unary runner
@@ -203,7 +203,7 @@ void *
 # Prefix runner
 
 prefix_scalar_runner_implementation = """\
-  ret = OGNumeric::Ptr{new %(returntype)s(%(symbol)s(arg->getValue()))};\
+  ret = %(returntype)s::create(%(symbol)s(arg->getValue()));\
 """
 
 prefix_matrix_runner_implementation = """\
@@ -214,13 +214,13 @@ prefix_matrix_runner_implementation = """\
   {
     newData[i] = %(symbol)sdata[i];
   }
-  ret = OGNumeric::Ptr{new %(returntype)s(newData, arg->getRows(), arg->getCols(), OWNER)};
+  ret = %(returntype)s::create(newData, arg->getRows(), arg->getCols(), OWNER);
 """
 
 # UnaryFunction runner
 
 unaryfunction_scalar_runner_implementation = """\
-  ret = OGNumeric::Ptr{new %(returntype)s(%(function)s(arg->getValue()))};\
+  ret = %(returntype)s::create(%(function)s(arg->getValue()));\
 """
 
 unaryfunction_matrix_runner_implementation = """\
@@ -231,7 +231,7 @@ unaryfunction_matrix_runner_implementation = """\
   {
     newData[i] = %(function)s(data[i]);
   }
-  ret = OGNumeric::Ptr{new %(returntype)s(newData, arg->getRows(), arg->getCols(), OWNER)};
+  ret = %(returntype)s::create(newData, arg->getRows(), arg->getCols(), OWNER);
 
 """
 

@@ -183,6 +183,13 @@ detail::FuzzyCompareOGTerminalContainer::getTerminal() const
  */
 
 template<typename T>
+typename OGScalar<T>::Ptr
+OGScalar<T>::create(T data)
+{
+  return OGScalar<T>::Ptr{new OGScalar<T>{data}};
+}
+
+template<typename T>
 OGScalar<T>::OGScalar(T data)
 {
   this->_value=data;
@@ -285,14 +292,14 @@ OGScalar<T>::asFullOGComplexMatrix() const
 }
 
 template<typename T>
-OGTerminal *
+OGTerminal::Ptr
 OGScalar<T>::createOwningCopy() const
 {
   throw rdag_error("Cannot createOwningCopy() template OGScalar<T> class.");
 }
 
 template<typename T>
-OGTerminal *
+OGTerminal::Ptr
 OGScalar<T>::createComplexOwningCopy() const
 {
   throw rdag_error("Cannot createComplexOwningCopy() template OGScalar<T> class.");
@@ -322,6 +329,12 @@ template class OGScalar<int>;
  */
 
 OGRealScalar::OGRealScalar(real16 data): OGScalar<real16>(data) {}
+
+OGRealScalar::Ptr
+OGRealScalar::create(real16 data)
+{
+  return OGRealScalar::Ptr{new OGRealScalar{data}};
+}
 
 real16**
 OGRealScalar::toReal16ArrayOfArrays() const
@@ -374,16 +387,16 @@ OGRealScalar::asFullOGComplexMatrix() const
   return getConvertTo()->convertToOGComplexMatrix(asOGRealScalar());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGRealScalar::createOwningCopy() const
 {
-  return new OGRealScalar(this->getValue());
+  return OGRealScalar::create(this->getValue());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGRealScalar::createComplexOwningCopy() const
 {
-  return new OGComplexScalar(this->getValue());
+  return OGComplexScalar::create(this->getValue());
 }
 
 /**
@@ -391,6 +404,12 @@ OGRealScalar::createComplexOwningCopy() const
  */
 
 OGComplexScalar::OGComplexScalar(complex16 data): OGScalar<complex16>(data) {}
+
+OGComplexScalar::Ptr
+OGComplexScalar::create(complex16 data)
+{
+  return OGComplexScalar::Ptr{new OGComplexScalar{data}};
+}
 
 complex16**
 OGComplexScalar::toComplex16ArrayOfArrays() const
@@ -434,16 +453,16 @@ OGComplexScalar::asFullOGComplexMatrix() const
   return getConvertTo()->convertToOGComplexMatrix(asOGComplexScalar());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGComplexScalar::createOwningCopy() const
 {
-  return new OGComplexScalar(this->getValue());
+  return OGComplexScalar::create(this->getValue());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGComplexScalar::createComplexOwningCopy() const
 {
-  return this->createOwningCopy();
+  return createOwningCopy();
 }
 
 
@@ -452,6 +471,12 @@ OGComplexScalar::createComplexOwningCopy() const
  */
 
 OGIntegerScalar::OGIntegerScalar(int data): OGScalar<int>(data) {}
+
+OGIntegerScalar::Ptr
+OGIntegerScalar::create(int data)
+{
+  return OGIntegerScalar::Ptr{new OGIntegerScalar{data}};
+}
 
 OGNumeric::Ptr
 OGIntegerScalar::copy() const
@@ -489,16 +514,16 @@ OGIntegerScalar::asFullOGComplexMatrix() const
   return getConvertTo()->convertToOGComplexMatrix(asOGIntegerScalar());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGIntegerScalar::createOwningCopy() const
 {
-  return new OGIntegerScalar(this->getValue());
+  return OGIntegerScalar::create(this->getValue());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGIntegerScalar::createComplexOwningCopy() const
 {
-  return new OGComplexScalar(this->getValue());
+  return OGComplexScalar::create(this->getValue());
 }
 
 
@@ -723,7 +748,7 @@ asFullOGComplexMatrix() const
 }
 
 template<typename T>
-OGTerminal *
+OGTerminal::Ptr
 OGArray<T>::
 createOwningCopy() const
 {
@@ -732,7 +757,7 @@ createOwningCopy() const
 }
 
 template<typename T>
-OGTerminal *
+OGTerminal::Ptr
 OGArray<T>::
 createComplexOwningCopy() const
 {
@@ -759,6 +784,13 @@ OGMatrix<T>::OGMatrix(T* data, int rows, int cols, DATA_ACCESS access_spec)
   this->setCols(cols);
   this->setDatalen(rows*cols);
   this->setDataAccess(access_spec);
+}
+
+template<typename T>
+typename OGMatrix<T>::Ptr
+OGMatrix<T>::create(T* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGMatrix<T>::Ptr{new OGMatrix<T>{data, rows, cols, access_spec}};
 }
 
 template<typename T>
@@ -791,7 +823,7 @@ template<typename T>
 OGNumeric::Ptr
 OGMatrix<T>::copy() const
 {
-  return OGNumeric::Ptr{new OGMatrix<T>(this->getData(), this->getRows(), this->getCols())};
+  return OGMatrix<T>::create(this->getData(), this->getRows(), this->getCols());
 }
 
 template<typename T>
@@ -812,12 +844,12 @@ OGMatrix<T>::debug_print() const
 }
 
 template<typename T>
-OGTerminal *
+OGTerminal::Ptr
 OGMatrix<T>::createOwningCopy() const
 {
   T * newdata =  new T[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return new OGMatrix<T>(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGMatrix<T>::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 template<typename T>
@@ -826,7 +858,7 @@ OGMatrix<T>::asFullOGComplexMatrix() const
 {
   complex16 * newdata = new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return OGComplexMatrix::Ptr{new OGComplexMatrix(newdata,this->getRows(),this->getCols(),OWNER)};
+  return OGComplexMatrix::create(newdata,this->getRows(),this->getCols(),OWNER);
 }
 
 template<typename T>
@@ -898,7 +930,13 @@ template class OGMatrix<complex16>;
 OGNumeric::Ptr
 OGRealMatrix::copy() const
 {
-  return OGNumeric::Ptr{new OGRealMatrix(this->getData(), this->getRows(), this->getCols())};
+  return create(this->getData(), this->getRows(), this->getCols());
+}
+
+OGRealMatrix::Ptr
+OGRealMatrix::create(real16* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGRealMatrix::Ptr{new OGRealMatrix{data, rows, cols, access_spec}};
 }
 
 OGRealMatrix::Ptr
@@ -918,7 +956,7 @@ OGRealMatrix::asFullOGRealMatrix() const
 {
   real16 * ret = new real16[this->getDatalen()];
   memcpy(ret,this->getData(),this->getDatalen()*sizeof(real16));
-  return OGRealMatrix::Ptr{new OGRealMatrix(ret,this->getRows(),this->getCols(),OWNER)};
+  return OGRealMatrix::create(ret,this->getRows(),this->getCols(),OWNER);
 }
 
 OGComplexMatrix::Ptr
@@ -927,25 +965,31 @@ OGRealMatrix::asFullOGComplexMatrix() const
   return getConvertTo()->convertToOGComplexMatrix(asOGRealMatrix());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGRealMatrix::createOwningCopy() const
 {
   real16 * newdata =  new real16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return new OGRealMatrix(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGRealMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGRealMatrix::createComplexOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return new OGComplexMatrix(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGComplexMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 /**
  * Logical Matrix
  */
+OGLogicalMatrix::Ptr
+OGLogicalMatrix::create(real16* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGLogicalMatrix::Ptr{new OGLogicalMatrix{data, rows, cols, access_spec}};
+}
+
 OGLogicalMatrix::Ptr
 OGLogicalMatrix::asOGLogicalMatrix() const
 {
@@ -957,6 +1001,13 @@ OGLogicalMatrix::asOGLogicalMatrix() const
  * OGComplexMatrix
  */
 
+OGComplexMatrix::Ptr
+OGComplexMatrix::create(complex16* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGComplexMatrix::Ptr{new OGComplexMatrix{data, rows, cols, access_spec}};
+}
+
+
 complex16**
 OGComplexMatrix::toComplex16ArrayOfArrays() const
 {
@@ -966,7 +1017,7 @@ OGComplexMatrix::toComplex16ArrayOfArrays() const
 OGNumeric::Ptr
 OGComplexMatrix::copy() const
 {
-  return OGNumeric::Ptr{new OGComplexMatrix(this->getData(), this->getRows(), this->getCols())};
+  return create(this->getData(), this->getRows(), this->getCols());
 }
 
 OGComplexMatrix::Ptr
@@ -994,21 +1045,21 @@ OGComplexMatrix::asFullOGComplexMatrix() const
   complex16 * data = this->getData();
   complex16 * ret = new complex16[len];
   memcpy(ret,data,len*sizeof(complex16));
-  return OGComplexMatrix::Ptr{new OGComplexMatrix(ret,this->getRows(),this->getCols(),OWNER)};
+  return OGComplexMatrix::create(ret,this->getRows(),this->getCols(),OWNER);
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGComplexMatrix::createOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return new OGComplexMatrix(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGComplexMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGComplexMatrix::createComplexOwningCopy() const
 {
-  return this->createOwningCopy();
+  return createOwningCopy();
 }
 
 /**
@@ -1027,6 +1078,13 @@ OGDiagonalMatrix<T>::OGDiagonalMatrix(T* data, int rows, int cols, DATA_ACCESS a
   this->setCols(cols);
   this->setDatalen(rows>cols?cols:rows);
   this->setDataAccess(access_spec);
+}
+
+template<typename T>
+typename OGDiagonalMatrix<T>::Ptr
+OGDiagonalMatrix<T>::create(T* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGDiagonalMatrix<T>::Ptr{new OGDiagonalMatrix<T>{data, rows, cols, access_spec}};
 }
 
 template<typename T>
@@ -1069,6 +1127,12 @@ template class OGDiagonalMatrix<complex16>;
 /**
  * OGRealDiagonalMatrix
  */
+
+OGRealDiagonalMatrix::Ptr
+OGRealDiagonalMatrix::create(real16* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGRealDiagonalMatrix::Ptr{new OGRealDiagonalMatrix{data, rows, cols, access_spec}};
+}
 
 void
 OGRealDiagonalMatrix::debug_print() const
@@ -1114,7 +1178,7 @@ OGRealDiagonalMatrix::toReal16ArrayOfArrays() const
 OGNumeric::Ptr
 OGRealDiagonalMatrix::copy() const
 {
-  return OGNumeric::Ptr{new OGRealDiagonalMatrix(this->getData(), this->getRows(), this->getCols())};
+  return create(this->getData(), this->getRows(), this->getCols());
 }
 
 OGRealDiagonalMatrix::Ptr
@@ -1141,26 +1205,32 @@ OGRealDiagonalMatrix::asFullOGComplexMatrix() const
   return getConvertTo()->convertToOGComplexMatrix(asOGRealDiagonalMatrix());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGRealDiagonalMatrix::createOwningCopy() const
 {
   real16 * newdata =  new real16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return new OGRealDiagonalMatrix(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGRealDiagonalMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGRealDiagonalMatrix::createComplexOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return new OGComplexDiagonalMatrix(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGComplexDiagonalMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 
 /**
  * OGComplexDiagonalMatrix
  */
+
+OGComplexDiagonalMatrix::Ptr
+OGComplexDiagonalMatrix::create(complex16* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGComplexDiagonalMatrix::Ptr{new OGComplexDiagonalMatrix{data, rows, cols, access_spec}};
+}
 
 void
 OGComplexDiagonalMatrix::debug_print() const
@@ -1208,7 +1278,7 @@ OGComplexDiagonalMatrix::toComplex16ArrayOfArrays() const
 OGNumeric::Ptr
 OGComplexDiagonalMatrix::copy() const
 {
-  return OGNumeric::Ptr{new OGComplexDiagonalMatrix(this->getData(), this->getRows(), this->getCols())};
+  return OGComplexDiagonalMatrix::create(this->getData(), this->getRows(), this->getCols());
 }
 
 OGComplexDiagonalMatrix::Ptr
@@ -1237,18 +1307,18 @@ OGComplexDiagonalMatrix::asFullOGComplexMatrix() const
 }
 
 
-OGTerminal *
+OGTerminal::Ptr
 OGComplexDiagonalMatrix::createOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return new OGComplexDiagonalMatrix(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGComplexDiagonalMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGComplexDiagonalMatrix::createComplexOwningCopy() const
 {
-  return this->createOwningCopy();
+  return createOwningCopy();
 }
 
 
@@ -1271,6 +1341,13 @@ OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, int rows,
   this->setRowIdx(rowIdx);
   this->setDatalen(colPtr[cols]); // must go last to catch null on colptr happens
   this->setDataAccess(access_spec);
+}
+
+template<typename T>
+typename OGSparseMatrix<T>::Ptr
+OGSparseMatrix<T>::create(int* colPtr, int* rowIdx, T* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGSparseMatrix<T>::Ptr{new OGSparseMatrix<T>{colPtr, rowIdx, data, rows, cols, access_spec}};
 }
 
 template<typename T>
@@ -1404,6 +1481,12 @@ template class OGSparseMatrix<complex16>;
  * OGRealSparseMatrix
  */
 
+OGRealSparseMatrix::Ptr
+OGRealSparseMatrix::create(int* colPtr, int* rowIdx, real16* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGRealSparseMatrix::Ptr{new OGRealSparseMatrix{colPtr, rowIdx, data, rows, cols, access_spec}};
+}
+
 void
 OGRealSparseMatrix::debug_print() const
 {
@@ -1435,8 +1518,8 @@ OGRealSparseMatrix::toReal16ArrayOfArrays() const
 OGNumeric::Ptr
 OGRealSparseMatrix::copy() const
 {
-  return OGNumeric::Ptr{new OGRealSparseMatrix(this->getColPtr(), this->getRowIdx(), this->getData(),
-                                           this->getRows(), this->getCols())};
+  return OGRealSparseMatrix::create(this->getColPtr(), this->getRowIdx(), this->getData(),
+                                    this->getRows(), this->getCols());
 }
 
 OGRealSparseMatrix::Ptr
@@ -1463,7 +1546,7 @@ OGRealSparseMatrix::asFullOGComplexMatrix() const
   return getConvertTo()->convertToOGComplexMatrix(asOGRealSparseMatrix());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGRealSparseMatrix::createOwningCopy() const
 {
   real16 * newdata =  new real16[this->getDatalen()];
@@ -1472,10 +1555,10 @@ OGRealSparseMatrix::createOwningCopy() const
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
   int * newRowIdx = new int[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
-  return new OGRealSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
+  return OGRealSparseMatrix::create(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGRealSparseMatrix::createComplexOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
@@ -1484,12 +1567,18 @@ OGRealSparseMatrix::createComplexOwningCopy() const
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
   int * newRowIdx = new int[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
-  return new OGComplexSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
+  return OGComplexSparseMatrix::create(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 /**
  * OGComplexSparseMatrix
  */
+
+OGComplexSparseMatrix::Ptr
+OGComplexSparseMatrix::create(int* colPtr, int* rowIdx, complex16* data, int rows, int cols, DATA_ACCESS access_spec)
+{
+  return OGComplexSparseMatrix::Ptr{new OGComplexSparseMatrix{colPtr, rowIdx, data, rows, cols, access_spec}};
+}
 
 void
 OGComplexSparseMatrix::debug_print() const
@@ -1522,8 +1611,8 @@ OGComplexSparseMatrix::toComplex16ArrayOfArrays() const
 OGNumeric::Ptr
 OGComplexSparseMatrix::copy() const
 {
-  return OGNumeric::Ptr{new OGComplexSparseMatrix(this->getColPtr(), this->getRowIdx(), this->getData(),
-                                              this->getRows(), this->getCols())};
+  return OGComplexSparseMatrix::create(this->getColPtr(), this->getRowIdx(), this->getData(),
+                                       this->getRows(), this->getCols());
 }
 
 OGComplexSparseMatrix::Ptr
@@ -1550,7 +1639,7 @@ OGComplexSparseMatrix::asFullOGComplexMatrix() const
   return getConvertTo()->convertToOGComplexMatrix(asOGComplexSparseMatrix());
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGComplexSparseMatrix::createOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
@@ -1559,13 +1648,13 @@ OGComplexSparseMatrix::createOwningCopy() const
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
   int * newRowIdx = new int[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
-  return new OGComplexSparseMatrix(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
+  return OGComplexSparseMatrix::create(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }
 
-OGTerminal *
+OGTerminal::Ptr
 OGComplexSparseMatrix::createComplexOwningCopy() const
 {
-  return this->createOwningCopy();
+  return createOwningCopy();
 }
 
 
@@ -1573,26 +1662,26 @@ OGComplexSparseMatrix::createComplexOwningCopy() const
 template<>
 OGNumeric::Ptr makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access)
 {
-  return OGNumeric::Ptr{new OGRealMatrix(data, rows, cols, access)};
+  return OGRealMatrix::create(data, rows, cols, access);
 }
 
 template<>
 OGNumeric::Ptr makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access)
 {
-  return OGNumeric::Ptr{new OGComplexMatrix(data, rows, cols, access)};
+  return OGComplexMatrix::create(data, rows, cols, access);
 }
 
 // Concrete template factory for scalars
 template<>
 OGNumeric::Ptr makeConcreteScalar(real16 data)
 {
-  return OGNumeric::Ptr{new OGRealScalar(data)};
+  return OGRealScalar::create(data);
 }
 
 template<>
 OGNumeric::Ptr makeConcreteScalar(complex16 data)
 {
-  return OGNumeric::Ptr{new OGComplexScalar(data)};
+  return OGComplexScalar::create(data);
 }
 
 } // namespace librdag

@@ -104,13 +104,15 @@ TEST(JTerminals, Test_JOGRealScalar_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGRealScalar * scalar = new JOGRealScalar(obj);
+    JOGRealScalar::Ptr scalar = JOGRealScalar::create(obj);
     ASSERT_TRUE(scalar->getValue()==value);
 
     // debug print for coverage purposes
     scalar->debug_print();
 
-    delete scalar;
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    scalar.reset();
     delete obj;
     delete env;
     delete jvm;
@@ -125,13 +127,15 @@ TEST(JTerminals, Test_JOGComplexScalar_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGComplexScalar * scalar = new JOGComplexScalar(obj);
+    JOGComplexScalar::Ptr scalar = JOGComplexScalar::create(obj);
     ASSERT_TRUE(scalar->getValue()==value);
 
     // debug print for coverage purposes
     scalar->debug_print();
 
-    delete scalar;
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    scalar.reset();
     delete obj;
     delete env;
     delete jvm;
@@ -146,13 +150,15 @@ TEST(JTerminals, Test_JOGIntegerScalar_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGIntegerScalar * scalar = new JOGIntegerScalar(obj);
+    JOGIntegerScalar::Ptr scalar = JOGIntegerScalar::create(obj);
     ASSERT_TRUE(scalar->getValue()==value);
 
     // debug print for coverage purposes
     scalar->debug_print();
 
-    delete scalar;
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    scalar.reset();
     delete obj;
     delete env;
     delete jvm;
@@ -175,7 +181,7 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetDoubleArrayElements)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    ASSERT_ANY_THROW(new JOGRealScalar(obj));
+    ASSERT_ANY_THROW(JOGRealScalar::create(obj));
 
     delete obj;
     delete env;
@@ -199,7 +205,7 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetIntArrayElements)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    ASSERT_ANY_THROW(new JOGIntegerScalar(obj));
+    ASSERT_ANY_THROW(JOGIntegerScalar::create(obj));
 
     delete obj;
     delete env;
@@ -240,7 +246,7 @@ TEST(JTerminals, Test_JOGRealMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGRealMatrix * mat = new JOGRealMatrix(obj);
+    JOGRealMatrix::Ptr mat = JOGRealMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
@@ -248,8 +254,10 @@ TEST(JTerminals, Test_JOGRealMatrix_ctor)
     // debug print for coverage purposes
     mat->debug_print();
 
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    mat.reset();
     delete[] datav;
-    delete mat;
     delete obj;
     delete env;
     delete jvm;
@@ -265,7 +273,7 @@ TEST(JTerminals, Test_JOGLogicalMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGLogicalMatrix * mat = new JOGLogicalMatrix(obj);
+    JOGLogicalMatrix::Ptr mat = JOGLogicalMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
@@ -273,8 +281,10 @@ TEST(JTerminals, Test_JOGLogicalMatrix_ctor)
     // debug print for coverage purposes
     mat->debug_print();
 
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    mat.reset();
     delete[] datav;
-    delete mat;
     delete obj;
     delete env;
     delete jvm;
@@ -290,7 +300,7 @@ TEST(JTerminals, Test_JOGComplexMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGComplexMatrix * mat = new JOGComplexMatrix(obj);
+    JOGComplexMatrix::Ptr mat = JOGComplexMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
@@ -298,8 +308,10 @@ TEST(JTerminals, Test_JOGComplexMatrix_ctor)
     // debug print for coverage purposes
     mat->debug_print();
 
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    mat.reset();
     delete[] datav;
-    delete mat;
     delete obj;
     delete env;
     delete jvm;
@@ -315,7 +327,7 @@ TEST(JTerminals, Test_JOGRealDiagonalMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGRealDiagonalMatrix * mat = new JOGRealDiagonalMatrix(obj);
+    JOGRealDiagonalMatrix::Ptr mat = JOGRealDiagonalMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 2));
@@ -323,8 +335,10 @@ TEST(JTerminals, Test_JOGRealDiagonalMatrix_ctor)
     // debug print for coverage purposes
     mat->debug_print();
 
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    mat.reset();
     delete[] datav;
-    delete mat;
     delete obj;
     delete env;
     delete jvm;
@@ -340,7 +354,7 @@ TEST(JTerminals, Test_JOGComplexDiagonalMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGComplexDiagonalMatrix * mat = new JOGComplexDiagonalMatrix(obj);
+    JOGComplexDiagonalMatrix::Ptr mat = JOGComplexDiagonalMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 2));
@@ -348,8 +362,10 @@ TEST(JTerminals, Test_JOGComplexDiagonalMatrix_ctor)
     // debug print for coverage purposes
     mat->debug_print();
 
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    mat.reset();
     delete[] datav;
-    delete mat;
     delete obj;
     delete env;
     delete jvm;
@@ -397,7 +413,7 @@ TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGRealSparseMatrix * mat = new JOGRealSparseMatrix(obj);
+    JOGRealSparseMatrix::Ptr mat = JOGRealSparseMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
@@ -409,9 +425,11 @@ TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
     ASSERT_ANY_THROW(mat->toReal16ArrayOfArrays());
     ASSERT_ANY_THROW(mat->toComplex16ArrayOfArrays());
 
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    mat.reset();
     delete[] datav;
     delete[] idx;
-    delete mat;
     delete obj;
     delete env;
     delete jvm;
@@ -429,7 +447,7 @@ TEST(JTerminals, Test_JOGComplexSparseMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGComplexSparseMatrix * mat = new JOGComplexSparseMatrix(obj);
+    JOGComplexSparseMatrix::Ptr mat = JOGComplexSparseMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
@@ -441,9 +459,11 @@ TEST(JTerminals, Test_JOGComplexSparseMatrix_ctor)
     ASSERT_ANY_THROW(mat->toReal16ArrayOfArrays());
     ASSERT_ANY_THROW(mat->toComplex16ArrayOfArrays());
 
+    // Need to delete the node now so that the fake environment and jvm are still around
+    // for its unbinding
+    mat.reset();
     delete[] datav;
     delete[] idx;
-    delete mat;
     delete obj;
     delete env;
     delete jvm;

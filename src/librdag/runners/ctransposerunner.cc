@@ -24,7 +24,7 @@ namespace librdag {
 void *
 CTRANSPOSERunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
-  OGNumeric::Ptr ret = OGNumeric::Ptr{new OGRealScalar(arg->getValue())};
+  OGNumeric::Ptr ret = OGRealScalar::create(arg->getValue());
   reg.push_back(ret);
   return nullptr;
 }

@@ -33,11 +33,11 @@ INVRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
   if(x == 0.e0)
   {
     cerr << "Warning: singular system detected in matrix inversion" << std::endl;
-    ret = OGNumeric::Ptr{new OGRealScalar(std::numeric_limits<real16>::infinity())};
+    ret = OGRealScalar::create(std::numeric_limits<real16>::infinity());
   }
   else
   {
-    ret = OGNumeric::Ptr{new OGRealScalar(1.e0/x)};
+    ret = OGRealScalar::create(1.e0/x);
   }
   reg.push_back(ret);
   return nullptr;

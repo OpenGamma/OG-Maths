@@ -25,7 +25,7 @@ namespace librdag {
 void *
 NORM2Runner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
-  OGNumeric::Ptr ret = OGNumeric::Ptr{new OGRealScalar(fabs(arg->getValue()))};
+  OGNumeric::Ptr ret = OGRealScalar::create(fabs(arg->getValue()));
   reg.push_back(ret);
   return nullptr;
 }
@@ -39,13 +39,13 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
   // Matrix in scalar context, i.e. a 1x1 matrix, norm2 is simply abs(value)
   if(arg->getRows()==1 && arg->getCols()==1)
   {
-    ret = OGNumeric::Ptr{new OGRealScalar(std::abs(arg->getData()[0]))};
+    ret = OGRealScalar::create(std::abs(arg->getData()[0]));
   }
   else if(isVector(arg)) // Matrix is a vector, norm2 computed via BLAS xnrm2
   {
     int len = arg->getRows() > arg->getCols() ? arg->getRows(): arg->getCols();
     real16 value = lapack::xnrm2(&len, arg->getData(), lapack::ione);
-    ret = OGNumeric::Ptr{new OGRealScalar(value)};
+    ret = OGRealScalar::create(value);
   }
   else // Matrix is a full matrix, norm2 computed via LAPACK xgesvd
   {
@@ -68,7 +68,7 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     // call lapack
     lapack::xgesvd(lapack::N, lapack::N, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
 
-    ret = OGNumeric::Ptr{new OGRealScalar(std::real(S[0]))};
+    ret = OGRealScalar::create(std::real(S[0]));
     delete[] A;
     delete[] S;
   }

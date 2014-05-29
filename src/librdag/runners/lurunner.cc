@@ -163,12 +163,12 @@ void *
 LURunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
   // single real space lu is just l=1, u=value
-  reg.push_back(OGNumeric::Ptr{new OGRealScalar(1.e0)});
+  reg.push_back(OGRealScalar::create(1.e0));
   if(arg->getValue()==0.e0)
   {
     cerr << "Warning: singular system detected in LU decomposition" << std::endl;
   }
-  reg.push_back(OGNumeric::Ptr{new OGRealScalar(arg->getValue())});
+  reg.push_back(OGRealScalar::create(arg->getValue()));
   return nullptr;
 }
 void *

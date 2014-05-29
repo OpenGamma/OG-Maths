@@ -27,8 +27,8 @@ void dispatchfn(OGNumeric::Ptr thing)
 
 TEST(DispatchTest, SimpleTest) {
     // One binary node holding two terminals
-  OGNumeric::Ptr real1 = OGNumeric::Ptr{new OGRealScalar(1.0)};
-  OGNumeric::Ptr real2 = OGNumeric::Ptr{new OGRealScalar(2.0)};
+  OGNumeric::Ptr real1 = OGRealScalar::create(1.0);
+  OGNumeric::Ptr real2 = OGRealScalar::create(2.0);
   OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, real2)};
   ExecutionList el1 = ExecutionList{plus};
   int counter = 0;

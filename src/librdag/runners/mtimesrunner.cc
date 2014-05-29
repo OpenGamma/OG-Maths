@@ -105,7 +105,7 @@ void * MTIMESRunner::run(RegContainer& reg0, OGRealMatrix::Ptr arg0, OGRealMatri
 void *
 MTIMESRunner::run(RegContainer& reg0, OGRealScalar::Ptr arg0, OGRealScalar::Ptr arg1) const
 {
-    OGNumeric::Ptr ret = OGNumeric::Ptr{new OGRealScalar(arg0->getValue()*arg1->getValue())};
+    OGRealScalar::Ptr ret = OGRealScalar::create(arg0->getValue()*arg1->getValue());
     reg0.push_back(ret);
     return nullptr;
 }

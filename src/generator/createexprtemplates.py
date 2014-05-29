@@ -55,7 +55,7 @@ OGNumeric::Ptr translateNode(JNIEnv* env, jobject obj, OGNumeric::Ptr arg0, OGNu
 terminal_case = """\
     case %(enumname)s:
       DEBUG_PRINT("Binding a J%(typename)s\\n");
-      expr = OGNumeric::Ptr{new J%(typename)s(obj)};
+      expr = J%(typename)s::create(obj);
       break;
 """
 
