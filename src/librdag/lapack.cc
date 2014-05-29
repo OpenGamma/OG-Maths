@@ -240,6 +240,8 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, real16 * A,
     delete [] tmp;
     stringstream message;
     message << "Input to LAPACK::dgesvd call incorrect at arg: " << *INFO;
+    message << std::endl << "LDVT is " << *LDVT;
+    cout << message.str();
     throw rdag_error(message.str());
   }
 
@@ -276,6 +278,8 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, complex16 *
     delete [] tmp;
     stringstream message;
     message << "Input to LAPACK::zgesvd call incorrect at arg: " << *INFO;
+    message << std::endl << "LDVT is " << *LDVT;
+    cout << message.str();
     throw rdag_error(message.str());
   }
 

@@ -147,7 +147,80 @@ TEST(SVDTests,CheckRealMatrix)
   delete VT;
 }
 
+// MAT-404, test demonstrates fixing of bug.
+TEST(SVDTests,CheckRealHVector)
+{
 
+  // answers
+  OGRealMatrix* U = new OGRealMatrix(new real16[1] {1},1,1,OWNER);
+  OGTerminal* S = new OGRealDiagonalMatrix(new real16[3] {3.74165738677394,0,0 },1,3,OWNER);
+  OGTerminal * VT = new OGRealMatrix(new real16[9]{0.2672612419124243,-0.5345224838248488,-0.8017837257372732,0.5345224838248488,0.7745419205884383,-0.3381871191173426,0.8017837257372732,-0.3381871191173427,0.4927193213239860}, 3,3, OWNER);
+
+  // input
+  OGTerminal* M = new OGRealMatrix(new real16[3]{1,2,3},1,3,OWNER);
+  SVD* svd = new SVD(M);
+
+  // computed answer pointers
+  const OGNumeric * answerU, * answerS, * answerVT, * reconstruct;
+
+  Dispatcher * d = new Dispatcher();
+
+  // Check selecting 0 (U)
+  SELECTRESULT* s0 = new SELECTRESULT(svd, new OGIntegerScalar(0));
+  ExecutionList* el0 = new ExecutionList(s0);
+  for (auto it = el0->begin(); it != el0->end(); ++it)
+  {
+    d->dispatch(*it);
+  }
+  answerU = s0->getRegs()[0];
+  EXPECT_TRUE((*U) % (*(answerU->asOGTerminal())));
+
+  // Check selecting 1 (S)
+  SELECTRESULT* s1 = new SELECTRESULT(svd->copy(), new OGIntegerScalar(1));
+  ExecutionList* el1 = new ExecutionList(s1);
+  for (auto it = el1->begin(); it != el1->end(); ++it)
+  {
+    d->dispatch(*it);
+  }
+  answerS = s1->getRegs()[0];
+  EXPECT_TRUE((*S) ==~ (*(answerS->asOGTerminal())));
+
+  // Check selecting 2 (V)
+  SELECTRESULT* s2 = new SELECTRESULT(svd->copy(), new OGIntegerScalar(2));
+  ExecutionList* el2 = new ExecutionList(s2);
+  for (auto it = el2->begin(); it != el2->end(); ++it)
+  {
+    d->dispatch(*it);
+  }
+  answerVT = s2->getRegs()[0];
+  EXPECT_TRUE((*VT) % (*(answerVT->asOGTerminal())));
+
+  // reconstruction test i.e. recover A from U,S,V**T as A=U*S*V**T
+  MTIMES * m1 = new MTIMES(answerU->asOGTerminal()->createOwningCopy(),
+                           answerS->asOGTerminal()->createOwningCopy());
+  MTIMES * m2 = new MTIMES(m1, answerVT->asOGTerminal()->createOwningCopy());
+  ExecutionList* el3 = new ExecutionList(m2);
+  for (auto it = el3->begin(); it != el3->end(); ++it)
+  {
+    d->dispatch(*it);
+  }
+  reconstruct = m2->getRegs()[0];
+  EXPECT_TRUE((*M) ==~ (*(reconstruct->asOGTerminal())));
+
+  // Clean up
+  delete s0;
+  delete d;
+  delete el0;
+  delete s1;
+  delete el1;
+  delete s2;
+  delete el2;
+  delete m2;
+  delete el3;
+  delete S;
+  delete U;
+  delete VT;
+}
 
 
 TEST(SVDTests,CheckComplexMatrix)

@@ -14,6 +14,7 @@ set(JAVA_FILES
     helpers/FuzzyEquals.java
     helpers/Iss.java
     helpers/MatrixPrimitiveUtils.java
+    helpers/TestGroups.java
     DOGMA.java
     nodes/COPY.java
     nodes/CTRANSPOSE.java
@@ -66,6 +67,15 @@ set(JAVA_FILES
     datacontainers/scalar/OGRealScalar.java
     datacontainers/scalar/OGComplexScalar.java
     datacontainers/scalar/OGIntegerScalar.java
+    fuzzer/DataCreator.java
+    fuzzer/Fuzzer.java
+    fuzzer/FuzzerMain.java
+    fuzzer/FuzzingThread.java
+    fuzzer/ThreadedTreeFuzzer.java
+    fuzzer/TreeFuzzer.java
+    fuzzer/FixedSizeFIFO.java
+    fuzzer/FuzzerResult.java
+    fuzzer/TransformAnnotationFuzzOnly.java
     )
 
 foreach(JFILE ${JAVA_FILES})

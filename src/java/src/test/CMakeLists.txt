@@ -44,6 +44,9 @@ set(JAVA_FILES
     datacontainers/scalars/OGRealScalarTest.java
     datacontainers/other/OGResultTest.java
     datacontainers/other/ComplexArrayContainerTest.java
+    fuzzer/FuzzerMainTest.java
+    fuzzer/TreeFuzzerTest.java
+    fuzzer/FixedSizeFIFOTest.java
     )
 
 foreach(JFILE ${JAVA_FILES})
