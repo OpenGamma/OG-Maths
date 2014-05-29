@@ -87,11 +87,6 @@ public class ThreadedTreeFuzzer implements Fuzzer {
       // try and set up log directory.
       _logDir = logDir;
 
-      // check that directory is indeed a directory
-      if (!_logDir.isDirectory()) {
-        throw new RuntimeException("Directory required, but path found. Given: " + _logDir.toString());
-      }
-
       // if the dir doesn't exist, create it
       if (!_logDir.exists()) {
         boolean dirCreationOk = _logDir.mkdirs();

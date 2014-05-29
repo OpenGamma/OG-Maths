@@ -169,6 +169,8 @@ public class FuzzerMain {
           Path tmpDir;
           tmpDir = createTempDirectory("og-maths-logs-");
           logDir = tmpDir.toFile();
+        } else {
+          logDir = new File(logDirStr);
         }
         System.out.println("Sending fuzzer logs to " + logDir.getCanonicalPath() + ".");
       } catch (IOException ex) {
