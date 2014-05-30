@@ -62,8 +62,10 @@ JVMManager::initialize(JavaVM *jvm)
 {
   VAL64BIT_PRINT("VM pointer", jvm);
 
+  JNIEnv * env;
+
   // Attempt to get env for JNI version 1.2
-  int ret = jvm->GetEnv((void **)&_env, JNI_VERSION_1_2);
+  int ret = jvm->GetEnv((void **)&env, JNI_VERSION_1_2);
   if (ret != JNI_OK)
   {
     throw convert_error("Error getting JNI environment.");
@@ -71,71 +73,71 @@ JVMManager::initialize(JavaVM *jvm)
 
   // Set up cached pointers
   _jvm = jvm;
-  registerReferences();
+  registerReferences(env);
 }
 
 void
-JVMManager::registerReferences()
+JVMManager::registerReferences(JNIEnv * env)
 {
   //
   // REGISTER CLASS REFERENCES
   //
 
-  registerGlobalClassReference("java/lang/Double", &_DoubleClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/OGNumeric", &_OGNumericClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/OGTerminal", &_OGTerminalClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGArray", &_OGArrayClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/ExprEnum", &_OGExprEnumClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGSparseMatrix", &_OGSparseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/scalar/OGScalar", &_OGScalarClazz);  
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/lazy/OGExpr", &_OGExprClazz);
-  registerGlobalClassReference("[D", &_BigDDoubleArrayClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/other/ComplexArrayContainer", &_ComplexArrayContainerClazz);
+  registerGlobalClassReference(env, "java/lang/Double", &_DoubleClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/OGNumeric", &_OGNumericClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/OGTerminal", &_OGTerminalClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/matrix/OGArray", &_OGArrayClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/ExprEnum", &_OGExprEnumClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/matrix/OGSparseMatrix", &_OGSparseMatrixClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/scalar/OGScalar", &_OGScalarClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/lazy/OGExpr", &_OGExprClazz);
+  registerGlobalClassReference(env, "[D", &_BigDDoubleArrayClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/other/ComplexArrayContainer", &_ComplexArrayContainerClazz);
 
 
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/scalar/OGRealScalar", &_OGRealScalarClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/scalar/OGComplexScalar", &_OGComplexScalarClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/scalar/OGIntegerScalar", &_OGIntegerScalarClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGRealDenseMatrix", &_OGRealDenseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGComplexDenseMatrix", &_OGComplexDenseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGRealDiagonalMatrix", &_OGRealDiagonalMatrixClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGComplexDiagonalMatrix", &_OGComplexDiagonalMatrixClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGRealSparseMatrix", &_OGRealSparseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/maths/datacontainers/matrix/OGComplexSparseMatrix", &_OGComplexSparseMatrixClazz);
-  registerGlobalClassReference("com/opengamma/maths/exceptions/MathsExceptionNativeConversion", &_MathsExceptionNativeConversionClazz);
-  registerGlobalClassReference("com/opengamma/maths/exceptions/MathsExceptionNativeComputation", &_MathsExceptionNativeComputationClazz);
-  registerGlobalClassReference("com/opengamma/maths/exceptions/MathsExceptionNativeUnspecified", &_MathsExceptionNativeUnspecifiedClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/scalar/OGRealScalar", &_OGRealScalarClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/scalar/OGComplexScalar", &_OGComplexScalarClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/scalar/OGIntegerScalar", &_OGIntegerScalarClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/matrix/OGRealDenseMatrix", &_OGRealDenseMatrixClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/matrix/OGComplexDenseMatrix", &_OGComplexDenseMatrixClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/matrix/OGRealDiagonalMatrix", &_OGRealDiagonalMatrixClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/matrix/OGComplexDiagonalMatrix", &_OGComplexDiagonalMatrixClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/matrix/OGRealSparseMatrix", &_OGRealSparseMatrixClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/datacontainers/matrix/OGComplexSparseMatrix", &_OGComplexSparseMatrixClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/exceptions/MathsExceptionNativeConversion", &_MathsExceptionNativeConversionClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/exceptions/MathsExceptionNativeComputation", &_MathsExceptionNativeComputationClazz);
+  registerGlobalClassReference(env, "com/opengamma/maths/exceptions/MathsExceptionNativeUnspecified", &_MathsExceptionNativeUnspecifiedClazz);
 
   //
   // REGISTER METHOD REFERENCES
   //
 
-  registerGlobalMethodReference(&_DoubleClazz, &_DoubleClazz_init, "<init>", "(D)V");
-  registerGlobalMethodReference(&_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/maths/datacontainers/ExprEnum;");
-  registerGlobalMethodReference(&_OGTerminalClazz, &_OGTerminalClazz_getData, "getData",  "()[D");
-  registerGlobalMethodReference(&_OGIntegerScalarClazz, &_OGIntegerScalarClazz_getValue, "getValue",  "()I");
-  registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getRows, "getRows",  "()I");
-  registerGlobalMethodReference(&_OGArrayClazz, &_OGArrayClazz_getCols, "getCols",  "()I");
-  registerGlobalMethodReference(&_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getColPtr, "getColPtr",  "()[I");
-  registerGlobalMethodReference(&_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getRowIdx, "getRowIdx",  "()[I");
-  registerGlobalMethodReference(&_OGExprClazz, &_OGExprClazz_getExprs, "getExprs",  "()[Lcom/opengamma/maths/datacontainers/OGNumeric;");
-  registerGlobalMethodReference(&_OGExprClazz, &_OGExprClazz_getNExprs, "getNExprs",  "()I");  
-  registerGlobalMethodReference(&_ComplexArrayContainerClazz, &_ComplexArrayContainerClazz_ctor_DAoA_DAoA, "<init>","([[D[[D)V");
-  registerGlobalMethodReference(&_OGRealScalarClazz, &_OGRealScalarClazz_init, "<init>", "(Ljava/lang/Number;)V");
-  registerGlobalMethodReference(&_OGComplexScalarClazz, &_OGComplexScalarClazz_init, "<init>", "(Ljava/lang/Number;Ljava/lang/Number;)V");
-  registerGlobalMethodReference(&_OGRealDenseMatrixClazz, &_OGRealDenseMatrixClazz_init, "<init>", "([[D)V");
-  registerGlobalMethodReference(&_OGComplexDenseMatrixClazz, &_OGComplexDenseMatrixClazz_init, "<init>", "([[D[[D)V");
-  registerGlobalMethodReference(&_OGRealDiagonalMatrixClazz, &_OGRealDiagonalMatrixClazz_init, "<init>", "([DII)V");
-  registerGlobalMethodReference(&_OGComplexDiagonalMatrixClazz, &_OGComplexDiagonalMatrixClazz_init, "<init>", "([D[DII)V");
-  registerGlobalMethodReference(&_OGRealSparseMatrixClazz, &_OGRealSparseMatrixClazz_init, "<init>", "([I[I[DII)V");
-  registerGlobalMethodReference(&_OGComplexSparseMatrixClazz, &_OGComplexSparseMatrixClazz_init, "<init>", "([I[I[D[DII)V");
+  registerGlobalMethodReference(env, &_DoubleClazz, &_DoubleClazz_init, "<init>", "(D)V");
+  registerGlobalMethodReference(env, &_OGNumericClazz, &_OGNumericClazz_getType, "getType", "()Lcom/opengamma/maths/datacontainers/ExprEnum;");
+  registerGlobalMethodReference(env, &_OGTerminalClazz, &_OGTerminalClazz_getData, "getData",  "()[D");
+  registerGlobalMethodReference(env, &_OGIntegerScalarClazz, &_OGIntegerScalarClazz_getValue, "getValue",  "()I");
+  registerGlobalMethodReference(env, &_OGArrayClazz, &_OGArrayClazz_getRows, "getRows",  "()I");
+  registerGlobalMethodReference(env, &_OGArrayClazz, &_OGArrayClazz_getCols, "getCols",  "()I");
+  registerGlobalMethodReference(env, &_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getColPtr, "getColPtr",  "()[I");
+  registerGlobalMethodReference(env, &_OGSparseMatrixClazz, &_OGSparseMatrixClazz_getRowIdx, "getRowIdx",  "()[I");
+  registerGlobalMethodReference(env, &_OGExprClazz, &_OGExprClazz_getExprs, "getExprs",  "()[Lcom/opengamma/maths/datacontainers/OGNumeric;");
+  registerGlobalMethodReference(env, &_OGExprClazz, &_OGExprClazz_getNExprs, "getNExprs",  "()I");  
+  registerGlobalMethodReference(env, &_ComplexArrayContainerClazz, &_ComplexArrayContainerClazz_ctor_DAoA_DAoA, "<init>","([[D[[D)V");
+  registerGlobalMethodReference(env, &_OGRealScalarClazz, &_OGRealScalarClazz_init, "<init>", "(Ljava/lang/Number;)V");
+  registerGlobalMethodReference(env, &_OGComplexScalarClazz, &_OGComplexScalarClazz_init, "<init>", "(Ljava/lang/Number;Ljava/lang/Number;)V");
+  registerGlobalMethodReference(env, &_OGRealDenseMatrixClazz, &_OGRealDenseMatrixClazz_init, "<init>", "([[D)V");
+  registerGlobalMethodReference(env, &_OGComplexDenseMatrixClazz, &_OGComplexDenseMatrixClazz_init, "<init>", "([[D[[D)V");
+  registerGlobalMethodReference(env, &_OGRealDiagonalMatrixClazz, &_OGRealDiagonalMatrixClazz_init, "<init>", "([DII)V");
+  registerGlobalMethodReference(env, &_OGComplexDiagonalMatrixClazz, &_OGComplexDiagonalMatrixClazz_init, "<init>", "([D[DII)V");
+  registerGlobalMethodReference(env, &_OGRealSparseMatrixClazz, &_OGRealSparseMatrixClazz_init, "<init>", "([I[I[DII)V");
+  registerGlobalMethodReference(env, &_OGComplexSparseMatrixClazz, &_OGComplexSparseMatrixClazz_init, "<init>", "([I[I[D[DII)V");
 
   //
   // REGISTER FIELD REFERENCES
   //
 
-  registerGlobalFieldReference(&_OGExprEnumClazz, &_OGExprEnumClazz__hashdefined, "_hashDefined", "J");
-  
+  registerGlobalFieldReference(env, &_OGExprEnumClazz, &_OGExprEnumClazz__hashdefined, "_hashDefined", "J");
+
 }
 
 JavaVM*
@@ -145,10 +147,11 @@ JVMManager::getJVM()
 }
 
 void 
-JVMManager::registerGlobalFieldReference(jclass * globalRef, jfieldID * fieldToSet, const char * fieldName, const char * fieldSignature)
+JVMManager::registerGlobalFieldReference(JNIEnv * env, jclass * globalRef, jfieldID * fieldToSet, const char * fieldName, const char * fieldSignature)
 {
   jfieldID tmp = nullptr;
-  tmp = _env->GetFieldID(*globalRef, fieldName, fieldSignature);
+
+  tmp = env->GetFieldID(*globalRef, fieldName, fieldSignature);
   if (tmp == nullptr)
   {
     DEBUG_PRINT("ERROR: field %s() not found.\n",fieldName);
@@ -156,17 +159,18 @@ JVMManager::registerGlobalFieldReference(jclass * globalRef, jfieldID * fieldToS
   }
   else
   {
-    *fieldToSet = tmp;    
+    *fieldToSet = tmp;
     DEBUG_PRINT("Field found: %s()\n\t", fieldName);
     VAL64BIT_PRINT("field pointer", fieldToSet);
   }
 }
 
 void
-JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * methodToSet, const char * methodName, const char * methodSignature)
+JVMManager::registerGlobalMethodReference(JNIEnv * env, jclass * globalRef, jmethodID * methodToSet, const char * methodName, const char * methodSignature)
 {
   jmethodID tmp = nullptr;
-  tmp = _env->GetMethodID(*globalRef, methodName, methodSignature);
+
+  tmp = env->GetMethodID(*globalRef, methodName, methodSignature);
   if (tmp == nullptr)
   {
     DEBUG_PRINT("ERROR: method %s() not found.\n",methodName);
@@ -181,11 +185,11 @@ JVMManager::registerGlobalMethodReference(jclass * globalRef, jmethodID * method
 }
 
 void
-JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * globalRef)
+JVMManager::registerGlobalClassReference(JNIEnv * env, const char * FQclassname, jclass * globalRef)
 {
   jclass tmpClass = nullptr; // tmp class reference
   // find OGNumeric
-  tmpClass = _env->FindClass(FQclassname); // find class
+  tmpClass = env->FindClass(FQclassname); // find class
   if(tmpClass==nullptr)
   {
     DEBUG_PRINT("Cannot find class %s in JNI_OnLoad.\n", FQclassname);
@@ -193,7 +197,8 @@ JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * glob
   }
 
   *globalRef = nullptr;
-  *globalRef = (jclass) (_env->NewGlobalRef(tmpClass));
+  *globalRef = (jclass) (env->NewGlobalRef(tmpClass));
+  env->DeleteLocalRef(tmpClass); // clean up regardless of status
   if(*globalRef==nullptr)
   {
     DEBUG_PRINT("Cannot create Global reference for %s.\n",FQclassname);
@@ -290,7 +295,6 @@ jfieldID JVMManager:: getOGExprEnumClazz__hashdefined()
 // Instantiation of JVMManager's fields
 
 JavaVM* JVMManager::_jvm = nullptr;
-thread_local JNIEnv* JVMManager::_env = nullptr;
 jclass JVMManager::_DoubleClazz = nullptr;
 jclass JVMManager::_OGNumericClazz = nullptr;
 jclass JVMManager::_OGExprClazz = nullptr;

@@ -248,6 +248,10 @@ class _JNIEnv
     {
       return JNI_FALSE;
     }
+    virtual void DeleteLocalRef(jobject SUPPRESS_UNUSED lref)
+    {
+
+    }
     virtual void ExceptionClear()
     {
 
