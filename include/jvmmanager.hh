@@ -80,13 +80,16 @@ class JVMManager {
     DLLEXPORT_C static jdoubleArray newDoubleArray(JNIEnv *env, jsize len);
     DLLEXPORT_C static jobject newDouble(JNIEnv* env, jdouble v);
     DLLEXPORT_C static jint throwNew(JNIEnv* env, jclass exClass, const char* msg);
+
+    // MAT-329, PR #104. This function is left in for now with a 6 month warning in place.
+    // If there is no use for it, it shall be removed. Ticket for review is MAT-406.
     DLLEXPORT_C static void getEnv(void **penv);
     DLLEXPORT_C static jobject callObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...);
   private:
-    static void registerReferences();
-    static void registerGlobalClassReference(const char* FQclassname, jclass *globalRef);
-    static void registerGlobalMethodReference(jclass *globalRef, jmethodID* methodToSet, const char* methodName, const char* methodSignature);
-    static void registerGlobalFieldReference(jclass *globalRef, jfieldID* fieldIDToSet, const char* fieldIDName, const char* fieldIDSignature);
+    static void registerReferences(JNIEnv * env);
+    static void registerGlobalClassReference(JNIEnv * env, const char* FQclassname, jclass *globalRef);
+    static void registerGlobalMethodReference(JNIEnv * env, jclass *globalRef, jmethodID* methodToSet, const char* methodName, const char* methodSignature);
+    static void registerGlobalFieldReference(JNIEnv * env, jclass *globalRef, jfieldID* fieldIDToSet, const char* fieldIDName, const char* fieldIDSignature);
     static JavaVM* _jvm;
 
     // Classes, methods, and fields
