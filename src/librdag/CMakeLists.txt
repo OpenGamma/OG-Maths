@@ -21,6 +21,7 @@ set(RDAG_SOURCES convertto.cc
                  expressionbase.cc
                  iss.cc
                  lapack.cc
+                 mem.cc
                  numericbase.cc
                  numerictypes.cc
                  runtree.cc

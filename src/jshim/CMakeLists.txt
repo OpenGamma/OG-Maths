@@ -11,7 +11,7 @@ SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
 
 set_source_files_properties(${JSHIM_GENERATED} PROPERTIES GENERATED TRUE)
 
-set(JSHIM_SOURCES jshim.cc jterminals.cc jbindings.cc exprfactory.cc jdispatch.cc jvmmanager.cc
+set(JSHIM_SOURCES jshim.cc jterminals.cc jbindings.cc exprfactory.cc jdispatch.cc jvmmanager.cc jmem.cc
                   ${JSHIM_GENERATED})
 
 add_multitarget_library(jshim
