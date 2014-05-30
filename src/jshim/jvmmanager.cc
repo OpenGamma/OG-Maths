@@ -202,6 +202,7 @@ JVMManager::registerGlobalClassReference(const char * FQclassname, jclass * glob
 
   *globalRef = nullptr;
   *globalRef = (jclass) (env->NewGlobalRef(tmpClass));
+  env->DeleteLocalRef(tmpClass); // clean up regardless of status
   if(*globalRef==nullptr)
   {
     DEBUG_PRINT("Cannot create Global reference for %s.\n",FQclassname);
