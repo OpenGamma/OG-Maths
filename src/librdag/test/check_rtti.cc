@@ -69,47 +69,47 @@ class RTTIBinaryTest: public testing::Test
 };
 
 TEST_F(RTTIUnaryTest, TestCOPY) {
-  node = COPY::Ptr{new COPY(arg)};
+  node = COPY::create(arg);
   check_rtti(node, "COPY");
 }
 
 TEST_F(RTTIUnaryTest, TestSVD) {
-  node = SVD::Ptr{new SVD(arg)};
+  node = SVD::create(arg);
   check_rtti(node, "SVD");
 }
 
 TEST_F(RTTIBinaryTest, TestPLUS) {
-  node = PLUS::Ptr{new PLUS(arg0, arg1)};
+  node = PLUS::create(arg0, arg1);
   check_rtti(node, "PLUS");
 }
 
 TEST_F(RTTIBinaryTest, TestMTIMES) {
-  node = MTIMES::Ptr{new MTIMES(arg0, arg1)};
+  node = MTIMES::create(arg0, arg1);
   check_rtti(node, "MTIMES");
 }
 
 TEST_F(RTTIUnaryTest, TestNEGATE) {
-  node = NEGATE::Ptr{new NEGATE(arg)};
+  node = NEGATE::create(arg);
   check_rtti(node, "NEGATE");
 }
 
 TEST_F(RTTIUnaryTest, TestLU) {
-  node = LU::Ptr{new LU(arg)};
+  node = LU::create(arg);
   check_rtti(node, "LU");
 }
 
 TEST_F(RTTIUnaryTest, TestPINV) {
-  node = PINV::Ptr{new PINV(arg)};
+  node = PINV::create(arg);
   check_rtti(node, "PINV");
 }
 
 TEST_F(RTTIUnaryTest, TestTRANSPOSE) {
-  node = TRANSPOSE::Ptr{new TRANSPOSE(arg)};
+  node = TRANSPOSE::create(arg);
   check_rtti(node, "TRANSPOSE");
 }
 
 TEST_F(RTTIUnaryTest, TestCTRANSPOSE) {
-  node = CTRANSPOSE::Ptr{new CTRANSPOSE(arg)};
+  node = CTRANSPOSE::create(arg);
   check_rtti(node, "CTRANSPOSE");
 }
 
@@ -117,7 +117,7 @@ TEST_F(RTTIUnaryTest, TestCTRANSPOSE) {
 TEST(RTTITest, TestSELECTRESULT) {
   OGRealScalar::Ptr real = OGRealScalar::create(3.14);
   OGIntegerScalar::Ptr index = OGIntegerScalar::create(0);
-  SELECTRESULT::Ptr node = SELECTRESULT::Ptr{new SELECTRESULT(real, index)};
+  SELECTRESULT::Ptr node = SELECTRESULT::create(real, index);
   check_rtti(node, "SELECTRESULT");
 }
 

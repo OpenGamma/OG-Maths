@@ -73,33 +73,39 @@ class COPY: public OGUnaryExpr
 {
   public:
     typedef std::shared_ptr<const COPY> Ptr;
-    COPY(OGNumeric::Ptr arg);
+    static COPY::Ptr create(OGNumeric::Ptr arg);
     virtual OGNumeric::Ptr copy() const override;
     virtual COPY::Ptr asCOPY() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    COPY(OGNumeric::Ptr arg);
 };
 
 class SELECTRESULT: public OGExpr
 {
   public:
     typedef std::shared_ptr<const SELECTRESULT> Ptr;
-    SELECTRESULT(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);
+    static SELECTRESULT::Ptr create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);
     virtual OGNumeric::Ptr copy() const override;
     virtual SELECTRESULT::Ptr asSELECTRESULT() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    SELECTRESULT(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);
 };
 
 class NORM2: public OGUnaryExpr
 {
   public:
     typedef std::shared_ptr<const NORM2> Ptr;
-    NORM2(OGNumeric::Ptr arg);
+    static NORM2::Ptr create(OGNumeric::Ptr arg);
     virtual OGNumeric::Ptr copy() const override;
     virtual NORM2::Ptr asNORM2() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    NORM2(OGNumeric::Ptr arg);
 };
 
 
@@ -107,22 +113,26 @@ class PINV: public OGUnaryExpr
 {
   public:
     typedef std::shared_ptr<const PINV> Ptr;
-    PINV(OGNumeric::Ptr arg);
+    static PINV::Ptr create(OGNumeric::Ptr arg);
     virtual OGNumeric::Ptr copy() const override;
     virtual PINV::Ptr asPINV() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    PINV(OGNumeric::Ptr arg);
 };
 
 class INV: public OGUnaryExpr
 {
   public:
     typedef std::shared_ptr<const INV> Ptr;
-    INV(OGNumeric::Ptr arg);
+    static INV::Ptr create(OGNumeric::Ptr arg);
     virtual OGNumeric::Ptr copy() const override;
     virtual INV::Ptr asINV() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    INV(OGNumeric::Ptr arg);
 };
 
 
@@ -130,22 +140,26 @@ class TRANSPOSE: public OGUnaryExpr
 {
   public:
     typedef std::shared_ptr<const TRANSPOSE> Ptr;
-    TRANSPOSE(OGNumeric::Ptr arg);
+    static TRANSPOSE::Ptr create(OGNumeric::Ptr arg);
     virtual OGNumeric::Ptr copy() const override;
     virtual TRANSPOSE::Ptr asTRANSPOSE() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    TRANSPOSE(OGNumeric::Ptr arg);
 };
 
 class CTRANSPOSE: public OGUnaryExpr
 {
   public:
     typedef std::shared_ptr<const CTRANSPOSE> Ptr;
-    CTRANSPOSE(OGNumeric::Ptr arg);
+    static CTRANSPOSE::Ptr create(OGNumeric::Ptr arg);
     virtual OGNumeric::Ptr copy() const override;
     virtual CTRANSPOSE::Ptr asCTRANSPOSE() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    CTRANSPOSE(OGNumeric::Ptr arg);
 };
 
 
@@ -153,33 +167,39 @@ class SVD: public OGUnaryExpr
 {
   public:
     typedef std::shared_ptr<const SVD> Ptr;
-    SVD(OGNumeric::Ptr arg);
+    static SVD::Ptr create(OGNumeric::Ptr arg);
     virtual OGNumeric::Ptr copy() const override;
     virtual SVD::Ptr asSVD() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    SVD(OGNumeric::Ptr arg);
 };
 
 class MTIMES: public OGBinaryExpr
 {
   public:
     typedef std::shared_ptr<const MTIMES> Ptr;
-    MTIMES(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);
+    static MTIMES::Ptr create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);
     virtual OGNumeric::Ptr copy() const override;
     virtual MTIMES::Ptr asMTIMES() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    MTIMES(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);
 };
 
 class LU: public OGUnaryExpr
 {
   public:
     typedef std::shared_ptr<const LU> Ptr;
-    LU(OGNumeric::Ptr arg);
+    static LU::Ptr create(OGNumeric::Ptr arg);
     virtual OGNumeric::Ptr copy() const override;
     virtual LU::Ptr asLU() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+    LU(OGNumeric::Ptr arg);
 };
 
 } // namespace librdag

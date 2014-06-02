@@ -96,6 +96,12 @@ OGBinaryExpr::OGBinaryExpr(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1): OGExpr{}
 
 COPY::COPY(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
 
+COPY::Ptr
+COPY::create(OGNumeric::Ptr arg)
+{
+  return COPY::Ptr{new COPY{arg}};
+}
+
 OGNumeric::Ptr
 COPY::copy() const
 {
@@ -141,6 +147,12 @@ SELECTRESULT::SELECTRESULT(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1): OGExpr{}
   _args.push_back(arg1);
 }
 
+SELECTRESULT::Ptr
+SELECTRESULT::create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1)
+{
+  return SELECTRESULT::Ptr{new SELECTRESULT{arg0, arg1}};
+}
+
 OGNumeric::Ptr
 SELECTRESULT::copy() const
 {
@@ -172,6 +184,12 @@ SELECTRESULT::getType() const
 
 NORM2::NORM2(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
 
+NORM2::Ptr
+NORM2::create(OGNumeric::Ptr arg)
+{
+  return NORM2::Ptr{new NORM2{arg}};
+}
+
 OGNumeric::Ptr
 NORM2::copy() const
 {
@@ -202,6 +220,12 @@ NORM2::getType() const
  */
 
 PINV::PINV(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+
+PINV::Ptr
+PINV::create(OGNumeric::Ptr arg)
+{
+  return PINV::Ptr{new PINV{arg}};
+}
 
 OGNumeric::Ptr
 PINV::copy() const
@@ -235,6 +259,12 @@ PINV::getType() const
 
 INV::INV(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
 
+INV::Ptr
+INV::create(OGNumeric::Ptr arg)
+{
+  return INV::Ptr{new INV{arg}};
+}
+
 OGNumeric::Ptr
 INV::copy() const
 {
@@ -266,6 +296,12 @@ INV::getType() const
  */
 
 TRANSPOSE::TRANSPOSE(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+
+TRANSPOSE::Ptr
+TRANSPOSE::create(OGNumeric::Ptr arg)
+{
+  return TRANSPOSE::Ptr{new TRANSPOSE{arg}};
+}
 
 OGNumeric::Ptr
 TRANSPOSE::copy() const
@@ -299,6 +335,12 @@ TRANSPOSE::getType() const
 
 CTRANSPOSE::CTRANSPOSE(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
 
+CTRANSPOSE::Ptr
+CTRANSPOSE::create(OGNumeric::Ptr arg)
+{
+  return CTRANSPOSE::Ptr{new CTRANSPOSE{arg}};
+}
+
 OGNumeric::Ptr
 CTRANSPOSE::copy() const
 {
@@ -330,6 +372,12 @@ CTRANSPOSE::getType() const
 
 SVD::SVD(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
 
+SVD::Ptr
+SVD::create(OGNumeric::Ptr arg)
+{
+  return SVD::Ptr{new SVD{arg}};
+}
+
 OGNumeric::Ptr
 SVD::copy() const
 {
@@ -359,6 +407,12 @@ SVD::getType() const
  */
 
 LU::LU(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+
+LU::Ptr
+LU::create(OGNumeric::Ptr arg)
+{
+  return LU::Ptr{new LU{arg}};
+}
 
 OGNumeric::Ptr
 LU::copy() const
@@ -390,6 +444,13 @@ LU::getType() const
  */
 
 MTIMES::MTIMES(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1): OGBinaryExpr{arg0, arg1} {}
+
+MTIMES::Ptr
+MTIMES::create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1)
+{
+  return MTIMES::Ptr{new MTIMES{arg0, arg1}};
+}
+
 
 OGNumeric::Ptr
 MTIMES::copy() const

@@ -72,7 +72,7 @@ CheckUnary<T>::getResultPair() const
 template<typename T> void
 CheckUnary<T>::execute()
 {
-  OGNumeric::Ptr node = OGNumeric::Ptr{new T(_input)};
+  OGNumeric::Ptr node = T::create(_input);
   ExecutionList el = ExecutionList{node};
   Dispatcher v;
   for (auto it = el.begin(); it != el.end(); ++it)
@@ -134,7 +134,7 @@ CheckBinary<T>::getResultPair() const
 template<typename T> void
 CheckBinary<T>::execute()
 {
-  OGNumeric::Ptr node = OGNumeric::Ptr{new T(_first_input, _second_input)};
+  OGNumeric::Ptr node = T::create(_first_input, _second_input);
   ExecutionList el = ExecutionList{node};
   Dispatcher v;
   for (auto it = el.begin(); it != el.end(); ++it)

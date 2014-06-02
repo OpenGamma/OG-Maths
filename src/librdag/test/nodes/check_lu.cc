@@ -81,7 +81,7 @@ void check_lu(LUTestDataHolder data)
   OGTerminal::Ptr input = data.getInput();
   OGTerminal::Ptr expectedL = data.getExpectedL();
   OGTerminal::Ptr expectedU = data.getExpectedU();
-  OGExpr::Ptr lu = OGExpr::Ptr{new LU(input)};
+  OGExpr::Ptr lu = LU::create(input);
   runtree(lu);
   OGTerminal::Ptr L = OGTerminal::Ptr{lu->getRegs()[0]->asOGTerminal()};
   OGTerminal::Ptr U = OGTerminal::Ptr{lu->getRegs()[1]->asOGTerminal()};
@@ -90,7 +90,7 @@ void check_lu(LUTestDataHolder data)
   EXPECT_TRUE(L->mathsequals(expectedL,1e-14,1e-14));
   EXPECT_TRUE(U->mathsequals(expectedU,1e-14,1e-14));
 
-  OGExpr::Ptr mt = OGExpr::Ptr{new MTIMES(L, U)};
+  OGExpr::Ptr mt = MTIMES::create(L, U);
   runtree(mt);
   OGTerminal::Ptr reconstruct = mt->getRegs()[0]->asOGTerminal();
 
@@ -110,7 +110,7 @@ TEST_P(LUSingularTest,Exec)
 {
   // check warn on singular input
   OGTerminal::Ptr M = GetParam();
-  OGExpr::Ptr lu = OGExpr::Ptr{new LU(M)};
+  OGExpr::Ptr lu = LU::create(M);
   runtree(lu);
   // TODO: CHECK WARNING (once logging is in place)
 }

@@ -104,8 +104,8 @@ class ReconstructTransposeNodeTest: public ::testing::TestWithParam<OGTerminal::
 TEST_P(ReconstructTransposeNodeTest, TerminalTypes)
 {
   OGTerminal::Ptr A = GetParam();
-  OGExpr::Ptr t = OGExpr::Ptr{new TRANSPOSE(A)};
-  OGExpr::Ptr ttA = OGExpr::Ptr{new TRANSPOSE(t)}; 
+  OGExpr::Ptr t = TRANSPOSE::create(A);
+  OGExpr::Ptr ttA = TRANSPOSE::create(t); 
   runtree(ttA);
   EXPECT_TRUE(ttA->getRegs()[0]->asOGTerminal()->mathsequals(A));
 }

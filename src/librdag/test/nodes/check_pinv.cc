@@ -105,8 +105,8 @@ class ReconstructPinvNodeTest: public ::testing::TestWithParam<OGTerminal::Ptr> 
 TEST_P(ReconstructPinvNodeTest, TerminalTypes)
 {
   OGTerminal::Ptr A = GetParam();
-  OGExpr::Ptr pinv = OGExpr::Ptr{new PINV(A)};
-  OGExpr::Ptr AtimesPinvA = OGExpr::Ptr{new MTIMES(A, pinv)};
+  OGExpr::Ptr pinv = PINV::create(A);
+  OGExpr::Ptr AtimesPinvA = MTIMES::create(A, pinv);
   OGTerminal::Ptr expected = OGRealMatrix::create(new real16[9] {1,0,0,0,1,0,0,0,1},3,3, OWNER);
   runtree(AtimesPinvA);
   EXPECT_TRUE(AtimesPinvA->getRegs()[0]->asOGTerminal()->mathsequals(expected, 1e-14, 1e-14));

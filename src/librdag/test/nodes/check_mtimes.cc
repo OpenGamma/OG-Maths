@@ -61,7 +61,7 @@ INSTANTIATE_NODE_TEST_CASE_P(MTIMESTests,MTIMES,
 TEST(MTIMESTests, CheckBadCommuteThrows) {
   OGNumeric::Ptr m1 = OGRealMatrix::create(new real16[6]{1,3,5,2,4,6},3,2,OWNER);
   OGNumeric::Ptr m2 = OGRealMatrix::create(new real16[7]{10,30,20,40,50,60,70},1,7,OWNER);
-  OGExpr::Ptr node = OGExpr::Ptr{new MTIMES(m1, m2)};
+  OGExpr::Ptr node = MTIMES::create(m1, m2);
   ExecutionList el = ExecutionList{node};
   Dispatcher v;
   ASSERT_THROW(

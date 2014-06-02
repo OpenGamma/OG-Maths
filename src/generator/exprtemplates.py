@@ -51,11 +51,13 @@ class %(classname)s: public %(parentclass)s
 {
   public:
     typedef std::shared_ptr<const %(classname)s> Ptr;
-%(constructor)s
+%(factory)s
     virtual OGNumeric::Ptr copy() const override;
     virtual %(classname)s::Ptr as%(classname)s() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+%(constructor)s
 };
 """
 
@@ -64,6 +66,14 @@ unary_constructor = """\
 
 binary_constructor = """\
     %(classname)s(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);"""
+
+unary_factory = """\
+    static %(classname)s::Ptr create(OGNumeric::Ptr arg);
+""" 
+
+binary_factory = """\
+    static %(classname)s::Ptr create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);
+"""
 
 # Expressions cc
 
@@ -99,6 +109,8 @@ expr_methods = """\
 
 %(ctor_method)s
 
+%(factory_method)s
+
 OGNumeric::Ptr
 %(classname)s::copy() const
 {
@@ -131,6 +143,19 @@ unary_ctor_method = """\
 binary_ctor_method = """\
 %(classname)s::%(classname)s(OGNumeric::Ptr arg1, OGNumeric::Ptr arg2): OGBinaryExpr{arg1, arg2} {}"""
 
+unary_factory_method = """\
+%(classname)s::Ptr
+%(classname)s::create(OGNumeric::Ptr arg)
+{
+  return %(classname)s::Ptr{new %(classname)s{arg}};
+}"""
+
+binary_factory_method = """\
+%(classname)s::Ptr
+%(classname)s::create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1)
+{
+  return %(classname)s::Ptr{new %(classname)s{arg0, arg1}};
+}"""
 unary_copy_method = """\
   return OGNumeric::Ptr{new %(classname)s(_args[0]->copy())};"""
 

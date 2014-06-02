@@ -86,22 +86,22 @@ TEST(INVTests, NonSquareInput)
 
   // real space: try with more rows than cols
   mat = OGRealMatrix::create(rdat,3,2,VIEWER);
-  inv = OGExpr::Ptr{new INV(mat)};
+  inv = INV::create(mat);
   ASSERT_THROW(runtree(inv), rdag_error);
 
   // real space: try with more cols than rows
   mat = OGRealMatrix::create(rdat,2,3,VIEWER);
-  inv = OGExpr::Ptr{new INV(mat)};
+  inv = INV::create(mat);
   ASSERT_THROW(runtree(inv), rdag_error);
 
   // complex space: try with more rows than cols
   mat = OGComplexMatrix::create(cdat,3,2,VIEWER);
-  inv = OGExpr::Ptr{new INV(mat)};
+  inv = INV::create(mat);
   ASSERT_THROW(runtree(inv), rdag_error);
 
   // complex space try with more cols than rows
   mat = OGComplexMatrix::create(cdat,2,3,VIEWER);
-  inv = OGExpr::Ptr{new INV(mat)};
+  inv = INV::create(mat);
   ASSERT_THROW(runtree(inv), rdag_error);
 
   // clean up
@@ -123,13 +123,13 @@ TEST(INVTests, WarnOnSingularInput)
 
   // real space
   mat = OGRealMatrix::create(rsingular3x3,3,3,VIEWER);
-  inv = OGExpr::Ptr{new INV(mat)};
+  inv = INV::create(mat);
   runtree(inv);
   // TODO: assert warn check goes here
 
   // complex space
   mat = OGComplexMatrix::create(csingular3x3,3,3,VIEWER);
-  inv = OGExpr::Ptr{new INV(mat)};
+  inv = INV::create(mat);
   runtree(inv);
   // TODO: assert warn check goes here
 }
@@ -154,8 +154,8 @@ class ReconstructInvNodeTest: public ::testing::TestWithParam<OGTerminal::Ptr> {
 TEST_P(ReconstructInvNodeTest, TerminalTypes)
 {
   OGTerminal::Ptr A = GetParam();
-  OGExpr::Ptr inv = OGExpr::Ptr{new INV(A)};
-  OGExpr::Ptr AtimesInvA = OGExpr::Ptr{new MTIMES(A,inv)};
+  OGExpr::Ptr inv = INV::create(A);
+  OGExpr::Ptr AtimesInvA = MTIMES::create(A,inv);
   OGTerminal::Ptr expected = OGRealMatrix::create(new real16[9] {1,0,0,0,1,0,0,0,1},3,3, OWNER);
   runtree(AtimesInvA);
   EXPECT_TRUE(AtimesInvA->getRegs()[0]->asOGTerminal()->mathsequals(expected, 1e-14, 1e-14));

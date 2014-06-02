@@ -94,8 +94,8 @@ class ReconstructCtransposeNodeTest: public ::testing::TestWithParam<OGTerminal:
 TEST_P(ReconstructCtransposeNodeTest, TerminalTypes)
 {
   OGTerminal::Ptr A = GetParam();
-  OGExpr::Ptr ct = OGExpr::Ptr{new CTRANSPOSE(A)};
-  OGExpr::Ptr ctctA = OGExpr::Ptr{new CTRANSPOSE(ct)}; // use copy else there's two refs to one terminal floating about
+  OGExpr::Ptr ct = CTRANSPOSE::create(A);
+  OGExpr::Ptr ctctA = CTRANSPOSE::create(ct); // use copy else there's two refs to one terminal floating about
   runtree(ctctA);
   EXPECT_TRUE(ctctA->getRegs()[0]->asOGTerminal()->mathsequals(A));
 }

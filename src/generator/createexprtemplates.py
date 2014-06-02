@@ -62,7 +62,7 @@ terminal_case = """\
 expr_case = """\
     case %(enumname)s:
       DEBUG_PRINT("%(typename)s function\\n");
-      expr = OGNumeric::Ptr{new %(typename)s(%(args)s)};
+      expr = %(typename)s::create(%(args)s);
       break;
 """
 

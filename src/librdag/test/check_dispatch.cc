@@ -29,7 +29,7 @@ TEST(DispatchTest, SimpleTest) {
     // One binary node holding two terminals
   OGNumeric::Ptr real1 = OGRealScalar::create(1.0);
   OGNumeric::Ptr real2 = OGRealScalar::create(2.0);
-  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, real2)};
+  OGNumeric::Ptr plus = PLUS::create(real1, real2);
   ExecutionList el1 = ExecutionList{plus};
   int counter = 0;
   for (auto it: el1)

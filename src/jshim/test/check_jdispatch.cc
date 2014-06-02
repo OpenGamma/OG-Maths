@@ -24,7 +24,7 @@ using namespace convert;
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGExpr)
 {
   OGNumeric::Ptr scal = OGRealScalar::create(10);
-  OGExpr::Ptr expr = OGExpr::Ptr{new NORM2(scal)};
+  OGExpr::Ptr expr = NORM2::create(scal);
   ASSERT_ANY_THROW(Real16AoA{expr});
 }
 
@@ -159,7 +159,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexSparseMatrix)
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGExpr)
 {
   OGNumeric::Ptr scal = OGRealScalar::create(10);
-  OGExpr::Ptr expr = OGExpr::Ptr{new NORM2(scal)};
+  OGExpr::Ptr expr = NORM2::create(scal);
   ASSERT_ANY_THROW(Complex16AoA{expr});
 }
 

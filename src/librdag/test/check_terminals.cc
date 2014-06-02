@@ -111,7 +111,7 @@ class FakeVisitor: public librdag::Visitor
  */
 TEST(TerminalsTest, OGTerminalTest) {
   OGTerminal::Ptr terminal = OGRealScalar::create(3.14e0);
-  OGExpr::Ptr expr = OGExpr::Ptr{new NEGATE(terminal)};
+  OGExpr::Ptr expr = NEGATE::create(terminal);
   ASSERT_NE(nullptr, terminal->asOGTerminal());
   ASSERT_EQ(nullptr, expr->asOGTerminal());
 
@@ -346,7 +346,7 @@ TEST(TerminalsTest, OGIntegerScalarTest) {
  */
 TEST(TerminalsTest, OGArrayTest) {
 
-  OGArray<real16> * tmp = new OGArray<real16>();
+  shared_ptr<OGArray<real16>> tmp = shared_ptr<OGArray<real16>>{new OGArray<real16>{}};
 
   ASSERT_THROW((tmp->copy()), rdag_error);
   ASSERT_THROW((tmp->debug_print()), rdag_error);
@@ -354,10 +354,8 @@ TEST(TerminalsTest, OGArrayTest) {
   ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
   ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
   ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
-  Visitor * v = new FakeVisitor();
-  ASSERT_THROW((tmp->accept(*v)), rdag_error);
-  delete tmp;
-  delete v;
+  FakeVisitor v;
+  ASSERT_THROW((tmp->accept(v)), rdag_error);
 }
 
 TEST(TerminalsTest, OGMatrix_T_real16) {
@@ -580,10 +578,9 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
-  FakeVisitor * v = new FakeVisitor();
-  tmp->accept(*v);
-  ASSERT_TRUE(v->hasBeenVisited());
-  delete v;  
+  FakeVisitor v;
+  tmp->accept(v);
+  ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGComplexMatrix
   OGNumeric::Ptr copy = tmp->copy();
@@ -1110,10 +1107,9 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_THROW((tmp->toReal16ArrayOfArrays()), rdag_error);
 
   // check visitor
-  FakeVisitor * v = new FakeVisitor();
-  tmp->accept(*v);
-  ASSERT_TRUE(v->hasBeenVisited());
-  delete v;  
+  FakeVisitor v;
+  tmp->accept(v);
+  ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGComplexSparseMatrix
   OGNumeric::Ptr copy = tmp->copy();

@@ -83,7 +83,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     const int minmn = m > n ? n : m;
 
     // Perform SVD on a copy of the argument, since it will get destroyed
-    OGExpr::Ptr svd = OGExpr::Ptr{new SVD(OGNumeric::Ptr{arg->createOwningCopy()})};
+    OGExpr::Ptr svd = SVD::create(arg);
 
     // run the tree
     runtree(svd);
@@ -121,14 +121,14 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     OGNumeric::Ptr invS = OGRealDiagonalMatrix::create(S,n,m);
 
     // need to transpose U
-    OGNumeric::Ptr ctransposeU = OGNumeric::Ptr{new CTRANSPOSE(numericU)};
+    OGNumeric::Ptr ctransposeU = CTRANSPOSE::create(numericU);
 
     // need to transpose VT
-    OGNumeric::Ptr ctransposeVT = OGNumeric::Ptr{new CTRANSPOSE(numericVT)};
+    OGNumeric::Ptr ctransposeVT = CTRANSPOSE::create(numericVT);
 
     // multiply back together as [(V**T)**T * inv(S) * U**T]
-    OGNumeric::Ptr VTS = OGNumeric::Ptr{new MTIMES(ctransposeVT, invS)};
-    OGNumeric::Ptr VTSUT = OGNumeric::Ptr{new MTIMES(VTS, ctransposeU)};
+    OGNumeric::Ptr VTS = MTIMES::create(ctransposeVT, invS);
+    OGNumeric::Ptr VTSUT = MTIMES::create(VTS, ctransposeU);
 
     // run the tree
     runtree(VTSUT);

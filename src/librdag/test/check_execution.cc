@@ -37,7 +37,7 @@ TEST(LinearisationTest, UnaryTreeLinearisation)
 {
   // One unary node holding one terminal
   OGNumeric::Ptr real = OGRealScalar::create(1.0);
-  OGNumeric::Ptr copy = OGNumeric::Ptr{new COPY(real)};
+  OGNumeric::Ptr copy = COPY::create(real);
   ExecutionList el1 = ExecutionList(copy);
   EXPECT_EQ(2, el1.size());
   // Check ordering
@@ -57,7 +57,7 @@ TEST(LinearisationTest, BinaryTreeLinearisation)
   // One binary node holding two terminals
   OGNumeric::Ptr real1 = OGRealScalar::create(1.0);
   OGNumeric::Ptr real2 = OGRealScalar::create(2.0);
-  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, real2)};
+  OGNumeric::Ptr plus = PLUS::create(real1, real2);
   ExecutionList el1 = ExecutionList(plus);
   EXPECT_EQ(3, el1.size());
   // Check ordering. We iterate over the list and get
@@ -95,8 +95,8 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
    */
   OGNumeric::Ptr real1 = OGRealScalar::create(1.0);
   OGNumeric::Ptr real2 = OGRealScalar::create(2.0);
-  OGNumeric::Ptr copy = OGNumeric::Ptr{new COPY(real2)};
-  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(real1, copy)};
+  OGNumeric::Ptr copy = COPY::create(real2);
+  OGNumeric::Ptr plus = PLUS::create(real1, copy);
   ExecutionList el1 = ExecutionList(plus);
   // Check ordering. We iterate over the list and get
   // its contents first.

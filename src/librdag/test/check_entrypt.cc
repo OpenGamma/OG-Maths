@@ -59,15 +59,15 @@ TEST_P(EntryptNegateTest, Running)
 
 TreeResultPair negatepair(double v)
 {
-  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(OGRealScalar::create(v))};
+  OGNumeric::Ptr negate = NEGATE::create(OGRealScalar::create(v));
   OGTerminal::Ptr expected = OGRealScalar::create(-v);
   return TreeResultPair(negate, expected);
 }
 
 TreeResultPair doublenegate(double v)
 {
-  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(OGRealScalar::create(v))};
-  negate = OGNumeric::Ptr{new NEGATE(negate)};
+  OGNumeric::Ptr negate = NEGATE::create(OGRealScalar::create(v));
+  negate = NEGATE::create(negate);
   OGTerminal::Ptr expected = OGRealScalar::create(v);
   return TreeResultPair(negate, expected);
 }
@@ -78,7 +78,7 @@ double realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
 TreeResultPair negaterealmatrix()
 {
   OGNumeric::Ptr ogrealmatrix = OGRealMatrix::create(realData, 2, 3);
-  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(ogrealmatrix)};
+  OGNumeric::Ptr negate = NEGATE::create(ogrealmatrix);
   OGTerminal::Ptr ogrealnegmatrix = OGRealMatrix::create(realNegData, 2, 3);
   return TreeResultPair(negate, ogrealnegmatrix);
 }
@@ -91,7 +91,7 @@ complex16 complexNegData[6] = { {-1.0, -2.0}, {-3.0, -4.0},  {-5.0,  -6.0},
 TreeResultPair negatecomplexmatrix()
 {
   OGNumeric::Ptr ogcomplexmatrix = OGComplexMatrix::create(complexData, 2, 3);
-  OGNumeric::Ptr negate = OGNumeric::Ptr{new NEGATE(ogcomplexmatrix)};
+  OGNumeric::Ptr negate = NEGATE::create(ogcomplexmatrix);
   OGTerminal::Ptr ogcomplexnegmatrix = OGComplexMatrix::create(complexNegData, 2, 3);
   return TreeResultPair(negate, ogcomplexnegmatrix);
 }
@@ -116,15 +116,15 @@ TEST_P(EntryptPlusTest, Running)
 
 TreeResultPair plustestsimple()
 {
-  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(OGRealScalar::create(2.0), OGRealScalar::create(3.0))};
+  OGNumeric::Ptr plus = PLUS::create(OGRealScalar::create(2.0), OGRealScalar::create(3.0));
   OGTerminal::Ptr expected = OGRealScalar::create(2.0+3.0);
   return TreeResultPair(plus, expected);
 }
 
 TreeResultPair plustesttwoplus()
 {
-  OGNumeric::Ptr plus = OGNumeric::Ptr{new PLUS(OGRealScalar::create(2.0), OGRealScalar::create(3.0))};
-  plus = OGNumeric::Ptr{new PLUS(OGRealScalar::create(1.0), plus)};
+  OGNumeric::Ptr plus = PLUS::create(OGRealScalar::create(2.0), OGRealScalar::create(3.0));
+  plus = PLUS::create(OGRealScalar::create(1.0), plus);
   OGTerminal::Ptr expected = OGRealScalar::create(1.0+2.0+3.0);
   return TreeResultPair(plus, expected);
 }
@@ -139,11 +139,11 @@ TreeResultPair plustestbigtree()
 
     if (i%2 == 0)
     {
-      bigtree = OGNumeric::Ptr{new PLUS(OGRealScalar::create(i), bigtree)};
+      bigtree = PLUS::create(OGRealScalar::create(i), bigtree);
     }
     else
     {
-      bigtree = OGNumeric::Ptr{new PLUS(bigtree, OGRealScalar::create(i))};
+      bigtree = PLUS::create(bigtree, OGRealScalar::create(i));
     }
   }
 
