@@ -13,7 +13,7 @@ namespace librdag {
 
 enum class Direction { UP, DOWN };
 
-ExecutionList::ExecutionList(OGNumeric::Ptr tree)
+ExecutionList::ExecutionList(const OGNumeric::Ptr& tree)
 {
   // Procedural construction of an execution list. The algorithm performs
   // a depth-first traversal of the tree, pushing nodes on to the execution
@@ -122,7 +122,7 @@ ExecutionList::end()
   return _execList->end();
 }
 
-OGNumeric::Ptr
+const OGNumeric::Ptr
 ExecutionList::operator[](size_t n)
 {
   return _execList->operator[](n);

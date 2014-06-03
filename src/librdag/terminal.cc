@@ -111,13 +111,13 @@ OGTerminal::getConvertTo() const
 }
 
 bool
-OGTerminal::mathsequals(OGTerminal::Ptr other) const
+OGTerminal::mathsequals(const OGTerminal::Ptr& other) const
 {
   return mathsequals(other, FuzzyEquals_default_maxabserror, FuzzyEquals_default_maxrelerror);
 }
 
 bool
-OGTerminal::mathsequals(OGTerminal::Ptr other, real16 maxabserror, real16 maxrelerror) const
+OGTerminal::mathsequals(const OGTerminal::Ptr& other, real16 maxabserror, real16 maxrelerror) const
 {
   OGTerminal::Ptr thisconv; 
   OGTerminal::Ptr otherconv;
@@ -229,7 +229,7 @@ OGScalar<T>::toArrayOfArrays() const
 
 template<typename T>
 bool
-OGScalar<T>::equals(OGTerminal::Ptr other) const
+OGScalar<T>::equals(const OGTerminal::Ptr& other) const
 {
   if(this->getType()!=other->getType())
   {
@@ -654,7 +654,7 @@ OGArray<T>::fundamentalsEqual(const OGTerminal* other) const
 
 template<typename T>
 bool
-OGArray<T>::equals(OGTerminal::Ptr other) const
+OGArray<T>::equals(const OGTerminal::Ptr& other) const
 {
   if(!fundamentalsEqual(other)) return false;
   const shared_ptr<const OGArray> typetwiddle = static_pointer_cast<const OGArray, const OGTerminal>(other);
@@ -1416,7 +1416,7 @@ OGSparseMatrix<T>::toArrayOfArrays() const{
 
 template<typename T>
 bool
-OGSparseMatrix<T>::equals(OGTerminal::Ptr other) const
+OGSparseMatrix<T>::equals(const OGTerminal::Ptr& other) const
 {
   if(!OGArray<T>::equals(other))
   {

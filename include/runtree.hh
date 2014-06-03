@@ -16,7 +16,7 @@ namespace librdag {
  * @param root the root of the tree to run, on return the root's registers contain
  * the computed values
  */
-void runtree(OGNumeric::Ptr root);
+void runtree(const OGNumeric::Ptr& root);
 
 }
 

@@ -135,8 +135,8 @@ Walker::talkandwalk(OGNumeric::Ptr numeric_expr_types)
   level--;
 }
 
-OGTerminal::Ptr
-entrypt(OGNumeric::Ptr expr)
+const OGTerminal::Ptr
+entrypt(const OGNumeric::Ptr& expr)
 {
   // Sort out LAPACK so xerbla calls don't kill the processes.
   int zero = 0;

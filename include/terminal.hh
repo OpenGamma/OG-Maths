@@ -104,7 +104,7 @@ class OGTerminal: public OGNumeric
     /**
      * Equals method. Computed bit wise on relavent data fields.
      */
-    virtual bool equals(OGTerminal::Ptr) const = 0;
+    virtual bool equals(const OGTerminal::Ptr&) const = 0;
     /**
      * Fuzzy Equals method. Computed with a fuzzy tolerance (to deal with floating point fuzz) on relavent data fields.
      * @param term the terminal to compare against.
@@ -133,7 +133,7 @@ class OGTerminal: public OGNumeric
      * @param term the terminal to compare against.
      * @return true if \a this is considered mathematically equal to \a term, false else
      */
-    virtual bool mathsequals(OGTerminal::Ptr term) const;
+    virtual bool mathsequals(const OGTerminal::Ptr& term) const;
 
     /**
      * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
@@ -142,7 +142,7 @@ class OGTerminal: public OGNumeric
      * @param maxrelerror the maximum relative error to use during comparison
      * @return true if \a this is considered mathematically equal to \a term, false else
      */
-    virtual bool mathsequals(OGTerminal::Ptr term, real16 maxabserror, real16 maxrelerror)const;
+    virtual bool mathsequals(const OGTerminal::Ptr& term, real16 maxabserror, real16 maxrelerror)const;
     
     virtual bool operator==(const OGTerminal::Ptr&) const;
     virtual bool operator!=(const OGTerminal::Ptr&) const;
@@ -184,7 +184,7 @@ class OGScalar: public OGTerminal
     virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
-    virtual bool equals(OGTerminal::Ptr) const override;
+    virtual bool equals(const OGTerminal::Ptr&) const override;
     virtual bool fuzzyequals(const OGTerminal::Ptr& term)const override;
     virtual bool fuzzyequals(const OGTerminal::Ptr&, real16 maxabserror, real16 maxrelerror) const override;
     virtual void debug_print() const override;
@@ -280,7 +280,7 @@ template <typename T> class OGArray: public OGTerminal
     virtual int getCols() const override;
     virtual int getDatalen() const override;
     virtual DATA_ACCESS getDataAccess() const;
-    virtual bool equals(OGTerminal::Ptr)const override;
+    virtual bool equals(const OGTerminal::Ptr&) const override;
     virtual bool fuzzyequals(const OGTerminal::Ptr& term)const override;
     virtual bool fuzzyequals(const OGTerminal::Ptr&, real16 maxabserror, real16 maxrelerror) const override;
     /*
@@ -473,7 +473,7 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
     int* getColPtr() const;
     int* getRowIdx() const;
     T** toArrayOfArrays() const;
-    virtual bool equals(OGTerminal::Ptr) const override; // override OGArray equals to add in calls to check colPtr and rowIdx
+    virtual bool equals(const OGTerminal::Ptr&) const override; // override OGArray equals to add in calls to check colPtr and rowIdx
     virtual bool fuzzyequals(const OGTerminal::Ptr& term) const override;
     virtual bool fuzzyequals(const OGTerminal::Ptr&, real16 maxabserror, real16 maxrelerror) const override;
   protected:

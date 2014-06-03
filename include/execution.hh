@@ -24,13 +24,13 @@ typedef std::vector<OGNumeric::Ptr> _ExpressionList;
 class ExecutionList
 {
   public:
-    ExecutionList(OGNumeric::Ptr tree);
+    ExecutionList(const OGNumeric::Ptr& tree);
     ~ExecutionList();
     typedef typename _ExpressionList::const_iterator citerator;
     size_t size();
     citerator begin();
     citerator end();
-    OGNumeric::Ptr operator[](size_t n);
+    const OGNumeric::Ptr operator[](size_t n);
   private:
     _ExpressionList* _execList;
     ExecutionList() = delete;

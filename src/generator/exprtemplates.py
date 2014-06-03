@@ -62,17 +62,17 @@ class %(classname)s: public %(parentclass)s
 """
 
 unary_constructor = """\
-    %(classname)s(OGNumeric::Ptr arg);"""
+    %(classname)s(const OGNumeric::Ptr& arg);"""
 
 binary_constructor = """\
-    %(classname)s(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);"""
+    %(classname)s(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1);"""
 
 unary_factory = """\
-    static %(classname)s::Ptr create(OGNumeric::Ptr arg);
+    static %(classname)s::Ptr create(const OGNumeric::Ptr& arg);
 """ 
 
 binary_factory = """\
-    static %(classname)s::Ptr create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1);
+    static %(classname)s::Ptr create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1);
 """
 
 # Expressions cc
@@ -138,21 +138,21 @@ ExprType_t
 """
 
 unary_ctor_method = """\
-%(classname)s::%(classname)s(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}"""
+%(classname)s::%(classname)s(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}"""
 
 binary_ctor_method = """\
-%(classname)s::%(classname)s(OGNumeric::Ptr arg1, OGNumeric::Ptr arg2): OGBinaryExpr{arg1, arg2} {}"""
+%(classname)s::%(classname)s(const OGNumeric::Ptr& arg1, const OGNumeric::Ptr& arg2): OGBinaryExpr{arg1, arg2} {}"""
 
 unary_factory_method = """\
 %(classname)s::Ptr
-%(classname)s::create(OGNumeric::Ptr arg)
+%(classname)s::create(const OGNumeric::Ptr& arg)
 {
   return %(classname)s::Ptr{new %(classname)s{arg}};
 }"""
 
 binary_factory_method = """\
 %(classname)s::Ptr
-%(classname)s::create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1)
+%(classname)s::create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1)
 {
   return %(classname)s::Ptr{new %(classname)s{arg0, arg1}};
 }"""

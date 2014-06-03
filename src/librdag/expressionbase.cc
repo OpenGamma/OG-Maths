@@ -63,7 +63,7 @@ void OGExpr::debug_print() const
  * Things that extend OGExpr
  */
 
-OGUnaryExpr::OGUnaryExpr(OGNumeric::Ptr arg): OGExpr{}
+OGUnaryExpr::OGUnaryExpr(const OGNumeric::Ptr& arg): OGExpr{}
 {
   if (arg == OGNumeric::Ptr{})
   {
@@ -72,7 +72,7 @@ OGUnaryExpr::OGUnaryExpr(OGNumeric::Ptr arg): OGExpr{}
   _args.push_back(arg);
 }
 
-OGBinaryExpr::OGBinaryExpr(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1): OGExpr{}
+OGBinaryExpr::OGBinaryExpr(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1): OGExpr{}
 {
   if (arg0 == nullptr)
   {
@@ -94,10 +94,10 @@ OGBinaryExpr::OGBinaryExpr(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1): OGExpr{}
  * COPY node
  */
 
-COPY::COPY(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+COPY::COPY(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
 COPY::Ptr
-COPY::create(OGNumeric::Ptr arg)
+COPY::create(const OGNumeric::Ptr& arg)
 {
   return COPY::Ptr{new COPY{arg}};
 }
@@ -129,7 +129,7 @@ COPY::getType() const
 /**
  * SELECTRESULT node
  */
-SELECTRESULT::SELECTRESULT(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1): OGExpr{}
+SELECTRESULT::SELECTRESULT(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1): OGExpr{}
 {
   if (arg0 == nullptr)
   {
@@ -148,7 +148,7 @@ SELECTRESULT::SELECTRESULT(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1): OGExpr{}
 }
 
 SELECTRESULT::Ptr
-SELECTRESULT::create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1)
+SELECTRESULT::create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1)
 {
   return SELECTRESULT::Ptr{new SELECTRESULT{arg0, arg1}};
 }
@@ -182,10 +182,10 @@ SELECTRESULT::getType() const
  * NORM2 node
  */
 
-NORM2::NORM2(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+NORM2::NORM2(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
 NORM2::Ptr
-NORM2::create(OGNumeric::Ptr arg)
+NORM2::create(const OGNumeric::Ptr& arg)
 {
   return NORM2::Ptr{new NORM2{arg}};
 }
@@ -219,10 +219,10 @@ NORM2::getType() const
  * PINV node
  */
 
-PINV::PINV(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+PINV::PINV(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
 PINV::Ptr
-PINV::create(OGNumeric::Ptr arg)
+PINV::create(const OGNumeric::Ptr& arg)
 {
   return PINV::Ptr{new PINV{arg}};
 }
@@ -257,10 +257,10 @@ PINV::getType() const
  * INV node
  */
 
-INV::INV(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+INV::INV(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
 INV::Ptr
-INV::create(OGNumeric::Ptr arg)
+INV::create(const OGNumeric::Ptr& arg)
 {
   return INV::Ptr{new INV{arg}};
 }
@@ -295,10 +295,10 @@ INV::getType() const
  * TRANSPOSE node
  */
 
-TRANSPOSE::TRANSPOSE(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+TRANSPOSE::TRANSPOSE(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
 TRANSPOSE::Ptr
-TRANSPOSE::create(OGNumeric::Ptr arg)
+TRANSPOSE::create(const OGNumeric::Ptr& arg)
 {
   return TRANSPOSE::Ptr{new TRANSPOSE{arg}};
 }
@@ -333,10 +333,10 @@ TRANSPOSE::getType() const
  * CTRANSPOSE node
  */
 
-CTRANSPOSE::CTRANSPOSE(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+CTRANSPOSE::CTRANSPOSE(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
 CTRANSPOSE::Ptr
-CTRANSPOSE::create(OGNumeric::Ptr arg)
+CTRANSPOSE::create(const OGNumeric::Ptr& arg)
 {
   return CTRANSPOSE::Ptr{new CTRANSPOSE{arg}};
 }
@@ -370,10 +370,10 @@ CTRANSPOSE::getType() const
  * SVD node
  */
 
-SVD::SVD(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+SVD::SVD(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
 SVD::Ptr
-SVD::create(OGNumeric::Ptr arg)
+SVD::create(const OGNumeric::Ptr& arg)
 {
   return SVD::Ptr{new SVD{arg}};
 }
@@ -406,10 +406,10 @@ SVD::getType() const
  * LU node
  */
 
-LU::LU(OGNumeric::Ptr arg): OGUnaryExpr{arg} {}
+LU::LU(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
 LU::Ptr
-LU::create(OGNumeric::Ptr arg)
+LU::create(const OGNumeric::Ptr& arg)
 {
   return LU::Ptr{new LU{arg}};
 }
@@ -443,10 +443,10 @@ LU::getType() const
  * MTIMES node
  */
 
-MTIMES::MTIMES(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1): OGBinaryExpr{arg0, arg1} {}
+MTIMES::MTIMES(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1): OGBinaryExpr{arg0, arg1} {}
 
 MTIMES::Ptr
-MTIMES::create(OGNumeric::Ptr arg0, OGNumeric::Ptr arg1)
+MTIMES::create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1)
 {
   return MTIMES::Ptr{new MTIMES{arg0, arg1}};
 }

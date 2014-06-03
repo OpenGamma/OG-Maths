@@ -12,7 +12,7 @@
 
 namespace librdag {
 
-OGTerminal::Ptr entrypt(OGNumeric::Ptr expr);
+const OGTerminal::Ptr entrypt(const OGNumeric::Ptr& expr);
 
 } // namespace librdag
 
