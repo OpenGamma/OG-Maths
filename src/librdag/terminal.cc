@@ -83,7 +83,6 @@ bool OGTerminal::operator!=(const detail::FuzzyCompareOGTerminalContainer& thing
 
 OGTerminal::OGTerminal()
 {
-  //_fuzzyref = new detail::FuzzyCompareOGTerminalContainer(asOGTerminal());
   _converter = new ConvertTo();
 }
 

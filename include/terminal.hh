@@ -25,6 +25,9 @@ class FuzzyCompareOGTerminalContainer
     ~FuzzyCompareOGTerminalContainer();
     const weak_ptr<const OGTerminal> getTerminal() const;
   private:
+    // We use a weak_ptr to refer to the terminal because the terminal would
+    // always be holding a shared_ptr reference to itself through its
+    // FuzzyCompareOGTerminalContainer, which would prevent it ever getting deleted.
     const weak_ptr<const OGTerminal> _terminal;
 };
 
@@ -155,7 +158,9 @@ class OGTerminal: public OGNumeric
     const ConvertTo * getConvertTo() const;
   private:
     detail::FuzzyCompareOGTerminalContainer& getFuzzyContainer() const;
-    // Dear code reviewer: egregious use of mutable. Do not allow merge
+    // We need _fuzzyref to be mutable so that we can set it later on. We can't set
+    // it on construction, since we need to use shared_from_this() to build the
+    // _fuzzyref.
     mutable detail::FuzzyCompareOGTerminalContainer * _fuzzyref = nullptr;
     const ConvertTo * _converter = nullptr;
 };
