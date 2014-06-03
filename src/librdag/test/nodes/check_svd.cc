@@ -88,7 +88,7 @@ TEST(SVDTests,CheckRealMatrix)
     d.dispatch(*it);
   }
   answerU = s0->getRegs()[0];
-  EXPECT_TRUE((*U) % (*(answerU->asOGTerminal())));
+  EXPECT_TRUE((*U) % (answerU->asOGTerminal()));
 
   // Check selecting 1 (S)
   OGExpr::Ptr s1 = SELECTRESULT::create(svd, OGIntegerScalar::create(1));
@@ -108,7 +108,7 @@ TEST(SVDTests,CheckRealMatrix)
     d.dispatch(*it);
   }
   answerVT = s2->getRegs()[0];
-  EXPECT_TRUE((*VT) % (*(answerVT->asOGTerminal())));
+  EXPECT_TRUE((*VT) % (answerVT->asOGTerminal()));
 
   // reconstruction test i.e. recover A from U,S,V**T as A=U*S*V**T
   OGExpr::Ptr m1 = MTIMES::create(answerU, answerS);
@@ -208,7 +208,7 @@ TEST(SVDTests,CheckComplexMatrix)
     d.dispatch(*it);
   }
   answerU = s0->getRegs()[0];
-  EXPECT_TRUE((*U) % (*(answerU->asOGTerminal())));
+  EXPECT_TRUE((*U) % (answerU->asOGTerminal()));
 
   // Check selecting 1 (S)
   OGExpr::Ptr s1 = SELECTRESULT::create(svd, OGIntegerScalar::create(1));
@@ -228,7 +228,7 @@ TEST(SVDTests,CheckComplexMatrix)
     d.dispatch(*it);
   }
   answerVT = s2->getRegs()[0];
-  EXPECT_TRUE((*VT) % (*(answerVT->asOGTerminal())));
+  EXPECT_TRUE((*VT) % (answerVT->asOGTerminal()));
 
   // reconstruction test i.e. recover A from U,S,V**T as A=U*S*V**T
   OGExpr::Ptr m1 = MTIMES::create(answerU, answerS);

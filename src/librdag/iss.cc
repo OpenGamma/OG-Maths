@@ -8,7 +8,7 @@
 
 namespace librdag {
 
-bool isScalar(const OGTerminal * terminal)
+bool isScalar(const OGTerminal::Ptr& terminal)
 {
   if(terminal->asOGRealScalar()!=nullptr)
   {
@@ -25,14 +25,14 @@ bool isScalar(const OGTerminal * terminal)
   return false;
 }
 
-bool isMatrix(const OGTerminal * terminal)
+bool isMatrix(const OGTerminal::Ptr& terminal)
 {
   return !isScalar(terminal);
 }
 
 // not sure whether is makes more sense for vectors to include scalar contexts or not
 // presently scalar is not a member of vector
-bool isVector(const OGTerminal * terminal)
+bool isVector(const OGTerminal::Ptr& terminal)
 {
   if(isScalar(terminal)) return false;
   if((terminal->getRows()==1 && terminal->getCols() > 1) ||(terminal->getRows() > 1 && terminal->getCols() == 1))
@@ -42,7 +42,7 @@ bool isVector(const OGTerminal * terminal)
   return false;
 }
 
-bool isReal(const OGTerminal * terminal)
+bool isReal(const OGTerminal::Ptr& terminal)
 {
   if(terminal->asOGRealScalar()!=nullptr)
   {
@@ -71,35 +71,10 @@ bool isReal(const OGTerminal * terminal)
   return false;
 }
 
-bool isComplex(const OGTerminal * terminal)
+
+bool isComplex(const OGTerminal::Ptr& terminal)
 {
   return !isReal(terminal);
-}
-
-
-bool isScalar(OGTerminal::Ptr t)
-{
-  return isScalar(t.get());
-}
-
-bool isMatrix(OGTerminal::Ptr t)
-{
-  return isMatrix(t.get());
-}
-
-bool isVector(OGTerminal::Ptr t)
-{
-  return isVector(t.get());
-}
-
-bool isReal(OGTerminal::Ptr t)
-{
-  return isReal(t.get());
-}
-
-bool isComplex(OGTerminal::Ptr t)
-{
-  return isComplex(t.get());
 }
 
 } // end namespace librdag

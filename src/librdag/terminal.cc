@@ -112,19 +112,13 @@ OGTerminal::getConvertTo() const
 }
 
 bool
-OGTerminal::mathsequals(const OGTerminal * other) const
-{
-  return this->mathsequals(other, FuzzyEquals_default_maxabserror, FuzzyEquals_default_maxrelerror);
-}
-
-bool
 OGTerminal::mathsequals(OGTerminal::Ptr other) const
 {
-  return mathsequals(other.get());
+  return mathsequals(other, FuzzyEquals_default_maxabserror, FuzzyEquals_default_maxrelerror);
 }
 
 bool
-OGTerminal::mathsequals(const OGTerminal * other, real16 maxabserror, real16 maxrelerror) const
+OGTerminal::mathsequals(OGTerminal::Ptr other, real16 maxabserror, real16 maxrelerror) const
 {
   OGTerminal::Ptr thisconv; 
   OGTerminal::Ptr otherconv;
@@ -133,7 +127,7 @@ OGTerminal::mathsequals(const OGTerminal * other, real16 maxabserror, real16 max
   {
     return ret;
   }
-  if(isReal(this)&&isReal(other))
+  if(isReal(static_pointer_cast<const OGTerminal, const OGNumeric>(shared_from_this())) && isReal(other))
   {
     otherconv = other->asFullOGRealMatrix();
     thisconv = this->asFullOGRealMatrix();
@@ -151,15 +145,9 @@ OGTerminal::mathsequals(const OGTerminal * other, real16 maxabserror, real16 max
 }
 
 bool
-OGTerminal::mathsequals(OGTerminal::Ptr other, real16 maxabserror, real16 maxrelerror) const
+OGTerminal::operator%(const OGTerminal::Ptr& other) const
 {
-  return mathsequals(other.get(), maxabserror, maxrelerror);
-}
-
-bool
-OGTerminal::operator%(const OGTerminal& other) const
-{
-  return this->mathsequals(&other);
+  return this->mathsequals(other);
 }
 
 

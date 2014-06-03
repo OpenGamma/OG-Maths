@@ -87,7 +87,7 @@ CheckUnary<T>::execute()
 template<typename T> bool
 CheckUnary<T>::comparesCorrectlyTypeInvariant() const
 {
-  return (*(this->getResultPair()->first->asOGTerminal())%*(this->getResultPair()->second->asOGTerminal()));
+  return (*(this->getResultPair()->first->asOGTerminal())%(this->getResultPair()->second->asOGTerminal()));
 }
 
 template<typename T> bool
@@ -149,7 +149,7 @@ CheckBinary<T>::execute()
 template<typename T> bool
 CheckBinary<T>::comparesCorrectlyTypeInvariant() const
 {
-  return (*(this->getResultPair()->first->asOGTerminal())%*(this->getResultPair()->second->asOGTerminal()));
+  return (*(this->getResultPair()->first->asOGTerminal())%(this->getResultPair()->second->asOGTerminal()));
 }
 
 template<typename T> bool

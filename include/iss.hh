@@ -11,19 +11,12 @@
 
 namespace librdag {
 
-bool isScalar(const OGTerminal *);
-bool isMatrix(const OGTerminal *);
-bool isVector(const OGTerminal *);
-bool isReal(const OGTerminal *);
-bool isComplex(const OGTerminal *);
+bool isScalar(const OGTerminal::Ptr&);
+bool isMatrix(const OGTerminal::Ptr&);
+bool isVector(const OGTerminal::Ptr&);
+bool isReal(const OGTerminal::Ptr&);
+bool isComplex(const OGTerminal::Ptr&);
 
-bool isScalar(OGTerminal::Ptr);
-bool isMatrix(OGTerminal::Ptr);
-bool isVector(OGTerminal::Ptr);
-bool isReal(OGTerminal::Ptr);
-bool isComplex(OGTerminal::Ptr);
+} // end namespace librdage
 
-
-
-}
-#endif
+#endif // _ISS_HH

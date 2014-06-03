@@ -176,14 +176,14 @@ TEST(EqualsTest, OGRealScalar) {
   ASSERT_TRUE(*scalar!=~*badtype);
 
   ASSERT_FALSE(scalar->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*scalar%*c_notcomparable);
+  ASSERT_FALSE(*scalar%c_notcomparable);
   ASSERT_TRUE(scalar->mathsequals(c_comparable));
-  ASSERT_TRUE(*scalar%*c_comparable);
+  ASSERT_TRUE(*scalar%c_comparable);
 
   ASSERT_FALSE(scalar->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*scalar%*r_notcomparable);
+  ASSERT_FALSE(*scalar%r_notcomparable);
   ASSERT_TRUE(scalar->mathsequals(r_comparable));
-  ASSERT_TRUE(*scalar%*r_comparable);
+  ASSERT_TRUE(*scalar%r_comparable);
 }
 
 
@@ -214,12 +214,12 @@ TEST(EqualsTest, OGComplexScalar) {
   ASSERT_TRUE(*scalar!=~*badtype);
 
   ASSERT_FALSE(scalar->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*scalar%*c_notcomparable);
+  ASSERT_FALSE(*scalar%c_notcomparable);
   ASSERT_TRUE(scalar->mathsequals(c_comparable));
-  ASSERT_TRUE(*scalar%*c_comparable);
+  ASSERT_TRUE(*scalar%c_comparable);
 
   ASSERT_FALSE(scalar->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*scalar%*r_notcomparable);
+  ASSERT_FALSE(*scalar%r_notcomparable);
 }
 
 TEST(EqualsTest, OGIntegerScalar) {
@@ -248,14 +248,14 @@ TEST(EqualsTest, OGIntegerScalar) {
   ASSERT_TRUE(*scalar!=~*badtype);
 
   ASSERT_FALSE(scalar->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*scalar%*c_notcomparable);
+  ASSERT_FALSE(*scalar%c_notcomparable);
   ASSERT_TRUE(scalar->mathsequals(c_comparable));
-  ASSERT_TRUE(*scalar%*c_comparable);
+  ASSERT_TRUE(*scalar%c_comparable);
 
   ASSERT_FALSE(scalar->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*scalar%*r_notcomparable);
+  ASSERT_FALSE(*scalar%r_notcomparable);
   ASSERT_TRUE(scalar->mathsequals(r_comparable));
-  ASSERT_TRUE(*scalar%*r_comparable);
+  ASSERT_TRUE(*scalar%r_comparable);
 }
 
 TEST(EqualsTest, OGRealMatrix) {
@@ -297,14 +297,14 @@ TEST(EqualsTest, OGRealMatrix) {
   ASSERT_TRUE(*matrix!=~*badtype);
 
   ASSERT_FALSE(matrix->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*matrix%*c_notcomparable);
+  ASSERT_FALSE(*matrix%c_notcomparable);
   ASSERT_TRUE(matrix->mathsequals(c_comparable));
-  ASSERT_TRUE(*matrix%*c_comparable);
+  ASSERT_TRUE(*matrix%c_comparable);
 
   ASSERT_FALSE(matrix->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*matrix%*r_notcomparable);
+  ASSERT_FALSE(*matrix%r_notcomparable);
   ASSERT_TRUE(matrix->mathsequals(r_comparable));
-  ASSERT_TRUE(*matrix%*r_comparable);
+  ASSERT_TRUE(*matrix%r_comparable);
 
   delete[] r_data1;
   delete[] r_data2;
@@ -348,12 +348,12 @@ TEST(EqualsTest, OGComplexMatrix) {
   ASSERT_TRUE(*matrix!=~*badtype);
 
   ASSERT_FALSE(matrix->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*matrix%*c_notcomparable);
+  ASSERT_FALSE(*matrix%c_notcomparable);
   ASSERT_TRUE(matrix->mathsequals(c_comparable));
-  ASSERT_TRUE(*matrix%*c_comparable);
+  ASSERT_TRUE(*matrix%c_comparable);
 
   ASSERT_FALSE(matrix->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*matrix%*r_notcomparable);
+  ASSERT_FALSE(*matrix%r_notcomparable);
 
   delete[] c_data1;
   delete[] c_data2;
@@ -413,14 +413,14 @@ TEST(EqualsTest, OGRealSparseMatrix) {
   ASSERT_TRUE(*matrix!=~*badtype);
 
   ASSERT_FALSE(matrix->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*matrix%*c_notcomparable);
+  ASSERT_FALSE(*matrix%c_notcomparable);
   ASSERT_TRUE(matrix->mathsequals(c_comparable_sparse));
-  ASSERT_TRUE(*matrix%*c_comparable_sparse);
+  ASSERT_TRUE(*matrix%c_comparable_sparse);
 
   ASSERT_TRUE(matrix->mathsequals(r_comparable_sparse));
-  ASSERT_TRUE(*matrix%*r_comparable_sparse);
+  ASSERT_TRUE(*matrix%r_comparable_sparse);
   ASSERT_FALSE(matrix->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*matrix%*r_notcomparable);
+  ASSERT_FALSE(*matrix%r_notcomparable);
 
   delete[] r_data1;
   delete[] r_data2;
@@ -483,12 +483,12 @@ TEST(EqualsTest, OGComplexSparseMatrix) {
   ASSERT_TRUE(*matrix!=~*badtype);
 
   ASSERT_FALSE(matrix->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*matrix%*c_notcomparable);
+  ASSERT_FALSE(*matrix%c_notcomparable);
   ASSERT_TRUE(matrix->mathsequals(c_comparable_sparse));
-  ASSERT_TRUE(*matrix%*c_comparable_sparse);
+  ASSERT_TRUE(*matrix%c_comparable_sparse);
 
   ASSERT_FALSE(matrix->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*matrix%*r_notcomparable);
+  ASSERT_FALSE(*matrix%r_notcomparable);
 
   delete[] c_data1;
   delete[] c_data2;
@@ -539,17 +539,17 @@ TEST(EqualsTest, OGRealDiagonalMatrix) {
   ASSERT_TRUE(*matrix!=~*badtype);
 
   ASSERT_TRUE(matrix->mathsequals(comparable));
-  ASSERT_TRUE(*matrix%*comparable);
+  ASSERT_TRUE(*matrix%comparable);
 
   ASSERT_FALSE(matrix->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*matrix%*c_notcomparable);
+  ASSERT_FALSE(*matrix%c_notcomparable);
   ASSERT_TRUE(matrix->mathsequals(c_comparable_diag));
-  ASSERT_TRUE(*matrix%*c_comparable_diag);
+  ASSERT_TRUE(*matrix%c_comparable_diag);
 
   ASSERT_TRUE(matrix->mathsequals(r_comparable_sparse));
-  ASSERT_TRUE(*matrix%*r_comparable_sparse);
+  ASSERT_TRUE(*matrix%r_comparable_sparse);
   ASSERT_FALSE(matrix->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*matrix%*r_notcomparable);
+  ASSERT_FALSE(*matrix%r_notcomparable);
 
   delete[] r_data1;
   delete[] r_data2;
@@ -595,12 +595,12 @@ TEST(EqualsTest, OGComplexDiagonalMatrix) {
   ASSERT_TRUE(*matrix!=~*badtype);
 
   ASSERT_FALSE(matrix->mathsequals(c_notcomparable));
-  ASSERT_FALSE(*matrix%*c_notcomparable);
+  ASSERT_FALSE(*matrix%c_notcomparable);
   ASSERT_TRUE(matrix->mathsequals(c_comparable_diag));
-  ASSERT_TRUE(*matrix%*c_comparable_diag);
+  ASSERT_TRUE(*matrix%c_comparable_diag);
 
   ASSERT_FALSE(matrix->mathsequals(r_notcomparable));
-  ASSERT_FALSE(*matrix%*r_notcomparable);
+  ASSERT_FALSE(*matrix%r_notcomparable);
 
   delete[] c_data1;
   delete[] c_data2;

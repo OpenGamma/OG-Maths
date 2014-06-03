@@ -130,24 +130,8 @@ class OGTerminal: public OGNumeric
      * @param term the terminal to compare against.
      * @return true if \a this is considered mathematically equal to \a term, false else
      */
-    virtual bool mathsequals(const OGTerminal * term) const;
-    
-    /**
-     * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
-     * @param term the terminal to compare against.
-     * @return true if \a this is considered mathematically equal to \a term, false else
-     */
     virtual bool mathsequals(OGTerminal::Ptr term) const;
 
-    /**
-     * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
-     * @param term the terminal to compare against.
-     * @param maxabserror the maximum absolute error to use during comparison
-     * @param maxrelerror the maximum relative error to use during comparison
-     * @return true if \a this is considered mathematically equal to \a term, false else
-     */
-    virtual bool mathsequals(const OGTerminal * term, real16 maxabserror, real16 maxrelerror)const;
-    
     /**
      * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
      * @param term the terminal to compare against.
@@ -159,7 +143,7 @@ class OGTerminal: public OGNumeric
     
     virtual bool operator==(const OGTerminal::Ptr&) const;
     virtual bool operator!=(const OGTerminal::Ptr&) const;
-    virtual bool operator%(const OGTerminal&) const;
+    virtual bool operator%(const OGTerminal::Ptr&) const;
     virtual detail::FuzzyCompareOGTerminalContainer& operator~(void) const;
     virtual bool operator==(const detail::FuzzyCompareOGTerminalContainer&) const;
     virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
