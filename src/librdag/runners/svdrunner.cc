@@ -20,7 +20,7 @@
  */
 namespace librdag {
 
-template<typename T> void svd_dense_runner(RegContainer& reg, const OGMatrix<T>* arg)
+template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 {
   int m = arg->getRows();
   int n = arg->getCols();
@@ -61,30 +61,30 @@ template<typename T> void svd_dense_runner(RegContainer& reg, const OGMatrix<T>*
   delete[] A;
 
   reg.push_back(makeConcreteDenseMatrix(U, m, m, OWNER));
-  reg.push_back(new OGRealDiagonalMatrix(S, m, n, OWNER));
+  reg.push_back(OGRealDiagonalMatrix::create(S, m, n, OWNER));
   reg.push_back(makeConcreteDenseMatrix(VT, n, n, OWNER));
 }
 
 void *
-SVDRunner::run(RegContainer& reg, OGRealScalar const *arg) const
+SVDRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
   // real space svd is just u=1, s=value, v=1
-  reg.push_back(new OGRealScalar(1.e0));
-  reg.push_back(new OGRealScalar(arg->getValue()));
-  reg.push_back(new OGRealScalar(1.e0));
+  reg.push_back(OGRealScalar::create(1.e0));
+  reg.push_back(OGRealScalar::create(arg->getValue()));
+  reg.push_back(OGRealScalar::create(1.e0));
   return nullptr;
 }
 void *
-SVDRunner::run(RegContainer& reg, OGRealMatrix const *arg) const
+SVDRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  svd_dense_runner(reg, arg);
+  svd_dense_runner<real16>(reg, arg);
   return nullptr;
 }
 
 void *
-SVDRunner::run(RegContainer& reg, OGComplexMatrix const *arg) const
+SVDRunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
 {
-  svd_dense_runner(reg, arg);
+  svd_dense_runner<complex16>(reg, arg);
   return nullptr;
 }
 

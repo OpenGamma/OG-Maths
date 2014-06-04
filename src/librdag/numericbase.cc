@@ -22,136 +22,136 @@ OGNumeric::~OGNumeric()
 {
 }
 
-const COPY*
+COPY::Ptr
 OGNumeric::asCOPY() const
 {
-  return nullptr;
+  return COPY::Ptr{};
 }
 
-const SELECTRESULT*
+SELECTRESULT::Ptr
 OGNumeric::asSELECTRESULT() const
 {
-  return nullptr;
+  return SELECTRESULT::Ptr{};
 }
 
-const NORM2*
+NORM2::Ptr
 OGNumeric::asNORM2() const
 {
-  return nullptr;
+  return NORM2::Ptr{};
 }
 
-const PINV*
+PINV::Ptr
 OGNumeric::asPINV() const
 {
-  return nullptr;
+  return PINV::Ptr{};
 }
 
-const INV*
+INV::Ptr
 OGNumeric::asINV() const
 {
-  return nullptr;
+  return INV::Ptr{};
 }
 
-const TRANSPOSE*
+TRANSPOSE::Ptr
 OGNumeric::asTRANSPOSE() const
 {
-  return nullptr;
+  return TRANSPOSE::Ptr{};
 }
 
-const CTRANSPOSE*
+CTRANSPOSE::Ptr
 OGNumeric::asCTRANSPOSE() const
 {
-  return nullptr;
+  return CTRANSPOSE::Ptr{};
 }
 
-const SVD*
+SVD::Ptr
 OGNumeric::asSVD() const
 {
-  return nullptr;
+  return SVD::Ptr{};
 }
 
-const MTIMES*
+MTIMES::Ptr
 OGNumeric::asMTIMES() const
 {
-  return nullptr;
+  return MTIMES::Ptr{};
 }
 
-const LU*
+LU::Ptr
 OGNumeric::asLU() const
 {
-  return nullptr;
+  return LU::Ptr{};
 }
 
-const OGExpr*
+OGExpr::Ptr
 OGNumeric::asOGExpr() const
 {
-  return nullptr;
+  return OGExpr::Ptr{};
 }
 
-const OGTerminal*
+OGTerminal::Ptr
 OGNumeric::asOGTerminal() const
 {
-  return nullptr;
+  return OGTerminal::Ptr{};
 }
 
-const OGRealScalar*
+OGRealScalar::Ptr
 OGNumeric::asOGRealScalar() const
 {
-  return nullptr;
+  return OGRealScalar::Ptr{};
 }
 
-const OGComplexScalar*
+OGComplexScalar::Ptr
 OGNumeric::asOGComplexScalar() const
 {
-  return nullptr;
+  return OGComplexScalar::Ptr{};
 }
 
-const OGIntegerScalar*
+OGIntegerScalar::Ptr
 OGNumeric::asOGIntegerScalar() const
 {
-  return nullptr;
+  return OGIntegerScalar::Ptr{};
 }
 
-const OGRealMatrix*
+OGRealMatrix::Ptr
 OGNumeric::asOGRealMatrix() const
 {
-  return nullptr;
+  return OGRealMatrix::Ptr{};
 }
 
-const OGComplexMatrix*
+OGComplexMatrix::Ptr
 OGNumeric::asOGComplexMatrix() const
 {
-  return nullptr;
+  return OGComplexMatrix::Ptr{};
 }
 
-const OGLogicalMatrix*
+OGLogicalMatrix::Ptr
 OGNumeric::asOGLogicalMatrix() const
 {
-  return nullptr;
+  return OGLogicalMatrix::Ptr{};
 }
 
-const OGRealDiagonalMatrix*
+OGRealDiagonalMatrix::Ptr
 OGNumeric::asOGRealDiagonalMatrix() const
 {
-  return nullptr;
+  return OGRealDiagonalMatrix::Ptr{};
 }
 
-const OGComplexDiagonalMatrix*
+OGComplexDiagonalMatrix::Ptr
 OGNumeric::asOGComplexDiagonalMatrix() const
 {
-  return nullptr;
+  return OGComplexDiagonalMatrix::Ptr{};
 }
 
-const OGRealSparseMatrix*
+OGRealSparseMatrix::Ptr
 OGNumeric::asOGRealSparseMatrix() const
 {
-  return nullptr;
+  return OGRealSparseMatrix::Ptr{};
 }
 
-const OGComplexSparseMatrix*
+OGComplexSparseMatrix::Ptr
 OGNumeric::asOGComplexSparseMatrix() const
 {
-  return nullptr;
+  return OGComplexSparseMatrix::Ptr{};
 }
 
 ExprType_t OGNumeric::getType() const

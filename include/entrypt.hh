@@ -6,14 +6,13 @@
 
 #ifndef _ENTRYPT_H
 #define _ENTRYPT_H
+
+#include "numeric.hh"
 #include "terminal.hh"
 
 namespace librdag {
 
-class OGNumeric;
-class OGTerminal;
-
-const OGTerminal* entrypt(const OGNumeric* expr);
+const OGTerminal::Ptr entrypt(const OGNumeric::Ptr& expr);
 
 } // namespace librdag
 

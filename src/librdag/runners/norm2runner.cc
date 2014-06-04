@@ -23,30 +23,29 @@
 namespace librdag {
 
 void *
-NORM2Runner::run(RegContainer& reg, OGRealScalar const * arg) const
+NORM2Runner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
-  const OGRealScalar* ret;
-  ret = new OGRealScalar(fabs(arg->getValue()));
+  OGNumeric::Ptr ret = OGRealScalar::create(fabs(arg->getValue()));
   reg.push_back(ret);
   return nullptr;
 }
 
 template<typename T>
 void
-norm2_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
+norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 {
-  const OGRealScalar* ret = nullptr; // the returned item
+  OGNumeric::Ptr ret; // the returned item
 
   // Matrix in scalar context, i.e. a 1x1 matrix, norm2 is simply abs(value)
   if(arg->getRows()==1 && arg->getCols()==1)
   {
-    ret = new OGRealScalar(std::abs(arg->getData()[0]));
+    ret = OGRealScalar::create(std::abs(arg->getData()[0]));
   }
   else if(isVector(arg)) // Matrix is a vector, norm2 computed via BLAS xnrm2
   {
     int len = arg->getRows() > arg->getCols() ? arg->getRows(): arg->getCols();
     real16 value = lapack::xnrm2(&len, arg->getData(), lapack::ione);
-    ret = new OGRealScalar(value);
+    ret = OGRealScalar::create(value);
   }
   else // Matrix is a full matrix, norm2 computed via LAPACK xgesvd
   {
@@ -69,7 +68,7 @@ norm2_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
     // call lapack
     lapack::xgesvd(lapack::N, lapack::N, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
 
-    ret = new OGRealScalar(std::real(S[0]));
+    ret = OGRealScalar::create(std::real(S[0]));
     delete[] A;
     delete[] S;
   }
@@ -79,16 +78,16 @@ norm2_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
 }
 
 void *
-NORM2Runner::run(RegContainer& reg, OGRealMatrix const * arg) const
+NORM2Runner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  norm2_dense_runner(reg, arg);
+  norm2_dense_runner<real16>(reg, arg);
   return nullptr;
 }
 
 void *
-NORM2Runner::run(RegContainer& reg, OGComplexMatrix const * arg) const
+NORM2Runner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
 {
-  norm2_dense_runner(reg, arg);
+  norm2_dense_runner<complex16>(reg, arg);
   return nullptr;
 }
 

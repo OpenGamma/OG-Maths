@@ -10,7 +10,6 @@ SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 link_directories(${og_maths_BINARY_DIR}/src/librdag)
 
 set(TESTS
-  check_containers
   check_convertto
   check_dispatch
   check_entrypt

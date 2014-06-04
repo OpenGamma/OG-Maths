@@ -25,9 +25,9 @@ namespace convert {
 
 using namespace librdag;
 
-OGNumeric* translateNode(JNIEnv* env, jobject obj, const OGNumeric* arg0, const OGNumeric* arg1)
+OGNumeric::Ptr translateNode(JNIEnv* env, jobject obj, OGNumeric::Ptr arg0, OGNumeric::Ptr arg1)
 {
-  librdag::OGNumeric * _expr = nullptr;
+  librdag::OGNumeric::Ptr expr = nullptr;
 
   // Get the type of the node
   jobject typeobj = env->CallObjectMethod(obj, JVMManager::getOGNumericClazz_getType());
@@ -46,7 +46,7 @@ OGNumeric* translateNode(JNIEnv* env, jobject obj, const OGNumeric* arg0, const 
   break;
   }
 
-  return _expr;
+  return expr;
 }
 
 } // namespace convert
@@ -55,14 +55,14 @@ OGNumeric* translateNode(JNIEnv* env, jobject obj, const OGNumeric* arg0, const 
 terminal_case = """\
     case %(enumname)s:
       DEBUG_PRINT("Binding a J%(typename)s\\n");
-      _expr = new J%(typename)s(obj);
+      expr = J%(typename)s::create(obj);
       break;
 """
 
 expr_case = """\
     case %(enumname)s:
       DEBUG_PRINT("%(typename)s function\\n");
-      _expr = new %(typename)s(%(args)s);
+      expr = %(typename)s::create(%(args)s);
       break;
 """
 

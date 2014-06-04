@@ -19,12 +19,7 @@ namespace librdag
  * OGExpr
  */
 
-OGExpr::OGExpr()
-{
-  // _regs are safe to immediately own their contents because we don't put anything
-  // in them during construction.
-  _regs.set_ownership(true);
-}
+OGExpr::OGExpr() {}
 
 OGExpr::~OGExpr() {}
 
@@ -46,10 +41,10 @@ OGExpr::accept(Visitor& v) const
   v.visit(this);
 }
 
-const OGExpr*
+OGExpr::Ptr
 OGExpr::asOGExpr() const
 {
-  return this;
+  return static_pointer_cast<const OGExpr, const OGNumeric>(shared_from_this());
 }
 
 RegContainer&
@@ -68,19 +63,16 @@ void OGExpr::debug_print() const
  * Things that extend OGExpr
  */
 
-OGUnaryExpr::OGUnaryExpr(const OGNumeric* arg): OGExpr{}
+OGUnaryExpr::OGUnaryExpr(const OGNumeric::Ptr& arg): OGExpr{}
 {
-  if (arg == nullptr)
+  if (arg == OGNumeric::Ptr{})
   {
     throw rdag_error("Null operand passed to unary expression");
   }
   _args.push_back(arg);
-  // We got all the way through building the OGUnaryExpr object, so it
-  // is now safe to own the arguments.
-  _args.set_ownership(true);
 }
 
-OGBinaryExpr::OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr{}
+OGBinaryExpr::OGBinaryExpr(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1): OGExpr{}
 {
   if (arg0 == nullptr)
   {
@@ -92,9 +84,6 @@ OGBinaryExpr::OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr
   }
   _args.push_back(arg0);
   _args.push_back(arg1);
-  // We got all the way through building the OGBinaryExpr object, so it
-  // is now safe to own the arguments.
-  _args.set_ownership(true);
 }
 
 /**
@@ -105,18 +94,24 @@ OGBinaryExpr::OGBinaryExpr(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr
  * COPY node
  */
 
-COPY::COPY(const OGNumeric* arg): OGUnaryExpr{arg} {}
+COPY::COPY(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
-OGNumeric*
-COPY::copy() const
+COPY::Ptr
+COPY::create(const OGNumeric::Ptr& arg)
 {
-  return new COPY(_args[0]->copy());
+  return COPY::Ptr{new COPY{arg}};
 }
 
-const COPY*
+OGNumeric::Ptr
+COPY::copy() const
+{
+  return OGNumeric::Ptr{new COPY(_args[0]->copy())};
+}
+
+COPY::Ptr
 COPY::asCOPY() const
 {
-  return this;
+  return static_pointer_cast<const COPY, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -134,7 +129,7 @@ COPY::getType() const
 /**
  * SELECTRESULT node
  */
-SELECTRESULT::SELECTRESULT(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr{}
+SELECTRESULT::SELECTRESULT(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1): OGExpr{}
 {
   if (arg0 == nullptr)
   {
@@ -150,21 +145,24 @@ SELECTRESULT::SELECTRESULT(const OGNumeric* arg0, const OGNumeric* arg1): OGExpr
   }
   _args.push_back(arg0);
   _args.push_back(arg1);
-  // We got all the way through building the SELECTRESULT object, so it
-  // is now safe to own the arguments.
-  _args.set_ownership(true);
 }
 
-OGNumeric*
+SELECTRESULT::Ptr
+SELECTRESULT::create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1)
+{
+  return SELECTRESULT::Ptr{new SELECTRESULT{arg0, arg1}};
+}
+
+OGNumeric::Ptr
 SELECTRESULT::copy() const
 {
-  return new SELECTRESULT(_args[0]->copy(), _args[1]->copy());
+  return OGNumeric::Ptr{new SELECTRESULT(_args[0]->copy(), _args[1]->copy())};
 }
 
-const SELECTRESULT*
+SELECTRESULT::Ptr
 SELECTRESULT::asSELECTRESULT() const
 {
-  return this;
+  return static_pointer_cast<const SELECTRESULT, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -184,19 +182,25 @@ SELECTRESULT::getType() const
  * NORM2 node
  */
 
-NORM2::NORM2(const OGNumeric* arg): OGUnaryExpr{arg} {}
+NORM2::NORM2(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
-OGNumeric*
+NORM2::Ptr
+NORM2::create(const OGNumeric::Ptr& arg)
+{
+  return NORM2::Ptr{new NORM2{arg}};
+}
+
+OGNumeric::Ptr
 NORM2::copy() const
 {
 
-  return new NORM2(_args[0]->copy());
+  return OGNumeric::Ptr{new NORM2(_args[0]->copy())};
 }
 
-const NORM2*
+NORM2::Ptr
 NORM2::asNORM2() const
 {
-  return this;
+  return static_pointer_cast<const NORM2, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -215,19 +219,25 @@ NORM2::getType() const
  * PINV node
  */
 
-PINV::PINV(const OGNumeric* arg): OGUnaryExpr{arg} {}
+PINV::PINV(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
-OGNumeric*
+PINV::Ptr
+PINV::create(const OGNumeric::Ptr& arg)
+{
+  return PINV::Ptr{new PINV{arg}};
+}
+
+OGNumeric::Ptr
 PINV::copy() const
 {
 
-  return new PINV(_args[0]->copy());
+  return OGNumeric::Ptr{new PINV(_args[0]->copy())};
 }
 
-const PINV*
+PINV::Ptr
 PINV::asPINV() const
 {
-  return this;
+  return static_pointer_cast<const PINV, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -247,19 +257,25 @@ PINV::getType() const
  * INV node
  */
 
-INV::INV(const OGNumeric* arg): OGUnaryExpr{arg} {}
+INV::INV(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
-OGNumeric*
+INV::Ptr
+INV::create(const OGNumeric::Ptr& arg)
+{
+  return INV::Ptr{new INV{arg}};
+}
+
+OGNumeric::Ptr
 INV::copy() const
 {
 
-  return new INV(_args[0]->copy());
+  return OGNumeric::Ptr{new INV(_args[0]->copy())};
 }
 
-const INV*
+INV::Ptr
 INV::asINV() const
 {
-  return this;
+  return static_pointer_cast<const INV, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -279,19 +295,25 @@ INV::getType() const
  * TRANSPOSE node
  */
 
-TRANSPOSE::TRANSPOSE(const OGNumeric* arg): OGUnaryExpr{arg} {}
+TRANSPOSE::TRANSPOSE(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
-OGNumeric*
+TRANSPOSE::Ptr
+TRANSPOSE::create(const OGNumeric::Ptr& arg)
+{
+  return TRANSPOSE::Ptr{new TRANSPOSE{arg}};
+}
+
+OGNumeric::Ptr
 TRANSPOSE::copy() const
 {
 
-  return new TRANSPOSE(_args[0]->copy());
+  return OGNumeric::Ptr{new TRANSPOSE(_args[0]->copy())};
 }
 
-const TRANSPOSE*
+TRANSPOSE::Ptr
 TRANSPOSE::asTRANSPOSE() const
 {
-  return this;
+  return static_pointer_cast<const TRANSPOSE, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -311,19 +333,25 @@ TRANSPOSE::getType() const
  * CTRANSPOSE node
  */
 
-CTRANSPOSE::CTRANSPOSE(const OGNumeric* arg): OGUnaryExpr{arg} {}
+CTRANSPOSE::CTRANSPOSE(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
-OGNumeric*
+CTRANSPOSE::Ptr
+CTRANSPOSE::create(const OGNumeric::Ptr& arg)
+{
+  return CTRANSPOSE::Ptr{new CTRANSPOSE{arg}};
+}
+
+OGNumeric::Ptr
 CTRANSPOSE::copy() const
 {
 
-  return new CTRANSPOSE(_args[0]->copy());
+  return OGNumeric::Ptr{new CTRANSPOSE(_args[0]->copy())};
 }
 
-const CTRANSPOSE*
+CTRANSPOSE::Ptr
 CTRANSPOSE::asCTRANSPOSE() const
 {
-  return this;
+  return static_pointer_cast<const CTRANSPOSE, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -342,18 +370,24 @@ CTRANSPOSE::getType() const
  * SVD node
  */
 
-SVD::SVD(const OGNumeric* arg): OGUnaryExpr{arg} {}
+SVD::SVD(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
-OGNumeric*
-SVD::copy() const
+SVD::Ptr
+SVD::create(const OGNumeric::Ptr& arg)
 {
-  return new SVD(_args[0]->copy());
+  return SVD::Ptr{new SVD{arg}};
 }
 
-const SVD*
+OGNumeric::Ptr
+SVD::copy() const
+{
+  return OGNumeric::Ptr{new SVD(_args[0]->copy())};
+}
+
+SVD::Ptr
 SVD::asSVD() const
 {
-  return this;
+  return static_pointer_cast<const SVD, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -372,18 +406,24 @@ SVD::getType() const
  * LU node
  */
 
-LU::LU(const OGNumeric* arg): OGUnaryExpr{arg} {}
+LU::LU(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
 
-OGNumeric*
-LU::copy() const
+LU::Ptr
+LU::create(const OGNumeric::Ptr& arg)
 {
-  return new LU(_args[0]->copy());
+  return LU::Ptr{new LU{arg}};
 }
 
-const LU*
+OGNumeric::Ptr
+LU::copy() const
+{
+  return OGNumeric::Ptr{new LU(_args[0]->copy())};
+}
+
+LU::Ptr
 LU::asLU() const
 {
-  return this;
+  return static_pointer_cast<const LU, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -403,18 +443,25 @@ LU::getType() const
  * MTIMES node
  */
 
-MTIMES::MTIMES(const OGNumeric* arg0, const OGNumeric* arg1): OGBinaryExpr{arg0, arg1} {}
+MTIMES::MTIMES(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1): OGBinaryExpr{arg0, arg1} {}
 
-OGNumeric*
-MTIMES::copy() const
+MTIMES::Ptr
+MTIMES::create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1)
 {
-  return new MTIMES(_args[0]->copy(), _args[1]->copy());
+  return MTIMES::Ptr{new MTIMES{arg0, arg1}};
 }
 
-const MTIMES*
+
+OGNumeric::Ptr
+MTIMES::copy() const
+{
+  return OGNumeric::Ptr{new MTIMES(_args[0]->copy(), _args[1]->copy())};
+}
+
+MTIMES::Ptr
 MTIMES::asMTIMES() const
 {
-  return this;
+  return static_pointer_cast<const MTIMES, const OGNumeric>(shared_from_this());
 }
 
 void

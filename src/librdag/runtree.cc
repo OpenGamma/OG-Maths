@@ -10,38 +10,14 @@
 
 namespace librdag {
 
-void runtree(OGNumeric * root)
+void runtree(const OGNumeric::Ptr& root)
 {
-  // create dispatcher
-  Dispatcher * d = new Dispatcher();
-
-  // create execution list, doesn't throw.
-  ExecutionList * el = new ExecutionList(root);
-
-  // try and run the list, clean up and rethrow on error
-  try
+  Dispatcher d;
+  ExecutionList el{root};
+  for (auto it = el.begin(); it != el.end(); ++it)
   {
-    for (auto it = el->begin(); it != el->end(); ++it)
-    {
-      d->dispatch(*it);
-    }
+    d.dispatch(*it);
   }
-  catch(rdag_error e)
-  {
-    delete d;
-    delete el;
-    throw e;
-  }
-  catch(exception e)
-  {
-    delete d;
-    delete el;
-    throw e;
-  }
-  // clean up
-  delete d;
-  delete el;
 }
 
-
-}
+} // end namespace librdag

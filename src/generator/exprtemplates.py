@@ -29,7 +29,6 @@ expression_hh = """\
 #include "numeric.hh"
 #include "visitor.hh"
 #include "exceptions.hh"
-#include "containers.hh"
 
 using namespace std;
 
@@ -51,19 +50,30 @@ expr_class = """\
 class %(classname)s: public %(parentclass)s
 {
   public:
-%(constructor)s
-    virtual OGNumeric* copy() const override;
-    virtual const %(classname)s* as%(classname)s() const override;
+    typedef std::shared_ptr<const %(classname)s> Ptr;
+%(factory)s
+    virtual OGNumeric::Ptr copy() const override;
+    virtual %(classname)s::Ptr as%(classname)s() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
+  private:
+%(constructor)s
 };
 """
 
 unary_constructor = """\
-    %(classname)s(const OGNumeric* arg);"""
+    %(classname)s(const OGNumeric::Ptr& arg);"""
 
 binary_constructor = """\
-    %(classname)s(const OGNumeric* arg0, const OGNumeric* arg1);"""
+    %(classname)s(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1);"""
+
+unary_factory = """\
+    static %(classname)s::Ptr create(const OGNumeric::Ptr& arg);
+""" 
+
+binary_factory = """\
+    static %(classname)s::Ptr create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1);
+"""
 
 # Expressions cc
 
@@ -99,16 +109,18 @@ expr_methods = """\
 
 %(ctor_method)s
 
-OGNumeric*
+%(factory_method)s
+
+OGNumeric::Ptr
 %(classname)s::copy() const
 {
 %(copy_method)s
 }
 
-const %(classname)s*
+%(classname)s::Ptr
 %(classname)s::as%(classname)s() const
 {
-  return this;
+  return static_pointer_cast<const %(classname)s, const OGNumeric>(shared_from_this());
 }
 
 void
@@ -126,16 +138,29 @@ ExprType_t
 """
 
 unary_ctor_method = """\
-%(classname)s::%(classname)s(const OGNumeric* arg): OGUnaryExpr{arg} {}"""
+%(classname)s::%(classname)s(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}"""
 
 binary_ctor_method = """\
-%(classname)s::%(classname)s(const OGNumeric* arg1, const OGNumeric* arg2): OGBinaryExpr{arg1, arg2} {}"""
+%(classname)s::%(classname)s(const OGNumeric::Ptr& arg1, const OGNumeric::Ptr& arg2): OGBinaryExpr{arg1, arg2} {}"""
 
+unary_factory_method = """\
+%(classname)s::Ptr
+%(classname)s::create(const OGNumeric::Ptr& arg)
+{
+  return %(classname)s::Ptr{new %(classname)s{arg}};
+}"""
+
+binary_factory_method = """\
+%(classname)s::Ptr
+%(classname)s::create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1)
+{
+  return %(classname)s::Ptr{new %(classname)s{arg0, arg1}};
+}"""
 unary_copy_method = """\
-  return new %(classname)s(_args[0]->copy());"""
+  return OGNumeric::Ptr{new %(classname)s(_args[0]->copy())};"""
 
 binary_copy_method = """\
-  return new %(classname)s(_args[0]->copy(), _args[1]->copy());"""
+  return OGNumeric::Ptr{new %(classname)s(_args[0]->copy(), _args[1]->copy())};"""
 
 # Numeric header file
 
@@ -151,13 +176,16 @@ numeric_hh = """\
 #ifndef _NUMERIC_HH
 #define _NUMERIC_HH
 
+#include <memory>
 #include "uncopyable.hh"
 #include "exprtypeenum.h"
 
 namespace librdag {
 
 // fwd decl
+class OGNumeric;
 class OGTerminal;
+class OGExpr;
 class OGRealScalar;
 class OGComplexScalar;
 class OGIntegerScalar;
@@ -168,11 +196,6 @@ class OGRealDiagonalMatrix;
 class OGComplexDiagonalMatrix;
 class OGRealSparseMatrix;
 class OGComplexSparseMatrix;
-class OGOwningRealMatrix;
-class OGOwningComplexMatrix;
-class ConvertTo;
-class Visitor;
-class OGExpr;
 class COPY;
 class SELECTRESULT;
 class NORM2;
@@ -184,41 +207,45 @@ class SVD;
 class MTIMES;
 class LU;
 
+class ConvertTo;
+class Visitor;
+
 %(fwd_decls)s
 
 /*
  * Base class for absolutely everything!
  */
-class OGNumeric: private Uncopyable
+class OGNumeric: private Uncopyable, public std::enable_shared_from_this<OGNumeric>
 {
   public:
+    typedef std::shared_ptr<const OGNumeric> Ptr;
     virtual ~OGNumeric();
     virtual void debug_print() const = 0;
     virtual void accept(Visitor &v) const = 0;
-    virtual OGNumeric* copy() const = 0;
-    virtual const OGExpr* asOGExpr() const;
-    virtual const COPY* asCOPY() const;
-    virtual const SELECTRESULT* asSELECTRESULT() const;
-    virtual const NORM2* asNORM2() const;
-    virtual const PINV* asPINV() const;
-    virtual const INV* asINV() const;
-    virtual const TRANSPOSE* asTRANSPOSE() const;
-    virtual const CTRANSPOSE* asCTRANSPOSE() const;
-    virtual const SVD* asSVD() const;
-    virtual const MTIMES* asMTIMES() const;
-    virtual const LU* asLU() const;
+    virtual OGNumeric::Ptr copy() const = 0;
+    virtual std::shared_ptr<const OGExpr> asOGExpr() const;
+    virtual std::shared_ptr<const COPY> asCOPY() const;
+    virtual std::shared_ptr<const SELECTRESULT> asSELECTRESULT() const;
+    virtual std::shared_ptr<const NORM2> asNORM2() const;
+    virtual std::shared_ptr<const PINV> asPINV() const;
+    virtual std::shared_ptr<const INV> asINV() const;
+    virtual std::shared_ptr<const TRANSPOSE> asTRANSPOSE() const;
+    virtual std::shared_ptr<const CTRANSPOSE> asCTRANSPOSE() const;
+    virtual std::shared_ptr<const SVD> asSVD() const;
+    virtual std::shared_ptr<const MTIMES> asMTIMES() const;
+    virtual std::shared_ptr<const LU> asLU() const;
 %(cast_methods)s
-    virtual const OGTerminal* asOGTerminal() const;
-    virtual const OGRealScalar* asOGRealScalar() const;
-    virtual const OGComplexScalar* asOGComplexScalar() const;
-    virtual const OGIntegerScalar* asOGIntegerScalar() const;
-    virtual const OGRealMatrix* asOGRealMatrix() const;
-    virtual const OGComplexMatrix* asOGComplexMatrix() const;
-    virtual const OGLogicalMatrix* asOGLogicalMatrix() const;
-    virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const;
-    virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const;
-    virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const;
-    virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const;
+    virtual std::shared_ptr<const OGTerminal> asOGTerminal() const;
+    virtual std::shared_ptr<const OGRealScalar> asOGRealScalar() const;
+    virtual std::shared_ptr<const OGComplexScalar> asOGComplexScalar() const;
+    virtual std::shared_ptr<const OGIntegerScalar> asOGIntegerScalar() const;
+    virtual std::shared_ptr<const OGRealMatrix> asOGRealMatrix() const;
+    virtual std::shared_ptr<const OGComplexMatrix> asOGComplexMatrix() const;
+    virtual std::shared_ptr<const OGLogicalMatrix> asOGLogicalMatrix() const;
+    virtual std::shared_ptr<const OGRealDiagonalMatrix> asOGRealDiagonalMatrix() const;
+    virtual std::shared_ptr<const OGComplexDiagonalMatrix> asOGComplexDiagonalMatrix() const;
+    virtual std::shared_ptr<const OGRealSparseMatrix> asOGRealSparseMatrix() const;
+    virtual std::shared_ptr<const OGComplexSparseMatrix> asOGComplexSparseMatrix() const;
     virtual ExprType_t getType() const;
 };
 
@@ -231,7 +258,7 @@ class %(classname)s;
 """
 
 numeric_cast_method =  """\
-    virtual const %(classname)s* as%(classname)s() const;
+    virtual std::shared_ptr<const %(classname)s> as%(classname)s() const;
 """
 
 # Numeric cc file
@@ -265,9 +292,9 @@ namespace librdag
 """
 
 numeric_method = """\
-const %(classname)s*
+%(classname)s::Ptr
 OGNumeric::as%(classname)s() const
 {
-  return nullptr;
+  return %(classname)s::Ptr{};
 }
 """

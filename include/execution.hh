@@ -7,7 +7,8 @@
 #ifndef _EXECUTION_HH
 #define _EXECUTION_HH
 
-#include "containers.hh"
+#include <vector>
+#include "numeric.hh"
 
 namespace librdag {
 
@@ -15,7 +16,7 @@ namespace librdag {
 class OGNumeric;
 
 // Internal data structure for the ExecutionList.
-typedef PtrVector<const OGNumeric*> _ExpressionList;
+typedef std::vector<OGNumeric::Ptr> _ExpressionList;
 
 // An ExecutionList holds a list of expression nodes that are in order such that
 // no node has inputs that are computed by a node further down the list. Thus,
@@ -23,13 +24,13 @@ typedef PtrVector<const OGNumeric*> _ExpressionList;
 class ExecutionList
 {
   public:
-    ExecutionList(const OGNumeric *tree);
+    ExecutionList(const OGNumeric::Ptr& tree);
     ~ExecutionList();
-    typedef typename _ExpressionList::citerator citerator;
+    typedef typename _ExpressionList::const_iterator citerator;
     size_t size();
     citerator begin();
     citerator end();
-    const OGNumeric* operator[](size_t n);
+    const OGNumeric::Ptr operator[](size_t n);
   private:
     _ExpressionList* _execList;
     ExecutionList() = delete;

@@ -21,11 +21,14 @@ namespace detail {
 class FuzzyCompareOGTerminalContainer
 {
   public:
-    FuzzyCompareOGTerminalContainer(const OGTerminal * terminal);
+    FuzzyCompareOGTerminalContainer(const shared_ptr<const OGTerminal>& terminal);
     ~FuzzyCompareOGTerminalContainer();
-    const OGTerminal * getTerminal() const;
+    const weak_ptr<const OGTerminal> getTerminal() const;
   private:
-    const OGTerminal * _terminal;
+    // We use a weak_ptr to refer to the terminal because the terminal would
+    // always be holding a shared_ptr reference to itself through its
+    // FuzzyCompareOGTerminalContainer, which would prevent it ever getting deleted.
+    const weak_ptr<const OGTerminal> _terminal;
 };
 
 }
@@ -54,6 +57,10 @@ enum DATA_ACCESS
 class OGTerminal: public OGNumeric
 {
   public:
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGTerminal> Ptr;
     /**
      * Gets the number of rows
      */
@@ -85,25 +92,25 @@ class OGTerminal: public OGNumeric
     /**
      * Returns a real dense matrix representation of this terminal
      */
-    virtual OGRealMatrix * asFullOGRealMatrix() const = 0;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const = 0;
     /**
      * Returns a complex dense matrix representation of this terminal
      */
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const = 0;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const = 0;
     /**
      *  Returns this
      */
-    virtual const OGTerminal* asOGTerminal() const override;
+    virtual OGTerminal::Ptr asOGTerminal() const override;
     /**
      * Equals method. Computed bit wise on relavent data fields.
      */
-    virtual bool equals(const OGTerminal *)const = 0;
+    virtual bool equals(const OGTerminal::Ptr&) const = 0;
     /**
      * Fuzzy Equals method. Computed with a fuzzy tolerance (to deal with floating point fuzz) on relavent data fields.
      * @param term the terminal to compare against.
      * @return true if \a this is considered fuzzy equal to \a term, false else
      */
-    virtual bool fuzzyequals(const OGTerminal * term)const = 0;
+    virtual bool fuzzyequals(const OGTerminal::Ptr& term) const = 0;
     /**
      * Fuzzy Equals method. Computed with a fuzzy tolerance (to deal with floating point fuzz) on relavent data fields.
      * @param term the terminal to compare against.
@@ -111,22 +118,22 @@ class OGTerminal: public OGNumeric
      * @param maxrelerror the maximum relative error to use during comparison
      * @return true if \a this is considered fuzzy equal to \a term, false else
      */
-    virtual bool fuzzyequals(const OGTerminal * term, real16 maxabserror, real16 maxrelerror)const = 0;
+    virtual bool fuzzyequals(const OGTerminal::Ptr& term, real16 maxabserror, real16 maxrelerror) const = 0;
     /**
      * Create a copy of this terminal that owns its own data.
      */
-    virtual OGTerminal * createOwningCopy() const = 0;
+    virtual OGTerminal::Ptr createOwningCopy() const = 0;
     /**
      * Create a complex space terminal version of this terminal that owns its own data.
      */
-    virtual OGTerminal * createComplexOwningCopy() const = 0;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const = 0;
 
     /**
      * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
      * @param term the terminal to compare against.
      * @return true if \a this is considered mathematically equal to \a term, false else
      */
-    virtual bool mathsequals(const OGTerminal * term)const;
+    virtual bool mathsequals(const OGTerminal::Ptr& term) const;
 
     /**
      * Checks if two data containers are mathematically equal, regardless of thier underlying data representation.
@@ -135,10 +142,11 @@ class OGTerminal: public OGNumeric
      * @param maxrelerror the maximum relative error to use during comparison
      * @return true if \a this is considered mathematically equal to \a term, false else
      */
-    virtual bool mathsequals(const OGTerminal * term, real16 maxabserror, real16 maxrelerror)const;
-    virtual bool operator==(const OGTerminal&) const;
-    virtual bool operator!=(const OGTerminal&) const;
-    virtual bool operator%(const OGTerminal&) const;
+    virtual bool mathsequals(const OGTerminal::Ptr& term, real16 maxabserror, real16 maxrelerror)const;
+    
+    virtual bool operator==(const OGTerminal::Ptr&) const;
+    virtual bool operator!=(const OGTerminal::Ptr&) const;
+    virtual bool operator%(const OGTerminal::Ptr&) const;
     virtual detail::FuzzyCompareOGTerminalContainer& operator~(void) const;
     virtual bool operator==(const detail::FuzzyCompareOGTerminalContainer&) const;
     virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
@@ -150,7 +158,10 @@ class OGTerminal: public OGNumeric
     const ConvertTo * getConvertTo() const;
   private:
     detail::FuzzyCompareOGTerminalContainer& getFuzzyContainer() const;
-    detail::FuzzyCompareOGTerminalContainer * _fuzzyref = nullptr;
+    // We need _fuzzyref to be mutable so that we can set it later on. We can't set
+    // it on construction, since we need to use shared_from_this() to build the
+    // _fuzzyref.
+    mutable detail::FuzzyCompareOGTerminalContainer * _fuzzyref = nullptr;
     const ConvertTo * _converter = nullptr;
 };
 
@@ -162,26 +173,31 @@ template <typename T>
 class OGScalar: public OGTerminal
 {
   public:
-    OGScalar(T data);
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGScalar<T>> Ptr;
+    static OGScalar<T>::Ptr create(T data);
     virtual int getRows() const override;
     virtual int getCols() const override;
     virtual int getDatalen() const override;
     virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
-    virtual bool equals(const OGTerminal * ) const override;
-    virtual bool fuzzyequals(const OGTerminal * term)const override;
-    virtual bool fuzzyequals(const OGTerminal *, real16 maxabserror, real16 maxrelerror) const override;
+    virtual bool equals(const OGTerminal::Ptr&) const override;
+    virtual bool fuzzyequals(const OGTerminal::Ptr& term)const override;
+    virtual bool fuzzyequals(const OGTerminal::Ptr&, real16 maxabserror, real16 maxrelerror) const override;
     virtual void debug_print() const override;
     /*
      * The following will throw.
      */
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
-    virtual OGNumeric* copy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+    virtual OGNumeric::Ptr copy() const override;
   protected:
+    OGScalar(T data);
     T _value;
 };
 
@@ -192,47 +208,65 @@ extern template class OGScalar<int>;
 class OGRealScalar: public OGScalar<real16>
 {
   public:
-    OGRealScalar(real16 data);
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGRealScalar> Ptr;
+    static OGRealScalar::Ptr create(real16 data);
     virtual real16 ** toReal16ArrayOfArrays() const override;
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
-    virtual OGNumeric* copy() const override;
-    virtual const OGRealScalar* asOGRealScalar() const override;
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGRealScalar::Ptr asOGRealScalar() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    OGRealScalar(real16 data);
 };
 
 
 class OGComplexScalar: public OGScalar<complex16>
 {
   public:
-    OGComplexScalar(complex16 data);
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGComplexScalar> Ptr;
+    static OGComplexScalar::Ptr create(complex16 data);
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
-    virtual OGNumeric* copy() const override;
-    virtual const OGComplexScalar* asOGComplexScalar() const override;
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGComplexScalar::Ptr asOGComplexScalar() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    OGComplexScalar(complex16 data);
 };
 
 class OGIntegerScalar: public OGScalar<int>
 {
   public:
-    OGIntegerScalar(int data);
-    virtual OGNumeric* copy() const override;
-    virtual const OGIntegerScalar* asOGIntegerScalar() const override;
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGIntegerScalar> Ptr;
+    static OGIntegerScalar::Ptr create(int data);
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGIntegerScalar::Ptr asOGIntegerScalar() const override;
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    OGIntegerScalar(int data);
 };
 
 
@@ -246,18 +280,18 @@ template <typename T> class OGArray: public OGTerminal
     virtual int getCols() const override;
     virtual int getDatalen() const override;
     virtual DATA_ACCESS getDataAccess() const;
-    virtual bool equals(const OGTerminal *)const override;
-    virtual bool fuzzyequals(const OGTerminal * term)const override;
-    virtual bool fuzzyequals(const OGTerminal *, real16 maxabserror, real16 maxrelerror) const override;
+    virtual bool equals(const OGTerminal::Ptr&) const override;
+    virtual bool fuzzyequals(const OGTerminal::Ptr& term)const override;
+    virtual bool fuzzyequals(const OGTerminal::Ptr&, real16 maxabserror, real16 maxrelerror) const override;
     /*
      * The following will throw.
      */
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
     virtual void debug_print() const override;
-    virtual OGNumeric* copy() const override;
+    virtual OGNumeric::Ptr copy() const override;
     virtual void accept(Visitor &v) const override;
   protected:
     void setData(T * data);
@@ -265,7 +299,8 @@ template <typename T> class OGArray: public OGTerminal
     void setCols(int cols);
     void setDatalen(int datalen);
     void setDataAccess(DATA_ACCESS access_spec);
-    bool fundamentalsEqual(const OGTerminal * ) const;
+    bool fundamentalsEqual(const OGTerminal::Ptr&) const;
+    bool fundamentalsEqual(const OGTerminal*) const;
   private:
     T * _data = nullptr;
     int _rows  = 0;
@@ -281,16 +316,19 @@ template <typename T> class OGArray: public OGTerminal
 template <typename T> class OGMatrix: public OGArray<T>
 {
   public:
-    OGMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    typedef std::shared_ptr<const OGMatrix<T>> Ptr;
+    static OGMatrix<T>::Ptr create(T* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void accept(Visitor &v) const override;
     virtual void debug_print() const override;
-    virtual OGNumeric* copy() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
     virtual real16 ** toReal16ArrayOfArrays() const override;
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
     virtual ExprType_t getType() const override;
     T** toArrayOfArrays() const;
+  protected:
+    OGMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
 };
 
 template<> real16 ** OGMatrix<real16>::toReal16ArrayOfArrays() const;
@@ -305,37 +343,56 @@ extern template class OGMatrix<complex16>;
 class OGRealMatrix: public OGMatrix<real16>
 {
   public:
-    using OGMatrix::OGMatrix;
-    virtual OGNumeric* copy() const override;
-    virtual const OGRealMatrix* asOGRealMatrix() const override;
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGRealMatrix> Ptr;
+    static OGRealMatrix::Ptr create(real16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGRealMatrix::Ptr asOGRealMatrix() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    using OGMatrix::OGMatrix;
 };
 
 
 class OGComplexMatrix: public OGMatrix<complex16>
 {
   public:
-    using OGMatrix::OGMatrix;
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGComplexMatrix> Ptr;
+    static OGComplexMatrix::Ptr create(complex16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
-    virtual OGNumeric* copy() const override;
-    virtual const OGComplexMatrix* asOGComplexMatrix() const override;
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGComplexMatrix::Ptr asOGComplexMatrix() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    using OGMatrix::OGMatrix;
 };
 
 
 class OGLogicalMatrix: public OGRealMatrix
 {
   public:
-    using OGRealMatrix::OGRealMatrix; // TODO: range limit inputs
-    virtual const OGLogicalMatrix * asOGLogicalMatrix() const override;
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGLogicalMatrix> Ptr;
+    // TODO: range limit inputs
+    static OGLogicalMatrix::Ptr create(real16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    virtual OGLogicalMatrix::Ptr asOGLogicalMatrix() const override;
+  protected:
+    using OGRealMatrix::OGRealMatrix;
 };
 
 /**
@@ -345,9 +402,12 @@ class OGLogicalMatrix: public OGRealMatrix
 template <typename T> class OGDiagonalMatrix: public OGArray<T>
 {
   public:
-    OGDiagonalMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    typedef std::shared_ptr<const OGDiagonalMatrix<T>> Ptr;
+    static OGDiagonalMatrix<T>::Ptr create(T* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
+  protected:
+    OGDiagonalMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
 };
 
 extern template class OGDiagonalMatrix<real16>;
@@ -356,34 +416,46 @@ extern template class OGDiagonalMatrix<complex16>;
 class OGRealDiagonalMatrix: public OGDiagonalMatrix<real16>
 {
   public:
-    using OGDiagonalMatrix::OGDiagonalMatrix;
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGRealDiagonalMatrix> Ptr;
+    static OGRealDiagonalMatrix::Ptr create(real16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void debug_print() const override;
     virtual real16* toReal16Array() const override;
     virtual real16** toReal16ArrayOfArrays() const override;
-    virtual OGNumeric* copy() const override;
-    virtual const OGRealDiagonalMatrix* asOGRealDiagonalMatrix() const override;
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGRealDiagonalMatrix::Ptr asOGRealDiagonalMatrix() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    using OGDiagonalMatrix::OGDiagonalMatrix;
 };
 
 
 class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 {
   public:
-    using OGDiagonalMatrix::OGDiagonalMatrix;
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGComplexDiagonalMatrix> Ptr;
+    static OGComplexDiagonalMatrix::Ptr create(complex16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void debug_print() const override;
     virtual complex16* toComplex16Array() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
-    virtual OGNumeric* copy() const override;
-    virtual const OGComplexDiagonalMatrix* asOGComplexDiagonalMatrix() const override;
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGComplexDiagonalMatrix::Ptr asOGComplexDiagonalMatrix() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    using OGDiagonalMatrix::OGDiagonalMatrix;
 };
 
 
@@ -394,18 +466,20 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
 template <typename T> class OGSparseMatrix: public OGArray<T>
 {
   public:
-    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    typedef std::shared_ptr<const OGSparseMatrix<T>> Ptr;
+    static OGSparseMatrix<T>::Ptr create(int* colPtr, int* rowIdx, T* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual ~OGSparseMatrix();
     virtual void accept(Visitor &v) const override;
     int* getColPtr() const;
     int* getRowIdx() const;
     T** toArrayOfArrays() const;
-    virtual bool equals(const OGTerminal * ) const override; // override OGArray equals to add in calls to check colPtr and rowIdx
-    virtual bool fuzzyequals(const OGTerminal * term)const override;
-    virtual bool fuzzyequals(const OGTerminal *, real16 maxabserror, real16 maxrelerror) const override;
+    virtual bool equals(const OGTerminal::Ptr&) const override; // override OGArray equals to add in calls to check colPtr and rowIdx
+    virtual bool fuzzyequals(const OGTerminal::Ptr& term) const override;
+    virtual bool fuzzyequals(const OGTerminal::Ptr&, real16 maxabserror, real16 maxrelerror) const override;
   protected:
     void setColPtr(int * colPtr);
     void setRowIdx(int * rowIdx);
+    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
   private:
     int* _colPtr = nullptr; // the column pointer index
     int* _rowIdx = nullptr; // the row index
@@ -417,34 +491,46 @@ extern template class OGSparseMatrix<complex16>;
 class OGRealSparseMatrix: public OGSparseMatrix<real16>
 {
   public:
-    using OGSparseMatrix::OGSparseMatrix;
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGRealSparseMatrix> Ptr;
+    static OGRealSparseMatrix::Ptr create(int* colPtr, int* rowIdx, real16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void debug_print() const override;
     virtual real16* toReal16Array() const override;
     virtual real16** toReal16ArrayOfArrays() const override;
-    virtual OGNumeric* copy() const override;
-    virtual const OGRealSparseMatrix* asOGRealSparseMatrix() const override;
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGRealSparseMatrix::Ptr asOGRealSparseMatrix() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    using OGSparseMatrix::OGSparseMatrix;
 };
 
 
 class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
 {
   public:
-    using OGSparseMatrix::OGSparseMatrix;
+    /**
+     * Pointer type.
+     */
+    typedef std::shared_ptr<const OGComplexSparseMatrix> Ptr;
+    static OGComplexSparseMatrix::Ptr create(int* colPtr, int* rowIdx, complex16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
     virtual void debug_print() const override;
     virtual complex16* toComplex16Array() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
-    virtual OGNumeric* copy() const override;
-    virtual const OGComplexSparseMatrix* asOGComplexSparseMatrix() const override;
+    virtual OGNumeric::Ptr copy() const override;
+    virtual OGComplexSparseMatrix::Ptr asOGComplexSparseMatrix() const override;
     virtual ExprType_t getType() const override;
-    virtual OGRealMatrix * asFullOGRealMatrix() const override;
-    virtual OGComplexMatrix * asFullOGComplexMatrix() const override;
-    virtual OGTerminal * createOwningCopy() const override;
-    virtual OGTerminal * createComplexOwningCopy() const override;
+    virtual std::shared_ptr<const OGRealMatrix> asFullOGRealMatrix() const override;
+    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual OGTerminal::Ptr createOwningCopy() const override;
+    virtual OGTerminal::Ptr createComplexOwningCopy() const override;
+  protected:
+    using OGSparseMatrix::OGSparseMatrix;
 };
 
 /**
@@ -456,12 +542,12 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
  * @return a non-templated OGMatrix object.
  */
 template<typename T>
-OGTerminal * makeConcreteDenseMatrix(T * data, int rows, int cols, DATA_ACCESS access);
+OGNumeric::Ptr makeConcreteDenseMatrix(T * data, int rows, int cols, DATA_ACCESS access);
 // PTS
 template<>
-OGTerminal * makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access);
+OGNumeric::Ptr makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access);
 template<>
-OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access);
+OGNumeric::Ptr makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access);
 
 /**
  * Creates a non-templated OGScalar object based on the type of data \a T.
@@ -470,12 +556,12 @@ OGTerminal * makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_
  * @return a non-templated OGScalar object.
  */
 template<typename T>
-OGTerminal * makeConcreteScalar(T data);
+OGNumeric::Ptr makeConcreteScalar(T data);
 // PTS
 template<>
-OGTerminal * makeConcreteScalar(real16 data);
+OGNumeric::Ptr  makeConcreteScalar(real16 data);
 template<>
-OGTerminal * makeConcreteScalar(complex16 data);
+OGNumeric::Ptr  makeConcreteScalar(complex16 data);
 
 
 } // end namespace librdag

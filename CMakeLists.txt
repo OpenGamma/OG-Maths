@@ -141,8 +141,15 @@ set(TARGET_TYPES dbg std sse41 avx1)
 # break comparison behaviours.
 set(FFAST_MATH_SAFE "-fno-math-errno  -fno-rounding-math -fno-signaling-nans -fcx-limited-range")
 
-set(OPT_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
-set(OPT_FLAGS_std "-g ${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
+if (WIN32)
+  # We need a larger than default stack to prevent the entrypt test
+  # failing, and we need to force the export of all symbols since
+  # they were all visible by default in the original implementation.
+  set (PLATFORM_FLAGS "-Wl,--export-all-symbols -Wl,--stack,4194304")
+endif()
+
+set(OPT_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG} ${PLATFORM_FLAGS}")
+set(OPT_FLAGS_std "-g ${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG ${PLATFORM_FLAGS}")
 set(OPT_FLAGS_sse41 "-g ${OPT_FLAGS_std} -march=core2 -msse4.1")
 set(OPT_FLAGS_avx1 "-g ${OPT_FLAGS_std}  -march=corei7-avx -mavx256-split-unaligned-load -mavx256-split-unaligned-store")
 

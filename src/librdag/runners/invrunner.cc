@@ -26,18 +26,18 @@
 namespace librdag {
 
 void *
-INVRunner::run(RegContainer& reg, OGRealScalar const * arg) const
+INVRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
-  const OGRealScalar* ret;
+  OGNumeric::Ptr ret;
   real16 x = arg->getValue();
   if(x == 0.e0)
   {
     cerr << "Warning: singular system detected in matrix inversion" << std::endl;
-    ret = new OGRealScalar(std::numeric_limits<real16>::infinity());
+    ret = OGRealScalar::create(std::numeric_limits<real16>::infinity());
   }
   else
   {
-    ret = new OGRealScalar(1.e0/x);
+    ret = OGRealScalar::create(1.e0/x);
   }
   reg.push_back(ret);
   return nullptr;
@@ -45,9 +45,9 @@ INVRunner::run(RegContainer& reg, OGRealScalar const * arg) const
 
 template<typename T>
 void
-inv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
+inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 {
-  const OGTerminal* ret = nullptr; // the returned item
+  OGNumeric::Ptr ret; // the returned item
 
   // Matrix in scalar context, i.e. a 1x1 matrix, inv is simply value**-1
   if(arg->getRows()==1 && arg->getCols()==1)
@@ -128,16 +128,16 @@ inv_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
 }
 
 void *
-INVRunner::run(RegContainer& reg, OGRealMatrix const * arg) const
+INVRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  inv_dense_runner(reg, arg);
+  inv_dense_runner<real16>(reg, arg);
   return nullptr;
 }
 
 void *
-INVRunner::run(RegContainer& reg, OGComplexMatrix const * arg) const
+INVRunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
 {
-  inv_dense_runner(reg, arg);
+  inv_dense_runner<complex16>(reg, arg);
   return nullptr;
 }
 

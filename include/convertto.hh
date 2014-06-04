@@ -31,21 +31,21 @@ class ConvertTo
 {
   public:
     ConvertTo();
-    OGRealMatrix * convertToOGRealMatrix(OGRealScalar const * thing) const;
-    OGRealMatrix * convertToOGRealMatrix(OGIntegerScalar const * thing) const;
-    OGRealMatrix * convertToOGRealMatrix(OGRealDiagonalMatrix const * thing) const;
-    OGRealMatrix * convertToOGRealMatrix(OGLogicalMatrix const * thing) const;
-    OGRealMatrix * convertToOGRealMatrix(OGRealSparseMatrix const * thing) const;
+    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGRealScalar> thing) const;
+    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGIntegerScalar> thing) const;
+    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGRealDiagonalMatrix> thing) const;
+    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGLogicalMatrix> thing) const;
+    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGRealSparseMatrix> thing) const;
 
-    OGComplexMatrix * convertToOGComplexMatrix(OGRealScalar const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGIntegerScalar const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGComplexScalar const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGRealDiagonalMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGComplexDiagonalMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGRealSparseMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGComplexSparseMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGRealMatrix const * thing) const;
-    OGComplexMatrix * convertToOGComplexMatrix(OGLogicalMatrix const * thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGRealScalar> thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGIntegerScalar> thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGComplexScalar> thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGRealDiagonalMatrix>  thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGComplexDiagonalMatrix> thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGRealSparseMatrix> thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGComplexSparseMatrix> thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGRealMatrix> thing) const;
+    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGLogicalMatrix> thing) const;
 };
 
 }

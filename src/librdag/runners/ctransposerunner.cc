@@ -5,6 +5,9 @@
  *
  */
 
+#include <complex>
+#include <sstream>
+
 #include "dispatch.hh"
 #include "runners.hh"
 #include "expression.hh"
@@ -13,29 +16,24 @@
 #include "uncopyable.hh"
 #include "lapack.hh"
 
-#include <stdio.h>
-#include <complex>
-#include <sstream>
-
 /*
  *  Unit contains code for CTRANSPOSE node runners
  */
 namespace librdag {
 
 void *
-CTRANSPOSERunner::run(RegContainer& reg, OGRealScalar const * arg) const
+CTRANSPOSERunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
-  const OGRealScalar* ret;
-  ret = new OGRealScalar(arg->getValue());
+  OGNumeric::Ptr ret = OGRealScalar::create(arg->getValue());
   reg.push_back(ret);
   return nullptr;
 }
 
 template<typename T>
 void
-ctranspose_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
+ctranspose_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>>  arg)
 {
-  const OGTerminal* ret = nullptr; // the returned item
+  OGNumeric::Ptr ret; // the returned item
 
   // Matrix in scalar context, i.e. a 1x1 matrix, transpose is simply value
   if(arg->getRows()==1 && arg->getCols()==1)
@@ -64,16 +62,16 @@ ctranspose_dense_runner(RegContainer& reg, OGMatrix<T> const * arg)
 }
 
 void *
-CTRANSPOSERunner::run(RegContainer& reg, OGRealMatrix const * arg) const
+CTRANSPOSERunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  ctranspose_dense_runner(reg, arg);
+  ctranspose_dense_runner<real16>(reg, arg);
   return nullptr;
 }
 
 void *
-CTRANSPOSERunner::run(RegContainer& reg, OGComplexMatrix const * arg) const
+CTRANSPOSERunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
 {
-  ctranspose_dense_runner(reg, arg);
+  ctranspose_dense_runner<complex16>(reg, arg);
   return nullptr;
 }
 

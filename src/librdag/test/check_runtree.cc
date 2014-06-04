@@ -17,31 +17,26 @@ using namespace librdag;
 
 TEST(RunTree, ThrowDueToBadOp)
 {
-    OGRealScalar * s1 = new OGRealScalar(10);
-    OGRealMatrix * m1 = new OGRealMatrix(new real16[2]{1,2},2,1,OWNER);
-    OGRealMatrix * m2 = new OGRealMatrix(new real16[2]{1,2},2,1,OWNER);
+    OGNumeric::Ptr s1 = OGRealScalar::create(10);
+    OGNumeric::Ptr m1 = OGRealMatrix::create(new real16[2]{1,2},2,1,OWNER);
+    OGNumeric::Ptr m2 = OGRealMatrix::create(new real16[2]{1,2},2,1,OWNER);
 
-    OGExpr * s1m1 = new MTIMES(s1,m1);
-    OGExpr * s1m1m2 = new MTIMES(s1m1,m2);
+    OGExpr::Ptr s1m1 = MTIMES::create(s1,m1);
+    OGExpr::Ptr s1m1m2 = MTIMES::create(s1m1,m2);
     EXPECT_THROW(runtree(s1m1m2),rdag_error);
-
-    delete s1m1m2;
 }
 
 TEST(RunTree, ExecOk)
 {
-    OGRealScalar * s1 = new OGRealScalar(10);
-    OGRealMatrix * m1 = new OGRealMatrix(new real16[2]{1,2},1,2,OWNER);
-    OGRealMatrix * m2 = new OGRealMatrix(new real16[2]{1,2},2,1,OWNER);
+    OGNumeric::Ptr s1 = OGRealScalar::create(10);
+    OGNumeric::Ptr m1 = OGRealMatrix::create(new real16[2]{1,2},1,2,OWNER);
+    OGNumeric::Ptr m2 = OGRealMatrix::create(new real16[2]{1,2},2,1,OWNER);
 
-    OGExpr * s1m1 = new MTIMES(s1,m1);
-    OGExpr * s1m1m2 = new MTIMES(s1m1,m2);
+    OGExpr::Ptr s1m1 = MTIMES::create(s1,m1);
+    OGExpr::Ptr s1m1m2 = MTIMES::create(s1m1,m2);
 
     runtree(s1m1m2);
 
-    OGRealScalar * expected = new OGRealScalar(50);
+    OGTerminal::Ptr expected = OGRealScalar::create(50);
     EXPECT_TRUE(s1m1m2->getRegs()[0]->asOGTerminal()->mathsequals(expected));
-
-    delete s1m1m2;
-    delete expected;
 }

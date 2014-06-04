@@ -238,23 +238,20 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_maths_materialisers_Materialis
 {
   DEBUG_PRINT("Entering materialise function\n");
 
-  librdag::OGNumeric* chain;
   jobjectArray returnVal;
 
   try
   {
     // convert obj to OGNumeric objs
     DEBUG_PRINT("Calling convert::createExpression\n");
-    chain = convert::createExpression(obj);
+    librdag::OGNumeric::Ptr chain = convert::createExpression(obj);
     DEBUG_PRINT("Check for exception before entrypt\n");
     checkEx(env);
     DEBUG_PRINT("Calling entrypt function\n");
-    const librdag::OGTerminal* answer = entrypt(chain);
+    librdag::OGTerminal::Ptr answer = entrypt(chain);
     DEBUG_PRINT("Returning from entrypt function\n");
 
-    DispatchToReal16ArrayOfArrays visitor{};
-    answer->accept(visitor);
-    returnVal = convertCreal16ArrOfArr2JDoubleArrOfArr(env, visitor.getData(), visitor.getRows(), visitor.getCols());
+    returnVal = Real16AoA{answer}.toJDoubleAoA(env);
   }
   catch (convert_error e)
   {
@@ -271,8 +268,6 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_maths_materialisers_Materialis
     unspecifiedExceptionJava(env, e);
     return nullptr;
   }
-
-  delete chain;
 
   DEBUG_PRINT("Returning\n");
   return returnVal;
@@ -289,30 +284,25 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_maths_materialisers_Materialisers_m
   DEBUG_PRINT("materialiseToJComplexArrayContainer\n");
   DEBUG_PRINT("Entering materialise function\n");
 
-  librdag::OGNumeric * chain;
   jobject returnVal;
 
   try
   {
     DEBUG_PRINT("Calling convert::createExpression\n");
     // convert obj to OGNumeric objs
-    chain = convert::createExpression(obj);
+    librdag::OGNumeric::Ptr chain = convert::createExpression(obj);
 
     DEBUG_PRINT("Check for exception before entrypt\n");
     checkEx(env);
     DEBUG_PRINT("Calling entrypt function\n");
-    const librdag::OGTerminal* answer = entrypt(chain);
+    librdag::OGTerminal::Ptr answer = entrypt(chain);
 
-
-    DispatchToComplex16ArrayOfArrays visitor{};
-    answer->accept(visitor);
-
-    jobjectArray realPart = extractRealPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor.getData(), visitor.getRows(), visitor.getCols());
-    jobjectArray complexPart = extractImagPartOfCcomplex16ArrOfArr2JDoubleArrOfArr(env, visitor.getData(), visitor.getRows(), visitor.getCols());
-
+    Complex16AoA c = Complex16AoA{answer};
+    jobjectArray realPart = c.realPartToJDoubleAoA(env);
+    jobjectArray imagPart = c.imagPartToJDoubleAoA(env);
     returnVal = env->NewObject(JVMManager::getComplexArrayContainerClazz(),
                                JVMManager::getComplexArrayContainerClazz_ctor_DAoA_DAoA(),
-                               realPart, complexPart);
+                               realPart, imagPart);
   }
   catch (convert_error e)
   {
@@ -329,8 +319,6 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_maths_materialisers_Materialisers_m
     unspecifiedExceptionJava(env, e);
     return nullptr;
   }
-
-  delete chain;
 
   DEBUG_PRINT("Returning\n");
   return returnVal;
@@ -353,18 +341,17 @@ Java_com_opengamma_maths_materialisers_Materialisers_materialiseToOGTerminal(JNI
 {
   DEBUG_PRINT("materialiseToOGTerminal\n");
   DEBUG_PRINT("Calling convert::createExpression\n");
-  librdag::OGNumeric * chain;
   jobject result;
 
   try
   {
   // convert obj to OGNumeric objs
-    chain = convert::createExpression(obj);
+    librdag::OGNumeric::Ptr chain = convert::createExpression(obj);
 
     DEBUG_PRINT("Check for exception before entrypt\n");
     checkEx(env);
     DEBUG_PRINT("Calling entrypt function\n");
-    const librdag::OGTerminal* answer = entrypt(chain);
+    librdag::OGTerminal::Ptr answer = entrypt(chain);
 
     DispatchToOGTerminal visitor{env};
     answer->accept(visitor);
@@ -385,8 +372,6 @@ Java_com_opengamma_maths_materialisers_Materialisers_materialiseToOGTerminal(JNI
     unspecifiedExceptionJava(env, e);
     return nullptr;
   }
-
-  delete chain;
 
   DEBUG_PRINT("Returning\n");
   return result;
