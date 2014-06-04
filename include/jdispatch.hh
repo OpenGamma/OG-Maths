@@ -94,6 +94,10 @@ class Complex16AoA
      */
     int getCols() const;
   private:
+    /**
+     * Used by {real,imag}PartToJDoubleAoA
+     */
+    template<double (F)(const complex<double>&)> jobjectArray toJDoubleAoA(JNIEnv* env) const;
     complex16** _data;
     int _rows;
     int _cols;

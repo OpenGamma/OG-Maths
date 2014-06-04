@@ -39,7 +39,7 @@ Real16AoA::Real16AoA(const OGNumeric::Ptr& node)
     break;
   default:
     stringstream message;
-    message << "Unknown type for dispatchToReal16AoA. Type is " << type << ".";
+    message << "Unsupported type for Real16AoA. Type is " << type << ".";
     throw convert_error(message.str());
   }
 }
@@ -120,7 +120,9 @@ Complex16AoA::Complex16AoA(const OGNumeric::Ptr& node)
     break;
   case REAL_MATRIX_ENUM:
   case COMPLEX_MATRIX_ENUM:
+  case REAL_DIAGONAL_MATRIX_ENUM:
   case COMPLEX_DIAGONAL_MATRIX_ENUM:
+  case REAL_SPARSE_MATRIX_ENUM:
   case COMPLEX_SPARSE_MATRIX_ENUM:
     _data = node->asOGTerminal()->toComplex16ArrayOfArrays();
     _rows = node->asOGTerminal()->getRows();
@@ -128,7 +130,7 @@ Complex16AoA::Complex16AoA(const OGNumeric::Ptr& node)
     break;
   default:
     stringstream message;
-    message << "Unknown type for dispatchToReal16AoA. Type is " << type << ".";
+    message << "Unsupported type for Complex16AoA. Type is " << type << ".";
     throw convert_error(message.str());
   }
 }
@@ -163,24 +165,18 @@ Complex16AoA::~Complex16AoA()
 jobjectArray
 Complex16AoA::realPartToJDoubleAoA(JNIEnv* env) const
 {
-  jobjectArray returnVal = JVMManager::newObjectArray(env, _rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  real16 * aRow = new real16[_cols];
-  for(int i = 0; i < _rows; i++)
-  {
-    jdoubleArray tmp = JVMManager::newDoubleArray(env, _cols);
-    for(int j = 0; j < _cols; j++)
-    {
-      aRow[j] = std::real(_data[i][j]);
-    }
-    env->SetDoubleArrayRegion(tmp, 0, _cols, aRow);
-    env->SetObjectArrayElement(returnVal, i, tmp);
-  }
-  delete aRow;
-  return returnVal;
+  return toJDoubleAoA<std::real>(env);
 }
 
 jobjectArray
 Complex16AoA::imagPartToJDoubleAoA(JNIEnv* env) const
+{
+  return toJDoubleAoA<std::imag>(env);
+}
+
+template<double (F)(const complex<double>&)>
+jobjectArray
+Complex16AoA::toJDoubleAoA(JNIEnv* env) const
 {
   jobjectArray returnVal = JVMManager::newObjectArray(env, _rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
   real16 * aRow = new real16[_cols];
@@ -189,7 +185,7 @@ Complex16AoA::imagPartToJDoubleAoA(JNIEnv* env) const
     jdoubleArray tmp = JVMManager::newDoubleArray(env, _cols);
     for(int j = 0; j < _cols; j++)
     {
-      aRow[j]=std::imag(_data[i][j]);
+      aRow[j] = F(_data[i][j]);
     }
     env->SetDoubleArrayRegion(tmp, 0, _cols, aRow);
     env->SetObjectArrayElement(returnVal, i, tmp);
@@ -197,7 +193,6 @@ Complex16AoA::imagPartToJDoubleAoA(JNIEnv* env) const
   delete aRow;
   return returnVal;
 }
-
 
 complex16**
 Complex16AoA::getData() const
