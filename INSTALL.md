@@ -33,7 +33,8 @@ That's literally it! The jar has all the code included necessary to work out whi
 
 Note: To get a JAR like the one we distribute you'll need to build on all of
 Linux, OSX and Windows and then combine the jars produced into a single JAR. If
-you just want a JAR for a single platform, this step can be omitted.
+you just want a JAR for a single platform, then combining the JARs can be
+omitted.
 
 ### Requirements ####
 
@@ -117,6 +118,49 @@ Test with:
 ```
 export NPROCS=4
 make test ARGS=-j${NPROCS}
+```
+
+Combining the JARs
+------------------
+
+This step is optional, and only required if you intend to make a single
+multiplatform OG-Maths JAR file.
+
+In order to combine all the relevant build artifacts into a single blob for
+combination, run the following on each platform in the `build` directory:
+
+```
+python ../cmake/makeblob.py verinfo.yaml 1
+```
+
+The final argument specifies the build number - this is usually filled in by our
+build system, but you can use 1 as a placeholder. `makeblob.py` will output the
+name of the generated blob.
+
+Copy the resulting blob zips from each platform into the `combine` folder on the
+Linux machine. Then created a combined blob by running:
+
+```
+python combine.py 1 lnx.zip osx.zip win.zip
+```
+
+where `lnx.zip`, `osx.zip` and `win.zip` are the names of the blobs from each
+platform. This will generate a combined blob (a zip file) which contains:
+
+* The main JAR, which will run on all three platforms,
+* The tests JAR,
+* The source JAR,
+* The javadoc JAR,
+* and a `verinfo.yaml` file that contains information about the revisions that
+  the blob was built from.
+
+These can all be found by unzipping the blob, the name of which is specified in
+the output of `combine.py`. If you wish, you can test the combined main JAR on
+each platform by copying it and the tests JAR across, and then running:
+
+```
+export CLASSPATH=$CLASSPATH:<path to combined main jar>
+java org.testng.TestNG -testjar <path to tests jar> -listener com.opengamma.maths.fuzzer.TransformAnnotationFuzzOnly
 ```
 
 #### Troubleshooting native library extraction
