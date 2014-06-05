@@ -18,6 +18,7 @@ set(TESTS
   check_expressions
   check_iss
   check_lapack
+  check_mem
   check_numerictypes
   check_runtree
   check_rtti

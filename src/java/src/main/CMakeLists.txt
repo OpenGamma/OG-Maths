@@ -76,6 +76,10 @@ set(JAVA_FILES
     fuzzer/FixedSizeFIFO.java
     fuzzer/FuzzerResult.java
     fuzzer/TransformAnnotationFuzzOnly.java
+    mem/AlignedAlignedWriteBuffer.java
+    mem/AVXAlignedMemoryBlock.java
+    mem/InvalidAccessException.java
+    mem/Stdlib.java
     )
 
 foreach(JFILE ${JAVA_FILES})

@@ -47,6 +47,9 @@ set(JAVA_FILES
     fuzzer/FuzzerMainTest.java
     fuzzer/TreeFuzzerTest.java
     fuzzer/FixedSizeFIFOTest.java
+    mem/StdlibTest.java
+    mem/AlignedAlignedWriteBufferTest.java
+    mem/AVXAlignedMemoryBlockTest.java
     )
 
 foreach(JFILE ${JAVA_FILES})
