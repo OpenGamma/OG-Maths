@@ -178,6 +178,8 @@ OGNumeric::Ptr createExpression(jobject jexpr)
           
           argPos.pop();
           workJexprs.pop();
+          // We're finished with the current node, so we can clean up the local ref
+          env->DeleteLocalRef(current.obj);
         }
       }
       else
