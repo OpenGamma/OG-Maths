@@ -91,19 +91,14 @@ OGNumeric::Ptr createExpression(jobject jexpr)
   JNIEnv* env = nullptr;
   JVMManager::getEnv((void **) &env);
 
-  // Stage 1: linearise java tree
+  // This function implements a procedural depth-first traversal of the expression tree,
+  // building the RDAG expression tree as it travels. Since it visits nodes in reverse
+  // Polish order, we can use a stack to place tree components whilst we're constructing
+  // them, and any time we need operands, they're always on the top of the stack.
 
-  // We want to be able to build the Rdag tree by starting with the last node visited
-  // here. So we do a simple depth-first traversal to linearise the tree, then the
-  // Rdag tree construction can work through the stack to get nodes in reverse order.
-
-  // Exceptions: stage 1 uses all stack-allocated variables and only deals with
-  // local references, so no explicit cleanup is required if an exception is thrown.
-
-  // jexprs is the stack containing the Java objects in the order they need to be
-  // translated. We store a jnode, which holds its arguments and number of arguments
-  // as well.
-  vector<jnode> jexprs;
+  // Holds partially-constructed expressions whilst we are constructing the tree. At the
+  // end of the traversal, it has a single entry, which is the root of the tree.
+  stack<OGNumeric::Ptr> exprStack;
   // Workjexprs is our working stack of Java expression objects.
   stack<jnode> workJexprs;
   // argPos is a temporary state for recording how far we got through getting the args of a
@@ -114,7 +109,6 @@ OGNumeric::Ptr createExpression(jobject jexpr)
   Direction dir = Direction::DOWN;
 
   // Initialise stacks with the root node, we're starting at arg position 0
-
   jnode firstNode{ env, jexpr };
   workJexprs.push(firstNode);
   argPos.push(0);
@@ -126,8 +120,10 @@ OGNumeric::Ptr createExpression(jobject jexpr)
 
     if (!(getType(env, current.obj) & IS_NODE_MASK))
     {
-      // We've got a terminal, This node is next to execute
-      jexprs.push_back(current);
+      // We've got a terminal, This node is next to execute, so translate and put on
+      // the expression stack so it is ready to be picked up by its operator
+      OGNumeric::Ptr n = translateNode(env, current.obj);
+      exprStack.push(n);
       // Go back up to where we came from, by removing this node from the work stacks
       workJexprs.pop();
       argPos.pop();
@@ -160,12 +156,30 @@ OGNumeric::Ptr createExpression(jobject jexpr)
         else
         {
           // Yes, so current node is next in execution list and we need to carry on upwards
-
-          // Current node is next in the execution list
-          jexprs.push_back(current);
-          // Go back to the previous node by removing this one from the stack
+         
+          // Translate the current node - its arguments are on the top of the expression stack
+          OGNumeric::Ptr n, arg0, arg1;
+          switch (current.nArgs)
+          {
+          case 1:
+            arg0 = exprStack.top();
+            exprStack.pop();
+            n = translateNode(env, current.obj, arg0);
+            break;
+          case 2:
+            arg1 = exprStack.top();
+            exprStack.pop();
+            arg0 = exprStack.top();
+            exprStack.pop();
+            n = translateNode(env, current.obj, arg0, arg1);
+            break;
+          }
+          exprStack.push(n);
+          
           argPos.pop();
           workJexprs.pop();
+          // We're finished with the current node, so we can clean up the local ref
+          env->DeleteLocalRef(current.obj);
         }
       }
       else
@@ -181,51 +195,7 @@ OGNumeric::Ptr createExpression(jobject jexpr)
       }
     }
   }
-
-  // Stage 2: construct Rdag tree
-
-  // We iterate over the list of jexprs and construct the corresponding C++ node. When a
-  // node is constructed, we push it on a stack. When we have construct an expression,
-  // we need to pop the N nodes from the stack where N is the number of args it has.
-  //
-  // At the end of the iteration, there should be a single node left on the stack.
-  // This node is the root of the expression tree.
-
-  // Holds partially-constructed expressions that form part of our arguments.
-  stack<OGNumeric::Ptr> exprStack;
-
-  for(auto node: jexprs)
-  {
-    OGNumeric::Ptr numeric;
-    OGNumeric::Ptr arg0;
-    OGNumeric::Ptr arg1;
-
-    switch (node.nArgs)
-    {
-    case 0:
-      // This is a terminal, and requires no args
-      numeric = translateNode(env, node.obj);
-      break;
-    case 1:
-      // This is a UnaryExpr
-      numeric = translateNode(env, node.obj, exprStack.top());
-      exprStack.pop();
-      break;
-    case 2:
-      // This is a BinaryExpr
-      arg1 = exprStack.top();
-      exprStack.pop();
-      arg0 = exprStack.top();
-      exprStack.pop();
-      numeric = translateNode(env, node.obj, arg0, arg1);
-      break;
-    default:
-      throw convert_error("Unexpected number of args for expr in stage 2 of conversion");
-    }
-
-    exprStack.push(numeric);
-  }
-
+  
   if (exprStack.size() != 1)
   {
     throw convert_error("Translated expression has multiple roots - "
