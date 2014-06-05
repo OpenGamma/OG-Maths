@@ -23,15 +23,12 @@ class FuzzyCompareOGTerminalContainer
   public:
     FuzzyCompareOGTerminalContainer(const shared_ptr<const OGTerminal>& terminal);
     ~FuzzyCompareOGTerminalContainer();
-    const weak_ptr<const OGTerminal> getTerminal() const;
+    const shared_ptr<const OGTerminal> getTerminal() const;
   private:
-    // We use a weak_ptr to refer to the terminal because the terminal would
-    // always be holding a shared_ptr reference to itself through its
-    // FuzzyCompareOGTerminalContainer, which would prevent it ever getting deleted.
-    const weak_ptr<const OGTerminal> _terminal;
+    const shared_ptr<const OGTerminal> _terminal;
 };
 
-}
+} // end namespace detail
 
 
 /**
@@ -147,22 +144,13 @@ class OGTerminal: public OGNumeric
     virtual bool operator==(const OGTerminal::Ptr&) const;
     virtual bool operator!=(const OGTerminal::Ptr&) const;
     virtual bool operator%(const OGTerminal::Ptr&) const;
-    virtual detail::FuzzyCompareOGTerminalContainer& operator~(void) const;
+    virtual detail::FuzzyCompareOGTerminalContainer operator~(void) const;
     virtual bool operator==(const detail::FuzzyCompareOGTerminalContainer&) const;
     virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
     OGTerminal();
     virtual ~OGTerminal();
-    /**
-     * Gets the converter
-     */
-    const ConvertTo * getConvertTo() const;
-  private:
-    detail::FuzzyCompareOGTerminalContainer& getFuzzyContainer() const;
-    // We need _fuzzyref to be mutable so that we can set it later on. We can't set
-    // it on construction, since we need to use shared_from_this() to build the
-    // _fuzzyref.
-    mutable detail::FuzzyCompareOGTerminalContainer * _fuzzyref = nullptr;
-    const ConvertTo * _converter = nullptr;
+  protected:
+    ConvertTo _converter;
 };
 
 /**

@@ -65,10 +65,10 @@ OGTerminal::operator!=(const OGTerminal::Ptr& other) const
   return !(this->equals(other));
 }
 
-detail::FuzzyCompareOGTerminalContainer&
+detail::FuzzyCompareOGTerminalContainer
 OGTerminal::operator~(void) const
 {
-  return this->getFuzzyContainer();
+  return detail::FuzzyCompareOGTerminalContainer(asOGTerminal());
 }
 
 bool OGTerminal::operator==(const detail::FuzzyCompareOGTerminalContainer& thing) const
@@ -81,34 +81,9 @@ bool OGTerminal::operator!=(const detail::FuzzyCompareOGTerminalContainer& thing
   return !(this->fuzzyequals(OGTerminal::Ptr{thing.getTerminal()}));
 }
 
-OGTerminal::OGTerminal()
-{
-  _converter = new ConvertTo();
-}
+OGTerminal::OGTerminal() {}
 
-OGTerminal::~OGTerminal()
-{
-  if (_fuzzyref != nullptr)
-  {
-    delete _fuzzyref;
-  }
-  delete _converter;
-}
-
-detail::FuzzyCompareOGTerminalContainer&
-OGTerminal::getFuzzyContainer() const{
-  if (_fuzzyref == nullptr)
-  {
-    _fuzzyref = new detail::FuzzyCompareOGTerminalContainer(asOGTerminal());
-  }
-  return *_fuzzyref;
-}
-
-const ConvertTo *
-OGTerminal::getConvertTo() const
-{
-  return this->_converter;
-}
+OGTerminal::~OGTerminal() {}
 
 bool
 OGTerminal::mathsequals(const OGTerminal::Ptr& other) const
@@ -158,7 +133,7 @@ detail::FuzzyCompareOGTerminalContainer::FuzzyCompareOGTerminalContainer(const O
 
 detail::FuzzyCompareOGTerminalContainer::~FuzzyCompareOGTerminalContainer(){}
 
-const weak_ptr<const OGTerminal>
+const shared_ptr<const OGTerminal>
 detail::FuzzyCompareOGTerminalContainer::getTerminal() const
 {
   return _terminal;
@@ -365,13 +340,13 @@ OGRealScalar::getType() const
 OGRealMatrix::Ptr
 OGRealScalar::asFullOGRealMatrix() const
 {
-  return getConvertTo()->convertToOGRealMatrix(asOGRealScalar());
+  return _converter.convertToOGRealMatrix(asOGRealScalar());
 }
 
 OGComplexMatrix::Ptr
 OGRealScalar::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(asOGRealScalar());
+  return _converter.convertToOGComplexMatrix(asOGRealScalar());
 }
 
 OGTerminal::Ptr
@@ -437,7 +412,7 @@ OGComplexScalar::asFullOGRealMatrix() const
 OGComplexMatrix::Ptr
 OGComplexScalar::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(asOGComplexScalar());
+  return _converter.convertToOGComplexMatrix(asOGComplexScalar());
 }
 
 OGTerminal::Ptr
@@ -492,13 +467,13 @@ OGIntegerScalar::getType() const
 OGRealMatrix::Ptr
 OGIntegerScalar::asFullOGRealMatrix() const
 {
-  return getConvertTo()->convertToOGRealMatrix(asOGIntegerScalar());
+  return _converter.convertToOGRealMatrix(asOGIntegerScalar());
 }
 
 OGComplexMatrix::Ptr
 OGIntegerScalar::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(asOGIntegerScalar());
+  return _converter.convertToOGComplexMatrix(asOGIntegerScalar());
 }
 
 OGTerminal::Ptr
@@ -949,7 +924,7 @@ OGRealMatrix::asFullOGRealMatrix() const
 OGComplexMatrix::Ptr
 OGRealMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(asOGRealMatrix());
+  return _converter.convertToOGComplexMatrix(asOGRealMatrix());
 }
 
 OGTerminal::Ptr
@@ -1183,13 +1158,13 @@ OGRealDiagonalMatrix::getType() const
 OGRealMatrix::Ptr
 OGRealDiagonalMatrix::asFullOGRealMatrix() const
 {
-    return getConvertTo()->convertToOGRealMatrix(asOGRealDiagonalMatrix());
+    return _converter.convertToOGRealMatrix(asOGRealDiagonalMatrix());
 }
 
 OGComplexMatrix::Ptr
 OGRealDiagonalMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(asOGRealDiagonalMatrix());
+  return _converter.convertToOGComplexMatrix(asOGRealDiagonalMatrix());
 }
 
 OGTerminal::Ptr
@@ -1290,7 +1265,7 @@ OGComplexDiagonalMatrix::asFullOGRealMatrix() const
 OGComplexMatrix::Ptr
 OGComplexDiagonalMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(asOGComplexDiagonalMatrix());
+  return _converter.convertToOGComplexMatrix(asOGComplexDiagonalMatrix());
 }
 
 
@@ -1524,13 +1499,13 @@ OGRealSparseMatrix::getType() const
 OGRealMatrix::Ptr
 OGRealSparseMatrix::asFullOGRealMatrix() const
 {
-  return getConvertTo()->convertToOGRealMatrix(asOGRealSparseMatrix());
+  return _converter.convertToOGRealMatrix(asOGRealSparseMatrix());
 }
 
 OGComplexMatrix::Ptr
 OGRealSparseMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(asOGRealSparseMatrix());
+  return _converter.convertToOGComplexMatrix(asOGRealSparseMatrix());
 }
 
 OGTerminal::Ptr
@@ -1623,7 +1598,7 @@ OGComplexSparseMatrix::asFullOGRealMatrix() const
 OGComplexMatrix::Ptr
 OGComplexSparseMatrix::asFullOGComplexMatrix() const
 {
-  return getConvertTo()->convertToOGComplexMatrix(asOGComplexSparseMatrix());
+  return _converter.convertToOGComplexMatrix(asOGComplexSparseMatrix());
 }
 
 OGTerminal::Ptr

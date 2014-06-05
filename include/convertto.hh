@@ -6,7 +6,8 @@
 
 #ifndef _CONVERTTO_HH
 #define _CONVERTTO_HH
-#include "terminal.hh"
+
+#include <memory>
 
 // defines permissable type conversions
 
@@ -25,6 +26,17 @@
 
 
 namespace librdag {
+
+class OGRealScalar;
+class OGComplexScalar;
+class OGIntegerScalar;
+class OGRealMatrix;
+class OGComplexMatrix;
+class OGLogicalMatrix;
+class OGRealDiagonalMatrix;
+class OGComplexDiagonalMatrix;
+class OGRealSparseMatrix;
+class OGComplexSparseMatrix;
 
 // conversion class, it need not be a class
 class ConvertTo
