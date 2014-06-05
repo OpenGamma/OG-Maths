@@ -23,12 +23,9 @@ class FuzzyCompareOGTerminalContainer
   public:
     FuzzyCompareOGTerminalContainer(const shared_ptr<const OGTerminal>& terminal);
     ~FuzzyCompareOGTerminalContainer();
-    const weak_ptr<const OGTerminal> getTerminal() const;
+    const shared_ptr<const OGTerminal> getTerminal() const;
   private:
-    // We use a weak_ptr to refer to the terminal because the terminal would
-    // always be holding a shared_ptr reference to itself through its
-    // FuzzyCompareOGTerminalContainer, which would prevent it ever getting deleted.
-    const weak_ptr<const OGTerminal> _terminal;
+    const shared_ptr<const OGTerminal> _terminal;
 };
 
 } // end namespace detail

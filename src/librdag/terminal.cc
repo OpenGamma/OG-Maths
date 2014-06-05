@@ -145,7 +145,7 @@ detail::FuzzyCompareOGTerminalContainer::FuzzyCompareOGTerminalContainer(const O
 
 detail::FuzzyCompareOGTerminalContainer::~FuzzyCompareOGTerminalContainer(){}
 
-const weak_ptr<const OGTerminal>
+const shared_ptr<const OGTerminal>
 detail::FuzzyCompareOGTerminalContainer::getTerminal() const
 {
   return _terminal;
