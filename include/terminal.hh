@@ -149,12 +149,8 @@ class OGTerminal: public OGNumeric
     virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
     OGTerminal();
     virtual ~OGTerminal();
-    /**
-     * Gets the converter
-     */
-    const ConvertTo * getConvertTo() const;
-  private:
-    const ConvertTo * _converter = nullptr;
+  protected:
+    ConvertTo _converter;
 };
 
 /**
