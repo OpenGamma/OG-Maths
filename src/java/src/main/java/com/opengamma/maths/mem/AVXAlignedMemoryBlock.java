@@ -164,8 +164,8 @@ public class AVXAlignedMemoryBlock {
   }
 
   /**
-   * Read a float from a given offset
-   * @param offsetIntoBlock the offset into the block from which to read the value
+   * Read a float from a given byte offset
+   * @param offsetIntoBlock the byte offset into the block from which to read the value
    * @return the read float
    */
   public float readFloat(long offsetIntoBlock) {
