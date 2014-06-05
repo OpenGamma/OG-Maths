@@ -65,10 +65,10 @@ OGTerminal::operator!=(const OGTerminal::Ptr& other) const
   return !(this->equals(other));
 }
 
-detail::FuzzyCompareOGTerminalContainer&
+detail::FuzzyCompareOGTerminalContainer
 OGTerminal::operator~(void) const
 {
-  return this->getFuzzyContainer();
+  return detail::FuzzyCompareOGTerminalContainer(asOGTerminal());
 }
 
 bool OGTerminal::operator==(const detail::FuzzyCompareOGTerminalContainer& thing) const
@@ -88,20 +88,7 @@ OGTerminal::OGTerminal()
 
 OGTerminal::~OGTerminal()
 {
-  if (_fuzzyref != nullptr)
-  {
-    delete _fuzzyref;
-  }
   delete _converter;
-}
-
-detail::FuzzyCompareOGTerminalContainer&
-OGTerminal::getFuzzyContainer() const{
-  if (_fuzzyref == nullptr)
-  {
-    _fuzzyref = new detail::FuzzyCompareOGTerminalContainer(asOGTerminal());
-  }
-  return *_fuzzyref;
 }
 
 const ConvertTo *

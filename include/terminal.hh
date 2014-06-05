@@ -31,7 +31,7 @@ class FuzzyCompareOGTerminalContainer
     const weak_ptr<const OGTerminal> _terminal;
 };
 
-}
+} // end namespace detail
 
 
 /**
@@ -147,7 +147,7 @@ class OGTerminal: public OGNumeric
     virtual bool operator==(const OGTerminal::Ptr&) const;
     virtual bool operator!=(const OGTerminal::Ptr&) const;
     virtual bool operator%(const OGTerminal::Ptr&) const;
-    virtual detail::FuzzyCompareOGTerminalContainer& operator~(void) const;
+    virtual detail::FuzzyCompareOGTerminalContainer operator~(void) const;
     virtual bool operator==(const detail::FuzzyCompareOGTerminalContainer&) const;
     virtual bool operator!=(const detail::FuzzyCompareOGTerminalContainer&) const;
     OGTerminal();
@@ -157,11 +157,6 @@ class OGTerminal: public OGNumeric
      */
     const ConvertTo * getConvertTo() const;
   private:
-    detail::FuzzyCompareOGTerminalContainer& getFuzzyContainer() const;
-    // We need _fuzzyref to be mutable so that we can set it later on. We can't set
-    // it on construction, since we need to use shared_from_this() to build the
-    // _fuzzyref.
-    mutable detail::FuzzyCompareOGTerminalContainer * _fuzzyref = nullptr;
     const ConvertTo * _converter = nullptr;
 };
 
