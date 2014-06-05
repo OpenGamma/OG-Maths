@@ -14,6 +14,7 @@
 #include "jvmmanager.hh"
 #include "debug.h"
 #include "test/fake_jvm.hh"
+#include "exceptions.hh"
 
 using namespace std;
 using namespace convert;
@@ -41,7 +42,7 @@ TEST(JBindings, Test_bindPrimitiveArrayData_bad_obj)
     jobject obj = nullptr;
     jmethodID meth = new _jmethodID();
     bindRunner * clazz = new bindRunner();
-    ASSERT_ANY_THROW(clazz->run(obj,meth));
+    ASSERT_THROW(clazz->run(obj,meth), convert_error);
     delete clazz;
     delete meth;
 }
@@ -51,7 +52,7 @@ TEST(JBindings, Test_bindPrimitiveArrayData_bad_method)
     jobject obj = new _jobject();
     jmethodID meth = nullptr;
     bindRunner * clazz = new bindRunner();
-    ASSERT_ANY_THROW(clazz->run(obj,meth));
+    ASSERT_THROW(clazz->run(obj,meth), convert_error);
     delete obj;
     delete clazz;
 }
@@ -78,7 +79,7 @@ TEST(JBindings, Test_bindPrimitiveArrayData_bad_method)
 //     jobject obj = new _jobject();
 //     jmethodID meth = new _jmethodID();
 //     bindRunner * clazz = new bindRunner();
-//     ASSERT_ANY_THROW(clazz->run(obj,meth));
+//     ASSERT_THROW(clazz->run(obj,meth), convert_error);
 //     delete jvm;
 //     delete env;
 //     delete obj;
@@ -102,7 +103,7 @@ TEST(JBindings, Test_bindPrimitiveArrayData_bad_callobjmethod)
     jobject obj = new _jobject();
     jmethodID meth = new _jmethodID();
     bindRunner * clazz = new bindRunner();
-    ASSERT_ANY_THROW(clazz->run(obj,meth));
+    ASSERT_THROW(clazz->run(obj,meth), convert_error);
     delete jvm;
     delete env;
     delete obj;
@@ -116,7 +117,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_data)
   jobject obj = new _jobject();
   jmethodID meth = new _jmethodID();
   unbindRunner * clazz = new unbindRunner();
-  ASSERT_ANY_THROW(clazz->run(data,obj,meth));
+  ASSERT_THROW(clazz->run(data,obj,meth), convert_error);
   delete obj;
   delete meth;
   delete clazz;
@@ -128,7 +129,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_obj)
   jobject obj = nullptr;
   jmethodID meth = new _jmethodID();
   unbindRunner * clazz = new unbindRunner();
-  ASSERT_ANY_THROW(clazz->run(data,obj,meth));
+  ASSERT_THROW(clazz->run(data,obj,meth), convert_error);
   delete[] data;
   delete meth;
   delete clazz;
@@ -140,7 +141,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_meth)
   jobject obj = new _jobject();
   jmethodID meth = nullptr;
   unbindRunner * clazz = new unbindRunner();
-  ASSERT_ANY_THROW(clazz->run(data,obj,meth));
+  ASSERT_THROW(clazz->run(data,obj,meth), convert_error);
   delete[] data;
   delete obj;
   delete clazz;
@@ -170,7 +171,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_meth)
 //     jobject obj = new _jobject();
 //     jmethodID meth = new _jmethodID();
 //     unbindRunner * clazz = new unbindRunner();
-//     ASSERT_ANY_THROW(clazz->run(data,obj,meth));
+//     ASSERT_THROW(clazz->run(data,obj,meth), convert_error);
 //     delete jvm;
 //     delete env;
 //     delete[] data;
@@ -196,7 +197,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_callobjmethod)
     jobject obj = new _jobject();
     jmethodID meth = new _jmethodID();
     unbindRunner * clazz = new unbindRunner();
-    ASSERT_ANY_THROW(clazz->run(data,obj,meth));
+    ASSERT_THROW(clazz->run(data,obj,meth), convert_error);
     delete jvm;
     delete env;
     delete[] data;
