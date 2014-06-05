@@ -25,7 +25,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGExpr)
 {
   OGNumeric::Ptr scal = OGRealScalar::create(10);
   OGExpr::Ptr expr = NORM2::create(scal);
-  ASSERT_ANY_THROW(Real16AoA{expr});
+  ASSERT_THROW(Real16AoA{expr}, convert_error);
 }
 
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealScalar)
@@ -41,13 +41,13 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealScalar)
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexScalar)
 {
   OGNumeric::Ptr scal = OGComplexScalar::create({1,2});
-  ASSERT_ANY_THROW(Real16AoA{scal});
+  ASSERT_THROW(Real16AoA{scal}, convert_error);
 }
 
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGIntegerScalar)
 {
   OGNumeric::Ptr scal = OGIntegerScalar::create(12);
-  ASSERT_ANY_THROW(Real16AoA{scal});
+  ASSERT_THROW(Real16AoA{scal}, convert_error);
 }
 
 
@@ -75,7 +75,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealMatrix)
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexMatrix)
 {
   OGNumeric::Ptr mat = OGComplexMatrix::create(new complex16[1]{12},1,1, OWNER);
-  ASSERT_ANY_THROW(Real16AoA{mat});
+  ASSERT_THROW(Real16AoA{mat}, convert_error);
 }
 
 TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealDiagonalMatrix)
@@ -105,7 +105,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexDiagonalMatrix)
 {
   complex16 data[1] = { {12, 0} };
   OGNumeric::Ptr mat = OGComplexDiagonalMatrix::create(data,1,1);
-  ASSERT_ANY_THROW(Real16AoA{mat});
+  ASSERT_THROW(Real16AoA{mat}, convert_error);
 }
 
 
@@ -147,7 +147,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexSparseMatrix)
   int * colPtr=new int[4]{0, 2, 4, 5};
 
   OGNumeric::Ptr mat = OGComplexSparseMatrix::create(colPtr, rowInd, data, rows, cols);
-  ASSERT_ANY_THROW(Real16AoA{mat});
+  ASSERT_THROW(Real16AoA{mat}, convert_error);
   delete[] data;
   delete[] rowInd;
   delete[] colPtr;
@@ -160,7 +160,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGExpr)
 {
   OGNumeric::Ptr scal = OGRealScalar::create(10);
   OGExpr::Ptr expr = NORM2::create(scal);
-  ASSERT_ANY_THROW(Complex16AoA{expr});
+  ASSERT_THROW(Complex16AoA{expr}, convert_error);
 }
 
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexScalar)
@@ -186,7 +186,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealScalar)
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGIntegerScalar)
 {
   OGNumeric::Ptr scal = OGIntegerScalar::create(10);
-  ASSERT_ANY_THROW(Complex16AoA{scal});
+  ASSERT_THROW(Complex16AoA{scal}, convert_error);
 }
 
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
@@ -258,7 +258,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealDiagonalMatrix)
 {
   real16 * data = new real16[1]{12};
   OGNumeric::Ptr mat = OGRealDiagonalMatrix::create(data,1,1);
-  ASSERT_ANY_THROW(Complex16AoA{mat});
+  ASSERT_THROW(Complex16AoA{mat}, convert_error);
   delete [] data;
 }
 
@@ -301,7 +301,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealSparseMatrix)
   int * colPtr=new int[4]{0, 2, 4, 5};
 
   OGNumeric::Ptr mat = OGRealSparseMatrix::create(colPtr, rowInd, data, rows, cols);
-  ASSERT_ANY_THROW(Complex16AoA{mat});
+  ASSERT_THROW(Complex16AoA{mat}, convert_error);
   delete[] data;
   delete[] rowInd;
   delete[] colPtr;

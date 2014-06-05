@@ -15,6 +15,7 @@
 #include "debug.h"
 #include "equals.hh"
 #include "test/fake_jvm.hh"
+#include "exceptions.hh"
 
 using namespace std;
 using namespace convert;
@@ -23,14 +24,14 @@ using namespace convert;
 TEST(JTerminals, Test_getIntFromVoidJMethod_null_meth)
 {
   jobject obj = new _jobject();
-  ASSERT_ANY_THROW(getIntFromVoidJMethod(nullptr,obj));
+  ASSERT_THROW(getIntFromVoidJMethod(nullptr,obj), convert_error);
   delete obj;
 }
 
 TEST(JTerminals, Test_getIntFromVoidJMethod_null_obj)
 {
   jmethodID meth = new _jmethodID();
-  ASSERT_ANY_THROW(getIntFromVoidJMethod(meth,nullptr));
+  ASSERT_THROW(getIntFromVoidJMethod(meth,nullptr), convert_error);
   delete meth;
 }
 
@@ -54,7 +55,7 @@ TEST(JTerminals, Test_getIntFromVoidJMethod_null_obj)
 //   JVMManager::initialize(jvm);
 //   jmethodID meth = new _jmethodID();
 //   jobject obj = new _jobject();
-//   ASSERT_ANY_THROW(getIntFromVoidJMethod(meth,obj));
+//   ASSERT_THROW(getIntFromVoidJMethod(meth,obj), convert_error);
 //   delete env;
 //   delete jvm;
 //   delete meth;
@@ -181,7 +182,7 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetDoubleArrayElements)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    ASSERT_ANY_THROW(JOGRealScalar::create(obj));
+    ASSERT_THROW(JOGRealScalar::create(obj), convert_error);
 
     delete obj;
     delete env;
@@ -205,7 +206,7 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetIntArrayElements)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    ASSERT_ANY_THROW(JOGIntegerScalar::create(obj));
+    ASSERT_THROW(JOGIntegerScalar::create(obj), convert_error);
 
     delete obj;
     delete env;
@@ -422,8 +423,8 @@ TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
 
     mat->debug_print();
 
-    ASSERT_ANY_THROW(mat->toReal16ArrayOfArrays());
-    ASSERT_ANY_THROW(mat->toComplex16ArrayOfArrays());
+    ASSERT_THROW(mat->toReal16ArrayOfArrays(), convert_error);
+    ASSERT_THROW(mat->toComplex16ArrayOfArrays(), convert_error);
 
     // Need to delete the node now so that the fake environment and jvm are still around
     // for its unbinding
@@ -456,8 +457,8 @@ TEST(JTerminals, Test_JOGComplexSparseMatrix_ctor)
 
     mat->debug_print();
 
-    ASSERT_ANY_THROW(mat->toReal16ArrayOfArrays());
-    ASSERT_ANY_THROW(mat->toComplex16ArrayOfArrays());
+    ASSERT_THROW(mat->toReal16ArrayOfArrays(), convert_error);
+    ASSERT_THROW(mat->toComplex16ArrayOfArrays(), convert_error);
 
     // Need to delete the node now so that the fake environment and jvm are still around
     // for its unbinding

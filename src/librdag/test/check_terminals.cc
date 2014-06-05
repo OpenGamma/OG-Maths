@@ -1168,5 +1168,5 @@ public:
 
 TEST(OGArrayTest, NegativeDatalen)
 {
-  EXPECT_ANY_THROW(OGNaughtyArray(-1));
+  EXPECT_THROW(OGNaughtyArray(-1), rdag_error);
 }

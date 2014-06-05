@@ -41,7 +41,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_initialize_badversion)
     JNIEnv theEnv;
     JNIEnv * env  = &theEnv;   
     jvm->setEnv((void **) &env);
-    ASSERT_ANY_THROW(jvm_manager->initialize(jvm));
+    ASSERT_THROW(jvm_manager->initialize(jvm), convert_error);
     
     
     delete jvm;
@@ -182,7 +182,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_test_registerReferences_badFindClass
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_Broken_ClassRef_JNIEnv * broken_env  = new Fake_Broken_ClassRef_JNIEnv();
     jvm->setEnv(broken_env);
-    ASSERT_ANY_THROW(jvm_manager->initialize(jvm));
+    ASSERT_THROW(jvm_manager->initialize(jvm), convert_error);
        
     delete broken_env;
     delete jvm;
@@ -208,7 +208,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_test_registerReferences_badNewGlobal
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_Broken_NewGlobalRef_JNIEnv * broken_env  = new Fake_Broken_NewGlobalRef_JNIEnv();
     jvm->setEnv(broken_env);
-    ASSERT_ANY_THROW(jvm_manager->initialize(jvm));
+    ASSERT_THROW(jvm_manager->initialize(jvm), convert_error);
        
     delete broken_env;
     delete jvm;
@@ -239,7 +239,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_test_registerReferences_badGetMethod
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_Broken_MethodIDRef_JNIEnv * broken_env  = new Fake_Broken_MethodIDRef_JNIEnv();
     jvm->setEnv(broken_env);
-    ASSERT_ANY_THROW(jvm_manager->initialize(jvm));
+    ASSERT_THROW(jvm_manager->initialize(jvm), convert_error);
        
     delete broken_env;
     delete jvm;
@@ -270,7 +270,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_test_registerReferences_badGetFieldI
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_Broken_FieldIDRef_JNIEnv * broken_env  = new Fake_Broken_FieldIDRef_JNIEnv();
     jvm->setEnv(broken_env);
-    ASSERT_ANY_THROW(jvm_manager->initialize(jvm));
+    ASSERT_THROW(jvm_manager->initialize(jvm), convert_error);
        
     delete broken_env;
     delete jvm;
@@ -349,7 +349,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_newObjectArray)
     
     Fake_Broken_JNIEnv * env_broken  = new Fake_Broken_JNIEnv();
     jvm->setEnv(env_broken);
-    ASSERT_ANY_THROW(jvm_manager->newObjectArray(env_broken, 10, clazz , init));
+    ASSERT_THROW(jvm_manager->newObjectArray(env_broken, 10, clazz , init), convert_error);
     
     delete clazz;
     delete env;
@@ -430,7 +430,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_newDoubleArray)
     
     Fake_Broken_JNIEnv * env_broken  = new Fake_Broken_JNIEnv();
     jvm->setEnv(env_broken);
-    ASSERT_ANY_THROW(jvm_manager->newDoubleArray(env_broken, 10));
+    ASSERT_THROW(jvm_manager->newDoubleArray(env_broken, 10), convert_error);
     
     delete clazz;
     delete env;
@@ -498,7 +498,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_CallObjectMethod)
     Fake_Broken_JNIEnv * env_broken  = new Fake_Broken_JNIEnv();
     jvm->setEnv(env_broken);
     ptrEnv = jvm->getEnv();
-    ASSERT_ANY_THROW(jvm_manager->callObjectMethod(ptrEnv, someobj, somemeth, nullptr));    
+    ASSERT_THROW(jvm_manager->callObjectMethod(ptrEnv, someobj, somemeth, nullptr), convert_error);    
     
     delete someobj;
     delete somemeth;
@@ -569,7 +569,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_getEnv)
 //     jvm_manager->initialize(jvm);
 //     JNIEnv newJNIEnv;
 //     JNIEnv * newJNIEnvPtr;
-//     ASSERT_ANY_THROW(jvm_manager->getEnv((void **) &newJNIEnvPtr));
+//     ASSERT_THROW(jvm_manager->getEnv((void **) &newJNIEnvPtr), convert_error);
 //       
 //     delete jvm_manager;
 //     delete jvm;
@@ -646,7 +646,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_checkEx_exfound)
   Fake_JNIEnv_testRegister * env  = new Fake_JNIEnv_will_throw();
   jvm->setEnv(env);
   jvm_manager->initialize(jvm);
-  ASSERT_ANY_THROW(checkEx(env));
+  ASSERT_THROW(checkEx(env), convert_error);
   delete jvm_manager;
   delete jvm;
   delete env;
@@ -680,7 +680,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewIntArray_fail)
   jvm->setEnv(env);
   jvm_manager->initialize(jvm);
   jsize sz = 10;
-  ASSERT_ANY_THROW(jvm_manager->newIntArray(env,sz));
+  ASSERT_THROW(jvm_manager->newIntArray(env,sz), convert_error);
   delete jvm_manager;
   delete jvm;
   delete env;
@@ -718,7 +718,7 @@ TEST(JVMManagerFakeJNITest, Test_JVMManager_checknewDouble_fail)
   jvm->setEnv(env);
   jvm_manager->initialize(jvm);
   jdouble value = 10;
-  ASSERT_ANY_THROW(jvm_manager->newDouble(env,value));
+  ASSERT_THROW(jvm_manager->newDouble(env,value), convert_error);
   delete jvm_manager;
   delete jvm;
   delete env;
