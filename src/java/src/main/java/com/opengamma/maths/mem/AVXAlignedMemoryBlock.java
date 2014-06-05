@@ -94,7 +94,7 @@ public class AVXAlignedMemoryBlock {
 
   /**
    * Set memory to a specified byte value
-   * @param offset the offset from the base address at which the memset will take place
+   * @param offset the offset from the base address (in bytes) at which the memset will take place
    * @param count the number of bytes to set to value
    * @param value the value to which the memory shall be set
    */
@@ -104,9 +104,9 @@ public class AVXAlignedMemoryBlock {
   }
 
   /**
-   * Write an int at a given offset
+   * Write an int at a given byte offset
    * @param val the value to write
-   * @param offsetIntoBlock the offset into the block at which to write the value
+   * @param offsetIntoBlock the byte offset into the block from which to write the value
    */
   public void writeInt(int val, long offsetIntoBlock) {
     checkAccessIsValid(offsetIntoBlock, 1, Stdlib.SIZEOF_JINT);
@@ -114,9 +114,9 @@ public class AVXAlignedMemoryBlock {
   }
 
   /**
-   * Write a long at a given offset
+   * Write a long at a given byte offset
    * @param val the value to write
-   * @param offsetIntoBlock the offset into the block at which to write the value
+   * @param offsetIntoBlock the byte offset into the block from which to write the value
    */
   public void writeLong(long val, long offsetIntoBlock) {
     checkAccessIsValid(offsetIntoBlock, 1, Stdlib.SIZEOF_JLONG);
@@ -124,9 +124,9 @@ public class AVXAlignedMemoryBlock {
   }
 
   /**
-   * Write a float at a given offset
+   * Write a float at a given byte offset
    * @param val the value to write
-   * @param offsetIntoBlock the offset into the block at which to write the value
+   * @param offsetIntoBlock the byte offset into the block from which to write the value
    */
   public void writeFloat(float val, long offsetIntoBlock) {
     checkAccessIsValid(offsetIntoBlock, 1, Stdlib.SIZEOF_JFLOAT);
@@ -134,9 +134,9 @@ public class AVXAlignedMemoryBlock {
   }
 
   /**
-   * Write a double at a given offset
+   * Write a double at a given byte offset
    * @param val the value to write
-   * @param offsetIntoBlock the offset into the block at which to write the value
+   * @param offsetIntoBlock the byte offset into the block from which to write the value
    */
   public void writeDouble(double val, long offsetIntoBlock) {
     checkAccessIsValid(offsetIntoBlock, 1, Stdlib.SIZEOF_JDOUBLE);
@@ -144,8 +144,8 @@ public class AVXAlignedMemoryBlock {
   }
 
   /**
-   * Read an int from a given offset
-   * @param offsetIntoBlock the offset into the block at which to read the value
+   * Read an int from a given byte offset
+   * @param offsetIntoBlock the byte offset into the block from which to read the value
    * @return the read int
    */
   public int readInt(long offsetIntoBlock) {
@@ -154,8 +154,8 @@ public class AVXAlignedMemoryBlock {
   }
 
   /**
-   * Read a long from a given offset
-   * @param offsetIntoBlock the offset into the block at which to read the value
+   * Read a long from a given byte offset
+   * @param offsetIntoBlock the byte offset into the block from which to read the value
    * @return the read long
    */
   public long readLong(long offsetIntoBlock) {
@@ -165,7 +165,7 @@ public class AVXAlignedMemoryBlock {
 
   /**
    * Read a float from a given offset
-   * @param offsetIntoBlock the offset into the block at which to read the value
+   * @param offsetIntoBlock the offset into the block from which to read the value
    * @return the read float
    */
   public float readFloat(long offsetIntoBlock) {
@@ -174,8 +174,8 @@ public class AVXAlignedMemoryBlock {
   }
 
   /**
-   * Read a double from a given offset
-   * @param offsetIntoBlock the offset into the block at which to read the value
+   * Read a double from a given byte offset
+   * @param offsetIntoBlock the byte offset into the block from which to read the value
    * @return the read double
    */
   public double readDouble(long offsetIntoBlock) {
@@ -235,7 +235,7 @@ public class AVXAlignedMemoryBlock {
    * Read an int array from an arbitrary memory offset.
    * @param destination the array in which to place the read data
    * @param offsetIntoDest the offset into the destination at which the read data should start to be placed 
-   * @param byteOffset the offset at which the read should take place from the start of the memory block
+   * @param byteOffset the offset at which the read should take place from the start of the memory block (in BYTES!)
    * @param count the number of elements of the source data to read to the array
    */
   public void readIntArray(int[] destination, int offsetIntoDest, long byteOffset, final int count) {
@@ -247,7 +247,7 @@ public class AVXAlignedMemoryBlock {
    * Read a long array from an arbitrary memory offset.
    * @param destination the array in which to place the read data
    * @param offsetIntoDest the offset into the destination at which the read data should start to be placed 
-   * @param byteOffset the offset at which the read should take place from the start of the memory block
+   * @param byteOffset the offset at which the read should take place from the start of the memory block (in BYTES!)
    * @param count the number of elements of the source data to read to the array
    */
   public void readLongArray(long[] destination, int offsetIntoDest, long byteOffset, final int count) {
@@ -259,7 +259,7 @@ public class AVXAlignedMemoryBlock {
    * Read a float array from an arbitrary memory offset.
    * @param destination the array in which to place the read data
    * @param offsetIntoDest the offset into the destination at which the read data should start to be placed 
-   * @param byteOffset the offset at which the read should take place from the start of the memory block
+   * @param byteOffset the offset at which the read should take place from the start of the memory block (in BYTES!)
    * @param count the number of elements of the source data to read to the array
    */
   public void readFloatArray(float[] destination, int offsetIntoDest, long byteOffset, final int count) {
@@ -271,7 +271,7 @@ public class AVXAlignedMemoryBlock {
    * Read a double array from an arbitrary memory offset.
    * @param destination the array in which to place the read data
    * @param offsetIntoDest the offset into the destination at which the read data should start to be placed 
-   * @param byteOffset the offset at which the read should take place from the start of the memory block
+   * @param byteOffset the offset at which the read should take place from the start of the memory block (in BYTES!)
    * @param count the number of elements of the source data to read to the array
    */
   public void readDoubleArray(double[] destination, int offsetIntoDest, long byteOffset, final int count) {

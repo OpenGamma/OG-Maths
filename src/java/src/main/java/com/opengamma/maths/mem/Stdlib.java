@@ -192,7 +192,7 @@ public class Stdlib {
   }
 
   /**
-   * Increments the address assuming it's a unintptr_t
+   * Increments the address assuming it's a uintptr_t
    * @param addr the address to increment
    * @return the incremented address
    */

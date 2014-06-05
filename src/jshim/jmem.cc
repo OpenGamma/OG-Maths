@@ -73,7 +73,7 @@ JNIEXPORT jlong JNICALL Java_com_opengamma_maths_mem_Stdlib_wrapped_1allocateAli
 
  /**
   * This function is a JNI binding function for accessing the free(3) function on POSIX
-  * complaint platforms, on Windows the bound function is _free_aligned().
+  * compliant platforms, on Windows the bound function is _free_aligned().
   *
   * This function can be used to free memory allocated using wrapped_allocateAlignedMemory from java.
   * The address to be freed must be valid in exactly the same manner as in calling free(3).
