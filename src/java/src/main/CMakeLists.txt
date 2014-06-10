@@ -99,7 +99,18 @@ add_jar(${JAR_NAME_NO_EXTN} ${JAR_SOURCES}
 
 foreach(TARGET ${TARGET_TYPES})
   if(SUPPORT_${TARGET})
-    add_test(${NATIVE_SELF_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET} -jar ${PATH_AND_JAR_NAME})
+    add_test(${NATIVE_SELF_TEST}_${TARGET}
+             ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET}
+             -jar ${PATH_AND_JAR_NAME})
+    if (WIN32)
+      string(REPLACE ";" "\\;" CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH};${PATH_AND_JAR_NAME}")
+    else()
+      set(CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH}:${PATH_AND_JAR_NAME}")
+    endif()
+    add_test(${NATIVE_SELF_TEST}_${TARGET}_SLF4J
+             ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET}
+             -cp ${CLASSPATH}
+             com.opengamma.maths.nativeloader.NativeLibrariesSelfTest)
   endif()
 endforeach()
 
