@@ -49,6 +49,11 @@ template<typename T> void xpotrf(char * UPLO, int * N, T * A, int * LDA, int * I
 template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
 template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV, int *INFO);
 template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, T * WORK, int * LWORK, int * INFO );
+template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * LDA, T * WORK );
+template<typename T> void xgetrs(char * TRANS, int * N, int * NRHS, T * A, int * LDA, int * IPIV, T * B, int * LDB, int * INFO);
+template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, real16 * TAU, T * WORK, int * LWORK, int *INFO);
+template<typename T> void xrgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, T * WORK, int * LWORK, int * INFO);
+
 }
 
 /**
@@ -248,7 +253,7 @@ template<typename T> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N,
 template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
 
 /**
- * xpotrf() computes the Cholesky factorization of a Hermitian positive definite matrix A.
+ * xpotrf() computes the Cholesky factorisation of a Hermitian positive definite matrix A.
  * @param UPLO as LAPACK dpotrf UPLO
  * @param N as LAPACK dpotrf N
  * @param A data type specific with intent as LAPACK dpotrf A
@@ -306,7 +311,114 @@ real8 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA);
  */
 template<typename T> void xpotrs(char * UPLO, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
 
+/**
+ * xlange() computes matrix norms (one, Inf, Frobenius)
+ * @param NORM as LAPACK dlange NORM.
+ * @param M as LAPACK dlange M.
+ * @param N as LAPACK dlange N.
+ * @param A data type specific with intent as LAPACK dlange A.
+ * @param LDA as LAPACK dlange LDA.
+ */
+template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * LDA);
+
+/**
+ * xgecon() computes reciprocal condition numbers calculated from a LU factorisation as
+ * computed by xgetrf().
+ * @param NORM as LAPACK dgecon NORM.
+ * @param N as LAPACK dgecon N.
+ * @param A data type specific with intent as LAPACK dgecon A.
+ * @param LDA as LAPACK dgecon LDA.
+ * @param ANORM as LAPACK dgecon ANORM.
+ * @param RCOND as LAPACK dgecon RCOND.
+ * @param INFO as LAPACK dgecon INFO.
+ */
+template<typename T> void xgecon(char * NORM, int * N, T * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO);
+
+/**
+ * xgetrs() solves linear systems using a LU factorisation computed by xgetrf().
+ * @param TRANS as LAPACK xgetrs TRANS.
+ * @param N as LAPACK xgetrs N.
+ * @param NRHS as LAPACK xgetrs NRHS.
+ * @param A data type specific with intent as LAPACK xgetrs A.
+ * @param LDA as LAPACK xgetrs LDA.
+ * @param IPIV as LAPACK xgetrs IPIV.
+ * @param B data type specific with intent as LAPACK xgetrs B.
+ * @param LDB as LAPACK xgetrs LDB.
+ * @param INFO as LAPACK xgetrs INFO.
+ */
+template<typename T>void xgetrs(char * TRANS, int * N, int * NRHS, T * A, int * LDA, int * IPIV, T * B, int * LDB, int * INFO);
+
+/**
+ * xgels() solves {over,under}determined linear systems via QR decomposition.
+ * @param TRANS as LAPACK dgels TRANS.
+ * @param M as LAPACK dgels M.
+ * @param N as LAPACK dgels N.
+ * @param NRHS as LAPACK dgels NRHS.
+ * @param A data type specific with intent as LAPACK dgels A.
+ * @param LDA as LAPACK dgels LDA.
+ * @param B data type specific with intent as  LAPACK dgels TRANS.
+ * @param LDB as LAPACK dgels LDB.
+ * @param INFO as LAPACK dgels INFO.
+ */
+template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO );
+
+/**
+ * xgelsd() solves {over,under}determined linear systems via SV decomposition.
+ * @param M as LAPACK dgelsd M.
+ * @param N as LAPACK dgelsd N.
+ * @param NRHS as LAPACK dgelsd NRHS.
+ * @param A data type specific with intent as LAPACK dgelsd A.
+ * @param LDA as LAPACK dgelsd LDA.
+ * @param B data type specific with intent as LAPACK dgelsd TRANS.
+ * @param LDB as LAPACK dgelsd LDB.
+ * @param S as LAPACK dgelsd S.
+ * @param RCOND as LAPACK dgelsd RCOND.
+ * @param INFO as LAPACK dgels INFO.
+ */
+template<typename T> void xgelsd(int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, real16 * S, real16 * RCOND, int * RANK, int * INFO );
+
+/**
+ * xgeev() computes eigen{values,vectors}.
+ * @param JOBVL as LAPACK dgeev JOBVL.
+ * @param JOBVR as LAPACK dgeev JOBVR.
+ * @param N as LAPACK dgeev N.
+ * @param A data type specific with intent as LAPACK dgeev A.
+ * @param LDA as LAPACK dgeev LDA.
+ * @param W the computed eigenvalues.
+ * @param VL data type specific with intent as LAPACK dgeev VL.
+ * @param LDVL as LAPACK dgeev LDVL.
+ * @param VR data type specific with intent as LAPACK dgeev VR.
+ * @param LDVR as LAPACK dgeev LDVR.
+ * @param LDVL as LAPACK dgeev INFO.
+ */
+template<typename T> void xgeev(char * JOBVL, char * JOBVR, int * N, T * A, int * LDA, complex16 * W, T * VL, int * LDVL, T * VR, int * LDVR, int * INFO);
+
+
+/**
+ * xgeqrf() computes the QR decomposition.
+ * @param M as LAPACK degqrf M.
+ * @param N as LAPACK degqrf N.
+ * @param A data type specific with intent as LAPACK degqrf A.
+ * @param LDA as LAPACK dgeqrf LDA.
+ * @param TAU  data type specific with intent as LAPACK degqrf TAU.
+ * @param INFO as LAPACK degqrf INFO.
+ */
+template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, int *INFO);
+
+
+/**
+ * xrgqr() computes the orthogonal Q matrix from elementary reflectors as returned by xgeqrf()
+ * @param M as LAPACK dorgqr M.
+ * @param N as LAPACK dorgqr N.
+ * @param K as LAPACK dorgqr K.
+ * @param A data type specific with intent as LAPACK degqrf A.
+ * @param LDA as LAPACK dgeqrf LDA.
+ * @param TAU  data type specific with intent as LAPACK degqrf TAU.
+ * @param INFO as LAPACK degqrf INFO.
+ */
+template<typename T>void xrgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, int * INFO);
 }
+
 
 
 #endif // _LAPACK_HH
