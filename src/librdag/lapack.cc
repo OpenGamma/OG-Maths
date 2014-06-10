@@ -670,7 +670,7 @@ template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * 
     message << "Input to LAPACK::xgels call incorrect at arg: " << *INFO;
     throw rdag_error(message.str());
   }
-  // else { continue }. NOTE: Workspace query doesn't care about validity of inversion,
+  // else { continue }. NOTE: Workspace query doesn't care about validity of solution,
   // will check on true call below.
 
   // Allocate work space based on queried value
@@ -700,5 +700,103 @@ template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * 
 }
 template void xgels<real16>(char * TRANS, int * M, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO );
 template void xgels<complex16>(char * TRANS, int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO );
+
+
+template<> void xgelsd(int * M, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, real16 * S, real16 * RCOND, int * RANK, int * INFO )
+{
+  set_xerbla_death_switch(lapack::izero);
+  real16 worktmp;
+  int iworktmp;
+  int lwork = -1; // -1 to trigger size query
+
+  // Workspace size query
+  F77FUNC(dgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, &worktmp, &lwork, &iworktmp, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dgelsd call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+  // else { continue }. NOTE: Workspace query doesn't care about validity of solution,
+  // will check on true call below.
+
+  // Allocate work space based on queried value
+  lwork = (int)(worktmp);
+  real16 * work = new real16[lwork];
+  int * iwork = new int[iworktmp];
+
+  // the actual call
+  F77FUNC(dgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, work, &lwork, iwork, INFO);
+
+  delete [] work;
+  delete [] iwork;
+
+  if(*INFO!=0)
+  {
+    stringstream message;
+    if(*INFO<0)
+    {
+      message << "Input to LAPACK::dgelsd call incorrect at arg: " << *INFO << ".";
+    }
+    else
+    {
+      message << "LAPACK::dgelsd, SVD computation failed to converge, " << (*INFO) <<
+      " elements of the intermediate bi-diagonal form did not converge to zero.";
+    }
+    throw rdag_error(message.str());
+  }
+
+}
+
+
+template<> void xgelsd(int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, real16 * S, real16 * RCOND, int * RANK, int * INFO )
+{
+  set_xerbla_death_switch(lapack::izero);
+  complex16 worktmp;
+  real16 rworktmp;
+  int iworktmp;
+  int lwork = -1; // -1 to trigger size query
+
+  // Workspace size query
+  F77FUNC(zgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, &worktmp, &lwork, &rworktmp, &iworktmp, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zgelsd call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+  // else { continue }. NOTE: Workspace query doesn't care about validity of solution,
+  // will check on true call below.
+
+  // Allocate work space based on queried value
+  lwork = (int)std::real(worktmp);
+  complex16 * work = new complex16[lwork];
+  real16 * rwork = new real16[(int)(rworktmp)];
+  int * iwork = new int[iworktmp];
+
+  // the actual call
+  F77FUNC(zgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, work, &lwork, rwork, iwork, INFO);
+
+  delete [] work;
+  delete [] rwork;
+  delete [] iwork;
+
+  if(*INFO!=0)
+  {
+    stringstream message;
+    if(*INFO<0)
+    {
+      message << "Input to LAPACK::zgelsd call incorrect at arg: " << *INFO << ".";
+    }
+    else
+    {
+      message << "LAPACK::zgelsd, SVD computation failed to converge, " << (*INFO) <<
+      " elements of the intermediate bi-diagonal form did not converge to zero.";
+    }
+    throw rdag_error(message.str());
+  }
+
+}
+
 
 } // end namespace lapack
