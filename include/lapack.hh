@@ -49,8 +49,9 @@ template<typename T> void xpotrf(char * UPLO, int * N, T * A, int * LDA, int * I
 template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
 template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV, int *INFO);
 template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, T * WORK, int * LWORK, int * INFO );
-template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * LDA, T * WORK );
+template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * LDA, real16 * WORK );
 template<typename T> void xgetrs(char * TRANS, int * N, int * NRHS, T * A, int * LDA, int * IPIV, T * B, int * LDB, int * INFO);
+template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, T * WORK, int * LWORK, int * INFO );
 template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, real16 * TAU, T * WORK, int * LWORK, int *INFO);
 template<typename T> void xrgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, T * WORK, int * LWORK, int * INFO);
 

@@ -158,6 +158,38 @@ namespace detail
   {
     F77FUNC(zgetri)(N,A,LDA,IPIV,WORK,LWORK,INFO);
   }
+
+  //xLANGE specialisation
+  template<> real16 xlange(char * NORM, int * M, int * N, real16 * A, int * LDA, real16 * WORK )
+  {
+    return F77FUNC(dlange)(NORM, M, N, A, LDA, WORK);
+  }
+
+  template<> real16 xlange(char * NORM, int * M, int * N, complex16 * A, int * LDA, real16 * WORK )
+  {
+    return F77FUNC(zlange)(NORM, M, N, A, LDA, WORK);
+  }
+
+  // xGETRS specialisation
+  template<> void xgetrs(char * TRANS, int * N, int * NRHS, real16 * A, int * LDA, int * IPIV, real16 * B, int * LDB, int * INFO)
+  {
+    F77FUNC(dgetrs)(TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
+  }
+  template<> void xgetrs(char * TRANS, int * N, int * NRHS, complex16 * A, int * LDA, int * IPIV, complex16 * B, int * LDB, int * INFO)
+  {
+    F77FUNC(zgetrs)(TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
+  }
+
+  //xGELS specialisation
+  template<> void xgels(char * TRANS, int * M, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, real16 * WORK, int * LWORK, int * INFO )
+  {
+    F77FUNC(dgels)(TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK, INFO );
+  }
+  template<> void xgels(char * TRANS, int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, complex16 * WORK, int * LWORK, int * INFO )
+  {
+    F77FUNC(zgels)(TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK, INFO );
+  }
+
 }
 
 // f77 constants
@@ -374,7 +406,7 @@ template void xgetri<complex16>(int * N, complex16 * A, int * LDA, int * IPIV, i
 template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, real8 * A, int * LDA, real8 * RCOND, int * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
-  if(*N<0)
+  if(*N<=0)
   {
     stringstream message;
     message << "Input to LAPACK::dtrcon call incorrect at arg: " << 4;
@@ -461,7 +493,7 @@ template void xpotrf<complex16>(char * UPLO, int * N, complex16 * A, int * LDA, 
 template<> void xpocon(char * UPLO, int * N, real8 * A, int * LDA, real8 * ANORM, real8 * RCOND, int * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
-  if(*N<0)
+  if(*N<=0)
   {
     stringstream message;
     message << "Input to LAPACK::dpocon call incorrect at arg: " << 2;
@@ -483,7 +515,7 @@ template<> void xpocon(char * UPLO, int * N, real8 * A, int * LDA, real8 * ANORM
 template<> void xpocon(char * UPLO, int * N, complex16 * A, int * LDA, real8 * ANORM, real8 * RCOND, int * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
-  if(*N<0)
+  if(*N<=0)
   {
     stringstream message;
     message << "Input to LAPACK::zpocon call incorrect at arg: " << 2;
@@ -505,7 +537,7 @@ template<> void xpocon(char * UPLO, int * N, complex16 * A, int * LDA, real8 * A
 template<typename T>real8 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA)
 {
   set_xerbla_death_switch(lapack::izero);
-  if(*N<0)
+  if(*N<=0)
   {
     stringstream message;
     message << "Input to LAPACK::"<<detail::charmagic<T>()<<"lansy call incorrect at arg: " << 3;
@@ -543,5 +575,130 @@ template<typename T> void xpotrs(char * UPLO, int * N, int * NRHS, T * A, int * 
 template void xpotrs<real8>(char * UPLO, int * N, int * NRHS, real8 * A, int * LDA, real8 * B, int * LDB, int * INFO);
 template void xpotrs<complex16>(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO);
 
+
+template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * LDA)
+{
+  set_xerbla_death_switch(lapack::izero);
+  if(*M<=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"lange call incorrect at arg: " << 2;
+    throw rdag_error(message.str());
+  }
+  real16 * WORK = new real16[*M]; // allocate regardless of *NORM
+  real16 ret = detail::xlange(NORM, M, N, A, LDA, WORK);
+  delete [] WORK;
+  return ret;
+}
+template real16 xlange<real16>(char * NORM, int * M, int * N, real16 * A, int * LDA);
+template real16 xlange<complex16>(char * NORM, int * M, int * N, complex16 * A, int * LDA);
+
+
+template<> void xgecon(char * NORM, int * N, real16 * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO)
+{
+  set_xerbla_death_switch(lapack::izero);
+  if(*N<=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dgecon call incorrect at arg: " << 2;
+    throw rdag_error(message.str());
+  }
+  real16 * WORK = new real16[4*(*N)];
+  int * IWORK = new int[*N];
+  F77FUNC(dgecon)(NORM, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
+  delete [] WORK;
+  delete [] IWORK;
+
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dgecon call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+template<> void xgecon(char * NORM, int * N, complex16 * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO)
+{
+  set_xerbla_death_switch(lapack::izero);
+  if(*N<=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zgecon call incorrect at arg: " << 2;
+    throw rdag_error(message.str());
+  }
+  complex16 * WORK = new complex16[2*(*N)];
+  real16 * RWORK = new real16[2*(*N)];
+  F77FUNC(zgecon)(NORM, N, A, LDA, ANORM, RCOND, WORK, RWORK, INFO);
+  delete [] WORK;
+  delete [] RWORK;
+
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zgecon call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+
+
+template<typename T> void xgetrs(char * TRANS, int * N, int * NRHS, T * A, int * LDA, int * IPIV, T * B, int * LDB, int * INFO)
+{
+  set_xerbla_death_switch(lapack::izero);
+  detail::xgetrs(TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"getrs call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+template void xgetrs<real16>(char * TRANS, int * N, int * NRHS, real16 * A, int * LDA, int * IPIV, real16 * B, int * LDB, int * INFO);
+template void xgetrs<complex16>(char * TRANS, int * N, int * NRHS, complex16 * A, int * LDA, int * IPIV, complex16 * B, int * LDB, int * INFO);
+
+
+template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO )
+{
+  set_xerbla_death_switch(lapack::izero);
+  T worktmp;
+  int lwork = -1; // -1 to trigger size query
+
+  // Workspace size query
+  detail::xgels(TRANS, M, N, NRHS, A, LDA, B, LDB, &worktmp, &lwork, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::xgels call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+  // else { continue }. NOTE: Workspace query doesn't care about validity of inversion,
+  // will check on true call below.
+
+  // Allocate work space based on queried value
+  lwork = (int)std::real(worktmp);
+  T * work = new T[lwork];
+
+  // the actual call
+  detail::xgels(TRANS, M, N, NRHS, A, LDA, B, LDB, work, &lwork, INFO);
+  if(*INFO!=0)
+  {
+    stringstream message;
+    delete [] work;
+    if(*INFO<0)
+    {
+      message << "Input to LAPACK::xgels call incorrect at arg: " << *INFO << ".";
+    }
+    else
+    {
+      message << "LAPACK::xgels, the [" << (*INFO - 1) << " element of the triangular " <<
+      "factorisation of A is zero, A does not have full rank, the least squares solution " <<
+      "could not be computed";
+    }
+    throw rdag_error(message.str());
+  }
+  // normal return
+  delete [] work;
+}
+template void xgels<real16>(char * TRANS, int * M, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO );
+template void xgels<complex16>(char * TRANS, int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO );
 
 } // end namespace lapack
