@@ -1,5 +1,7 @@
 package com.opengamma.maths.exceptions;
 
+import com.opengamma.maths.logging.Logger;
+
 /**
  * Base class for any exceptions that get thrown during the native code execution.
  */
@@ -19,6 +21,11 @@ public class MathsExceptionNative extends MathsException {
   private static final long serialVersionUID = 2689725471014028060L;
 
   /**
+   * The logger instance
+   */
+  private static Logger s_log = new Logger(MathsExceptionNative.class);
+
+  /**
    * This form of the constructor is used by the native code for generating the mixed-language backtrace.
    * Frames are represented by 4 strings, containing the class name, method name, file name and line no.
    * The Java side steps through this array to construct suitable StackTraceElement objects to push on
@@ -33,7 +40,7 @@ public class MathsExceptionNative extends MathsException {
     StackTraceElement[] javaStackTrace = getStackTrace();
     if ((backtraceInfo.length % 4) != 0) {
       // The backtrace information from C++ is "weird". We shall not attempt to use it.
-      System.err.println("WARNING: strange backtrace info received from native");
+      s_log.warn("Strange backtrace info received from native");
       return;
     }
 
