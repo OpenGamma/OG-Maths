@@ -31,6 +31,9 @@ set(JAVA_FILES
     helpers/DenseMemoryManipulationTest.java
     helpers/FuzzyEqualsTest.java
     helpers/MatrixPrimitiveUtilsTest.java
+    logging/TestLogger.java
+    logging/TestStderrLogger.java
+    logging/TestSlf4jLogger.java
     testhelpers/ArraysHelpers.java
     datacontainers/matrix/OGComplexDiagonalMatrixTest.java
     datacontainers/matrix/OGComplexDenseMatrixTest.java

@@ -8,6 +8,7 @@ set(JPACKAGEFQN "com.opengamma.maths")
 fqn_to_dir(JPACKAGEDIR ${JPACKAGEFQN})
 
 set(JAVA_FILES
+    DOGMA.java
     materialisers/Materialisers.java
     helpers/Catchers.java
     helpers/DenseMemoryManipulation.java
@@ -15,7 +16,10 @@ set(JAVA_FILES
     helpers/Iss.java
     helpers/MatrixPrimitiveUtils.java
     helpers/TestGroups.java
-    DOGMA.java
+    logging/Logger.java
+    logging/ILogger.java
+    logging/Slf4jLogger.java
+    logging/StderrLogger.java
     nodes/COPY.java
     nodes/CTRANSPOSE.java
     nodes/INV.java
