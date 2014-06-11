@@ -7,6 +7,8 @@
 #include "lapack.hh"
 #include "exceptions.hh"
 
+#include <memory>
+
 using namespace librdag;
 using namespace std;
 
@@ -376,14 +378,14 @@ template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, int * IN
 
   // Allocate work space based on queried value
   lwork = (int)std::real(worktmp);
-  T * work = new T[lwork];
+  unique_ptr<T[]> workPtr (new T[lwork]);
+  T * work = workPtr.get();
 
   // the actual call
   detail::xgetri(N, A, LDA, IPIV, work, &lwork, INFO);
   if(*INFO!=0)
   {
     stringstream message;
-    delete [] work;
     if(*INFO<0)
     {
       message << "Input to LAPACK::xgetri call incorrect at arg: " << *INFO << ".";
@@ -395,9 +397,6 @@ template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, int * IN
     throw rdag_error(message.str());
   }
 
-
-  // normal return
-  delete [] work;
 }
 template void xgetri<real8>(int * N, real8 * A, int * LDA, int * IPIV, int * INFO);
 template void xgetri<complex16>(int * N, complex16 * A, int * LDA, int * IPIV, int * INFO);
@@ -797,6 +796,68 @@ template<> void xgelsd(int * M, int * N, int * NRHS, complex16 * A, int * LDA, c
   }
 
 }
+
+
+template<> void xgeev(char * JOBVL, char * JOBVR, int * N, real16 * A, int * LDA, complex16 * W, real16 * VL, int * LDVL, real16 * VR, int * LDVR, int * INFO)
+{
+  set_xerbla_death_switch(lapack::izero);
+  real16 worktmp;
+  int lwork = -1; // -1 to trigger size query
+
+  if(*N<=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dgeev call incorrect at arg: " << 3;
+    throw rdag_error(message.str());
+  }
+
+  real16 * WR = nullptr;
+  real16 * WI = nullptr;
+
+  // Workspace size query
+  F77FUNC(dgeev)(JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR, LDVR, &worktmp, &lwork, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::dgeev call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+
+  std::unique_ptr<real16 []> ptrWR (new real16[*N]);
+  WR = (ptrWR).get();
+  std::unique_ptr<real16 []> ptrWI (new real16[*N]);
+  WI = (ptrWI).get();
+
+    // Allocate work space based on queried value
+  lwork = (int)(worktmp);
+  std::unique_ptr<real16 []> ptrWORK (new real16[lwork]);
+  real16 * work = ptrWORK.get();
+
+  // the actual call
+  F77FUNC(dgeev)(JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR, LDVR, work, &lwork, INFO);
+
+  // copy back answer
+  for(int i = 0 ; i < *N; i++)
+  {
+    W[i] = std::complex<real16>(WR[i],WI[i]);
+  }
+
+  if(*INFO!=0)
+  {
+    stringstream message;
+    if(*INFO<0)
+    {
+      message << "Input to LAPACK::dgeev call incorrect at arg: " << *INFO << ".";
+    }
+    else
+    {
+      message << "LAPACK::dgeev, QR alg failed. Eigenvalues in elements, " << (*INFO - 1) <<
+      ":" << (*N-1) << " have successfully converged, no eigenvectors have been computed.";
+    }
+    throw rdag_error(message.str());
+  }
+}
+
 
 
 } // end namespace lapack
