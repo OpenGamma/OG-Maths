@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import com.opengamma.maths.exceptions.MathsExceptionOnInitialization;
 import com.opengamma.maths.exceptions.MathsExceptionUnsupportedPlatform;
+import com.opengamma.maths.logging.Logger;
 
 /**
  * Used for extracting and loading native libraries.
@@ -34,7 +35,7 @@ import com.opengamma.maths.exceptions.MathsExceptionUnsupportedPlatform;
  * Optionally, the location of the config file that specifies the libraries to be loaded can
  * be given on the command line as -Dconfigfileloc="location/file" in which case the
  * libraries are loaded from system specific library path based locations.
- * 
+ *
  * The correct libraries are extracted and loaded depending on the architecture
  * that we are running on. The instruction set used in the hardware is queried as part of the
  * initialisation process so that libraries closest to the maximum level of instruction support
@@ -51,11 +52,6 @@ public final class NativeLibraries {
    *  This is guaranteed through 'synchronize'd methods
    */
   private static boolean s_initialized;
-
-  /**
-   *  print debug info?
-   */
-  private static boolean s_debug = true;
 
   /**
    * Store for the libraries to extract()
@@ -113,15 +109,20 @@ public final class NativeLibraries {
   }
 
   /**
+   * Logger instance
+   */
+  private static Logger s_log = new Logger(NativeLibraries.class);
+
+  /**
    * Probes the CPU and gets the maximum supported instruction set.
    * This function is implemented in the jinitialise library, which is extracted and loaded first.
    * @return maximum supported instruction set.
    */
   public static native SupportedInstructionSet getSupportedInstructionSet();
-  
+
   /**
    * Prepare for loading of native libraries.
-   * 
+   *
    * Alg goes a bit like this:
    * *) Check if the native code is already initialised, if so do nothing.
    * *) Check if the platform is supported (detects windows, osx, linux).
@@ -140,15 +141,11 @@ public final class NativeLibraries {
   public static synchronized void initialize() {
 
     if (s_initialized) {
-      // Initialise once only.
-      if (s_debug) {
-        System.out.println("Skipping initialization - already initialized");
-      }
+      s_log.info("Skipping initialization - already initialized");
       return;
     }
-    if (s_debug) {
-      System.out.println("Initializing native libraries.");
-    }
+
+    s_log.info("Initializing native libraries.");
 
     // is the platform supported?
     checkPlatformSupported();
@@ -175,19 +172,14 @@ public final class NativeLibraries {
       instructionSet = s_instrSet;
     } else {
       instructionSet = getSupportedInstructionSet();
-      if (s_debug) {
-        System.out.println("Probed instruction set is: " + instructionSet.toString());
-      }
+      s_log.info("Probed instruction set is: " + instructionSet.toString());
     }
 
-    if (s_debug) {
-      System.out.println("Running with instruction set as: " + instructionSet.toString());
-    }
+    s_log.info("Running with instruction set as: " + instructionSet.toString());
 
     s_libsToExtract = getValuesFromPropertiesFileAssociatedWithString(instructionSet.getTagline() + ".libraries");
-    if (s_debug) {
-      System.out.println("Attempting to extract: " + s_libsToExtract.toString());
-    }
+    s_log.info("Attempting to extract: " + s_libsToExtract.toString());
+
     if (!s_configFileOnCommandline) {
       extract(unzipdir, s_libsToExtract);
     } // end if(!s_commandlineconfig)
@@ -249,19 +241,16 @@ public final class NativeLibraries {
 
     if (commandLineConfig != null) { // yes we are using a config file specified on the command line
       s_configFileOnCommandline = true;
-      if (s_debug) {
-        System.out.println("Using command line supplied configfileloc information");
-      }
+      s_log.info("Using command line supplied configfileloc information");
       s_configFileLocation = commandLineConfig;
+      s_log.info("Attempting load of config from " + s_configFileLocation);
       try {
-        if (s_debug) {
-          System.out.println("Attempting load from " + s_configFileLocation);
-        }
         propsFile = new FileInputStream(s_configFileLocation);
       } catch (IOException ex) {
         throw new MathsExceptionOnInitialization("Cannot find NativeLibraries properties file in command line specified location: " + s_configFileLocation);
       }
     } else { // we are using the default config file location in the JAR
+      s_log.info("Using embedded config from JAR");
       propsFile = NativeLibraries.class.getResourceAsStream(s_configFileLocation);
       if (propsFile == null) {
         throw new MathsExceptionOnInitialization("Cannot find NativeLibraries properties file in location: " + s_configFileLocation);
@@ -289,7 +278,7 @@ public final class NativeLibraries {
 
   /**
    * Return the lower-case first three letters of the platform name.
-   * 
+   *
    * These will match up with the names referred to in the NativeLibraries.properties file
    */
   private static String getShortPlatform() {
@@ -349,9 +338,7 @@ public final class NativeLibraries {
 
     Class<?> c = NativeLibraries.class;
     for (String name : libsToExtract) {
-      if (s_debug) {
-        System.out.println("Extracting " + name);
-      }
+      s_log.info("Extracting " + name);
       String fsPath = libDir + "/" + name;
       String jarPath = url + "/" + getShortPlatform() + "/" + name;
 
@@ -402,9 +389,7 @@ public final class NativeLibraries {
         throw new MathsExceptionOnInitialization("Security settings prevent deletion of native libraries on exit", e);
       }
     }
-    if (s_debug) {
-      System.out.println("Native libraries extracted");
-    }
+    s_log.info("Native libraries extracted");
   }
 
   /**
@@ -419,9 +404,7 @@ public final class NativeLibraries {
     if (!s_configFileOnCommandline) { // we are using the config from the file in the jar
       String libPath = s_tmpDir + File.separatorChar + lib;
       try {
-        if (s_debug) {
-          System.out.println("Loading " + lib + " from " + libPath);
-        }
+        s_log.info("Loading " + lib + " from " + libPath);
         System.load(libPath);
       } catch (Exception e) {
         throw new MathsExceptionOnInitialization("Cannot load " + lib + " as " + libPath, e);
@@ -437,9 +420,7 @@ public final class NativeLibraries {
         throw new MathsExceptionOnInitialization("Could not extract system invariant library name from library name string.");
       }
       try {
-        if (s_debug) {
-          System.out.println("Loading " + libsimplename + " from native library locations.");
-        }
+        s_log.info("Loading " + libsimplename + " from native library locations.");
         System.loadLibrary(libsimplename);
       } catch (Exception e) {
         throw new MathsExceptionOnInitialization("Cannot load " + libsimplename + " from native library locations", e);

@@ -6,6 +6,8 @@
 
 package com.opengamma.maths.helpers;
 
+import com.opengamma.maths.logging.Logger;
+
 /**
  * Tests for values being equal allowing for a level of floating point fuzz
  * Based on the OG-Maths C++ fuzzy equals code .
@@ -21,6 +23,11 @@ public class FuzzyEquals {
     float64_eps = float64_t_machineEpsilon();
     default_tolerance = 10 * float64_eps;
   }
+
+  /**
+   * The logger instance
+   */
+  private static Logger s_log = new Logger(FuzzyEquals.class);
 
   /**
    * Gets machine precision for double precision floating point numbers on this machine.
@@ -234,12 +241,12 @@ public class FuzzyEquals {
 
   private static void DEBUG_PRINT(String str)
   {
-    System.out.println(str);
+    s_log.debug(str);
   }
 
   private static void DEBUG_PRINT(String str, double a, double b)
   {
-    System.out.format(str, a, b);
+    s_log.debug(String.format(str, a, b));
   }
 
   private static double float64_t_machineEpsilon() {

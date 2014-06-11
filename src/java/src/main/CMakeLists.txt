@@ -8,6 +8,7 @@ set(JPACKAGEFQN "com.opengamma.maths")
 fqn_to_dir(JPACKAGEDIR ${JPACKAGEFQN})
 
 set(JAVA_FILES
+    DOGMA.java
     materialisers/Materialisers.java
     helpers/Catchers.java
     helpers/DenseMemoryManipulation.java
@@ -15,7 +16,10 @@ set(JAVA_FILES
     helpers/Iss.java
     helpers/MatrixPrimitiveUtils.java
     helpers/TestGroups.java
-    DOGMA.java
+    logging/Logger.java
+    logging/ILogger.java
+    logging/Slf4jLogger.java
+    logging/StderrLogger.java
     nodes/COPY.java
     nodes/CTRANSPOSE.java
     nodes/INV.java
@@ -95,7 +99,18 @@ add_jar(${JAR_NAME_NO_EXTN} ${JAR_SOURCES}
 
 foreach(TARGET ${TARGET_TYPES})
   if(SUPPORT_${TARGET})
-    add_test(${NATIVE_SELF_TEST}_${TARGET} ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET} -jar ${PATH_AND_JAR_NAME})
+    add_test(${NATIVE_SELF_TEST}_${TARGET}
+             ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET}
+             -jar ${PATH_AND_JAR_NAME})
+    if (WIN32)
+      string(REPLACE ";" "\\;" CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH};${PATH_AND_JAR_NAME}")
+    else()
+      set(CLASSPATH "${CMAKE_JAVA_INCLUDE_PATH}:${PATH_AND_JAR_NAME}")
+    endif()
+    add_test(${NATIVE_SELF_TEST}_${TARGET}_SLF4J
+             ${Java_JAVA_EXECUTABLE} -DinstructionSet=${TARGET}
+             -cp ${CLASSPATH}
+             com.opengamma.maths.nativeloader.NativeLibrariesSelfTest)
   endif()
 endforeach()
 
