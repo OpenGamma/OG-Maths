@@ -37,7 +37,7 @@ extern real8 rzero;
 extern complex16 czero;
 
 template<typename T>char charmagic();
-template<typename T>string xxxgqrcharmagic();
+template<typename T>std::string xxxgqrcharmagic();
 
 template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
 template<typename T>void xswap(int * N, T * DX, int * INCX, T * DY, int * INCY);
