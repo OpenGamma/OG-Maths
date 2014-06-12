@@ -743,3 +743,29 @@ TEST(LAPACKTest_xpotrs, zpotrs) {
   delete [] A;
   delete [] RHS;
 }
+
+
+TEST(LAPACKTest_xlange, dlange) {
+  int n = 4;
+  real8 * A = new real8[16];
+  std::copy(rspd,rspd+n*n,A);
+  real8 answer = lapack::xlange(lapack::O, &n, &n, A, &n);
+  EXPECT_TRUE(answer == 79);
+  // check throw on bad arg
+  n=-1;
+  EXPECT_THROW(lapack::xlange(lapack::O, &n, &n, A, &n), rdag_error);
+  delete[] A;
+}
+
+TEST(LAPACKTest_xlange, zlange) {
+  int n = 4;
+  complex16 * A = new complex16[16];
+  std::copy(cspd,cspd+n*n,A);
+  real8 answer = lapack::xlange(lapack::O, &n, &n, A, &n);
+  EXPECT_TRUE(SingleValueFuzzyEquals(answer,792.493781056045));
+  // check throw on bad arg
+  n=-1;
+  EXPECT_THROW(lapack::xlange(lapack::O, &n, &n, A, &n), rdag_error);
+  delete[] A;
+}
+
