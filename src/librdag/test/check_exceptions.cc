@@ -15,6 +15,7 @@
 #include "exceptions.hh"
 
 using namespace dogma_exceptions;
+using std::string;
 
 #ifdef __APPLE__
 const string backtrace_symbol = "2   librdag_dbg.0.dylib                 0x0000000102edcc48 _ZNK7librdag10OGTerminal20toReal8ArrayOfArraysEv + 150";
