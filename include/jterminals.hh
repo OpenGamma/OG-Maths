@@ -15,9 +15,9 @@ namespace convert {
 using namespace librdag;
 
 /**
- * helper function to get ints from int getFOO() in java
+ * helper function to get size_ts from int getFOO() in java
  */
-DLLEXPORT_C jint getIntFromVoidJMethod(jmethodID id, jobject obj);
+DLLEXPORT_C size_t getSizeTFromVoidJMethod(jmethodID id, jobject obj);
 
 
 /*

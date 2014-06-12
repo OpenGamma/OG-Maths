@@ -45,15 +45,15 @@ class Real8AoA
     /**
      * Get the number of rows.
      */
-    int getRows() const;
+    size_t getRows() const;
     /**
      * Get the number of columns.
      */
-    int getCols() const;
+    size_t getCols() const;
   private:
     real8** _data;
-    int _rows;
-    int _cols;
+    size_t _rows;
+    size_t _cols;
 };
 
 /**
@@ -88,19 +88,19 @@ class Complex16AoA
     /**
      * Get the number of rows.
      */
-    int getRows() const;
+    size_t getRows() const;
     /**
      * Get the number of columns.
      */
-    int getCols() const;
+    size_t getCols() const;
   private:
     /**
      * Used by {real,imag}PartToJDoubleAoA
      */
     template<real8 (F)(const complex16&)> jobjectArray toJDoubleAoA(JNIEnv* env) const;
     complex16** _data;
-    int _rows;
-    int _cols;
+    size_t _rows;
+    size_t _cols;
 };
   
 class DLLEXPORT_C DispatchToOGTerminal: public librdag::Visitor

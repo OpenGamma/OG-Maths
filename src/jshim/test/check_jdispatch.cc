@@ -53,8 +53,8 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGIntegerScalar)
 
 TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealMatrix)
 {
-  const int rows = 3;
-  const int cols = 2;
+  const size_t rows = 3;
+  const size_t cols = 2;
   real8 * data = new real8[rows*cols]{1,3,5,2,4,6};
   real8 ** dataAoA = new real8 * [rows];
   dataAoA[0] = new real8[cols]{1,2};
@@ -64,7 +64,7 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealMatrix)
   Real8AoA r = Real8AoA{mat};
   ASSERT_TRUE(r.getRows()==rows);
   ASSERT_TRUE(r.getCols()==cols);
-  for(int k = 0; k < rows; k++)
+  for(size_t k = 0; k < rows; k++)
   {
     ASSERT_TRUE(ArrayFuzzyEquals(r.getData()[k],dataAoA[k],cols));
     delete[] dataAoA[k];
@@ -80,9 +80,9 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexMatrix)
 
 TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealDiagonalMatrix)
 {
-  const int rows = 3;
-  const int cols = 2;
-  const int dlen = rows > cols ? cols:rows;
+  const size_t rows = 3;
+  const size_t cols = 2;
+  const size_t dlen = rows > cols ? cols:rows;
   real8 * data = new real8[dlen]{10,20};
   real8 ** dataAoA = new real8 * [rows];
   dataAoA[0] = new real8[cols]{10,0};
@@ -92,7 +92,7 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealDiagonalMatrix)
   Real8AoA r = Real8AoA{mat};
   ASSERT_TRUE(r.getRows()==rows);
   ASSERT_TRUE(r.getCols()==cols);
-  for(int k = 0; k < rows; k++)
+  for(size_t k = 0; k < rows; k++)
   {
     ASSERT_TRUE(ArrayFuzzyEquals(r.getData()[k],dataAoA[k],cols));
     delete[] dataAoA[k];
@@ -111,8 +111,8 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexDiagonalMatrix)
 
 TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealSparseMatrix)
 {
-  const int rows = 4;
-  const int cols = 3;
+  const size_t rows = 4;
+  const size_t cols = 3;
   real8 ** dataAoA = new real8 * [rows];
   dataAoA[0] = new real8[cols]{ 1, 2, 0 };
   dataAoA[1] = new real8[cols]{ 0, 3, 0 };
@@ -127,7 +127,7 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealSparseMatrix)
   Real8AoA r = Real8AoA{mat};
   ASSERT_TRUE(r.getRows()==rows);
   ASSERT_TRUE(r.getCols()==cols);
-  for(int k = 0; k < rows; k++)
+  for(size_t k = 0; k < rows; k++)
   {
     ASSERT_TRUE(ArrayFuzzyEquals(r.getData()[k],dataAoA[k],cols));
     delete[] dataAoA[k];
@@ -140,8 +140,8 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealSparseMatrix)
 
 TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexSparseMatrix)
 {
-  const int rows = 4;
-  const int cols = 3;
+  const size_t rows = 4;
+  const size_t cols = 3;
   complex16 * data= new complex16[5]{{1.0,10}, {4.0,40}, {2.0,20}, {3.0,30}, {5.0,50}};
   int * rowInd=new int[5]{0, 2, 0, 1, 3};
   int * colPtr=new int[4]{0, 2, 4, 5};
@@ -191,8 +191,8 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGIntegerScalar)
 
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
 {
-  const int rows = 3;
-  const int cols = 2;
+  const size_t rows = 3;
+  const size_t cols = 2;
   complex16 * data = new complex16[rows*cols]{{1,10},{3,30},{5,50},{2,20},{4,40},{6,60}};
   complex16 ** dataAoA = new complex16 * [rows];
   dataAoA[0] = new complex16[cols]{{1,10},{2,20}};
@@ -202,7 +202,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
   Complex16AoA c = Complex16AoA{mat};
   ASSERT_TRUE(c.getRows()==rows);
   ASSERT_TRUE(c.getCols()==cols);
-  for(int k = 0; k < rows; k++)
+  for(size_t k = 0; k < rows; k++)
   {
     ASSERT_TRUE(ArrayFuzzyEquals(c.getData()[k],dataAoA[k],cols));
     delete[] dataAoA[k];
@@ -212,8 +212,8 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
 
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
 {
-  const int rows = 3;
-  const int cols = 2;
+  const size_t rows = 3;
+  const size_t cols = 2;
   real8 * data = new real8[rows*cols]{1,3,5,2,4,6};
   complex16 ** dataAoA = new complex16 * [rows];
   dataAoA[0] = new complex16[cols]{{1,0},{2,0}};
@@ -223,7 +223,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
   Complex16AoA c = Complex16AoA{mat};
   ASSERT_TRUE(c.getRows()==rows);
   ASSERT_TRUE(c.getCols()==cols);
-  for(int k = 0; k < rows; k++)
+  for(size_t k = 0; k < rows; k++)
   {
     ASSERT_TRUE(ArrayFuzzyEquals(c.getData()[k],dataAoA[k],cols));
     delete[] dataAoA[k];
@@ -233,9 +233,9 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
 
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexDiagonalMatrix)
 {
-  const int rows = 3;
-  const int cols = 2;
-  const int dlen = rows > cols ? cols:rows;
+  const size_t rows = 3;
+  const size_t cols = 2;
+  const size_t dlen = rows > cols ? cols:rows;
   complex16 * data = new complex16[dlen]{10,20};
   complex16 ** dataAoA = new complex16 * [rows];
   dataAoA[0] = new complex16[cols]{10,0};
@@ -245,7 +245,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexDiagonalMatrix)
   Complex16AoA c = Complex16AoA{mat};
   ASSERT_TRUE(c.getRows()==rows);
   ASSERT_TRUE(c.getCols()==cols);
-  for(int k = 0; k < rows; k++)
+  for(size_t k = 0; k < rows; k++)
   {
     ASSERT_TRUE(ArrayFuzzyEquals(c.getData()[k],dataAoA[k],cols));
     delete[] dataAoA[k];
@@ -264,8 +264,8 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealDiagonalMatrix)
 
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexSparseMatrix)
 {
-  const int rows = 4;
-  const int cols = 3;
+  const size_t rows = 4;
+  const size_t cols = 3;
   complex16 ** dataAoA = new complex16 * [rows];
   dataAoA[0] = new complex16[cols]{ {1,10}, {2,20}, {0,0} };
   dataAoA[1] = new complex16[cols]{ {0,0} , {3,30}, {0,0} };
@@ -280,7 +280,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexSparseMatrix)
   Complex16AoA c = Complex16AoA{mat};
   ASSERT_TRUE(c.getRows()==rows);
   ASSERT_TRUE(c.getCols()==cols);
-  for(int k = 0; k < rows; k++)
+  for(size_t k = 0; k < rows; k++)
   {
     ASSERT_TRUE(ArrayFuzzyEquals(c.getData()[k],dataAoA[k],cols));
     delete[] dataAoA[k];
@@ -294,8 +294,8 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexSparseMatrix)
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealSparseMatrix)
 {
 
-  const int rows = 4;
-  const int cols = 3;
+  const size_t rows = 4;
+  const size_t cols = 3;
   real8 * data= new real8[5]{1,4,2,3,5};
   int * rowInd=new int[5]{0, 2, 0, 1, 3};
   int * colPtr=new int[4]{0, 2, 4, 5};

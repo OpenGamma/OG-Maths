@@ -67,10 +67,10 @@ TEST(EqualsTest, SingleValueFuzzyEqualsComplex16) {
 
 TEST(EqualsTest, ArrayBitEquals_real8) {
 
-  int len = 4;
-  real8 * data1 = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real8 * data2 = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real8 * data3 = new real8[4] {-1.0e0,2.0e0,3.0e0,4.0e0};
+  constexpr size_t len = 4;
+  real8 * data1 = new real8[len] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * data2 = new real8[len] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * data3 = new real8[len] {-1.0e0,2.0e0,3.0e0,4.0e0};
 
   ASSERT_TRUE(ArrayBitEquals(data1, data2, len));
   ASSERT_FALSE(ArrayBitEquals(data1, data3, len));
@@ -83,10 +83,10 @@ TEST(EqualsTest, ArrayBitEquals_real8) {
 
 TEST(EqualsTest, ArrayFuzzyEquals_real8) {
 
-  int len = 4;
-  real8 * data = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real8 * same = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real8 * diff  = new  real8[4]{-1.0e0,2.0e0,3.0e0,4.0e0};
+  constexpr size_t len = 4;
+  real8 * data = new real8[len] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * same = new real8[len] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * diff = new real8[len] {-1.0e0,2.0e0,3.0e0,4.0e0};
 
   ASSERT_FALSE(ArrayFuzzyEquals(data, diff, len));
   ASSERT_TRUE(ArrayFuzzyEquals(data, same, len));
@@ -99,10 +99,10 @@ TEST(EqualsTest, ArrayFuzzyEquals_real8) {
 
 TEST(EqualsTest, ArrayBitEquals_complex16) {
 
-  int len = 4;
-  complex16 * data1 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
-  complex16 * data2 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
-  complex16 * data3 = new complex16[4] {{-1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+  constexpr size_t len = 4;
+  complex16 * data1 = new complex16[len] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+  complex16 * data2 = new complex16[len] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+  complex16 * data3 = new complex16[len] {{-1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
 
   ASSERT_TRUE(ArrayBitEquals(data1, data2, len));
   ASSERT_FALSE(ArrayBitEquals(data1, data3, len));
@@ -115,10 +115,10 @@ TEST(EqualsTest, ArrayBitEquals_complex16) {
 
 TEST(EqualsTest, ArrayFuzzyEquals_complex16) {
 
-  int len = 4;
-  complex16 * data1 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
-  complex16 * data2 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
-  complex16 * data3 = new complex16[4] {{-1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+  constexpr size_t len = 4;
+  complex16 * data1 = new complex16[len] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+  complex16 * data2 = new complex16[len] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
+  complex16 * data3 = new complex16[len] {{-1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
 
   ASSERT_TRUE(ArrayFuzzyEquals(data1, data2, len));
   ASSERT_FALSE(ArrayFuzzyEquals(data1, data3, len));
@@ -131,10 +131,10 @@ TEST(EqualsTest, ArrayFuzzyEquals_complex16) {
 
 TEST(EqualsTest, ArrayBitEquals_int) {
 
-  int len = 4;
-  int * data1 = new int[4] {1,2,3,4};
-  int * data2 = new int[4] {1,2,3,4};
-  int * data3 = new int[4] {-1,2,3,4};
+  constexpr size_t len = 4;
+  int * data1 = new int[len] {1,2,3,4};
+  int * data2 = new int[len] {1,2,3,4};
+  int * data3 = new int[len] {-1,2,3,4};
 
   ASSERT_TRUE(ArrayBitEquals(data1, data2, len));
   ASSERT_FALSE(ArrayBitEquals(data1, data3, len));
@@ -367,8 +367,8 @@ TEST(EqualsTest, OGRealSparseMatrix) {
   int * colPtr2 = new int[6] {0, 1, 3, 7, 7, 7};
   int * rowIdx = new int[7] {0, 1, 0, 2, 1, 2, 3 };
   int * rowIdx2 = new int[7] {0, 1, 1, 2, 1, 2, 3 };
-  int rows = 5;
-  int cols = 4;
+  size_t rows = 5;
+  size_t cols = 4;
   OGRealSparseMatrix::Ptr matrix = OGRealSparseMatrix::create(colPtr, rowIdx, r_data1, rows, cols);
   OGRealSparseMatrix::Ptr same = OGRealSparseMatrix::create(colPtr, rowIdx, r_data1, rows, cols);
   OGRealSparseMatrix::Ptr badrows = OGRealSparseMatrix::create(colPtr, rowIdx, r_data1, 1, cols);
@@ -437,8 +437,8 @@ TEST(EqualsTest, OGComplexSparseMatrix) {
   int * colPtr2 = new int[6] {0, 1, 3, 7, 7, 7};
   int * rowIdx = new int[7] {0, 1, 0, 2, 1, 2, 3 };
   int * rowIdx2 = new int[7] {0, 1, 1, 2, 1, 2, 3 };
-  int rows = 5;
-  int cols = 4;
+  size_t rows = 5;
+  size_t cols = 4;
   OGComplexSparseMatrix::Ptr matrix = OGComplexSparseMatrix::create(colPtr, rowIdx, c_data1, rows, cols);
   OGComplexSparseMatrix::Ptr same = OGComplexSparseMatrix::create(colPtr, rowIdx, c_data1, rows, cols);
   OGComplexSparseMatrix::Ptr badrows = OGComplexSparseMatrix::create(colPtr, rowIdx, c_data1, 1, cols);

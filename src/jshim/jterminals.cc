@@ -17,28 +17,36 @@ using namespace std;
 namespace convert {
 
 /**
- * helper function to get ints from int getFOO() in java
+ * helper function to get size_ts from int getFOO() in java
  */
-DLLEXPORT_C jint getIntFromVoidJMethod(jmethodID id, jobject obj)
+DLLEXPORT_C size_t getSizeTFromVoidJMethod(jmethodID id, jobject obj)
 {
-  if(id==nullptr)
+  if (id==nullptr)
   {
     throw convert_error("Null pointer for method id.");
   }
-  if(obj==nullptr)
+  if (obj==nullptr)
   {
     throw convert_error("Null pointer for jobject obj.");
   }
+  
   JNIEnv *env = nullptr;
   JVMManager::getEnv((void **)&env);
-  if(env==nullptr)
+  
+  if (env==nullptr)
   {
     throw convert_error("Null pointer for env from JVMManager::getEnv.");
   }
   jint data = 0x7ff00000;
   data = env->CallIntMethod(obj, id);
   checkEx(env);
-  return data;
+  
+  if (data < 0)
+  {
+    throw convert_error("Negative value in getSizeTFromVoidJMethod");
+  }
+  
+  return static_cast<size_t>(data);
 }
 
 /**
@@ -180,8 +188,8 @@ JOGIntegerScalar::debug_print() const
 JOGRealMatrix::JOGRealMatrix(jobject obj): OGRealMatrix
   (
     static_cast<real8 *>(bindPrimitiveArrayData<real8, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj)),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj))
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)
   )
 {
   this->_backingObject = obj;
@@ -219,8 +227,8 @@ JOGRealMatrix::debug_print() const
 JOGComplexMatrix::JOGComplexMatrix(jobject obj): OGComplexMatrix
   (
     static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(obj,JVMManager::getOGTerminalClazz_getData())),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj)),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj))
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)
   )
 {
   this->_backingObject = obj;
@@ -257,8 +265,8 @@ JOGComplexMatrix::debug_print() const
 JOGLogicalMatrix::JOGLogicalMatrix(jobject obj): OGLogicalMatrix
   (
     static_cast<real8 *>(bindPrimitiveArrayData<real8, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj)),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj))
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)
   )
 {
   this->_backingObject = obj;
@@ -298,8 +306,8 @@ JOGRealSparseMatrix::JOGRealSparseMatrix(jobject obj): OGRealSparseMatrix
     reinterpret_cast<int*>(bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getColPtr())),
     reinterpret_cast<int*>(bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getRowIdx())),
     static_cast<real8 *>(bindPrimitiveArrayData<real8, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj)),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj))
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)
   )
 {
   this->_backingObject = obj;
@@ -353,7 +361,8 @@ JOGComplexSparseMatrix::JOGComplexSparseMatrix(jobject obj): OGComplexSparseMatr
     reinterpret_cast<int*>(bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getColPtr())),
     reinterpret_cast<int*>(bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getRowIdx())),
     static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj)), static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj))
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)
   )
 {
   this->_backingObject = obj;
@@ -405,8 +414,8 @@ JOGComplexSparseMatrix::toComplex16ArrayOfArrays() const
 JOGRealDiagonalMatrix::JOGRealDiagonalMatrix(jobject obj):OGRealDiagonalMatrix
   (
     static_cast<real8 *>(bindPrimitiveArrayData<real8, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj)),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj))
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)
   )
 {
   this->_backingObject = obj;
@@ -444,8 +453,8 @@ JOGRealDiagonalMatrix::debug_print() const
 JOGComplexDiagonalMatrix::JOGComplexDiagonalMatrix(jobject obj):OGComplexDiagonalMatrix
   (
     static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj)),
-    static_cast<int>(getIntFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj))
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
+    getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)
   )
 {
   this->_backingObject = obj;

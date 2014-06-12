@@ -50,7 +50,7 @@ JNIEXPORT jlong JNICALL Java_com_opengamma_maths_mem_Stdlib_wrapped_1allocateAli
 {
   uintptr_t * memptr;
   size_t size = (size_t)amount;
-  int attempts = 0;
+  size_t attempts = 0;
 
   // try and find a memory block with an address suitable for pointer arithmetic with a signed long long (64bit jlong)
   memptr = (uintptr_t *) malloc_aligned(size);

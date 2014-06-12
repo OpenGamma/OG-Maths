@@ -133,7 +133,7 @@ TreeResultPair plustestbigtree()
 {
   OGNumeric::Ptr bigtree = OGRealScalar::create(0.0);
   real8 sum = 0.0;
-  for (int i = 0; i < 5000; ++i)
+  for (size_t i = 0; i < 5000; ++i)
   {
     sum += i;
 
