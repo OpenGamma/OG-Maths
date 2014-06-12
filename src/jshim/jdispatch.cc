@@ -172,7 +172,7 @@ Complex16AoA::imagPartToJDoubleAoA(JNIEnv* env) const
   return toJDoubleAoA<std::imag>(env);
 }
 
-template<double (F)(const complex<double>&)>
+template<real8 (F)(const complex16&)>
 jobjectArray
 Complex16AoA::toJDoubleAoA(JNIEnv* env) const
 {
