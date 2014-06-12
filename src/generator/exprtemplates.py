@@ -30,9 +30,6 @@ expression_hh = """\
 #include "visitor.hh"
 #include "exceptions.hh"
 
-using namespace std;
-
-
 /**
  * The namespace for the DAG library
  */

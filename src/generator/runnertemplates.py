@@ -45,6 +45,8 @@ runners_cc = """\
 #include "terminal.hh"
 #include "uncopyable.hh"
 
+using namespace std;
+
 namespace librdag {
 %(function_definitions)s
 } // end namespace librdag

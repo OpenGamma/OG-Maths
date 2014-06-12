@@ -15,6 +15,7 @@ namespace convert
 {
 
 using namespace librdag;
+using namespace std;
 
 /**
  * Real8AoA

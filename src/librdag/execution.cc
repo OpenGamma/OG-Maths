@@ -26,9 +26,9 @@ ExecutionList::ExecutionList(const OGNumeric::Ptr& tree)
   _execList = new _ExpressionList();
 
   // treePos contains the list of nodes we've visited but not finished with
-  stack<OGNumeric::Ptr> treePos;
+  std::stack<OGNumeric::Ptr> treePos;
   // argPos records how far down the arg of the node in a given position we've got
-  stack<size_t> argPos;
+  std::stack<size_t> argPos;
 
   // Start by going downwards
   Direction dir = Direction::DOWN;
