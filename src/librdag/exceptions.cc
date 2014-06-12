@@ -17,11 +17,15 @@
 #include "exceptions.hh"
 #include "debug.h"
 
-using namespace std;
-
 namespace dogma_exceptions {
 
+using std::string;
+
 #ifdef __APPLE__
+using std::vector;
+using std::istringstream;
+using std::istream_iterator;
+
 vector<string> tokenize_backtrace(const string &backtrace_string)
 {
   istringstream s(backtrace_string);

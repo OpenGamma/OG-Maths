@@ -24,6 +24,7 @@ createexpr_cc = """\
 namespace convert {
 
 using namespace librdag;
+using namespace std;
 
 OGNumeric::Ptr translateNode(JNIEnv* env, jobject obj, OGNumeric::Ptr arg0, OGNumeric::Ptr arg1)
 {

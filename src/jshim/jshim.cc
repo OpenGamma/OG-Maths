@@ -18,6 +18,7 @@
 
 using namespace convert;
 using namespace dogma_exceptions;
+using namespace std;
 
 /* Used to signal if something has gone wrong in our exception reporting code.
  * If this has happened, we are in real trouble (probably out of memory).

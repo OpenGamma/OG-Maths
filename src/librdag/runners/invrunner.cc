@@ -20,6 +20,8 @@
 #include <sstream>
 #include <limits>
 
+using namespace std;
+
 /*
  *  Unit contains code for INV node runners
  */

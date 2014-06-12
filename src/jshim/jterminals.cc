@@ -12,6 +12,8 @@
 #include "exceptions.hh"
 #include "modifiermacros.h"
 
+using namespace std;
+
 namespace convert {
 
 /**

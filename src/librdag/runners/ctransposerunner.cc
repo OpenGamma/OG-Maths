@@ -16,6 +16,8 @@
 #include "uncopyable.hh"
 #include "lapack.hh"
 
+using namespace std;
+
 /*
  *  Unit contains code for CTRANSPOSE node runners
  */

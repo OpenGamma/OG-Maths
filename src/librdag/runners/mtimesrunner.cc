@@ -17,6 +17,7 @@
 #include <complex>
 #include <sstream>
 
+using namespace std;
 
 /*
  * Unit contains code for MTIMES node runners

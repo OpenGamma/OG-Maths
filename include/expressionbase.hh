@@ -12,9 +12,6 @@
 #include "numeric.hh"
 #include "visitor.hh"
 
-using namespace std;
-
-
 /**
  * The namespace for the DAG library
  */
@@ -25,8 +22,8 @@ namespace librdag
  * Container for expression arguments
  */
 
-typedef vector<OGNumeric::Ptr> ArgContainer;
-typedef vector<OGNumeric::Ptr> RegContainer;
+typedef std::vector<OGNumeric::Ptr> ArgContainer;
+typedef std::vector<OGNumeric::Ptr> RegContainer;
 
 /**
  *  Expr type

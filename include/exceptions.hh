@@ -17,8 +17,6 @@
  */
 #define FRAMEBUF_SIZE 50
 
-using namespace std;
-
 namespace dogma_exceptions {
 
 /**
@@ -43,7 +41,7 @@ class BacktraceElement
      * @param backtrace_symbol a single description of a frame from backtrace_symbols()
      * @param address the address of the instruction pointer for the frame
      */
-    BacktraceElement(const string& backtrace_symbol, const void* address);
+    BacktraceElement(const std::string& backtrace_symbol, const void* address);
     /**
      * Get the address of the instruction pointer for the frame.
      */
@@ -51,25 +49,25 @@ class BacktraceElement
     /**
      * Get the name and path of the object file that this frame is inside.
      */
-    const string getObjectFile() const;
+    const std::string getObjectFile() const;
     /**
      * Get the name of the function that this frame is inside.
      */
-    const string getFunction() const;
+    const std::string getFunction() const;
   private:
     /**
      * Converts any non-ascii characters to ascii characters
      */
-    string asciiOnly(string s);
+    std::string asciiOnly(std::string s);
     const void* _address;
-    string _object_file;
-    string _function;
+    std::string _object_file;
+    std::string _function;
 };
 
 /**
  * Any exception thrown during the execution of the DOGMA libraries
  */
-class dogma_error: public runtime_error
+class dogma_error: public std::runtime_error
 {
   public:
     /**
@@ -78,7 +76,7 @@ class dogma_error: public runtime_error
      * @param what Description of the exception, in a form suitable for printing to the user as the
      *             stack trace in Java.
      */
-    dogma_error(const string& what);
+    dogma_error(const std::string& what);
     /**
      * Copy constructor
      *

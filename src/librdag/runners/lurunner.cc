@@ -14,6 +14,7 @@
 #include "lapack.hh"
 #include "debug.h"
 
+using namespace std;
 
 /**
  *  Unit contains code for LU node runners

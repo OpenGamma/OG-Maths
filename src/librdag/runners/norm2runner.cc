@@ -17,6 +17,8 @@
 #include <complex>
 #include <sstream>
 
+using namespace std;
+
 /*
  *  Unit contains code for NORM2 node runners
  */

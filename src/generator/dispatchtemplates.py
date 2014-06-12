@@ -94,7 +94,7 @@ dispatchop_class = """\
 template <typename T>
 class DispatchOp
 {
-  static_assert(is_pointer<T>::value, "Type T must be a pointer");
+  static_assert(std::is_pointer<T>::value, "Type T must be a pointer");
   public:
     DispatchOp();
     virtual ~DispatchOp();
@@ -171,6 +171,8 @@ dispatch_cc = """\
 #include "uncopyable.hh"
 #include <iostream>
 #include <sstream>
+
+using namespace std;
 
 namespace librdag {
 
