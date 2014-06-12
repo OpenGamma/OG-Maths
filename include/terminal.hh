@@ -21,11 +21,11 @@ namespace detail {
 class FuzzyCompareOGTerminalContainer
 {
   public:
-    FuzzyCompareOGTerminalContainer(const shared_ptr<const OGTerminal>& terminal);
+    FuzzyCompareOGTerminalContainer(const std::shared_ptr<const OGTerminal>& terminal);
     ~FuzzyCompareOGTerminalContainer();
-    const shared_ptr<const OGTerminal> getTerminal() const;
+    const std::shared_ptr<const OGTerminal> getTerminal() const;
   private:
-    const shared_ptr<const OGTerminal> _terminal;
+    const std::shared_ptr<const OGTerminal> _terminal;
 };
 
 } // end namespace detail

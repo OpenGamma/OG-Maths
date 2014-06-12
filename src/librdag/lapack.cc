@@ -8,6 +8,7 @@
 #include "exceptions.hh"
 
 using namespace librdag;
+using namespace std;
 
 namespace lapack {
 

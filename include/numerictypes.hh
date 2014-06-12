@@ -14,12 +14,8 @@
 #endif
 
 #ifdef __cplusplus
-using namespace std;
-#endif
-
-#ifdef __cplusplus
-typedef complex<double> complex16;
-typedef complex<float> complex8;
+typedef std::complex<double> complex16;
+typedef std::complex<float> complex8;
 typedef double real8;
 typedef float real4;
 #else

@@ -14,6 +14,7 @@
 namespace convert {
 
 using namespace librdag;
+using std::stack;
 
 /**
  * Represents direction of traversal through a Java expression tree
