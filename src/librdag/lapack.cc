@@ -263,16 +263,14 @@ template real8 xnrm2<complex16>(int * N, complex16 * X, int * INCX);
 template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, real8 * A, int * LDA, real8 * S, real8 * U, int * LDU, real8 * VT, int * LDVT, int * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
-  real8 * tmp = new real8[1]; // buffer, alloc slot of 1 needed as the work space dimension is written here.
+  real16 tmp;
   int lwork = -1; // set for query
-  real8 * WORK = tmp; // set properly after query
 
   // work space query
-  F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, INFO);
+  F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, &tmp, &lwork, INFO);
 
   if(*INFO < 0)
   {
-    delete [] tmp;
     stringstream message;
     message << "Input to LAPACK::dgesvd call incorrect at arg: " << *INFO;
     message << std::endl << "LDVT is " << *LDVT;
@@ -280,16 +278,13 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, real8 * A, 
     throw rdag_error(message.str());
   }
 
-  // query complete WORK[0] contains size needed
-  lwork = (int)WORK[0];
-  WORK = new real8[lwork]();
+  // query complete tmp contains size needed
+  lwork = (int)tmp;
+  unique_ptr<real16[]> workPtr(new real16[lwork]());
+  real16 * WORK = workPtr.get();
 
   // full execution
   F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, INFO);
-
-  // clean up
-  delete [] tmp;
-  delete [] WORK;
 
   if(*INFO!=0)
   {
@@ -301,16 +296,14 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, complex16 *
 {
   set_xerbla_death_switch(lapack::izero);
   int minmn = *M > *N ? *N : *M; // compute scale for RWORK
-  complex16 * tmp = new complex16[1]; // buffer, alloc slot of 1 needed as the work space dimension is written here.
+  complex16 tmp;
   int lwork = -1; // set for query
-  real8    * RWORK = nullptr;
-  complex16 * WORK = tmp; // set properly after query
+  real16 * RWORK = nullptr;
 
   // work space query
-  F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, RWORK, INFO);
+  F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, &tmp, &lwork, RWORK, INFO);
   if(*INFO < 0)
   {
-    delete [] tmp;
     stringstream message;
     message << "Input to LAPACK::zgesvd call incorrect at arg: " << *INFO;
     message << std::endl << "LDVT is " << *LDVT;
@@ -318,18 +311,17 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, complex16 *
     throw rdag_error(message.str());
   }
 
-  // query complete WORK[0] contains size needed
-  lwork = (int)(WORK[0].real());
-  WORK = new complex16[lwork];
-  RWORK = new real8[5*minmn];
+  // query complete tmp contains size needed
+  lwork = (int)(tmp.real());
+
+  unique_ptr<complex16[]> workPtr(new complex16[lwork]);
+  complex16 * WORK = workPtr.get();
+  unique_ptr<real16[]> rworkPtr(new real16[5*minmn]);
+  RWORK = rworkPtr.get();
+
 
   // full execution
   F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, RWORK, INFO);
-
-  // clean up
-  delete [] tmp;
-  delete [] WORK;
-  delete [] RWORK;
 
   if(*INFO!=0)
   {
@@ -411,11 +403,13 @@ template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, real8 * A
     message << "Input to LAPACK::dtrcon call incorrect at arg: " << 4;
     throw rdag_error(message.str());
   }
-  real8 * WORK = new real8[ 3 * *N];
-  int * IWORK = new int[*N];
+
+  unique_ptr<real16[]> workPtr (new real16[ 3 * *N]);
+  real16 * WORK = workPtr.get();
+  unique_ptr<int[]> iworkPtr (new int[*N]);
+  int * IWORK = iworkPtr.get();
+
   F77FUNC(dtrcon)(NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK, IWORK, INFO);
-  delete [] WORK;
-  delete [] IWORK;
   if(*INFO!=0)
   {
       stringstream message;
@@ -434,11 +428,13 @@ template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, complex16
     message << "Input to LAPACK::ztrcon call incorrect at arg: " << 4;
     throw rdag_error(message.str());
   }
-  complex16 * WORK = new complex16[ 2 * *N];
-  real8 * RWORK = new real8[*N];
+
+  unique_ptr<complex16[]> workPtr (new complex16[ 2 * *N]);
+  complex16 * WORK = workPtr.get();
+  unique_ptr<real16[]> rworkPtr (new real16[*N]);
+  real16 * RWORK = rworkPtr.get();
+
   F77FUNC(ztrcon)(NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK, RWORK, INFO);
-  delete [] WORK;
-  delete [] RWORK;
   if(*INFO!=0)
   {
     stringstream message;
@@ -498,11 +494,12 @@ template<> void xpocon(char * UPLO, int * N, real8 * A, int * LDA, real8 * ANORM
     message << "Input to LAPACK::dpocon call incorrect at arg: " << 2;
     throw rdag_error(message.str());
   }
-  real8 * WORK = new real8[3 * (*N)];
-  int * IWORK = new int[(*N)];
+  unique_ptr<real16[]> workPtr (new real16[3 * (*N)]);
+  real16 * WORK = workPtr.get();
+  unique_ptr<int[]> iworkPtr (new int[(*N)]);
+  int * IWORK = iworkPtr.get();
+
   F77FUNC(dpocon)(UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
-  delete [] WORK;
-  delete [] IWORK;
   if(*INFO<0)
   {
     stringstream message;
@@ -520,11 +517,13 @@ template<> void xpocon(char * UPLO, int * N, complex16 * A, int * LDA, real8 * A
     message << "Input to LAPACK::zpocon call incorrect at arg: " << 2;
     throw rdag_error(message.str());
   }
-  complex16 * WORK = new complex16[2 * *N];
-  real8 * RWORK = new real8[*N];
+
+  unique_ptr<complex16[]> workPtr (new complex16[2 * *N]);
+  complex16 * WORK = workPtr.get();
+  unique_ptr<real16[]> rworkPtr (new real16[*N]);
+  real16 * RWORK = rworkPtr.get();
+
   F77FUNC(zpocon)(UPLO, N, A, LDA, ANORM, RCOND, WORK, RWORK, INFO);
-  delete [] WORK;
-  delete [] RWORK;
   if(*INFO<0)
   {
     stringstream message;
@@ -542,9 +541,11 @@ template<typename T>real8 xlansy(char * NORM, char * UPLO, int * N, T * A, int *
     message << "Input to LAPACK::"<<detail::charmagic<T>()<<"lansy call incorrect at arg: " << 3;
     throw rdag_error(message.str());
   }
-  real8 * WORK = new real8[*N]; // allocate regardless of *NORM
-  real8 ret = detail::xlansy(NORM, UPLO, N, A, LDA, WORK);
-  delete [] WORK;
+
+  unique_ptr<real16[]> workPtr (new real16[*N]);// allocate regardless of *NORM
+  real16 * WORK = workPtr.get();
+  real16 ret = detail::xlansy(NORM, UPLO, N, A, LDA, WORK);
+
   return ret;
 }
 template real8 xlansy<real8>(char * NORM, char * UPLO, int * N, real8 * A, int * LDA);
@@ -553,9 +554,11 @@ template real8  xlansy<complex16>(char * NORM, char * UPLO, int * N, complex16 *
 real8 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA)
 {
   set_xerbla_death_switch(lapack::izero);
-  real8 * WORK = new real8[*N]; // allocate regardless of *NORM
-  real8 ret = F77FUNC(zlanhe)(NORM, UPLO, N, A, LDA, WORK);
-  delete [] WORK;
+
+  unique_ptr<real16[]> workPtr (new real16[*N]);// allocate regardless of *NORM
+  real16 * WORK = workPtr.get();
+  real16 ret = F77FUNC(zlanhe)(NORM, UPLO, N, A, LDA, WORK);
+
   return ret;
 }
 
@@ -584,9 +587,9 @@ template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * L
     message << "Input to LAPACK::"<<detail::charmagic<T>()<<"lange call incorrect at arg: " << 2;
     throw rdag_error(message.str());
   }
-  real16 * WORK = new real16[*M]; // allocate regardless of *NORM
+  unique_ptr<real16[]> workPtr (new real16[*M]);// allocate regardless of *NORM
+  real16 * WORK = workPtr.get();
   real16 ret = detail::xlange(NORM, M, N, A, LDA, WORK);
-  delete [] WORK;
   return ret;
 }
 template real16 xlange<real16>(char * NORM, int * M, int * N, real16 * A, int * LDA);
@@ -602,11 +605,12 @@ template<> void xgecon(char * NORM, int * N, real16 * A, int * LDA, real16 * ANO
     message << "Input to LAPACK::dgecon call incorrect at arg: " << 2;
     throw rdag_error(message.str());
   }
-  real16 * WORK = new real16[4*(*N)];
-  int * IWORK = new int[*N];
+
+  unique_ptr<real16[]> workPtr (new real16[4*(*N)]);
+  real16 * WORK = workPtr.get();
+  unique_ptr<int[]> iworkPtr (new int[*N]);
+  int * IWORK = iworkPtr.get();
   F77FUNC(dgecon)(NORM, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
-  delete [] WORK;
-  delete [] IWORK;
 
   if(*INFO<0)
   {
@@ -625,11 +629,13 @@ template<> void xgecon(char * NORM, int * N, complex16 * A, int * LDA, real16 * 
     message << "Input to LAPACK::zgecon call incorrect at arg: " << 2;
     throw rdag_error(message.str());
   }
-  complex16 * WORK = new complex16[2*(*N)];
-  real16 * RWORK = new real16[2*(*N)];
+
+  unique_ptr<complex16[]> workPtr (new complex16[2*(*N)]);
+  complex16 * WORK = workPtr.get();
+  unique_ptr<real16[]> rworkPtr (new real16[2*(*N)]);
+  real16 * RWORK = rworkPtr.get();
+
   F77FUNC(zgecon)(NORM, N, A, LDA, ANORM, RCOND, WORK, RWORK, INFO);
-  delete [] WORK;
-  delete [] RWORK;
 
   if(*INFO<0)
   {
@@ -674,14 +680,14 @@ template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * 
 
   // Allocate work space based on queried value
   lwork = (int)std::real(worktmp);
-  T * work = new T[lwork];
+  unique_ptr<T[]> workPtr (new T[lwork]);
+  T * work = workPtr.get();
 
   // the actual call
   detail::xgels(TRANS, M, N, NRHS, A, LDA, B, LDB, work, &lwork, INFO);
   if(*INFO!=0)
   {
     stringstream message;
-    delete [] work;
     if(*INFO<0)
     {
       message << "Input to LAPACK::xgels call incorrect at arg: " << *INFO << ".";
@@ -695,7 +701,6 @@ template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * 
     throw rdag_error(message.str());
   }
   // normal return
-  delete [] work;
 }
 template void xgels<real16>(char * TRANS, int * M, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, int * INFO );
 template void xgels<complex16>(char * TRANS, int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO );
@@ -721,14 +726,15 @@ template<> void xgelsd(int * M, int * N, int * NRHS, real16 * A, int * LDA, real
 
   // Allocate work space based on queried value
   lwork = (int)(worktmp);
-  real16 * work = new real16[lwork];
-  int * iwork = new int[iworktmp];
+
+  unique_ptr<real16[]> workPtr (new real16[lwork]);
+  real16 * work = workPtr.get();
+
+  unique_ptr<int[]> iworkPtr (new int[iworktmp]);
+  int * iwork = iworkPtr.get();
 
   // the actual call
   F77FUNC(dgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, work, &lwork, iwork, INFO);
-
-  delete [] work;
-  delete [] iwork;
 
   if(*INFO!=0)
   {
@@ -769,16 +775,17 @@ template<> void xgelsd(int * M, int * N, int * NRHS, complex16 * A, int * LDA, c
 
   // Allocate work space based on queried value
   lwork = (int)std::real(worktmp);
-  complex16 * work = new complex16[lwork];
-  real16 * rwork = new real16[(int)(rworktmp)];
-  int * iwork = new int[iworktmp];
+
+  unique_ptr<complex16[]> workPtr (new complex16[lwork]);
+  unique_ptr<real16[]> rworkPtr (new real16[(int)(rworktmp)]);
+  unique_ptr<int[]> iworkPtr (new int[iworktmp]);
+
+  complex16 * work = workPtr.get();
+  real16 * rwork = rworkPtr.get();
+  int * iwork = iworkPtr.get();
 
   // the actual call
   F77FUNC(zgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, work, &lwork, rwork, iwork, INFO);
-
-  delete [] work;
-  delete [] rwork;
-  delete [] iwork;
 
   if(*INFO!=0)
   {
