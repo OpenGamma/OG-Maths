@@ -237,7 +237,7 @@ void F77FUNC(dgeev)(char * JOBVL, char * JOBVR, int * N, real16 * A, int * LDA, 
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(zgeev)(int * JOBVL, int * JOBVR, int * N, complex16 * A, int * LDA, complex16 * W, complex16 * VL, int * LDVL, complex16 * VR, int * LDVR, complex16 * WORK, int * LWORK, real16 * RWORK, int * INFO);
+void F77FUNC(zgeev)(char * JOBVL, char * JOBVR, int * N, complex16 * A, int * LDA, complex16 * W, complex16 * VL, int * LDVL, complex16 * VR, int * LDVR, complex16 * WORK, int * LWORK, real16 * RWORK, int * INFO);
 
 
 // Compute QR factorisation
@@ -258,6 +258,6 @@ void F77FUNC(dorgqr)(int * M, int * N, int * K, real16 * A, int * LDA, real16 * 
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(zurgqr)(int * M, int * N, int * K, complex16 * A, int * LDA, complex16 * TAU, complex16 * WORK, int * LWORK, int * INFO);
+void F77FUNC(zungqr)(int * M, int * N, int * K, complex16 * A, int * LDA, complex16 * TAU, complex16 * WORK, int * LWORK, int * INFO);
 
 #endif//_LAPACK_RAW_H

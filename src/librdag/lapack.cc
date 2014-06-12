@@ -41,6 +41,16 @@ namespace detail
     return 'z';
   }
 
+  // xxxgqrcharmagic specialisation, orthogonal vs unitary means extra chars needed
+  template<>string xxxgqrcharmagic<real16>()
+  {
+    return "dor";
+  }
+  template<>string xxxgqrcharmagic<complex16>()
+  {
+    return "zun";
+  }
+
   // xSCAL specialisations
   template<> void xscal(int * N, real8 * DA, real8 * DX, int * INCX)
   {
@@ -172,7 +182,7 @@ namespace detail
     return F77FUNC(zlange)(NORM, M, N, A, LDA, WORK);
   }
 
-  // xGETRS specialisation
+  // xGETRS specialisations
   template<> void xgetrs(char * TRANS, int * N, int * NRHS, real16 * A, int * LDA, int * IPIV, real16 * B, int * LDB, int * INFO)
   {
     F77FUNC(dgetrs)(TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
@@ -182,7 +192,7 @@ namespace detail
     F77FUNC(zgetrs)(TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
   }
 
-  //xGELS specialisation
+  //xGELS specialisations
   template<> void xgels(char * TRANS, int * M, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, real16 * WORK, int * LWORK, int * INFO )
   {
     F77FUNC(dgels)(TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK, INFO );
@@ -192,6 +202,25 @@ namespace detail
     F77FUNC(zgels)(TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK, INFO );
   }
 
+  //xGEQRF specialisations
+  template<> void xgeqrf(int * M, int * N, real16 * A, int * LDA, real16 * TAU, real16 * WORK, int * LWORK, int *INFO)
+  {
+    F77FUNC(dgeqrf)(M, N, A, LDA, TAU, WORK, LWORK, INFO);
+  }
+  template<> void xgeqrf(int * M, int * N, complex16 * A, int * LDA, complex16 * TAU, complex16 * WORK, int * LWORK, int *INFO)
+  {
+    F77FUNC(zgeqrf)(M, N, A, LDA, TAU, WORK, LWORK, INFO);
+  }
+
+  // xxxGQR specialisations
+  template<> void xxxgqr(int * M, int * N, int * K, real16 * A, int * LDA, real16 * TAU, real16 * WORK, int * LWORK, int * INFO)
+  {
+    F77FUNC(dorgqr)(M, N, K, A, LDA, TAU, WORK, LWORK, INFO);
+  }
+  template<> void xxxgqr(int * M, int * N, int * K, complex16 * A, int * LDA, complex16 * TAU, complex16 * WORK, int * LWORK, int * INFO)
+  {
+    F77FUNC(zungqr)(M, N, K, A, LDA, TAU, WORK, LWORK, INFO);
+  }
 }
 
 // f77 constants
@@ -831,9 +860,9 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, real16 * A, int * LDA
   }
 
   std::unique_ptr<real16 []> ptrWR (new real16[*N]);
-  WR = (ptrWR).get();
+  WR = ptrWR.get();
   std::unique_ptr<real16 []> ptrWI (new real16[*N]);
-  WI = (ptrWI).get();
+  WI = ptrWI.get();
 
     // Allocate work space based on queried value
   lwork = (int)(worktmp);
@@ -866,5 +895,122 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, real16 * A, int * LDA
 }
 
 
+template<> void xgeev(char * JOBVL, char * JOBVR, int * N, complex16 * A, int * LDA, complex16 * W, complex16 * VL, int * LDVL, complex16 * VR, int * LDVR, int * INFO)
+{
+  set_xerbla_death_switch(lapack::izero);
+  complex16 worktmp;
+  real16 * rwork = nullptr;
+  int lwork = -1; // -1 to trigger size query
+
+  if(*N<=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zgeev call incorrect at arg: " << 3;
+    throw rdag_error(message.str());
+  }
+
+  // Workspace size query
+  F77FUNC(zgeev)(JOBVL, JOBVR, N, A, LDA, W, VL, LDVL, VR, LDVR, &worktmp, &lwork, rwork, INFO);
+
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::zgeev call incorrect at arg: " << *INFO;
+    throw rdag_error(message.str());
+  }
+
+    // Allocate work space based on queried value
+  lwork = (int)std::real(worktmp);
+  std::unique_ptr<complex16 []> workPtr (new complex16[lwork]);
+  complex16 * work = workPtr.get();
+  std::unique_ptr<real16 []> rworkPtr (new real16[2 * (*N)]);
+  rwork = rworkPtr.get();
+
+  // the actual call
+  F77FUNC(zgeev)(JOBVL, JOBVR, N, A, LDA, W, VL, LDVL, VR, LDVR, work, &lwork, rwork, INFO);
+
+  if(*INFO!=0)
+  {
+    stringstream message;
+    if(*INFO<0)
+    {
+      message << "Input to LAPACK::zgeev call incorrect at arg: " << *INFO << ".";
+    }
+    else
+    {
+      message << "LAPACK::zgeev, QR alg failed. Eigenvalues in elements, " << (*INFO - 1) <<
+      ":" << (*N-1) << " have successfully converged, no eigenvectors have been computed.";
+    }
+    throw rdag_error(message.str());
+  }
+}
+
+
+template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, int *INFO)
+{
+  set_xerbla_death_switch(lapack::izero);
+  T worktmp;
+  int lwork = -1; // -1 to trigger size query
+
+  if(*N<=0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::" << detail::charmagic<T>() << "geqrf call incorrect at arg: " << 2;
+    throw rdag_error(message.str());
+  }
+
+  detail::xgeqrf(M, N, A, LDA, TAU, &worktmp, &lwork, INFO );
+
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::" << detail::charmagic<T>() << "geqrf call incorrect at arg: "  << *INFO;
+    throw rdag_error(message.str());
+  }
+
+  lwork = (int)std::real(worktmp);
+  unique_ptr<T[]> workPtr (new T[lwork]);
+  T * work = workPtr.get();
+
+  detail::xgeqrf(M, N, A, LDA, TAU, work, &lwork, INFO );
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::" << detail::charmagic<T>() << "geqrf call incorrect at arg: "  << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+template void xgeqrf<real16>(int * M, int * N, real16 * A, int * LDA, real16 * TAU, int *INFO);
+template void xgeqrf<complex16>(int * M, int * N, complex16 * A, int * LDA, complex16 * TAU, int *INFO);
+
+template<typename T>void xxxgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, int * INFO)
+{
+  set_xerbla_death_switch(lapack::izero);
+  T worktmp;
+  int lwork = -1; // -1 to trigger size query
+
+  detail::xxxgqr(M, N, K, A, LDA, TAU, &worktmp, &lwork, INFO);
+
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::" << detail::xxxgqrcharmagic<T>() << "gqr call incorrect at arg: "  << *INFO;
+    throw rdag_error(message.str());
+  }
+
+  lwork = (int)std::real(worktmp);
+  unique_ptr<T[]> workPtr (new T[lwork]);
+  T * work = workPtr.get();
+
+  detail::xxxgqr(M, N, K, A, LDA, TAU, work, &lwork, INFO);
+  if(*INFO<0)
+  {
+    stringstream message;
+    message << "Input to LAPACK::" << detail::xxxgqrcharmagic<T>() << "gqr call incorrect at arg: "  << *INFO;
+    throw rdag_error(message.str());
+  }
+}
+template void xxxgqr<real16>(int * M, int * N, int * K, real16 * A, int * LDA, real16 * TAU, int * INFO);
+template void xxxgqr<complex16>(int * M, int * N, int * K, complex16 * A, int * LDA, complex16 * TAU, int * INFO);
 
 } // end namespace lapack

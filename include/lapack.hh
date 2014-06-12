@@ -37,6 +37,7 @@ extern real8 rzero;
 extern complex16 czero;
 
 template<typename T>char charmagic();
+template<typename T>string xxxgqrcharmagic();
 
 template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
 template<typename T>void xswap(int * N, T * DX, int * INCX, T * DY, int * INCY);
@@ -52,8 +53,8 @@ template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, T * WORK
 template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * LDA, real16 * WORK );
 template<typename T> void xgetrs(char * TRANS, int * N, int * NRHS, T * A, int * LDA, int * IPIV, T * B, int * LDB, int * INFO);
 template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, T * WORK, int * LWORK, int * INFO );
-template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, real16 * TAU, T * WORK, int * LWORK, int *INFO);
-template<typename T> void xrgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, T * WORK, int * LWORK, int * INFO);
+template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, T * WORK, int * LWORK, int *INFO);
+template<typename T> void xxxgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, T * WORK, int * LWORK, int * INFO);
 
 }
 
@@ -408,7 +409,7 @@ template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, in
 
 
 /**
- * xrgqr() computes the orthogonal Q matrix from elementary reflectors as returned by xgeqrf()
+ * xxxgqr() computes the orthogonal Q matrix from elementary reflectors as returned by xgeqrf()
  * @param M as LAPACK dorgqr M.
  * @param N as LAPACK dorgqr N.
  * @param K as LAPACK dorgqr K.
@@ -417,7 +418,7 @@ template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, in
  * @param TAU  data type specific with intent as LAPACK degqrf TAU.
  * @param INFO as LAPACK degqrf INFO.
  */
-template<typename T>void xrgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, int * INFO);
+template<typename T>void xxxgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, int * INFO);
 }
 
 
