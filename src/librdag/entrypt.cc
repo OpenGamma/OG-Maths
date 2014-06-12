@@ -63,9 +63,9 @@ class PrintTreeVisitor: public librdag::Visitor
         _walker->talkandwalk(*(it));
       }
     };
-    void visit(librdag::OGScalar<real16> const *thing) override
+    void visit(librdag::OGScalar<real8> const *thing) override
     {
-      cout << "Have OGScalar<real16> " << thing << endl;
+      cout << "Have OGScalar<real8> " << thing << endl;
     }
     void visit(librdag::OGScalar<complex16> const *thing) override
     {
@@ -75,25 +75,25 @@ class PrintTreeVisitor: public librdag::Visitor
     {
       cout << "Have OGScalar<int> " << thing << endl;
     }
-    void visit(librdag::OGMatrix<real16> const *thing) override
+    void visit(librdag::OGMatrix<real8> const *thing) override
     {
-      cout << "Have OGMatrix<real16> " << thing << endl;
+      cout << "Have OGMatrix<real8> " << thing << endl;
     }
     void visit(librdag::OGMatrix<complex16> const *thing) override
     {
       cout << "Have OGMatrix<complex16> " << thing << endl;
     }
-    void visit(librdag::OGDiagonalMatrix<real16> const *thing) override
+    void visit(librdag::OGDiagonalMatrix<real8> const *thing) override
     {
-      cout << "Have OGDiagonalMatrix<real16> " << thing << endl;
+      cout << "Have OGDiagonalMatrix<real8> " << thing << endl;
     }
     void visit(librdag::OGDiagonalMatrix<complex16> const *thing) override
     {
       cout << "Have OGDiagonalMatrix<complex16> " << thing << endl;
     }
-    void visit(librdag::OGSparseMatrix<real16> const *thing) override
+    void visit(librdag::OGSparseMatrix<real8> const *thing) override
     {
-      cout << "Have OGSparseMatrix<real16> " << thing << endl;
+      cout << "Have OGSparseMatrix<real8> " << thing << endl;
     }
     void visit(librdag::OGSparseMatrix<complex16> const *thing) override
     {

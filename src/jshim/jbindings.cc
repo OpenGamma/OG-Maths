@@ -22,10 +22,10 @@ namespace convert {
 template<typename nativeT, typename javaT>
 nativeT* getArrayFromJava(JNIEnv* env, javaT arr);
 
-template<typename nativeT = real16, typename javaT = jdoubleArray>
-real16* getArrayFromJava(JNIEnv *env, jdoubleArray arr)
+template<typename nativeT = real8, typename javaT = jdoubleArray>
+real8* getArrayFromJava(JNIEnv *env, jdoubleArray arr)
 {
-  real16* p = env->GetDoubleArrayElements(arr, NULL);
+  real8* p = env->GetDoubleArrayElements(arr, NULL);
   checkEx(env);
   return p;
 }
@@ -51,7 +51,7 @@ template<typename nativeT, typename javaT>
 void releaseArrayFromJava(JNIEnv* env, nativeT* nativeArr, javaT arr);
 
 template<>
-void releaseArrayFromJava(JNIEnv* env, real16* nativeArr, jdoubleArray arr)
+void releaseArrayFromJava(JNIEnv* env, real8* nativeArr, jdoubleArray arr)
 {
   env->ReleaseDoubleArrayElements(arr, nativeArr, 0);
 }
@@ -59,7 +59,7 @@ void releaseArrayFromJava(JNIEnv* env, real16* nativeArr, jdoubleArray arr)
 template<>
 void releaseArrayFromJava(JNIEnv* env, complex16* nativeArr, jdoubleArray arr)
 {
-  env->ReleaseDoubleArrayElements(arr, (real16*) nativeArr, 0);
+  env->ReleaseDoubleArrayElements(arr, (real8*) nativeArr, 0);
 }
 
 template<>
@@ -98,8 +98,8 @@ template <typename nativeT, typename javaT> DLLEXPORT_C nativeT * bindPrimitiveA
   return _dataptr;
 }
 
-template real16*
-bindPrimitiveArrayData<real16, jdoubleArray>(jobject obj, jmethodID method);
+template real8*
+bindPrimitiveArrayData<real8, jdoubleArray>(jobject obj, jmethodID method);
 
 template complex16*
 bindPrimitiveArrayData<complex16, jdoubleArray>(jobject obj, jmethodID method);
@@ -140,7 +140,7 @@ template <typename nativeT, typename javaT> DLLEXPORT_C void unbindPrimitiveArra
 }
 
 template void
-unbindPrimitiveArrayData<real16, jdoubleArray>(real16* nativeData, jobject obj, jmethodID method);
+unbindPrimitiveArrayData<real8, jdoubleArray>(real8* nativeData, jobject obj, jmethodID method);
 
 template void
 unbindPrimitiveArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj, jmethodID method);
@@ -158,7 +158,7 @@ template <typename nativeT, typename javaT> void unbindOGArrayData(nativeT * nat
 }
 
 template void
-unbindOGArrayData<real16, jdoubleArray>(real16* nativeData, jobject obj);
+unbindOGArrayData<real8, jdoubleArray>(real8* nativeData, jobject obj);
 
 template void
 unbindOGArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj);

@@ -29,13 +29,13 @@ INSTANTIATE_NODE_TEST_CASE_P(MTIMESTests,MTIMES,
   // scalar * scalar
   new CheckBinary<MTIMES>( OGRealScalar::create(2.0), OGRealScalar::create(3.0), OGRealScalar::create(6.0),MATHSEQUAL),
   // scalar * matrix
-  new CheckBinary<MTIMES>( OGRealMatrix::create(new real16[1]{2},1,1,OWNER), OGRealMatrix::create(new real16[2]{10,20},2,1,OWNER),OGRealMatrix::create(new real16[2]{20,40},2,1,OWNER), MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGRealMatrix::create(new real8[1]{2},1,1,OWNER), OGRealMatrix::create(new real8[2]{10,20},2,1,OWNER),OGRealMatrix::create(new real8[2]{20,40},2,1,OWNER), MATHSEQUAL),
    // matrix * scalar
-  new CheckBinary<MTIMES>( OGRealMatrix::create(new real16[2]{10,20},2,1,OWNER), OGRealMatrix::create(new real16[1]{2},1,1,OWNER), OGRealMatrix::create(new real16[2]{20,40},2,1,OWNER), MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGRealMatrix::create(new real8[2]{10,20},2,1,OWNER), OGRealMatrix::create(new real8[1]{2},1,1,OWNER), OGRealMatrix::create(new real8[2]{20,40},2,1,OWNER), MATHSEQUAL),
   // matrix * vector
-  new CheckBinary<MTIMES>( OGRealMatrix::create(new real16[6]{1,3,5,2,4,6},3,2,OWNER), OGRealMatrix::create(new real16[2]{10,20},2,1,OWNER),OGRealMatrix::create(new real16[3]{50,110,170},3,1,OWNER), MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGRealMatrix::create(new real8[6]{1,3,5,2,4,6},3,2,OWNER), OGRealMatrix::create(new real8[2]{10,20},2,1,OWNER),OGRealMatrix::create(new real8[3]{50,110,170},3,1,OWNER), MATHSEQUAL),
   // matrix * matrix
-  new CheckBinary<MTIMES>( OGRealMatrix::create(new real16[6]{1,3,5,2,4,6},3,2,OWNER), OGRealMatrix::create(new real16[4]{10,30,20,40},2,2,OWNER),OGRealMatrix::create(new real16[6]{70,150,230,100,220,340},3,2,OWNER), MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGRealMatrix::create(new real8[6]{1,3,5,2,4,6},3,2,OWNER), OGRealMatrix::create(new real8[4]{10,30,20,40},2,2,OWNER),OGRealMatrix::create(new real8[6]{70,150,230,100,220,340},3,2,OWNER), MATHSEQUAL),
    // rscalar * cscalar
   new CheckBinary<MTIMES>( OGComplexScalar::create({2.0,4.0}), OGRealScalar::create(10), OGComplexScalar::create({20,40}),MATHSEQUAL),
    // cscalar * rscalar
@@ -59,8 +59,8 @@ INSTANTIATE_NODE_TEST_CASE_P(MTIMESTests,MTIMES,
 
 
 TEST(MTIMESTests, CheckBadCommuteThrows) {
-  OGNumeric::Ptr m1 = OGRealMatrix::create(new real16[6]{1,3,5,2,4,6},3,2,OWNER);
-  OGNumeric::Ptr m2 = OGRealMatrix::create(new real16[7]{10,30,20,40,50,60,70},1,7,OWNER);
+  OGNumeric::Ptr m1 = OGRealMatrix::create(new real8[6]{1,3,5,2,4,6},3,2,OWNER);
+  OGNumeric::Ptr m2 = OGRealMatrix::create(new real8[7]{10,30,20,40,50,60,70},1,7,OWNER);
   OGExpr::Ptr node = MTIMES::create(m1, m2);
   ExecutionList el = ExecutionList{node};
   Dispatcher v;

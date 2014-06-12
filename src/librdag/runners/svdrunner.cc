@@ -32,7 +32,7 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
 
   T * U = new T[ldu*m];
   T * VT = new T[ldvt*n];
-  real16 * S = new real16[minmn];
+  real8 * S = new real8[minmn];
 
   // copy A else it's destroyed
   T * A = new T[m*n];
@@ -77,7 +77,7 @@ SVDRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 void *
 SVDRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  svd_dense_runner<real16>(reg, arg);
+  svd_dense_runner<real8>(reg, arg);
   return nullptr;
 }
 

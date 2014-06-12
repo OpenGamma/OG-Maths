@@ -20,20 +20,20 @@ namespace convert {
 using namespace librdag;  
 
 /**
- * Class representing a real16 array of arrays for conversion to Java
+ * Class representing a real8 array of arrays for conversion to Java
  */
-class Real16AoA
+class Real8AoA
 {
   public:
-    Real16AoA(const OGNumeric::Ptr& node);
-    Real16AoA& operator=(const Real16AoA&) = delete;
-    Real16AoA(const Real16AoA&) = delete;
-    Real16AoA& operator=(Real16AoA&& other);
-    Real16AoA(Real16AoA&& other);
-    ~Real16AoA();
+    Real8AoA(const OGNumeric::Ptr& node);
+    Real8AoA& operator=(const Real8AoA&) = delete;
+    Real8AoA(const Real8AoA&) = delete;
+    Real8AoA& operator=(Real8AoA&& other);
+    Real8AoA(Real8AoA&& other);
+    ~Real8AoA();
 
     /**
-     * create a jobjectarray with a copy of the values in this Real16AoA
+     * create a jobjectarray with a copy of the values in this Real8AoA
      *
      * @param env the JNI environment pointer
      */
@@ -41,7 +41,7 @@ class Real16AoA
     /**
      * Get the underlying data.
      */
-    real16** getData() const;
+    real8** getData() const;
     /**
      * Get the number of rows.
      */
@@ -51,13 +51,13 @@ class Real16AoA
      */
     int getCols() const;
   private:
-    real16** _data;
+    real8** _data;
     int _rows;
     int _cols;
 };
 
 /**
- * Class representing a real16 array of arrays for conversion to Java
+ * Class representing a real8 array of arrays for conversion to Java
  */
 class Complex16AoA
 {
@@ -109,14 +109,14 @@ class DLLEXPORT_C DispatchToOGTerminal: public librdag::Visitor
     DispatchToOGTerminal(JNIEnv* env);
     virtual ~DispatchToOGTerminal();
     virtual void visit(librdag::OGExpr const *thing);
-    virtual void visit(librdag::OGScalar<real16> const *thing);
+    virtual void visit(librdag::OGScalar<real8> const *thing);
     virtual void visit(librdag::OGScalar<complex16> const *thing);
     virtual void visit(librdag::OGScalar<int> const *thing);
-    virtual void visit(librdag::OGMatrix<real16> const *thing);
+    virtual void visit(librdag::OGMatrix<real8> const *thing);
     virtual void visit(librdag::OGMatrix<complex16> const *thing);
-    virtual void visit(librdag::OGDiagonalMatrix<real16> const *thing);
+    virtual void visit(librdag::OGDiagonalMatrix<real8> const *thing);
     virtual void visit(librdag::OGDiagonalMatrix<complex16> const *thing);
-    virtual void visit(librdag::OGSparseMatrix<real16> const *thing);
+    virtual void visit(librdag::OGSparseMatrix<real8> const *thing);
     virtual void visit(librdag::OGSparseMatrix<complex16> const *thing);
     jobject getObject();
   private:

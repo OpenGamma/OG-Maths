@@ -29,11 +29,11 @@ void *
 INVRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
   OGNumeric::Ptr ret;
-  real16 x = arg->getValue();
+  real8 x = arg->getValue();
   if(x == 0.e0)
   {
     cerr << "Warning: singular system detected in matrix inversion" << std::endl;
-    ret = OGRealScalar::create(std::numeric_limits<real16>::infinity());
+    ret = OGRealScalar::create(std::numeric_limits<real8>::infinity());
   }
   else
   {
@@ -59,7 +59,7 @@ inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     if(x == 0.e0)
     {
       cerr << "Warning: singular system detected in matrix inversion." << std::endl;
-      ret = makeConcreteScalar(std::numeric_limits<real16>::infinity());
+      ret = makeConcreteScalar(std::numeric_limits<real8>::infinity());
     }
     else
     {
@@ -130,7 +130,7 @@ inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 void *
 INVRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  inv_dense_runner<real16>(reg, arg);
+  inv_dense_runner<real8>(reg, arg);
   return nullptr;
 }
 

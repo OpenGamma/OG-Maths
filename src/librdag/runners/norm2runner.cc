@@ -44,7 +44,7 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
   else if(isVector(arg)) // Matrix is a vector, norm2 computed via BLAS xnrm2
   {
     int len = arg->getRows() > arg->getCols() ? arg->getRows(): arg->getCols();
-    real16 value = lapack::xnrm2(&len, arg->getData(), lapack::ione);
+    real8 value = lapack::xnrm2(&len, arg->getData(), lapack::ione);
     ret = OGRealScalar::create(value);
   }
   else // Matrix is a full matrix, norm2 computed via LAPACK xgesvd
@@ -59,7 +59,7 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 
     T * U = nullptr; //IGNORED
     T * VT = nullptr; //IGNORED
-    real16 * S = new real16[minmn];
+    real8 * S = new real8[minmn];
 
     // copy A else it's destroyed
     T * A = new T[m*n];
@@ -80,7 +80,7 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 void *
 NORM2Runner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  norm2_dense_runner<real16>(reg, arg);
+  norm2_dense_runner<real8>(reg, arg);
   return nullptr;
 }
 

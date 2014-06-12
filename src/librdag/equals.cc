@@ -15,8 +15,8 @@
 using namespace std;
 namespace librdag {
 
-const real16 FuzzyEquals_default_maxabserror = std::numeric_limits<real16>::epsilon();
-const real16 FuzzyEquals_default_maxrelerror = 10*std::numeric_limits<real16>::epsilon();
+const real8 FuzzyEquals_default_maxabserror = std::numeric_limits<real8>::epsilon();
+const real8 FuzzyEquals_default_maxrelerror = 10*std::numeric_limits<real8>::epsilon();
 
 template <typename T> bool ArrayBitEquals(T * arr1, T * arr2, int count)
 {
@@ -29,11 +29,11 @@ template <typename T> bool ArrayBitEquals(T * arr1, T * arr2, int count)
   return false;
 }
 
-template bool ArrayBitEquals(real16 * arr1, real16 * arr2, int count);
+template bool ArrayBitEquals(real8 * arr1, real8 * arr2, int count);
 template bool ArrayBitEquals(complex16 * arr1, complex16 * arr2, int count);
 template bool ArrayBitEquals(int * arr1, int * arr2, int count);
 
-template <typename T> bool ArrayFuzzyEquals(T * arr1, T * arr2, int count, real16 maxabserror, real16 maxrelerror)
+template <typename T> bool ArrayFuzzyEquals(T * arr1, T * arr2, int count, real8 maxabserror, real8 maxrelerror)
 {
   assert(count>=0);
   for(int i=0;i<count;i++)
@@ -44,8 +44,8 @@ template <typename T> bool ArrayFuzzyEquals(T * arr1, T * arr2, int count, real1
   return true;
 }
 
-template bool ArrayFuzzyEquals(real16 * arr1, real16 * arr2, int count, real16 maxabserror, real16 maxrelerror);
-template bool ArrayFuzzyEquals(complex16 * arr1, complex16 * arr2, int count, real16 maxabserror, real16 maxrelerror);
+template bool ArrayFuzzyEquals(real8 * arr1, real8 * arr2, int count, real8 maxabserror, real8 maxrelerror);
+template bool ArrayFuzzyEquals(complex16 * arr1, complex16 * arr2, int count, real8 maxabserror, real8 maxrelerror);
 
 
 /**
@@ -56,7 +56,7 @@ template bool ArrayFuzzyEquals(complex16 * arr1, complex16 * arr2, int count, re
  * of the relative magnitude of the numbers. i.e. invariant of the magnitude of the numbers
  * what is the maximum level of magnitude difference acceptable.
  */
-bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16 maxrelerror)
+bool SingleValueFuzzyEquals(real8 val1, real8 val2, real8 maxabserror, real8 maxrelerror)
 {
 
 #ifdef __LOCALDEBUG
@@ -108,7 +108,7 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
   }
 
   // check if they are below max absolute error bounds (i.e. small in the first place)
-  real16 diff = (val1-val2);
+  real8 diff = (val1-val2);
   if(maxabserror>std::fabs(diff))
   {
 #ifdef __LOCALDEBUG
@@ -121,8 +121,8 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
 #endif
 
   // check if they are within a relative error bound, div difference by largest of the 2
-  real16 divisor = std::fabs(val1) > std::fabs(val2) ? val1 : val2;
-  real16 relerror = std::fabs(diff/divisor);
+  real8 divisor = std::fabs(val1) > std::fabs(val2) ? val1 : val2;
+  real8 relerror = std::fabs(diff/divisor);
   if(maxrelerror > relerror)
   {
 #ifdef __LOCALDEBUG
@@ -138,7 +138,7 @@ bool SingleValueFuzzyEquals(real16 val1, real16 val2, real16 maxabserror, real16
   return false;
 }
 
-bool SingleValueFuzzyEquals(complex16 val1, complex16 val2, real16 maxabserror, real16 maxrelerror)
+bool SingleValueFuzzyEquals(complex16 val1, complex16 val2, real8 maxabserror, real8 maxrelerror)
 {
   if(!SingleValueFuzzyEquals(std::real(val1), std::real(val2) , maxabserror, maxrelerror)) return false;
   if(!SingleValueFuzzyEquals(std::imag(val1), std::imag(val2) , maxabserror, maxrelerror)) return false;

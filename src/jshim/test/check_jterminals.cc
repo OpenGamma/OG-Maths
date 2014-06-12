@@ -65,7 +65,7 @@ TEST(JTerminals, Test_getIntFromVoidJMethod_null_obj)
 // Required to allow a single FakeJNIEnv_for_binding for all types
 template<typename T> jint toJint(T v);
 template<> jint toJint<jint>(jint v) { return v; }
-template<> jint toJint<real16>(real16 v) { return v; }
+template<> jint toJint<real8>(real8 v) { return v; }
 template<> jint toJint<complex16>(complex16 v) { return v.real(); }
 
 template<typename T> class Fake_JNIEnv_for_binding: public Fake_JNIEnv
@@ -80,9 +80,9 @@ template<typename T> class Fake_JNIEnv_for_binding: public Fake_JNIEnv
     {
         return obj;
     }
-    virtual real16 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
+    virtual real8 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
     {
-      return reinterpret_cast<real16 *>(&_value);
+      return reinterpret_cast<real8 *>(&_value);
     }
     virtual int * GetIntArrayElements(jintArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
     {
@@ -98,9 +98,9 @@ template<typename T> class Fake_JNIEnv_for_binding: public Fake_JNIEnv
 
 TEST(JTerminals, Test_JOGRealScalar_ctor)
 {
-    real16 value = 1234;
+    real8 value = 1234;
     Fake_JavaVM * jvm = new Fake_JavaVM();
-    Fake_JNIEnv * env  = new Fake_JNIEnv_for_binding<real16>(value);
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_binding<real8>(value);
     jvm->setEnv(env);
     JVMManager::initialize(jvm);
 
@@ -167,11 +167,11 @@ TEST(JTerminals, Test_JOGIntegerScalar_ctor)
 
 TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetDoubleArrayElements)
 {
-    real16 value = 1234;
+    real8 value = 1234;
     Fake_JavaVM * jvm = new Fake_JavaVM();
-    class Fake_JNIEnv_for_binding_bad: public Fake_JNIEnv_for_binding<real16>
+    class Fake_JNIEnv_for_binding_bad: public Fake_JNIEnv_for_binding<real8>
     {
-      using Fake_JNIEnv_for_binding<real16>::Fake_JNIEnv_for_binding;
+      using Fake_JNIEnv_for_binding<real8>::Fake_JNIEnv_for_binding;
       virtual jboolean ExceptionCheck() override
       {
         return JNI_TRUE;
@@ -191,11 +191,11 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetDoubleArrayElements)
 
 TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetIntArrayElements)
 {
-    real16 value = 1234;
+    real8 value = 1234;
     Fake_JavaVM * jvm = new Fake_JavaVM();
-    class Fake_JNIEnv_for_binding_bad: public Fake_JNIEnv_for_binding<real16>
+    class Fake_JNIEnv_for_binding_bad: public Fake_JNIEnv_for_binding<real8>
     {
-      using Fake_JNIEnv_for_binding<real16>::Fake_JNIEnv_for_binding;
+      using Fake_JNIEnv_for_binding<real8>::Fake_JNIEnv_for_binding;
       virtual jboolean ExceptionCheck() override
       {
         return JNI_TRUE;
@@ -228,9 +228,9 @@ template<typename T>class Fake_JNIEnv_for_OGMatrix_T: public Fake_JNIEnv
     {
         return obj;
     }
-    virtual real16 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
+    virtual real8 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
     {
-      return reinterpret_cast<real16 *>(_value);
+      return reinterpret_cast<real8 *>(_value);
     }
   protected:
     int _rows;
@@ -240,9 +240,9 @@ template<typename T>class Fake_JNIEnv_for_OGMatrix_T: public Fake_JNIEnv
 TEST(JTerminals, Test_JOGRealMatrix_ctor)
 {
     int rval = 2;
-    real16 * datav = new real16[4]{1,2,3,4};
+    real8 * datav = new real8[4]{1,2,3,4};
     Fake_JavaVM * jvm = new Fake_JavaVM();
-    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real16>(rval, datav);
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real8>(rval, datav);
     jvm->setEnv(env);
     JVMManager::initialize(jvm);
 
@@ -267,9 +267,9 @@ TEST(JTerminals, Test_JOGRealMatrix_ctor)
 TEST(JTerminals, Test_JOGLogicalMatrix_ctor)
 {
     int rval = 2;
-    real16 * datav = new real16[4]{1,2,3,4};
+    real8 * datav = new real8[4]{1,2,3,4};
     Fake_JavaVM * jvm = new Fake_JavaVM();
-    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real16>(rval, datav);
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real8>(rval, datav);
     jvm->setEnv(env);
     JVMManager::initialize(jvm);
 
@@ -321,9 +321,9 @@ TEST(JTerminals, Test_JOGComplexMatrix_ctor)
 TEST(JTerminals, Test_JOGRealDiagonalMatrix_ctor)
 {
     int rval = 2;
-    real16 * datav = new real16[2]{10,20};
+    real8 * datav = new real8[2]{10,20};
     Fake_JavaVM * jvm = new Fake_JavaVM();
-    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real16>(rval, datav);
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real8>(rval, datav);
     jvm->setEnv(env);
     JVMManager::initialize(jvm);
 
@@ -387,9 +387,9 @@ template<typename T>class Fake_JNIEnv_for_OGSparseMatrix_T: public Fake_JNIEnv_f
     {
         return obj;
     }
-    virtual real16 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
+    virtual real8 * GetDoubleArrayElements(jdoubleArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
     {
-      return reinterpret_cast<real16 *>(this->_value);
+      return reinterpret_cast<real8 *>(this->_value);
     }
     virtual jint * GetIntArrayElements(jintArray SUPPRESS_UNUSED arr, bool  SUPPRESS_UNUSED *isCopy) override
     {
@@ -405,11 +405,11 @@ template<typename T>class Fake_JNIEnv_for_OGSparseMatrix_T: public Fake_JNIEnv_f
 TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
 {
     int rval = 2;
-    real16 * datav = new real16[4]{1,2,3,4};
+    real8 * datav = new real8[4]{1,2,3,4};
     int * idx = new int[4]{1,2,2,2};
 
     Fake_JavaVM * jvm = new Fake_JavaVM();
-    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGSparseMatrix_T<real16>(rval, datav, idx);
+    Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGSparseMatrix_T<real8>(rval, datav, idx);
     jvm->setEnv(env);
     JVMManager::initialize(jvm);
 
@@ -423,7 +423,7 @@ TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
 
     mat->debug_print();
 
-    ASSERT_THROW(mat->toReal16ArrayOfArrays(), convert_error);
+    ASSERT_THROW(mat->toReal8ArrayOfArrays(), convert_error);
     ASSERT_THROW(mat->toComplex16ArrayOfArrays(), convert_error);
 
     // Need to delete the node now so that the fake environment and jvm are still around
@@ -457,7 +457,7 @@ TEST(JTerminals, Test_JOGComplexSparseMatrix_ctor)
 
     mat->debug_print();
 
-    ASSERT_THROW(mat->toReal16ArrayOfArrays(), convert_error);
+    ASSERT_THROW(mat->toReal8ArrayOfArrays(), convert_error);
     ASSERT_THROW(mat->toComplex16ArrayOfArrays(), convert_error);
 
     // Need to delete the node now so that the fake environment and jvm are still around

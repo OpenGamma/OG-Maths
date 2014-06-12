@@ -32,13 +32,13 @@ class issTest : public ::testing::Test
     OGRealMatrix::Ptr _ogrealvector2 = nullptr;
     OGComplexMatrix::Ptr _ogcomplexvector1 = nullptr;
     OGComplexMatrix::Ptr _ogcomplexvector2 = nullptr;
-    real16 * r_data;
+    real8 * r_data;
     complex16 * c_data;
     int * colPtr;
     int * rowIdx;
     virtual void SetUp()
   {
-    r_data = new real16[1]{12};
+    r_data = new real8[1]{12};
     c_data = new complex16[1]{{12,34}};
     rowIdx = new int[1]{0};
     colPtr = new int[2]{0,1};
@@ -52,8 +52,8 @@ class issTest : public ::testing::Test
     _ogcomplexdiagonalmatrix = OGComplexDiagonalMatrix::create(c_data,1,1);
     _ogrealsparsematrix = OGRealSparseMatrix::create(colPtr,rowIdx,r_data,1,1);
     _ogcomplexsparsematrix = OGComplexSparseMatrix::create(colPtr,rowIdx,c_data,1,1);
-    _ogrealvector1 = OGRealMatrix::create(new real16[3]{1,2,3},1,3, OWNER);
-    _ogrealvector2 = OGRealMatrix::create(new real16[3]{1,2,3},3,1, OWNER);
+    _ogrealvector1 = OGRealMatrix::create(new real8[3]{1,2,3},1,3, OWNER);
+    _ogrealvector2 = OGRealMatrix::create(new real8[3]{1,2,3},3,1, OWNER);
     _ogcomplexvector1 = OGComplexMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER);
     _ogcomplexvector2 = OGComplexMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER);
   }

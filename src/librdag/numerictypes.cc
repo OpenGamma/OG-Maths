@@ -9,10 +9,10 @@ using namespace std;
 
 namespace librdag {
 
-real16 getNaN()
+real8 getNaN()
 {
   union {
-    real16 d;
+    real8 d;
     unsigned long long int i;
   } nanval;
   nanval.i = 0x7FF1010101010101;
@@ -22,7 +22,7 @@ real16 getNaN()
 complex16 getComplexNaN()
 {
   union {
-    real16 d;
+    real8 d;
     unsigned long long int i;
   } nanval1, nanval2;
   nanval1.i = 0x7FFDEAD101010101;
@@ -30,20 +30,20 @@ complex16 getComplexNaN()
   return complex16(nanval1.d, nanval2.d);
 }
 
-real16 getPosInf()
+real8 getPosInf()
 {
   union {
-    real16 d;
+    real8 d;
     unsigned long long int i;
   } val;
   val.i = 0x7FF0000000000000;
   return val.d;
 }
 
-real16 getNegInf()
+real8 getNegInf()
 {
   union {
-    real16 d;
+    real8 d;
     unsigned long long int i;
   } val;
   val.i = 0xFFF0000000000000;

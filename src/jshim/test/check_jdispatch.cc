@@ -21,47 +21,47 @@ using namespace convert;
 
 // test dispatch to real AoA
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGExpr)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGExpr)
 {
   OGNumeric::Ptr scal = OGRealScalar::create(10);
   OGExpr::Ptr expr = NORM2::create(scal);
-  ASSERT_THROW(Real16AoA{expr}, convert_error);
+  ASSERT_THROW(Real8AoA{expr}, convert_error);
 }
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealScalar)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealScalar)
 {
-  real16 value = 1234;
+  real8 value = 1234;
   OGNumeric::Ptr scal = OGRealScalar::create(value);
-  Real16AoA r = Real16AoA{scal};
+  Real8AoA r = Real8AoA{scal};
   ASSERT_TRUE(r.getRows()==1);
   ASSERT_TRUE(r.getCols()==1);
   ASSERT_TRUE(SingleValueFuzzyEquals(r.getData()[0][0],value));
 }
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexScalar)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexScalar)
 {
   OGNumeric::Ptr scal = OGComplexScalar::create({1,2});
-  ASSERT_THROW(Real16AoA{scal}, convert_error);
+  ASSERT_THROW(Real8AoA{scal}, convert_error);
 }
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGIntegerScalar)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGIntegerScalar)
 {
   OGNumeric::Ptr scal = OGIntegerScalar::create(12);
-  ASSERT_THROW(Real16AoA{scal}, convert_error);
+  ASSERT_THROW(Real8AoA{scal}, convert_error);
 }
 
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealMatrix)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealMatrix)
 {
   const int rows = 3;
   const int cols = 2;
-  real16 * data = new real16[rows*cols]{1,3,5,2,4,6};
-  real16 ** dataAoA = new real16 * [rows];
-  dataAoA[0] = new real16[cols]{1,2};
-  dataAoA[1] = new real16[cols]{3,4};
-  dataAoA[2] = new real16[cols]{5,6};
+  real8 * data = new real8[rows*cols]{1,3,5,2,4,6};
+  real8 ** dataAoA = new real8 * [rows];
+  dataAoA[0] = new real8[cols]{1,2};
+  dataAoA[1] = new real8[cols]{3,4};
+  dataAoA[2] = new real8[cols]{5,6};
   OGNumeric::Ptr mat = OGRealMatrix::create(data,rows,cols, OWNER);
-  Real16AoA r = Real16AoA{mat};
+  Real8AoA r = Real8AoA{mat};
   ASSERT_TRUE(r.getRows()==rows);
   ASSERT_TRUE(r.getCols()==cols);
   for(int k = 0; k < rows; k++)
@@ -72,24 +72,24 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealMatrix)
   delete [] dataAoA;
 }
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexMatrix)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexMatrix)
 {
   OGNumeric::Ptr mat = OGComplexMatrix::create(new complex16[1]{12},1,1, OWNER);
-  ASSERT_THROW(Real16AoA{mat}, convert_error);
+  ASSERT_THROW(Real8AoA{mat}, convert_error);
 }
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealDiagonalMatrix)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealDiagonalMatrix)
 {
   const int rows = 3;
   const int cols = 2;
   const int dlen = rows > cols ? cols:rows;
-  real16 * data = new real16[dlen]{10,20};
-  real16 ** dataAoA = new real16 * [rows];
-  dataAoA[0] = new real16[cols]{10,0};
-  dataAoA[1] = new real16[cols]{0,20};
-  dataAoA[2] = new real16[cols]{0,0};
+  real8 * data = new real8[dlen]{10,20};
+  real8 ** dataAoA = new real8 * [rows];
+  dataAoA[0] = new real8[cols]{10,0};
+  dataAoA[1] = new real8[cols]{0,20};
+  dataAoA[2] = new real8[cols]{0,0};
   OGNumeric::Ptr mat = OGRealDiagonalMatrix::create(data,rows,cols);
-  Real16AoA r = Real16AoA{mat};
+  Real8AoA r = Real8AoA{mat};
   ASSERT_TRUE(r.getRows()==rows);
   ASSERT_TRUE(r.getCols()==cols);
   for(int k = 0; k < rows; k++)
@@ -101,30 +101,30 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealDiagonalMatrix)
   delete [] data;
 }
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexDiagonalMatrix)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexDiagonalMatrix)
 {
   complex16 data[1] = { {12, 0} };
   OGNumeric::Ptr mat = OGComplexDiagonalMatrix::create(data,1,1);
-  ASSERT_THROW(Real16AoA{mat}, convert_error);
+  ASSERT_THROW(Real8AoA{mat}, convert_error);
 }
 
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealSparseMatrix)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealSparseMatrix)
 {
   const int rows = 4;
   const int cols = 3;
-  real16 ** dataAoA = new real16 * [rows];
-  dataAoA[0] = new real16[cols]{ 1, 2, 0 };
-  dataAoA[1] = new real16[cols]{ 0, 3, 0 };
-  dataAoA[2] = new real16[cols]{ 4, 0, 0 };
-  dataAoA[3] = new real16[cols]{ 0, 0, 5 };
+  real8 ** dataAoA = new real8 * [rows];
+  dataAoA[0] = new real8[cols]{ 1, 2, 0 };
+  dataAoA[1] = new real8[cols]{ 0, 3, 0 };
+  dataAoA[2] = new real8[cols]{ 4, 0, 0 };
+  dataAoA[3] = new real8[cols]{ 0, 0, 5 };
 
-  real16 * data= new real16[5]{1.0, 4.0, 2.0, 3.0, 5.0};
+  real8 * data= new real8[5]{1.0, 4.0, 2.0, 3.0, 5.0};
   int * rowInd=new int[5]{0, 2, 0, 1, 3};
   int * colPtr=new int[4]{0, 2, 4, 5};
 
   OGNumeric::Ptr mat = OGRealSparseMatrix::create(colPtr, rowInd, data, rows, cols);
-  Real16AoA r = Real16AoA{mat};
+  Real8AoA r = Real8AoA{mat};
   ASSERT_TRUE(r.getRows()==rows);
   ASSERT_TRUE(r.getCols()==cols);
   for(int k = 0; k < rows; k++)
@@ -138,7 +138,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGRealSparseMatrix)
   delete[] colPtr;
 }
 
-TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexSparseMatrix)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexSparseMatrix)
 {
   const int rows = 4;
   const int cols = 3;
@@ -147,7 +147,7 @@ TEST(JDispatch, Test_DispatchToReal16ArrayOfArrays_OGComplexSparseMatrix)
   int * colPtr=new int[4]{0, 2, 4, 5};
 
   OGNumeric::Ptr mat = OGComplexSparseMatrix::create(colPtr, rowInd, data, rows, cols);
-  ASSERT_THROW(Real16AoA{mat}, convert_error);
+  ASSERT_THROW(Real8AoA{mat}, convert_error);
   delete[] data;
   delete[] rowInd;
   delete[] colPtr;
@@ -214,7 +214,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
 {
   const int rows = 3;
   const int cols = 2;
-  real16 * data = new real16[rows*cols]{1,3,5,2,4,6};
+  real8 * data = new real8[rows*cols]{1,3,5,2,4,6};
   complex16 ** dataAoA = new complex16 * [rows];
   dataAoA[0] = new complex16[cols]{{1,0},{2,0}};
   dataAoA[1] = new complex16[cols]{{3,0},{4,0}};
@@ -256,7 +256,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexDiagonalMatrix)
 
 TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealDiagonalMatrix)
 {
-  real16 * data = new real16[1]{12};
+  real8 * data = new real8[1]{12};
   OGNumeric::Ptr mat = OGRealDiagonalMatrix::create(data,1,1);
   ASSERT_THROW(Complex16AoA{mat}, convert_error);
   delete [] data;
@@ -296,7 +296,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealSparseMatrix)
 
   const int rows = 4;
   const int cols = 3;
-  real16 * data= new real16[5]{1,4,2,3,5};
+  real8 * data= new real8[5]{1,4,2,3,5};
   int * rowInd=new int[5]{0, 2, 0, 1, 3};
   int * colPtr=new int[4]{0, 2, 4, 5};
 

@@ -17,40 +17,40 @@ namespace convert
 using namespace librdag;
 
 /**
- * Real16AoA
+ * Real8AoA
  */
 
-Real16AoA::Real16AoA(const OGNumeric::Ptr& node)
+Real8AoA::Real8AoA(const OGNumeric::Ptr& node)
 {
   ExprType_t type = node->getType();
   switch(type)
   {
   case REAL_SCALAR_ENUM:
-    _data = node->asOGTerminal()->toReal16ArrayOfArrays();
+    _data = node->asOGTerminal()->toReal8ArrayOfArrays();
     _rows = 1;
     _cols = 1;
     break;
   case REAL_MATRIX_ENUM:
   case REAL_DIAGONAL_MATRIX_ENUM:
   case REAL_SPARSE_MATRIX_ENUM:
-    _data = node->asOGTerminal()->toReal16ArrayOfArrays();
+    _data = node->asOGTerminal()->toReal8ArrayOfArrays();
     _rows = node->asOGTerminal()->getRows();
     _cols = node->asOGTerminal()->getCols();
     break;
   default:
     stringstream message;
-    message << "Unsupported type for Real16AoA. Type is " << type << ".";
+    message << "Unsupported type for Real8AoA. Type is " << type << ".";
     throw convert_error(message.str());
   }
 }
 
-Real16AoA::Real16AoA(Real16AoA&& o): _data{o._data}, _rows{o._rows}, _cols{o._cols}
+Real8AoA::Real8AoA(Real8AoA&& o): _data{o._data}, _rows{o._rows}, _cols{o._cols}
 {
   o._data = nullptr;
 }
 
-Real16AoA&
-Real16AoA::operator=(Real16AoA&& o)
+Real8AoA&
+Real8AoA::operator=(Real8AoA&& o)
 {
   _data = o._data;
   o._data = nullptr;
@@ -59,7 +59,7 @@ Real16AoA::operator=(Real16AoA&& o)
   return *this;
 }
 
-Real16AoA::~Real16AoA()
+Real8AoA::~Real8AoA()
 {
   if (_data != nullptr)
   {
@@ -72,7 +72,7 @@ Real16AoA::~Real16AoA()
 }
 
 jobjectArray
-Real16AoA::toJDoubleAoA(JNIEnv* env) const
+Real8AoA::toJDoubleAoA(JNIEnv* env) const
 {
  jobjectArray returnVal = JVMManager::newObjectArray(env, _rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
   for(int i = 0; i < _rows; i++)
@@ -85,20 +85,20 @@ Real16AoA::toJDoubleAoA(JNIEnv* env) const
 }
 
 
-real16**
-Real16AoA::getData() const
+real8**
+Real8AoA::getData() const
 {
   return _data;
 }
 
 int
-Real16AoA::getRows() const
+Real8AoA::getRows() const
 {
   return _rows;
 }
 
 int
-Real16AoA::getCols() const
+Real8AoA::getCols() const
 {
   return _cols;
 }
@@ -177,7 +177,7 @@ jobjectArray
 Complex16AoA::toJDoubleAoA(JNIEnv* env) const
 {
   jobjectArray returnVal = JVMManager::newObjectArray(env, _rows, JVMManager::getBigDDoubleArrayClazz(), NULL);
-  real16 * aRow = new real16[_cols];
+  real8 * aRow = new real8[_cols];
   for(int i = 0; i < _rows; i++)
   {
     jdoubleArray tmp = JVMManager::newDoubleArray(env, _cols);
@@ -217,13 +217,13 @@ Complex16AoA::getCols() const
 // Helpers
 
 /*
- * Converts a real16 * to a java double[]
+ * Converts a real8 * to a java double[]
  * @param env, the JNI environment pointer
- * @param inputData, the real16 array to convert
+ * @param inputData, the real8 array to convert
  * @param len the length of the array
  * @return a jobjectArray which is a double[] equivalent of {@code inputData}
  */
-jdoubleArray convertCreal16Arr2JDoubleArr(JNIEnv * env, real16 * inputData, int len)
+jdoubleArray convertCreal8Arr2JDoubleArr(JNIEnv * env, real8 * inputData, int len)
 {
   jdoubleArray returnVal = JVMManager::newDoubleArray(env, len);
   env->SetDoubleArrayRegion(returnVal, 0, len, inputData);
@@ -233,7 +233,7 @@ jdoubleArray convertCreal16Arr2JDoubleArr(JNIEnv * env, real16 * inputData, int 
 jdoubleArray extractRealPartOfComplex16Arr2JDoubleArr(JNIEnv* env, complex16* inputData, int len)
 {
   jdoubleArray returnVal = JVMManager::newDoubleArray(env, len);
-  real16* reals = new real16[len];
+  real8* reals = new real8[len];
   for (int i = 0; i < len; ++i)
   {
     reals[i] = std::real(inputData[i]);
@@ -245,7 +245,7 @@ jdoubleArray extractRealPartOfComplex16Arr2JDoubleArr(JNIEnv* env, complex16* in
 jdoubleArray extractComplexPartOfComplex16Arr2JDoubleArr(JNIEnv* env, complex16* inputData, int len)
 {
   jdoubleArray returnVal = JVMManager::newDoubleArray(env, len);
-  real16* imags = new real16[len];
+  real8* imags = new real8[len];
   for (int i = 0; i < len; ++i)
   {
     imags[i] = std::imag(inputData[i]);
@@ -265,7 +265,7 @@ DispatchToOGTerminal::visit(librdag::OGExpr SUPPRESS_UNUSED const *thing)
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGScalar<real16> const *thing)
+DispatchToOGTerminal::visit(librdag::OGScalar<real8> const *thing)
 {
   jclass cls = JVMManager::getOGRealScalarClazz();
   jmethodID constructor = JVMManager::getOGRealScalarClazz_init();
@@ -293,11 +293,11 @@ DispatchToOGTerminal::visit(librdag::OGScalar<int> SUPPRESS_UNUSED const *thing)
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGMatrix<real16> const *thing)
+DispatchToOGTerminal::visit(librdag::OGMatrix<real8> const *thing)
 {
   jclass cls = JVMManager::getOGRealDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealDenseMatrixClazz_init();
-  jobjectArray darr = Real16AoA{OGNumeric::Ptr{thing->createOwningCopy()}}.toJDoubleAoA(_env);
+  jobjectArray darr = Real8AoA{OGNumeric::Ptr{thing->createOwningCopy()}}.toJDoubleAoA(_env);
   jobject newobject = _env->NewObject(cls, constructor, darr);
   setObject(newobject);
 }
@@ -315,11 +315,11 @@ DispatchToOGTerminal::visit(librdag::OGMatrix<complex16> const *thing)
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<real16> const *thing)
+DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<real8> const *thing)
 {
   jclass cls = JVMManager::getOGRealDiagonalMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealDiagonalMatrixClazz_init();
-  jdoubleArray darr = convertCreal16Arr2JDoubleArr(_env, thing->toReal16Array(), thing->getDatalen());
+  jdoubleArray darr = convertCreal8Arr2JDoubleArr(_env, thing->toReal8Array(), thing->getDatalen());
   jobject newobject = _env->NewObject(cls, constructor, darr, thing->getRows(), thing->getCols());
   setObject(newobject);
 }
@@ -348,7 +348,7 @@ jint* makeCJintArray(const int* arr, int len)
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> const *thing)
+DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real8> const *thing)
 {
   // Column pointer
   int colPtrLen = thing->getCols() + 1;
@@ -365,7 +365,7 @@ DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real16> const *thing)
   delete[] rowIdx;
 
   // Values
-  jdoubleArray values = convertCreal16Arr2JDoubleArr(_env, thing->toReal16Array(), datalen);
+  jdoubleArray values = convertCreal8Arr2JDoubleArr(_env, thing->toReal8Array(), datalen);
 
   // Call constructor
   jclass cls = JVMManager::getOGRealSparseMatrixClazz();

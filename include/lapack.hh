@@ -12,7 +12,7 @@
 #include "numerictypes.hh"
 
 /**
- * The lapack namespace contains templated variants of functions that vary <real16,complex16> in their signature. In places the <real16,complex16> versions of a function require different
+ * The lapack namespace contains templated variants of functions that vary <real8,complex16> in their signature. In places the <real8,complex16> versions of a function require different
  * parameters effort is made to give a single interface with e.g. workspace handling taken care of.
  */
 namespace lapack
@@ -31,9 +31,9 @@ extern char ONE;
 extern char O;
 extern int ione;
 extern int izero;
-extern real16 rone;
+extern real8 rone;
 extern complex16 cone;
-extern real16 rzero;
+extern real8 rzero;
 extern complex16 czero;
 
 template<typename T>char charmagic();
@@ -42,9 +42,9 @@ template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
 template<typename T>void xswap(int * N, T * DX, int * INCX, T * DY, int * INCY);
 template<typename T> void xgemv(char * TRANS, int * M, int * N, T * ALPHA, T * A, int * LDA, T * X, int * INCX, T * BETA, T * Y, int * INCY );
 template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, T * ALPHA, T * A, int * LDA, T * B, int * LDB, T * BETA, T * C, int * LDC );
-template<typename T> real16 xnrm2(int * N, T * X, int * INCX);
+template<typename T> real8 xnrm2(int * N, T * X, int * INCX);
 template<typename T> void xpotrs(char * UPLO, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
-template<typename T> real16 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA, real16 * WORK);
+template<typename T> real8 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA, real8 * WORK);
 template<typename T> void xpotrf(char * UPLO, int * N, T * A, int * LDA, int * INFO);
 template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
 template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV, int *INFO);
@@ -94,7 +94,7 @@ extern int * izero;
 /**
  * The F77 double precision '1.d0'
  */
-extern real16 * rone;
+extern real8 * rone;
 /**
  * The F77 complex double precision '(1.d0, 0.d0)'
  */
@@ -102,7 +102,7 @@ extern complex16 * cone;
 /**
  * The F77 double precision '0.d0'
  */
-extern real16 * rzero;
+extern real8 * rzero;
 /**
  * The F77 complex double precision '(0.d0, 0.d0)'
  */
@@ -173,7 +173,7 @@ template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, 
  * @param INCX as BLAS dnrm2 INCX
  * @return the 2-norm of X
  */
-template<typename T> real16 xnrm2(int * N, T * X, int * INCX);
+template<typename T> real8 xnrm2(int * N, T * X, int * INCX);
 
 // LAPACK
 
@@ -193,7 +193,7 @@ template<typename T> real16 xnrm2(int * N, T * X, int * INCX);
  * @param INFO as LAPACK dgesvd INFO
  * @throws rdag_error on illegal input OR non-convergence
  */
-template<typename T> void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, T * A, int * LDA, real16 * S, T * U, int * LDU, T * VT, int * LDVT, int * INFO);
+template<typename T> void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, T * A, int * LDA, real8 * S, T * U, int * LDU, T * VT, int * LDVT, int * INFO);
 
 /**
  * xgetrf() computes the LU decomposition using parital pivoting
@@ -228,7 +228,7 @@ template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, int * IN
  * @param INFO as LAPACK dtrcon INFO
  * @throws rdag_error on illegal input
  */
-template<typename T> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, T * A, int * LDA, real16 * RCOND, int * INFO);
+template<typename T> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, T * A, int * LDA, real8 * RCOND, int * INFO);
 
 
 /**
@@ -269,7 +269,7 @@ template<typename T> void  xpotrf(char * UPLO, int * N, T * A, int * LDA, int * 
  * @param RCOND as LAPACK dpocon RCOND
  * @param INFO as LAPACK dpocon INFO
  */
-template<typename T> void xpocon(char * UPLO, int * N, T * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO);
+template<typename T> void xpocon(char * UPLO, int * N, T * A, int * LDA, real8 * ANORM, real8 * RCOND, int * INFO);
 
 /**
  * xlansy() computes condition numbers for a symmetric matrix.
@@ -280,7 +280,7 @@ template<typename T> void xpocon(char * UPLO, int * N, T * A, int * LDA, real16 
  * @param LDA as LAPACK dlansy LDA
  * @return the NORM as indicated by \a NORM.
  */
-template<typename T> real16 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA);
+template<typename T> real8 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA);
 
 /**
  * zlanhe() computes condition numbers for a Hermitian matrix.
@@ -291,7 +291,7 @@ template<typename T> real16 xlansy(char * NORM, char * UPLO, int * N, T * A, int
  * @param LDA as LAPACK zlanhe LDA
  * @return the NORM as indicated by \a NORM.
  */
-real16 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA);
+real8 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA);
 
 /**
  * xpotrs() solves s.p.d. systems via Cholesky decomposition as computed by xpotrf().

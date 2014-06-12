@@ -64,7 +64,7 @@ ctranspose_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>>  arg)
 void *
 CTRANSPOSERunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  ctranspose_dense_runner<real16>(reg, arg);
+  ctranspose_dense_runner<real8>(reg, arg);
   return nullptr;
 }
 

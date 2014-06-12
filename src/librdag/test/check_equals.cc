@@ -15,15 +15,15 @@
 using namespace std;
 using namespace librdag;
 
-TEST(EqualsTest, SingleValueFuzzyEqualsReal16) {
-  real16 NaN = getNaN();
-  real16 pinf = getPosInf();
-  real16 ninf = getNegInf();
+TEST(EqualsTest, SingleValueFuzzyEqualsReal8) {
+  real8 NaN = getNaN();
+  real8 pinf = getPosInf();
+  real8 ninf = getNegInf();
 
   union
   {
     uint64_t i;
-    real16 d;
+    real8 d;
   } neg0;
 
   neg0.i = 8000000000000000;
@@ -65,12 +65,12 @@ TEST(EqualsTest, SingleValueFuzzyEqualsComplex16) {
 }
 
 
-TEST(EqualsTest, ArrayBitEquals_real16) {
+TEST(EqualsTest, ArrayBitEquals_real8) {
 
   int len = 4;
-  real16 * data1 = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real16 * data2 = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real16 * data3 = new real16[4] {-1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * data1 = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * data2 = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * data3 = new real8[4] {-1.0e0,2.0e0,3.0e0,4.0e0};
 
   ASSERT_TRUE(ArrayBitEquals(data1, data2, len));
   ASSERT_FALSE(ArrayBitEquals(data1, data3, len));
@@ -81,12 +81,12 @@ TEST(EqualsTest, ArrayBitEquals_real16) {
 
 }
 
-TEST(EqualsTest, ArrayFuzzyEquals_real16) {
+TEST(EqualsTest, ArrayFuzzyEquals_real8) {
 
   int len = 4;
-  real16 * data = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real16 * same = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real16 * diff  = new  real16[4]{-1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * data = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * same = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * diff  = new  real8[4]{-1.0e0,2.0e0,3.0e0,4.0e0};
 
   ASSERT_FALSE(ArrayFuzzyEquals(data, diff, len));
   ASSERT_TRUE(ArrayFuzzyEquals(data, same, len));
@@ -152,8 +152,8 @@ TEST(EqualsTest, OGRealScalar) {
   OGRealScalar::Ptr same = OGRealScalar::create(1.0e0);
   OGRealScalar::Ptr baddata = OGRealScalar::create(2.0e0);
   OGComplexScalar::Ptr badtype = OGComplexScalar::create({1.0e0,2.0e0});
-  OGRealMatrix::Ptr r_comparable = OGRealMatrix::create(new real16[1]{1.e0},1,1,OWNER);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[2]{1.e0,2.e0},1,2,OWNER);
+  OGRealMatrix::Ptr r_comparable = OGRealMatrix::create(new real8[1]{1.e0},1,1,OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[2]{1.e0,2.e0},1,2,OWNER);
   OGComplexMatrix::Ptr c_comparable = OGComplexMatrix::create(new complex16[1]{{1.e0,0.e0}},1,1, OWNER);
   OGComplexMatrix::Ptr c_notcomparable = OGComplexMatrix::create(new complex16[1]{{1.e0,2.e0}},1,1, OWNER);
 
@@ -194,7 +194,7 @@ TEST(EqualsTest, OGComplexScalar) {
   OGComplexScalar::Ptr same = OGComplexScalar::create({1.0e0,2.0e0});
   OGComplexScalar::Ptr baddata = OGComplexScalar::create({-1.0e0,2.0e0});
   OGRealScalar::Ptr badtype = OGRealScalar::create(1.0e0);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[2]{1.e0,2.e0},1,2,OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[2]{1.e0,2.e0},1,2,OWNER);
   OGComplexMatrix::Ptr c_comparable = OGComplexMatrix::create(new complex16[1]{{1.e0,2.e0}},1,1, OWNER);
   OGComplexMatrix::Ptr c_notcomparable = OGComplexMatrix::create(new complex16[2]{{1.e0,2.e0},{3.e0,4.e0}},2,1, OWNER);
 
@@ -228,8 +228,8 @@ TEST(EqualsTest, OGIntegerScalar) {
   OGIntegerScalar::Ptr same = OGIntegerScalar::create(1);
   OGIntegerScalar::Ptr baddata = OGIntegerScalar::create(2);
   OGRealScalar::Ptr badtype = OGRealScalar::create(1);
-  OGRealMatrix::Ptr r_comparable = OGRealMatrix::create(new real16[1]{1.e0},1,1,OWNER);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[2]{1.e0,2.e0},1,2,OWNER);
+  OGRealMatrix::Ptr r_comparable = OGRealMatrix::create(new real8[1]{1.e0},1,1,OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[2]{1.e0,2.e0},1,2,OWNER);
   OGComplexMatrix::Ptr c_comparable = OGComplexMatrix::create(new complex16[1]{{1.e0,0.e0}},1,1, OWNER);
   OGComplexMatrix::Ptr c_notcomparable = OGComplexMatrix::create(new complex16[1]{{1.e0,2.e0}},1,1, OWNER);
 
@@ -259,8 +259,8 @@ TEST(EqualsTest, OGIntegerScalar) {
 }
 
 TEST(EqualsTest, OGRealMatrix) {
-  real16 * r_data1 = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real16 * r_data2 = new real16[4] {-1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * r_data1 = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * r_data2 = new real8[4] {-1.0e0,2.0e0,3.0e0,4.0e0};
   complex16 * c_data1 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
   OGRealMatrix::Ptr matrix = OGRealMatrix::create(r_data1,2,2);
   OGRealMatrix::Ptr same = OGRealMatrix::create(r_data1,2,2);
@@ -269,8 +269,8 @@ TEST(EqualsTest, OGRealMatrix) {
   OGRealMatrix::Ptr baddata = OGRealMatrix::create(r_data2,2,2);
   OGComplexMatrix::Ptr badtype = OGComplexMatrix::create(c_data1,2,2);
 
-  OGRealMatrix::Ptr r_comparable = OGRealMatrix::create(new real16[4]{1.e0,2.e0,3.e0,4.e0},2,2,OWNER);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
+  OGRealMatrix::Ptr r_comparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,4.e0},2,2,OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexMatrix::Ptr c_comparable = OGComplexMatrix::create(new complex16[4]{{1.e0,0.e0},{2.e0,0.e0},{3.e0,0.e0},{4.e0,0.e0}},2,2, OWNER);
   OGComplexMatrix::Ptr c_notcomparable = OGComplexMatrix::create(new complex16[1]{{1.e0,2.e0}},1,1, OWNER);
 
@@ -314,14 +314,14 @@ TEST(EqualsTest, OGRealMatrix) {
 TEST(EqualsTest, OGComplexMatrix) {
   complex16 * c_data1 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
   complex16 * c_data2 = new complex16[4] {{-1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
-  real16 * r_data1 = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * r_data1 = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
   OGComplexMatrix::Ptr matrix = OGComplexMatrix::create(c_data1,2,2);
   OGComplexMatrix::Ptr same = OGComplexMatrix::create(c_data1,2,2);
   OGComplexMatrix::Ptr badrows = OGComplexMatrix::create(c_data1,4,2);
   OGComplexMatrix::Ptr badcols = OGComplexMatrix::create(c_data1,2,4);
   OGComplexMatrix::Ptr baddata = OGComplexMatrix::create(c_data2,2,2);
   OGRealMatrix::Ptr badtype = OGRealMatrix::create(r_data1,2,2);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexMatrix::Ptr c_comparable = OGComplexMatrix::create(new complex16[4]{{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}},2,2, OWNER);
   OGComplexMatrix::Ptr c_notcomparable = OGComplexMatrix::create(new complex16[4]{{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{5.0e0,50.0e0}},2,2, OWNER);
 
@@ -361,8 +361,8 @@ TEST(EqualsTest, OGComplexMatrix) {
 }
 
 TEST(EqualsTest, OGRealSparseMatrix) {
-  real16 * r_data1 = new real16[7] {1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
-  real16 * r_data2 = new real16[7] {-1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
+  real8 * r_data1 = new real8[7] {1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
+  real8 * r_data2 = new real8[7] {-1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
   int * colPtr = new int[6] {0, 2, 4, 7, 7, 7};
   int * colPtr2 = new int[6] {0, 1, 3, 7, 7, 7};
   int * rowIdx = new int[7] {0, 1, 0, 2, 1, 2, 3 };
@@ -377,8 +377,8 @@ TEST(EqualsTest, OGRealSparseMatrix) {
   OGRealSparseMatrix::Ptr badcolptr = OGRealSparseMatrix::create(colPtr2, rowIdx, r_data1, rows, cols);
   OGRealSparseMatrix::Ptr badrowidx = OGRealSparseMatrix::create(colPtr, rowIdx2, r_data1, rows, cols);
   OGRealScalar::Ptr badtype = OGRealScalar::create(1.0e0);
-  OGRealSparseMatrix::Ptr r_comparable_sparse = OGRealSparseMatrix::create(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new real16[7] {1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 }, 5, 4, OWNER);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
+  OGRealSparseMatrix::Ptr r_comparable_sparse = OGRealSparseMatrix::create(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new real8[7] {1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 }, 5, 4, OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexSparseMatrix::Ptr c_comparable_sparse = OGComplexSparseMatrix::create(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new complex16[7] {{1.0e0,0.e0}, {3.0e0,0.e0}, {2.0e0,0.e0}, {5.0e0,0.e0}, {4.0e0,0.e0}, {6.0e0,0.e0}, {7.0e0,0.e0}}, 5, 4, OWNER);
   OGComplexDiagonalMatrix::Ptr c_notcomparable = OGComplexDiagonalMatrix::create(new complex16[4]{1.e0,2.e0,3.e0,5.e0},5,4, OWNER);
 
@@ -447,7 +447,7 @@ TEST(EqualsTest, OGComplexSparseMatrix) {
   OGComplexSparseMatrix::Ptr badcolptr = OGComplexSparseMatrix::create(colPtr2, rowIdx, c_data1, rows, cols);
   OGComplexSparseMatrix::Ptr badrowidx = OGComplexSparseMatrix::create(colPtr, rowIdx2, c_data1, rows, cols);
   OGRealScalar::Ptr badtype = OGRealScalar::create(1.0e0);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexSparseMatrix::Ptr c_comparable_sparse = OGComplexSparseMatrix::create(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new complex16[7] {{1.0e0,10.0e0}, {3.0e0,30.0e0}, {2.0e0,20.0e0}, {5.0e0,50.0e0}, {4.0e0,40.0e0}, {6.0e0,60.0e0}, {7.0e0,70.0e0} }, 5, 4, OWNER);
   OGComplexDiagonalMatrix::Ptr c_notcomparable = OGComplexDiagonalMatrix::create(new complex16[4]{1.e0,2.e0,3.e0,5.e0},5,4, OWNER);
 
@@ -499,10 +499,10 @@ TEST(EqualsTest, OGComplexSparseMatrix) {
 }
 
 TEST(EqualsTest, OGRealDiagonalMatrix) {
-  real16 * r_data1 = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
-  real16 * r_data2 = new real16[4] {-1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * r_data1 = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * r_data2 = new real8[4] {-1.0e0,2.0e0,3.0e0,4.0e0};
   complex16 * c_data1 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
-  real16 * r_fullmatrix = new real16[16]{1.e0,0.e0,0.e0,0.e0,0.e0,2.e0,0.e0,0.e0,0.e0,0.e0,3.e0,0.e0,0.e0,0.e0,0.e0,4.e0};
+  real8 * r_fullmatrix = new real8[16]{1.e0,0.e0,0.e0,0.e0,0.e0,2.e0,0.e0,0.e0,0.e0,0.e0,3.e0,0.e0,0.e0,0.e0,0.e0,4.e0};
   OGRealDiagonalMatrix::Ptr matrix = OGRealDiagonalMatrix::create(r_data1,4,4);
   OGRealDiagonalMatrix::Ptr same = OGRealDiagonalMatrix::create(r_data1,4,4);
   OGRealDiagonalMatrix::Ptr badrows = OGRealDiagonalMatrix::create(r_data1,12,4);
@@ -510,8 +510,8 @@ TEST(EqualsTest, OGRealDiagonalMatrix) {
   OGRealDiagonalMatrix::Ptr baddata = OGRealDiagonalMatrix::create(r_data2,4,4);
   OGRealMatrix::Ptr comparable = OGRealMatrix::create(r_fullmatrix,4,4);
   OGComplexMatrix::Ptr badtype = OGComplexMatrix::create(c_data1,2,2);
-  OGRealSparseMatrix::Ptr r_comparable_sparse = OGRealSparseMatrix::create(new int[5] {0, 1, 2, 3, 4}, new int[4] {0, 1, 2, 3}, new real16[7] {1.0e0, 2.0e0, 3.0e0, 4.0e0}, 4, 4, OWNER);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
+  OGRealSparseMatrix::Ptr r_comparable_sparse = OGRealSparseMatrix::create(new int[5] {0, 1, 2, 3, 4}, new int[4] {0, 1, 2, 3}, new real8[7] {1.0e0, 2.0e0, 3.0e0, 4.0e0}, 4, 4, OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexDiagonalMatrix::Ptr c_comparable_diag = OGComplexDiagonalMatrix::create(new complex16[4] {{1.0e0,0.e0}, {2.0e0,0.e0}, {3.0e0,0.e0}, {4.0e0,0.e0}},4, 4, OWNER);
   OGComplexDiagonalMatrix::Ptr c_notcomparable = OGComplexDiagonalMatrix::create(new complex16[4]{1.e0,2.e0,3.e0,5.e0},4,4, OWNER);
 
@@ -561,14 +561,14 @@ TEST(EqualsTest, OGRealDiagonalMatrix) {
 TEST(EqualsTest, OGComplexDiagonalMatrix) {
   complex16 * c_data1 = new complex16[4] {{1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
   complex16 * c_data2 = new complex16[4] {{-1.0e0,10.0e0},{2.0e0,20.0e0},{3.0e0,30.0e0},{4.0e0,40.0e0}};
-  real16 * r_data1 = new real16[4] {1.0e0,2.0e0,3.0e0,4.0e0};
+  real8 * r_data1 = new real8[4] {1.0e0,2.0e0,3.0e0,4.0e0};
   OGComplexDiagonalMatrix::Ptr matrix = OGComplexDiagonalMatrix::create(c_data1,4,4);
   OGComplexDiagonalMatrix::Ptr same = OGComplexDiagonalMatrix::create(c_data1,4,4);
   OGComplexDiagonalMatrix::Ptr badrows = OGComplexDiagonalMatrix::create(c_data1,12,4);
   OGComplexDiagonalMatrix::Ptr badcols = OGComplexDiagonalMatrix::create(c_data1,4,12);
   OGComplexDiagonalMatrix::Ptr baddata = OGComplexDiagonalMatrix::create(c_data2,4,4);
   OGRealMatrix::Ptr badtype = OGRealMatrix::create(r_data1,2,2);
-  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real16[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
+  OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexDiagonalMatrix::Ptr c_comparable_diag = OGComplexDiagonalMatrix::create(new complex16[4] {{1.0e0,10.e0}, {2.0e0,20.e0}, {3.0e0,30.e0}, {4.0e0,40.e0}},4, 4, OWNER);
   OGComplexDiagonalMatrix::Ptr c_notcomparable = OGComplexDiagonalMatrix::create(new complex16[4]{1.e0,2.e0,3.e0,5.e0},4,4, OWNER);
 
