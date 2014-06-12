@@ -12,7 +12,6 @@
 #include "execution.hh"
 #include "dispatch.hh"
 
-using namespace std;
 using namespace librdag;
 
 /**
@@ -32,12 +31,12 @@ TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
   EXPECT_TRUE(result);\
   if(result==false)\
   {\
-    cout << "_______________________________________" << std::endl;\
-    cout << "Test failure:" << std::endl << "Expected:" << std::endl;\
+    std::cout << "_______________________________________" << std::endl;\
+    std::cout << "Test failure:" << std::endl << "Expected:" << std::endl;\
     impl->getResultPair()->second->asOGTerminal()->debug_print();\
-    cout << "Calculated:" << std::endl;\
+    std::cout << "Calculated:" << std::endl;\
     impl->getResultPair()->first->asOGTerminal()->debug_print();\
-    cout << "_______________________________________" << std::endl;\
+    std::cout << "_______________________________________" << std::endl;\
   }\
   delete impl;\
 }
@@ -54,12 +53,12 @@ TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
   EXPECT_TRUE(result);\
   if(result==false)\
   {\
-    cout << "_______________________________________" << std::endl;\
-    cout << "Test failure:" << std::endl << "Expected:" << std::endl;\
+    std::cout << "_______________________________________" << std::endl;\
+    std::cout << "Test failure:" << std::endl << "Expected:" << std::endl;\
     impl->getResultPair()->second->asOGTerminal()->debug_print();\
-    cout << "Calculated:" << std::endl;\
+    std::cout << "Calculated:" << std::endl;\
     impl->getResultPair()->first->asOGTerminal()->debug_print();\
-    cout << "_______________________________________" << std::endl;\
+    std::cout << "_______________________________________" << std::endl;\
   }\
   delete impl;\
 }
@@ -73,7 +72,7 @@ TEST_P(__NODE##TEST, SimpleAssertResultTrue) {\
 /**
  * Container for results
  */
-typedef pair<OGNumeric::Ptr, OGNumeric::Ptr> ResultPair;
+typedef std::pair<OGNumeric::Ptr, OGNumeric::Ptr> ResultPair;
 
 /**
  * Indicate the method used for comparison
