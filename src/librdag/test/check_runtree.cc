@@ -18,8 +18,8 @@ using namespace librdag;
 TEST(RunTree, ThrowDueToBadOp)
 {
     OGNumeric::Ptr s1 = OGRealScalar::create(10);
-    OGNumeric::Ptr m1 = OGRealMatrix::create(new real16[2]{1,2},2,1,OWNER);
-    OGNumeric::Ptr m2 = OGRealMatrix::create(new real16[2]{1,2},2,1,OWNER);
+    OGNumeric::Ptr m1 = OGRealMatrix::create(new real8[2]{1,2},2,1,OWNER);
+    OGNumeric::Ptr m2 = OGRealMatrix::create(new real8[2]{1,2},2,1,OWNER);
 
     OGExpr::Ptr s1m1 = MTIMES::create(s1,m1);
     OGExpr::Ptr s1m1m2 = MTIMES::create(s1m1,m2);
@@ -29,8 +29,8 @@ TEST(RunTree, ThrowDueToBadOp)
 TEST(RunTree, ExecOk)
 {
     OGNumeric::Ptr s1 = OGRealScalar::create(10);
-    OGNumeric::Ptr m1 = OGRealMatrix::create(new real16[2]{1,2},1,2,OWNER);
-    OGNumeric::Ptr m2 = OGRealMatrix::create(new real16[2]{1,2},2,1,OWNER);
+    OGNumeric::Ptr m1 = OGRealMatrix::create(new real8[2]{1,2},1,2,OWNER);
+    OGNumeric::Ptr m2 = OGRealMatrix::create(new real8[2]{1,2},2,1,OWNER);
 
     OGExpr::Ptr s1m1 = MTIMES::create(s1,m1);
     OGExpr::Ptr s1m1m2 = MTIMES::create(s1m1,m2);

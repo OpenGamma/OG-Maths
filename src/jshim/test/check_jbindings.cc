@@ -24,16 +24,16 @@ class bindRunner
   public:
     void run(jobject obj, jmethodID meth)
     {
-      bindPrimitiveArrayData<real16, jdoubleArray>(obj, meth);
+      bindPrimitiveArrayData<real8, jdoubleArray>(obj, meth);
     }
 };
 
 class unbindRunner
 {
   public:
-    void run(real16 * nativedata, jobject obj, jmethodID meth)
+    void run(real8 * nativedata, jobject obj, jmethodID meth)
     {
-      unbindPrimitiveArrayData<real16, jdoubleArray>(nativedata,obj, meth);
+      unbindPrimitiveArrayData<real8, jdoubleArray>(nativedata,obj, meth);
     }
 };
 
@@ -113,7 +113,7 @@ TEST(JBindings, Test_bindPrimitiveArrayData_bad_callobjmethod)
 
 TEST(JBindings, Test_unbindPrimitiveArrayData_bad_data)
 {
-  real16 * data = nullptr;
+  real8 * data = nullptr;
   jobject obj = new _jobject();
   jmethodID meth = new _jmethodID();
   unbindRunner * clazz = new unbindRunner();
@@ -125,7 +125,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_data)
 
 TEST(JBindings, Test_unbindPrimitiveArrayData_bad_obj)
 {
-  real16 * data = new real16[1];
+  real8 * data = new real8[1];
   jobject obj = nullptr;
   jmethodID meth = new _jmethodID();
   unbindRunner * clazz = new unbindRunner();
@@ -137,7 +137,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_obj)
 
 TEST(JBindings, Test_unbindPrimitiveArrayData_bad_meth)
 {
-  real16 * data = new real16[1];
+  real8 * data = new real8[1];
   jobject obj = new _jobject();
   jmethodID meth = nullptr;
   unbindRunner * clazz = new unbindRunner();
@@ -167,7 +167,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_meth)
 //     Fake_JNIEnv * env  = new Fake_JNIEnv();
 //     jvm->setEnv(env);
 //     JVMManager::initialize(jvm);
-//     real16 * data = new real16[1];
+//     real8 * data = new real8[1];
 //     jobject obj = new _jobject();
 //     jmethodID meth = new _jmethodID();
 //     unbindRunner * clazz = new unbindRunner();
@@ -193,7 +193,7 @@ TEST(JBindings, Test_unbindPrimitiveArrayData_bad_callobjmethod)
     Fake_JNIEnv * env  = new Fake_JNIEnv_bad_com();
     jvm->setEnv(env);
     JVMManager::initialize(jvm);
-    real16 * data = new real16[1];
+    real8 * data = new real8[1];
     jobject obj = new _jobject();
     jmethodID meth = new _jmethodID();
     unbindRunner * clazz = new unbindRunner();

@@ -22,7 +22,7 @@ ConvertTo::ConvertTo()
 OGRealMatrix::Ptr
 ConvertTo::convertToOGRealMatrix(OGRealScalar::Ptr thing) const
 {
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real16[1](),1,1, OWNER);
+  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[1](),1,1, OWNER);
   ret->getData()[0] = thing->getValue();
   return ret;
 }
@@ -30,7 +30,7 @@ ConvertTo::convertToOGRealMatrix(OGRealScalar::Ptr thing) const
 OGRealMatrix::Ptr
 ConvertTo::convertToOGRealMatrix(OGIntegerScalar::Ptr thing) const
 {
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real16[1](),1,1, OWNER);
+  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[1](),1,1, OWNER);
   ret->getData()[0]=thing->getValue();
   return ret;
 }
@@ -41,9 +41,9 @@ ConvertTo::convertToOGRealMatrix(OGRealDiagonalMatrix::Ptr thing) const
   int rows = thing->getRows();
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real16[rows*cols](),rows,cols, OWNER);
-  real16 * diagdata = thing->getData();
-  real16 * data = ret->getData();
+  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[rows*cols](),rows,cols, OWNER);
+  real8 * diagdata = thing->getData();
+  real8 * data = ret->getData();
   for(int i=0;i<wlen;i++)
   {
     data[i+i*rows]=diagdata[i];
@@ -57,10 +57,10 @@ ConvertTo::convertToOGRealMatrix(OGLogicalMatrix::Ptr thing) const
   int rows = thing->getRows();
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real16[wlen](),rows,cols, OWNER);
-  real16 * thedata = thing->getData();
-  real16 * data = ret->getData();
-  memcpy(data,thedata,sizeof(real16)*wlen);
+  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[wlen](),rows,cols, OWNER);
+  real8 * thedata = thing->getData();
+  real8 * data = ret->getData();
+  memcpy(data,thedata,sizeof(real8)*wlen);
   return ret;
 }
 
@@ -73,10 +73,10 @@ ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix::Ptr thing) const
   int cols = thing->getCols();
   int * colPtr = thing->getColPtr();
   int * rowIdx = thing->getRowIdx();
-  real16 * sparsedata = thing->getData();
+  real8 * sparsedata = thing->getData();
 
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real16[rows*cols](),rows,cols, OWNER);
-  real16 * data = ret->getData();
+  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[rows*cols](),rows,cols, OWNER);
+  real8 * data = ret->getData();
   for (int ir = 0; ir < cols; ir++)
   {
     for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
@@ -121,7 +121,7 @@ ConvertTo::convertToOGComplexMatrix(OGRealDiagonalMatrix::Ptr thing) const
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
   OGComplexMatrix::Ptr ret = OGComplexMatrix::create(new complex16[rows*cols](),rows,cols, OWNER);
-  real16 * diagdata = thing->getData();
+  real8 * diagdata = thing->getData();
   complex16 * data = ret->getData();
   for(int i=0;i<wlen;i++)
   {
@@ -153,7 +153,7 @@ ConvertTo::convertToOGComplexMatrix(OGRealSparseMatrix::Ptr thing) const
   int cols = thing->getCols();
   int * colPtr = thing->getColPtr();
   int * rowIdx = thing->getRowIdx();
-  real16 * sparsedata = thing->getData();
+  real8 * sparsedata = thing->getData();
   OGComplexMatrix::Ptr ret = OGComplexMatrix::create(new complex16[rows*cols](),rows,cols, OWNER);
   complex16 * data = ret->getData();
   for (int ir = 0; ir < cols; ir++)
@@ -193,7 +193,7 @@ ConvertTo::convertToOGComplexMatrix(OGRealMatrix::Ptr thing) const
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
   OGComplexMatrix::Ptr ret = OGComplexMatrix::create(new complex16[wlen](),rows,cols, OWNER);
-  real16 * densedata = thing->getData();
+  real8 * densedata = thing->getData();
   complex16 * data = ret->getData();
   for(int i=0;i<wlen;i++)
   {
@@ -209,7 +209,7 @@ ConvertTo::convertToOGComplexMatrix(OGLogicalMatrix::Ptr thing) const
   int cols = thing->getCols();
   int wlen = thing->getDatalen();
   OGComplexMatrix::Ptr ret = OGComplexMatrix::create(new complex16[wlen](),rows,cols, OWNER);
-  real16 * densedata = thing->getData();
+  real8 * densedata = thing->getData();
   complex16 * data = ret->getData();
   for(int i=0;i<wlen;i++)
   {

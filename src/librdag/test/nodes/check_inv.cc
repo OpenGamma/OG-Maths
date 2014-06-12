@@ -37,23 +37,23 @@ INSTANTIATE_NODE_TEST_CASE_P(INVTests,INV,
   // inv(-1) = -1
   new CheckUnary<INV>( OGRealScalar::create(-1.0), OGRealScalar::create(-1.0), MATHSEQUAL),
   // inv(0) = +inf
-  new CheckUnary<INV>( OGRealScalar::create(0.0), OGRealScalar::create(std::numeric_limits<real16>::infinity()), MATHSEQUAL),
+  new CheckUnary<INV>( OGRealScalar::create(0.0), OGRealScalar::create(std::numeric_limits<real8>::infinity()), MATHSEQUAL),
   // inv(10) = 0.1
   new CheckUnary<INV>( OGRealScalar::create(10.0), OGRealScalar::create(0.1), MATHSEQUAL),
 
   // Test matrix context real space
 
   // inv(1) = 1
-  new CheckUnary<INV>( OGRealMatrix::create(new real16[1]{1},1,1, OWNER), OGRealScalar::create(1.0), MATHSEQUAL),
+  new CheckUnary<INV>( OGRealMatrix::create(new real8[1]{1},1,1, OWNER), OGRealScalar::create(1.0), MATHSEQUAL),
   // inv(-1) = -1
-  new CheckUnary<INV>( OGRealMatrix::create(new real16[1]{-1},1,1, OWNER), OGRealScalar::create(-1.0),
+  new CheckUnary<INV>( OGRealMatrix::create(new real8[1]{-1},1,1, OWNER), OGRealScalar::create(-1.0),
   MATHSEQUAL),
   // inv(0) = +inf
-  new CheckUnary<INV>( OGRealMatrix::create(new real16[1]{0.e0},1,1, OWNER), OGRealScalar::create(std::numeric_limits<real16>::infinity()), MATHSEQUAL),
+  new CheckUnary<INV>( OGRealMatrix::create(new real8[1]{0.e0},1,1, OWNER), OGRealScalar::create(std::numeric_limits<real8>::infinity()), MATHSEQUAL),
   // inv(full rank 3x3 system) [condition number ~= 3.7]
   new CheckUnary<INV>(
-      OGRealMatrix::create(new real16[9]{1,-4,7,2,2,9,3,1,-4},3,3, OWNER),
-      OGRealMatrix::create(new real16[9] {0.0918918918918919,0.0486486486486487,0.2702702702702703,-0.1891891891891892,0.1351351351351351,-0.0270270270270270,0.0216216216216216,0.0702702702702703,-0.0540540540540541},3,3, OWNER),
+      OGRealMatrix::create(new real8[9]{1,-4,7,2,2,9,3,1,-4},3,3, OWNER),
+      OGRealMatrix::create(new real8[9] {0.0918918918918919,0.0486486486486487,0.2702702702702703,-0.1891891891891892,0.1351351351351351,-0.0270270270270270,0.0216216216216216,0.0702702702702703,-0.0540540540540541},3,3, OWNER),
       MATHSEQUAL),
 
   // Test matrix context complex space
@@ -63,7 +63,7 @@ INSTANTIATE_NODE_TEST_CASE_P(INVTests,INV,
   // inv(0+1i) = -i
   new CheckUnary<INV>( OGComplexScalar::create({0,1.0}), OGComplexScalar::create({0,-1.0}), MATHSEQUAL),
   // inv(0+0i) = inf
-  new CheckUnary<INV>( OGComplexScalar::create({0,0}), OGComplexScalar::create({std::numeric_limits<real16>::infinity(),0}), MATHSEQUAL),
+  new CheckUnary<INV>( OGComplexScalar::create({0,0}), OGComplexScalar::create({std::numeric_limits<real8>::infinity(),0}), MATHSEQUAL),
   // inv(1+1i) = 0.5-0.5i
   new CheckUnary<INV>( OGComplexScalar::create({1.0,1.0}), OGComplexScalar::create({0.5,-0.5}), MATHSEQUAL),
   // inv(full rank 3x3 system) [condition number ~= 4.9]
@@ -77,7 +77,7 @@ INSTANTIATE_NODE_TEST_CASE_P(INVTests,INV,
 
 TEST(INVTests, NonSquareInput)
 {
-  real16 * rdat = new real16[6]{1,2,3,4,5,6};
+  real8 * rdat = new real8[6]{1,2,3,4,5,6};
   complex16 * cdat = new complex16[6]{{1,10},{2,20},{3,30},{4,40},{5,50},{6,60}};
   OGTerminal::Ptr mat;
   OGExpr::Ptr inv;
@@ -115,7 +115,7 @@ TEST(INVTests, NonSquareInput)
 TEST(INVTests, WarnOnSingularInput)
 {
   // singular 3x3
-  real16 rsingular3x3[9] = {1,10,1,2,20,2,3,30,3};
+  real8 rsingular3x3[9] = {1,10,1,2,20,2,3,30,3};
   complex16 csingular3x3[9] = {{1,10},{10,100},{1,10},{2,20},{20,200},{2,20},{3,30},{30,300},{3,30}};
 
   OGTerminal::Ptr mat;
@@ -139,7 +139,7 @@ TEST(INVTests, WarnOnSingularInput)
 namespace testinternal {
 
 using namespace librdag;
-  real16 reals[9] = {1,-4,7,2,2,9,3,1,11};
+  real8 reals[9] = {1,-4,7,2,2,9,3,1,11};
   OGTerminal::Ptr real = OGRealMatrix::create(reals,3,3);
   complex16 complexs[9] = {{1,10},{-4,-40},{7,70},{2,20},{2,20},{9,90},{3,30},{1,10},{11,110}};
   OGTerminal::Ptr complex = OGComplexMatrix::create(complexs,3,3);
@@ -156,7 +156,7 @@ TEST_P(ReconstructInvNodeTest, TerminalTypes)
   OGTerminal::Ptr A = GetParam();
   OGExpr::Ptr inv = INV::create(A);
   OGExpr::Ptr AtimesInvA = MTIMES::create(A,inv);
-  OGTerminal::Ptr expected = OGRealMatrix::create(new real16[9] {1,0,0,0,1,0,0,0,1},3,3, OWNER);
+  OGTerminal::Ptr expected = OGRealMatrix::create(new real8[9] {1,0,0,0,1,0,0,0,1},3,3, OWNER);
   runtree(AtimesInvA);
   EXPECT_TRUE(AtimesInvA->getRegs()[0]->asOGTerminal()->mathsequals(expected, 1e-14, 1e-14));
 }

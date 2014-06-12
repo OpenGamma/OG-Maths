@@ -137,7 +137,7 @@ TEST(RTTITerminalTest, TestOGIntegerScalar) {
 }
 
 TEST(RTTITerminalTest, TestOGRealMatrix) {
-  double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+  real8 realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGNumeric::Ptr node = OGRealMatrix::create(realData, 2, 3);
   check_rtti(node, "OGRealMatrix");
 }
@@ -150,7 +150,7 @@ TEST(RTTITerminalTest, TestOGComplexMatrix) {
 }
 
 TEST(RTTITerminalTest, TestOGRealDiagonalMatrix) {
-  double rdiagData[3] = { 1.0, 2.0, 3.0 };
+  real8 rdiagData[3] = { 1.0, 2.0, 3.0 };
   OGNumeric::Ptr node = OGRealDiagonalMatrix::create(rdiagData, 3, 4);
   check_rtti(node, "OGRealDiagonalMatrix");
 }
@@ -164,7 +164,7 @@ TEST(RTTITerminalTest, TestOGComplexDiagonalMatrix) {
 TEST(RTTITerminalTest, TestOGRealSparseMatrix) {
   int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
-  double rsparseData[2] = { 1.0, 2.0 };
+  real8 rsparseData[2] = { 1.0, 2.0 };
   OGNumeric::Ptr node = OGRealSparseMatrix::create(colPtr, rowIdx, rsparseData, 2, 2);
   check_rtti(node, "OGRealSparseMatrix");
 }

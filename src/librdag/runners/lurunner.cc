@@ -174,7 +174,7 @@ LURunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 void *
 LURunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  lu_dense_runner<real16>(reg, arg);
+  lu_dense_runner<real8>(reg, arg);
   return nullptr;
 }
 

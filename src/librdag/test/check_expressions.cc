@@ -116,7 +116,7 @@ TEST(VirtualCopyTest, IntegerScalar){
 }
 
 TEST(VirtualCopyTest, RealMatrix){
-  double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+  real8 realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGRealMatrix::Ptr rm1 = OGRealMatrix::create(realData, 2, 3);
   OGRealMatrix::Ptr rm2 = rm1->copy()->asOGRealMatrix();
   EXPECT_EQ(rm1->getData(), rm2->getData());
@@ -139,7 +139,7 @@ TEST(VirtualCopyTest, ComplexMatrix){
 }
 
 TEST(VirtualCopyTest, RealDiagonalMatrix){
-  double rdiagData[3] = { 1.0, 2.0, 3.0 };
+  real8 rdiagData[3] = { 1.0, 2.0, 3.0 };
   OGRealDiagonalMatrix::Ptr rdm1 = OGRealDiagonalMatrix::create(rdiagData, 3, 4);
   OGRealDiagonalMatrix::Ptr rdm2 = rdm1->copy()->asOGRealDiagonalMatrix();
   EXPECT_EQ(rdm1->getData(), rdm2->getData());
@@ -163,7 +163,7 @@ TEST(VirtualCopyTest, ComplexDiagonalMatrix){
 TEST(VirtualCopyTest, RealSparseMatrix){
   int colPtr[3] = { 0, 2, 2 };
   int rowIdx[2] = { 0, 1 };
-  double rsparseData[2] = { 1.0, 2.0 };
+  real8 rsparseData[2] = { 1.0, 2.0 };
   OGRealSparseMatrix::Ptr rsm1 = OGRealSparseMatrix::create(colPtr, rowIdx, rsparseData, 2, 2);
   OGRealSparseMatrix::Ptr rsm2 = rsm1->copy()->asOGRealSparseMatrix();
   EXPECT_EQ(rsm1->getData(), rsm2->getData());
@@ -261,7 +261,7 @@ TEST(VirtualCopyTest, NEGATE) {
 }
 
 TEST(VirtualCopyTest, NORM2) {
-  double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+  real8 matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
   NORM2::Ptr norm1 = NORM2::create(realMat);
   
@@ -287,7 +287,7 @@ TEST(VirtualCopyTest, NORM2) {
 
 
 TEST(VirtualCopyTest, SVD) {
-  double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+  real8 matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
   SVD::Ptr svd1 = SVD::create(realMat);
 
@@ -312,7 +312,7 @@ TEST(VirtualCopyTest, SVD) {
 }
 
 TEST(VirtualCopyTest, LU) {
-  double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+  real8 matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
   LU::Ptr lu1 = LU::create(realMat);
   
@@ -337,7 +337,7 @@ TEST(VirtualCopyTest, LU) {
 }
 
 TEST(VirtualCopyTest, SELECTRESULT) {
-  double matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+  real8 matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
   OGExpr::Ptr svd = SVD::create(realMat);
   OGNumeric::Ptr i = OGIntegerScalar::create(0);

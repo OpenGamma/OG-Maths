@@ -36,7 +36,7 @@ class DLLEXPORT_C JOGRealScalar: public OGRealScalar
   private:
     JOGRealScalar(jobject obj);
     jobject _backingObject = nullptr;
-    real16 * _dataRef = nullptr;
+    real8 * _dataRef = nullptr;
 };
 
 /*
@@ -132,7 +132,7 @@ class DLLEXPORT_C JOGRealSparseMatrix: public OGRealSparseMatrix
     static JOGRealSparseMatrix::Ptr create(jobject obj);
     virtual ~JOGRealSparseMatrix() override;
     virtual void debug_print() const override;
-    virtual real16** toReal16ArrayOfArrays() const override;
+    virtual real8** toReal8ArrayOfArrays() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
   private:
     JOGRealSparseMatrix(jobject obj);
@@ -149,7 +149,7 @@ class DLLEXPORT_C JOGComplexSparseMatrix: public OGComplexSparseMatrix
     static JOGComplexSparseMatrix::Ptr create(jobject obj);
     virtual ~JOGComplexSparseMatrix() override;
     virtual void debug_print() const override;
-    virtual real16** toReal16ArrayOfArrays() const override;
+    virtual real8** toReal8ArrayOfArrays() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
   private:
     JOGComplexSparseMatrix(jobject obj);

@@ -29,7 +29,7 @@ void *
 PINVRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
 {
   OGNumeric::Ptr ret;
-  real16 x = arg->getValue();
+  real8 x = arg->getValue();
   if(x == 0.e0)
   {
     ret = OGRealScalar::create(0.e0);
@@ -49,9 +49,9 @@ PINVRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
  * @param cols the number of cols in the matrix
  * @return the threshold value for "zero"
  */
-real16 pinv_threshold(real16 msv, int rows, int cols)
+real8 pinv_threshold(real8 msv, int rows, int cols)
 {
-  return (rows > cols ? rows : cols) * msv * std::numeric_limits<real16>::epsilon();
+  return (rows > cols ? rows : cols) * msv * std::numeric_limits<real8>::epsilon();
 }
 
 template<typename T>
@@ -95,8 +95,8 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 
     // walk S matrix, see if we have anything that is numerically zero.
     // go backwards as singular values are ordered descending.
-    real16 * S = numericS->asOGRealDiagonalMatrix()->getData();
-    real16 thres = pinv_threshold(S[0], m, n);
+    real8 * S = numericS->asOGRealDiagonalMatrix()->getData();
+    real8 thres = pinv_threshold(S[0], m, n);
     int lim;
     for(lim = minmn - 1 ; lim >= 0; lim--)
     {
@@ -144,7 +144,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 void *
 PINVRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
 {
-  pinv_dense_runner<real16>(reg, arg);
+  pinv_dense_runner<real8>(reg, arg);
   return nullptr;
 }
 

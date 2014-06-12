@@ -20,23 +20,23 @@ using namespace std;
 #ifdef __cplusplus
 typedef complex<double> complex16;
 typedef complex<float> complex8;
-typedef double real16;
-typedef float real8;
+typedef double real8;
+typedef float real4;
 #else
 typedef double complex complex16;
 typedef float complex complex8;
-typedef double real16;
-typedef float real8;
+typedef double real8;
+typedef float real4;
 #endif
 
 #ifdef __cplusplus
 namespace librdag {
 
-real16 getNaN();
+real8 getNaN();
 complex16 getComplexNaN();
 
-real16 getPosInf();
-real16 getNegInf();
+real8 getPosInf();
+real8 getNegInf();
 complex16 getPosPosComplexInf();
 complex16 getPosNegComplexInf();
 complex16 getNegPosComplexInf();

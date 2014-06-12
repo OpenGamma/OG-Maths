@@ -32,8 +32,8 @@ TEST(NumericTypesTest, getNegInf) {
 }
 
 TEST(NumericTypesTest, getPosPosComplexInf) {
-  real16 r = std::real(getPosPosComplexInf());
-  real16 i = std::imag(getPosPosComplexInf());
+  real8 r = std::real(getPosPosComplexInf());
+  real8 i = std::imag(getPosPosComplexInf());
 
   ASSERT_TRUE(std::isinf(r));
   ASSERT_EQ(signbit(r),0);
@@ -42,8 +42,8 @@ TEST(NumericTypesTest, getPosPosComplexInf) {
 }
 
 TEST(NumericTypesTest, getPosNegComplexInf) {
-  real16 r = std::real(getPosNegComplexInf());
-  real16 i = std::imag(getPosNegComplexInf());
+  real8 r = std::real(getPosNegComplexInf());
+  real8 i = std::imag(getPosNegComplexInf());
 
   ASSERT_TRUE(std::isinf(r));
   ASSERT_EQ(signbit(r),0);
@@ -52,8 +52,8 @@ TEST(NumericTypesTest, getPosNegComplexInf) {
 }
 
 TEST(NumericTypesTest, getNegPosComplexInf) {
-  real16 r = std::real(getNegPosComplexInf());
-  real16 i = std::imag(getNegPosComplexInf());
+  real8 r = std::real(getNegPosComplexInf());
+  real8 i = std::imag(getNegPosComplexInf());
 
   ASSERT_TRUE(std::isinf(r));
   ASSERT_NE(signbit(r),0);
@@ -62,8 +62,8 @@ TEST(NumericTypesTest, getNegPosComplexInf) {
 }
 
 TEST(NumericTypesTest, getNegNegComplexInf) {
-  real16 r = std::real(getNegNegComplexInf());
-  real16 i = std::imag(getNegNegComplexInf());
+  real8 r = std::real(getNegNegComplexInf());
+  real8 i = std::imag(getNegNegComplexInf());
 
   ASSERT_TRUE(std::isinf(r));
   ASSERT_NE(signbit(r),0);

@@ -57,14 +57,14 @@ TEST_P(EntryptNegateTest, Running)
   run_entrypt(GetParam());
 }
 
-TreeResultPair negatepair(double v)
+TreeResultPair negatepair(real8 v)
 {
   OGNumeric::Ptr negate = NEGATE::create(OGRealScalar::create(v));
   OGTerminal::Ptr expected = OGRealScalar::create(-v);
   return TreeResultPair(negate, expected);
 }
 
-TreeResultPair doublenegate(double v)
+TreeResultPair doublenegate(real8 v)
 {
   OGNumeric::Ptr negate = NEGATE::create(OGRealScalar::create(v));
   negate = NEGATE::create(negate);
@@ -72,8 +72,8 @@ TreeResultPair doublenegate(double v)
   return TreeResultPair(negate, expected);
 }
 
-double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-double realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
+real8 realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
+real8 realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
 
 TreeResultPair negaterealmatrix()
 {
@@ -132,7 +132,7 @@ TreeResultPair plustesttwoplus()
 TreeResultPair plustestbigtree()
 {
   OGNumeric::Ptr bigtree = OGRealScalar::create(0.0);
-  double sum = 0.0;
+  real8 sum = 0.0;
   for (int i = 0; i < 5000; ++i)
   {
     sum += i;

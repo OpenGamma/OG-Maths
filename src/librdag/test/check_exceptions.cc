@@ -17,7 +17,7 @@
 using namespace dogma_exceptions;
 
 #ifdef __APPLE__
-const string backtrace_symbol = "2   librdag_dbg.0.dylib                 0x0000000102edcc48 _ZNK7librdag10OGTerminal21toReal16ArrayOfArraysEv + 150";
+const string backtrace_symbol = "2   librdag_dbg.0.dylib                 0x0000000102edcc48 _ZNK7librdag10OGTerminal20toReal8ArrayOfArraysEv + 150";
 const void* address = (void*) 0x0000000102edcc48;
 #else
 const string backtrace_symbol = "/tmp/og-maths-720755781067700325/libjshim_sse41.so.0(_ZN7convert16createExpressionEP8_jobject+0x37) [0x7f35c0b765b7]";
@@ -45,7 +45,7 @@ TEST_F(BacktraceElementTest, Constructor)
   EXPECT_EQ(_element->getAddress(), address);
 #ifdef __APPLE__
   EXPECT_EQ("librdag_dbg.0.dylib", _element->getObjectFile());
-  EXPECT_EQ("librdag::OGTerminal::toReal16ArrayOfArrays() const", _element->getFunction());
+  EXPECT_EQ("librdag::OGTerminal::toReal8ArrayOfArrays() const", _element->getFunction());
 #else
   EXPECT_EQ("/tmp/og-maths-720755781067700325/libjshim_sse41.so.0", _element->getObjectFile());
   EXPECT_EQ("convert::createExpression(_jobject*)", _element->getFunction());

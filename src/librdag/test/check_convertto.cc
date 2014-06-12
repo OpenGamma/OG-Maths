@@ -16,9 +16,9 @@ using namespace librdag;
 
 TEST(ConvertToTest, OGRealScalarConvertToOGRealMatrix) {
 
-  real16 value = 13.e0;
+  real8 value = 13.e0;
   OGRealScalar::Ptr scalar = OGRealScalar::create(value);
-  real16 data[1] = { value };
+  real8 data[1] = { value };
   data[0]=value;
   OGRealMatrix::Ptr expected = OGRealMatrix::create(data,1,1);
   ConvertTo c;
@@ -30,7 +30,7 @@ TEST(ConvertToTest, OGIntegerScalarConvertToOGRealMatrix) {
 
   int value = 13;
   OGIntegerScalar::Ptr scalar = OGIntegerScalar::create(value);
-  real16 data[1];
+  real8 data[1];
   data[0] = value;
   OGRealMatrix::Ptr expected = OGRealMatrix::create(data,1,1);
   ConvertTo c;
@@ -40,9 +40,9 @@ TEST(ConvertToTest, OGIntegerScalarConvertToOGRealMatrix) {
 
 TEST(ConvertToTest, OGLogicalMatrixConvertToOGRealMatrix) {
 
-  real16 input_values[12] = {1,0,1,0,1,0,1,0,1,0,1,0};
+  real8 input_values[12] = {1,0,1,0,1,0,1,0,1,0,1,0};
   OGLogicalMatrix::Ptr input = OGLogicalMatrix::create(input_values,3,4);
-  real16 expected_values[12] = {1,0,1,0,1,0,1,0,1,0,1,0};
+  real8 expected_values[12] = {1,0,1,0,1,0,1,0,1,0,1,0};
   OGRealMatrix::Ptr expected = OGRealMatrix::create(expected_values,3,4);
   ConvertTo c;
   OGRealMatrix::Ptr answer = c.convertToOGRealMatrix(input);
@@ -51,8 +51,8 @@ TEST(ConvertToTest, OGLogicalMatrixConvertToOGRealMatrix) {
 
 TEST(ConvertToTest, OGRealDiagonalMatrixConvertToOGRealMatrix) {
 
-  real16 input_values[4] = {1,2,3,4};
-  real16 expected_values[24] = {1,0,0,0,0,2,0,0,0,0,3,0,0,0,0,4,0,0,0,0,0,0,0,0};
+  real8 input_values[4] = {1,2,3,4};
+  real8 expected_values[24] = {1,0,0,0,0,2,0,0,0,0,3,0,0,0,0,4,0,0,0,0,0,0,0,0};
   OGRealDiagonalMatrix::Ptr input = OGRealDiagonalMatrix::create(input_values,4,6);
   OGRealMatrix::Ptr expected = OGRealMatrix::create(expected_values,4,6);
   ConvertTo c;
@@ -62,10 +62,10 @@ TEST(ConvertToTest, OGRealDiagonalMatrixConvertToOGRealMatrix) {
 
 TEST(ConvertToTest, OGRealSparseMatrixConvertToOGRealMatrix) {
 
-  real16 input_values[7] = {1,4,2,8,11,6,12};
+  real8 input_values[7] = {1,4,2,8,11,6,12};
   int input_colPtr[4] = {0,2,5,7};
   int input_rowIdx[7] = {0,1,0,2,3,1,3};
-  real16 expected_values[12] = {1,4,0,0,2,0,8,11,0,6,0,12};
+  real8 expected_values[12] = {1,4,0,0,2,0,8,11,0,6,0,12};
   OGRealSparseMatrix::Ptr input = OGRealSparseMatrix::create(input_colPtr, input_rowIdx, input_values,4,3);
   OGRealMatrix::Ptr expected = OGRealMatrix::create(expected_values,4,3);
   ConvertTo c;
@@ -76,7 +76,7 @@ TEST(ConvertToTest, OGRealSparseMatrixConvertToOGRealMatrix) {
 
 TEST(ConvertToTest, OGRealScalarConvertToOGComplexMatrix) {
 
-  real16 value = {13.e0};
+  real8 value = {13.e0};
   OGRealScalar::Ptr scalar = OGRealScalar::create(value);
   complex16 data[1];
   data[0]=value;
@@ -113,7 +113,7 @@ TEST(ConvertToTest, OGComplexScalarConvertToOGComplexMatrix) {
 
 TEST(ConvertToTest, OGRealDiagonalMatrixConvertToOGComplexMatrix) {
 
-  real16 input_values[4] = {1,2,3,4};
+  real8 input_values[4] = {1,2,3,4};
   complex16 expected_values[24] = {{1,0},{0,0},{0,0},{0,0},{0,0},{2,0},{0,0},{0,0},{0,0},{0,0},{3,0},{0,0},{0,0},{0,0},{0,0},{4,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}};
   OGRealDiagonalMatrix::Ptr input = OGRealDiagonalMatrix::create(input_values,4,6);
   OGComplexMatrix::Ptr expected = OGComplexMatrix::create(expected_values,4,6);
@@ -136,7 +136,7 @@ TEST(ConvertToTest, OGComplexDiagonalMatrixConvertToOGComplexMatrix) {
 
 TEST(ConvertToTest, OGRealSparseMatrixConvertToOGComplexMatrix) {
 
-  real16 input_values[7] = {1,4,2,8,11,6,12};
+  real8 input_values[7] = {1,4,2,8,11,6,12};
   int input_colPtr[4] = {0,2,5,7};
   int input_rowIdx[7] = {0,1,0,2,3,1,3};
   complex16 expected_values[12] = {{1,0},{4,0},{0,0},{0,0},{2,0},{0,0},{8,0},{11,0},{0,0},{6,0},{0,0},{12,0}};
@@ -164,7 +164,7 @@ TEST(ConvertToTest, OGComplexSparseMatrixConvertToOGComplexMatrix) {
 
 TEST(ConvertToTest, OGRealMatrixConvertToOGComplexMatrix) {
 
-  real16 input_values[12] = {1,4,7,10,2,5,8,11,3,6,9,12};
+  real8 input_values[12] = {1,4,7,10,2,5,8,11,3,6,9,12};
   complex16 expected_values[12] = {{1,0},{4,0},{7,0},{10,0},{2,0},{5,0},{8,0},{11,0},{3,0},{6,0},{9,0},{12,0}};
   OGRealMatrix::Ptr input = OGRealMatrix::create(input_values,4,3);
   OGComplexMatrix::Ptr expected = OGComplexMatrix::create(expected_values,4,3);
@@ -176,7 +176,7 @@ TEST(ConvertToTest, OGRealMatrixConvertToOGComplexMatrix) {
 
 TEST(ConvertToTest, OGRealMatrixConvertToOGLogicalMatrix) {
 
-  real16 input_values[12] = {1,0,1,0,1,0,1,0,1,0,1,0};
+  real8 input_values[12] = {1,0,1,0,1,0,1,0,1,0,1,0};
   complex16 expected_values[12] = {{1,0},{0,0},{1,0},{0,0},{1,0},{0,0},{1,0},{0,0},{1,0},{0,0},{1,0},{0,0}};
   OGLogicalMatrix::Ptr input = OGLogicalMatrix::create(input_values,4,3);
   OGComplexMatrix::Ptr expected = OGComplexMatrix::create(expected_values,4,3);

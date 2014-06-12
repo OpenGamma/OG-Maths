@@ -251,7 +251,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_maths_materialisers_Materialis
     librdag::OGTerminal::Ptr answer = entrypt(chain);
     DEBUG_PRINT("Returning from entrypt function\n");
 
-    returnVal = Real16AoA{answer}.toJDoubleAoA(env);
+    returnVal = Real8AoA{answer}.toJDoubleAoA(env);
   }
   catch (convert_error e)
   {

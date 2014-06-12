@@ -30,7 +30,7 @@ template <typename nativeT, typename javaT>
 DLLEXPORT_C void unbindOGArrayData(nativeT* nativeData, jobject obj);
 
 extern template DLLEXPORT_C  void
-unbindOGArrayData<real16, jdoubleArray>(real16* nativeData, jobject obj);
+unbindOGArrayData<real8, jdoubleArray>(real8* nativeData, jobject obj);
 
 extern template DLLEXPORT_C  void
 unbindOGArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj);
@@ -49,8 +49,8 @@ unbindOGArrayData<jint, jintArray>(jint* nativeData, jobject obj);
 template <typename nativeT, typename javaT>
 DLLEXPORT_C nativeT* bindPrimitiveArrayData(jobject obj, jmethodID method);
 
-extern template DLLEXPORT_C real16*
-bindPrimitiveArrayData<real16, jdoubleArray>(jobject obj, jmethodID method);
+extern template DLLEXPORT_C real8*
+bindPrimitiveArrayData<real8, jdoubleArray>(jobject obj, jmethodID method);
 
 extern template DLLEXPORT_C complex16*
 bindPrimitiveArrayData<complex16, jdoubleArray>(jobject obj, jmethodID method);
@@ -70,7 +70,7 @@ template <typename nativeT, typename javaT>
 DLLEXPORT_C void unbindPrimitiveArrayData(nativeT * nativeData, jobject obj, jmethodID method);
 
 extern template DLLEXPORT_C void
-unbindPrimitiveArrayData<real16, jdoubleArray>(real16* nativeData, jobject obj, jmethodID method);
+unbindPrimitiveArrayData<real8, jdoubleArray>(real8* nativeData, jobject obj, jmethodID method);
 
 extern template DLLEXPORT_C void
 unbindPrimitiveArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj, jmethodID method);

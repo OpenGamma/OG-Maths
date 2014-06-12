@@ -23,10 +23,10 @@ namespace librdag {
  * OGTerminal
  */
 
-real16*
-OGTerminal::toReal16Array() const
+real8*
+OGTerminal::toReal8Array() const
 {
-  throw rdag_error("OGTerminal::toReal16Array() called but not implemented");
+  throw rdag_error("OGTerminal::toReal8Array() called but not implemented");
 }
 
 complex16*
@@ -35,10 +35,10 @@ OGTerminal::toComplex16Array() const
   throw rdag_error("OGTerminal::toComplex16Array() called but not implemented");
 }
 
-real16**
-OGTerminal::toReal16ArrayOfArrays() const
+real8**
+OGTerminal::toReal8ArrayOfArrays() const
 {
-  throw rdag_error("OGTerminal::toReal16ArrayOfArrays() called but not implemented");
+  throw rdag_error("OGTerminal::toReal8ArrayOfArrays() called but not implemented");
 }
 
 complex16**
@@ -92,7 +92,7 @@ OGTerminal::mathsequals(const OGTerminal::Ptr& other) const
 }
 
 bool
-OGTerminal::mathsequals(const OGTerminal::Ptr& other, real16 maxabserror, real16 maxrelerror) const
+OGTerminal::mathsequals(const OGTerminal::Ptr& other, real8 maxabserror, real8 maxrelerror) const
 {
   OGTerminal::Ptr thisconv; 
   OGTerminal::Ptr otherconv;
@@ -226,7 +226,7 @@ OGScalar<T>::fuzzyequals(const OGTerminal::Ptr& other) const
 
 template<typename T>
 bool
-OGScalar<T>::fuzzyequals(const OGTerminal::Ptr& other, real16 maxabserror, real16 maxrelerror) const
+OGScalar<T>::fuzzyequals(const OGTerminal::Ptr& other, real8 maxabserror, real8 maxrelerror) const
 {
   if(this->getType()!=other->getType())
   {
@@ -282,7 +282,7 @@ OGScalar<T>::copy() const
 }
 
 
-template class OGScalar<real16>;
+template class OGScalar<real8>;
 template class OGScalar<complex16>;
 template class OGScalar<int>;
 
@@ -290,16 +290,16 @@ template class OGScalar<int>;
  * OGRealScalar
  */
 
-OGRealScalar::OGRealScalar(real16 data): OGScalar<real16>(data) {}
+OGRealScalar::OGRealScalar(real8 data): OGScalar<real8>(data) {}
 
 OGRealScalar::Ptr
-OGRealScalar::create(real16 data)
+OGRealScalar::create(real8 data)
 {
   return OGRealScalar::Ptr{new OGRealScalar{data}};
 }
 
-real16**
-OGRealScalar::toReal16ArrayOfArrays() const
+real8**
+OGRealScalar::toReal8ArrayOfArrays() const
 {
   return this->toArrayOfArrays();
 }
@@ -406,7 +406,7 @@ OGComplexScalar::getType() const
 OGRealMatrix::Ptr
 OGComplexScalar::asFullOGRealMatrix() const
 {
-  throw rdag_error("Cannot represent complex data in linear memory of type real16");
+  throw rdag_error("Cannot represent complex data in linear memory of type real8");
 }
 
 OGComplexMatrix::Ptr
@@ -642,7 +642,7 @@ OGArray<T>::equals(const OGTerminal::Ptr& other) const
 
 template<typename T>
 bool
-OGArray<T>::fuzzyequals(const OGTerminal::Ptr& other,real16 maxabserror,real16 maxrelerror) const
+OGArray<T>::fuzzyequals(const OGTerminal::Ptr& other,real8 maxabserror,real8 maxrelerror) const
 {
   if(!fundamentalsEqual(other)) return false;
   const shared_ptr<const OGArray<T>> typetwiddle = static_pointer_cast<const OGArray<T>, const OGTerminal>(other);
@@ -727,7 +727,7 @@ createComplexOwningCopy() const
   throw rdag_error("Cannot createComplexOwningCopy(), concrete implementation class required for operation.");
 }
 
-template class OGArray<real16>;
+template class OGArray<real8>;
 template class OGArray<complex16>;
 
 /**
@@ -843,16 +843,16 @@ OGMatrix<T>::toComplex16ArrayOfArrays() const
 }
 
 template<>
-real16 **
-OGMatrix<real16>::toReal16ArrayOfArrays() const
+real8 **
+OGMatrix<real8>::toReal8ArrayOfArrays() const
 {
   int const rows = this->getRows();
   int const cols = this->getCols();
-  real16 * const data = this->getData();
-  real16 ** tmp = new real16 * [rows];
+  real8 * const data = this->getData();
+  real8 ** tmp = new real8 * [rows];
   for(int i=0; i < rows; i++)
   {
-    tmp[i] = new real16 [cols];
+    tmp[i] = new real8 [cols];
     for(int j = 0; j < cols; j++)
     {
       tmp[i][j] = data[j*rows+i];
@@ -862,15 +862,15 @@ OGMatrix<real16>::toReal16ArrayOfArrays() const
 }
 
 template<>
-real16 **
-OGMatrix<complex16>::toReal16ArrayOfArrays() const
+real8 **
+OGMatrix<complex16>::toReal8ArrayOfArrays() const
 {
-  throw rdag_error("Error in in partial template specialisation for OGMatrix<complex16>::toReal16ArrayOfArrays(). Cannot convert a matrix backed by complex16 type to a real16 type.");
+  throw rdag_error("Error in in partial template specialisation for OGMatrix<complex16>::toReal8ArrayOfArrays(). Cannot convert a matrix backed by complex16 type to a real8 type.");
 }
 
 template<>
 ExprType_t
-OGMatrix<real16>::getType() const
+OGMatrix<real8>::getType() const
 {
   return REAL_MATRIX_ENUM;
 }
@@ -882,7 +882,7 @@ OGMatrix<complex16>::getType() const
   return COMPLEX_MATRIX_ENUM;
 }
 
-template class OGMatrix<real16>;
+template class OGMatrix<real8>;
 template class OGMatrix<complex16>;
 
 /**
@@ -896,7 +896,7 @@ OGRealMatrix::copy() const
 }
 
 OGRealMatrix::Ptr
-OGRealMatrix::create(real16* data, int rows, int cols, DATA_ACCESS access_spec)
+OGRealMatrix::create(real8* data, int rows, int cols, DATA_ACCESS access_spec)
 {
   return OGRealMatrix::Ptr{new OGRealMatrix{data, rows, cols, access_spec}};
 }
@@ -916,8 +916,8 @@ OGRealMatrix::getType() const
 OGRealMatrix::Ptr
 OGRealMatrix::asFullOGRealMatrix() const
 {
-  real16 * ret = new real16[this->getDatalen()];
-  memcpy(ret,this->getData(),this->getDatalen()*sizeof(real16));
+  real8 * ret = new real8[this->getDatalen()];
+  memcpy(ret,this->getData(),this->getDatalen()*sizeof(real8));
   return OGRealMatrix::create(ret,this->getRows(),this->getCols(),OWNER);
 }
 
@@ -930,7 +930,7 @@ OGRealMatrix::asFullOGComplexMatrix() const
 OGTerminal::Ptr
 OGRealMatrix::createOwningCopy() const
 {
-  real16 * newdata =  new real16[this->getDatalen()];
+  real8 * newdata =  new real8[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
   return OGRealMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
@@ -947,7 +947,7 @@ OGRealMatrix::createComplexOwningCopy() const
  * Logical Matrix
  */
 OGLogicalMatrix::Ptr
-OGLogicalMatrix::create(real16* data, int rows, int cols, DATA_ACCESS access_spec)
+OGLogicalMatrix::create(real8* data, int rows, int cols, DATA_ACCESS access_spec)
 {
   return OGLogicalMatrix::Ptr{new OGLogicalMatrix{data, rows, cols, access_spec}};
 }
@@ -997,7 +997,7 @@ OGComplexMatrix::getType() const
 OGRealMatrix::Ptr
 OGComplexMatrix::asFullOGRealMatrix() const
 {
-  throw rdag_error("Cannot represent complex data in linear memory of type real16");
+  throw rdag_error("Cannot represent complex data in linear memory of type real8");
 }
 
 OGComplexMatrix::Ptr
@@ -1083,7 +1083,7 @@ OGDiagonalMatrix<T>::toArrayOfArrays() const
   return tmp;
 }
 
-template class OGDiagonalMatrix<real16>;
+template class OGDiagonalMatrix<real8>;
 template class OGDiagonalMatrix<complex16>;
 
 /**
@@ -1091,7 +1091,7 @@ template class OGDiagonalMatrix<complex16>;
  */
 
 OGRealDiagonalMatrix::Ptr
-OGRealDiagonalMatrix::create(real16* data, int rows, int cols, DATA_ACCESS access_spec)
+OGRealDiagonalMatrix::create(real8* data, int rows, int cols, DATA_ACCESS access_spec)
 {
   return OGRealDiagonalMatrix::Ptr{new OGRealDiagonalMatrix{data, rows, cols, access_spec}};
 }
@@ -1125,14 +1125,14 @@ OGRealDiagonalMatrix::debug_print() const
   }
 }
 
-real16*
-OGRealDiagonalMatrix::toReal16Array() const
+real8*
+OGRealDiagonalMatrix::toReal8Array() const
 {
   return this->toArray();
 }
 
-real16**
-OGRealDiagonalMatrix::toReal16ArrayOfArrays() const
+real8**
+OGRealDiagonalMatrix::toReal8ArrayOfArrays() const
 {
   return this->toArrayOfArrays();
 }
@@ -1170,7 +1170,7 @@ OGRealDiagonalMatrix::asFullOGComplexMatrix() const
 OGTerminal::Ptr
 OGRealDiagonalMatrix::createOwningCopy() const
 {
-  real16 * newdata =  new real16[this->getDatalen()];
+  real8 * newdata =  new real8[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
   return OGRealDiagonalMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
@@ -1259,7 +1259,7 @@ OGComplexDiagonalMatrix::getType() const
 OGRealMatrix::Ptr
 OGComplexDiagonalMatrix::asFullOGRealMatrix() const
 {
-  throw rdag_error("Cannot represent complex data in linear memory of type real16");
+  throw rdag_error("Cannot represent complex data in linear memory of type real8");
 }
 
 OGComplexMatrix::Ptr
@@ -1411,7 +1411,7 @@ OGSparseMatrix<T>::equals(const OGTerminal::Ptr& other) const
 
 template<typename T>
 bool
-OGSparseMatrix<T>::fuzzyequals(const OGTerminal::Ptr& other, real16 maxabserror, real16 maxrelerror) const
+OGSparseMatrix<T>::fuzzyequals(const OGTerminal::Ptr& other, real8 maxabserror, real8 maxrelerror) const
 {
   if(!OGArray<T>::fuzzyequals(other,maxabserror,maxrelerror))
   {
@@ -1436,7 +1436,7 @@ OGSparseMatrix<T>::fuzzyequals(const OGTerminal::Ptr& other) const
   return fuzzyequals(other, FuzzyEquals_default_maxabserror, FuzzyEquals_default_maxrelerror);
 }
 
-template class OGSparseMatrix<real16>;
+template class OGSparseMatrix<real8>;
 template class OGSparseMatrix<complex16>;
 
 /**
@@ -1444,7 +1444,7 @@ template class OGSparseMatrix<complex16>;
  */
 
 OGRealSparseMatrix::Ptr
-OGRealSparseMatrix::create(int* colPtr, int* rowIdx, real16* data, int rows, int cols, DATA_ACCESS access_spec)
+OGRealSparseMatrix::create(int* colPtr, int* rowIdx, real8* data, int rows, int cols, DATA_ACCESS access_spec)
 {
   return OGRealSparseMatrix::Ptr{new OGRealSparseMatrix{colPtr, rowIdx, data, rows, cols, access_spec}};
 }
@@ -1452,7 +1452,7 @@ OGRealSparseMatrix::create(int* colPtr, int* rowIdx, real16* data, int rows, int
 void
 OGRealSparseMatrix::debug_print() const
 {
-  double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
+  real8 nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
   printf("\nOGRealSparseMatrix\n");
   printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
   int * colPtr = this->getColPtr();
@@ -1465,14 +1465,14 @@ OGRealSparseMatrix::debug_print() const
   }
 }
 
-real16*
-OGRealSparseMatrix::toReal16Array() const
+real8*
+OGRealSparseMatrix::toReal8Array() const
 {
   return this->toArray();
 }
 
-real16**
-OGRealSparseMatrix::toReal16ArrayOfArrays() const
+real8**
+OGRealSparseMatrix::toReal8ArrayOfArrays() const
 {
   return this->toArrayOfArrays();
 }
@@ -1511,7 +1511,7 @@ OGRealSparseMatrix::asFullOGComplexMatrix() const
 OGTerminal::Ptr
 OGRealSparseMatrix::createOwningCopy() const
 {
-  real16 * newdata =  new real16[this->getDatalen()];
+  real8 * newdata =  new real8[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
   int * newColPtr = new int[this->getCols()+1];
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
@@ -1545,7 +1545,7 @@ OGComplexSparseMatrix::create(int* colPtr, int* rowIdx, complex16* data, int row
 void
 OGComplexSparseMatrix::debug_print() const
 {
-  double nnz = 100.e0 * this->getDatalen() / (double)(this->getRows() * this->getCols());
+  real8 nnz = 100.e0 * this->getDatalen() / (real8)(this->getRows() * this->getCols());
   printf("\nOGComplexSparseMatrix\n");
   printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
   int * colPtr = this->getColPtr();
@@ -1592,7 +1592,7 @@ OGComplexSparseMatrix::getType() const
 OGRealMatrix::Ptr
 OGComplexSparseMatrix::asFullOGRealMatrix() const
 {
-  throw rdag_error("Cannot represent complex data in linear memory of type real16");
+  throw rdag_error("Cannot represent complex data in linear memory of type real8");
 }
 
 OGComplexMatrix::Ptr
@@ -1622,7 +1622,7 @@ OGComplexSparseMatrix::createComplexOwningCopy() const
 
 // Concrete template factory for dense matrices
 template<>
-OGNumeric::Ptr makeConcreteDenseMatrix(real16 * data, int rows, int cols, DATA_ACCESS access)
+OGNumeric::Ptr makeConcreteDenseMatrix(real8 * data, int rows, int cols, DATA_ACCESS access)
 {
   return OGRealMatrix::create(data, rows, cols, access);
 }
@@ -1635,7 +1635,7 @@ OGNumeric::Ptr makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DAT
 
 // Concrete template factory for scalars
 template<>
-OGNumeric::Ptr makeConcreteScalar(real16 data)
+OGNumeric::Ptr makeConcreteScalar(real8 data)
 {
   return OGRealScalar::create(data);
 }

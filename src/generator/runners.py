@@ -161,7 +161,7 @@ class InfixOpRunner(BinaryExpressionRunner):
     @property
     def real_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
-              'datatype':   'real16',
+              'datatype':   'real8',
               'returntype': 'OGRealMatrix' }
         return infix_matrix_runner_implementation % d
 
@@ -192,7 +192,7 @@ class PrefixOpRunner(UnaryExpressionRunner):
     @property
     def real_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
-              'datatype':   'real16',
+              'datatype':   'real8',
               'returntype': 'OGRealMatrix' }
         return prefix_matrix_runner_implementation % d
 
@@ -224,7 +224,7 @@ class UnaryFunctionRunner(UnaryExpressionRunner):
     @property
     def real_matrix_implementation(self):
         d = { 'function':    self.function,
-              'datatype':   'real16',
+              'datatype':   'real8',
               'returntype': 'OGRealMatrix' }
         return unaryfunction_matrix_runner_implementation % d
 

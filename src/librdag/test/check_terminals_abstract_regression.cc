@@ -59,10 +59,10 @@ ogscalar_t_add(typename OGScalar<T>::Ptr arr0, typename OGScalar<T>::Ptr arr1)
  * Enforcing check that OGMatrix<T> can be used in a templated function.
  */
 TEST(AbstractTerminalsRegressionTest, OGMatrix_T) {
-  OGMatrix<real16>::Ptr r16_0 = OGMatrix<real16>::create(new real16[1]{10},1,1,OWNER);
-  OGMatrix<real16>::Ptr r16_1 = OGMatrix<real16>::create(new real16[1]{20},1,1,OWNER);
-  real16 ranswer = ogmatrix_t_add_1x1<real16>(r16_0, r16_1);
-  real16 rexpected = 30;
+  OGMatrix<real8>::Ptr r8_0 = OGMatrix<real8>::create(new real8[1]{10},1,1,OWNER);
+  OGMatrix<real8>::Ptr r8_1 = OGMatrix<real8>::create(new real8[1]{20},1,1,OWNER);
+  real8 ranswer = ogmatrix_t_add_1x1<real8>(r8_0, r8_1);
+  real8 rexpected = 30;
   ASSERT_TRUE(ranswer==rexpected);
 
   OGMatrix<complex16>::Ptr c16_0 = OGMatrix<complex16>::create(new complex16[1]{{10,7}},1,1,OWNER);
@@ -77,10 +77,10 @@ TEST(AbstractTerminalsRegressionTest, OGMatrix_T) {
  * Enforcing check that OGDiagonalMatrix<T> can be used in a templated function.
  */
 TEST(AbstractTerminalsRegressionTest, OGDiagonalMatrix_T) {
-  OGDiagonalMatrix<real16>::Ptr r16_0 = OGDiagonalMatrix<real16>::create(new real16[1]{10},1,1,OWNER);
-  OGDiagonalMatrix<real16>::Ptr r16_1 = OGDiagonalMatrix<real16>::create(new real16[1]{20},1,1,OWNER);
-  real16 ranswer = ogdiagonalmatrix_t_add_1x1<real16>(r16_0, r16_1);
-  real16 rexpected = 30;
+  OGDiagonalMatrix<real8>::Ptr r8_0 = OGDiagonalMatrix<real8>::create(new real8[1]{10},1,1,OWNER);
+  OGDiagonalMatrix<real8>::Ptr r8_1 = OGDiagonalMatrix<real8>::create(new real8[1]{20},1,1,OWNER);
+  real8 ranswer = ogdiagonalmatrix_t_add_1x1<real8>(r8_0, r8_1);
+  real8 rexpected = 30;
   ASSERT_TRUE(ranswer==rexpected);
 
   OGDiagonalMatrix<complex16>::Ptr c16_0 = OGDiagonalMatrix<complex16>::create(new complex16[1]{{10,7}},1,1,OWNER);
@@ -95,10 +95,10 @@ TEST(AbstractTerminalsRegressionTest, OGDiagonalMatrix_T) {
  * Enforcing check that OGSparseMatrix<T> can be used in a templated function.
  */
 TEST(AbstractTerminalsRegressionTest, OGSparseMatrix_T) {
-  OGSparseMatrix<real16>::Ptr r16_0 = OGSparseMatrix<real16>::create(new int[2]{0,1}, new int[1]{0},new real16[1]{10},1,1,OWNER);
-  OGSparseMatrix<real16>::Ptr r16_1 = OGSparseMatrix<real16>::create(new int[2]{0,1}, new int[1]{0},new real16[1]{20},1,1,OWNER);
-  real16 ranswer = ogsparsematrix_t_add_1x1<real16>(r16_0, r16_1);
-  real16 rexpected = 30;
+  OGSparseMatrix<real8>::Ptr r8_0 = OGSparseMatrix<real8>::create(new int[2]{0,1}, new int[1]{0},new real8[1]{10},1,1,OWNER);
+  OGSparseMatrix<real8>::Ptr r8_1 = OGSparseMatrix<real8>::create(new int[2]{0,1}, new int[1]{0},new real8[1]{20},1,1,OWNER);
+  real8 ranswer = ogsparsematrix_t_add_1x1<real8>(r8_0, r8_1);
+  real8 rexpected = 30;
   ASSERT_TRUE(ranswer==rexpected);
 
   OGSparseMatrix<complex16>::Ptr c16_0 = OGSparseMatrix<complex16>::create(new int[2]{0,1}, new int[1]{0},new complex16[1]{{10,7}},1,1,OWNER);
@@ -113,10 +113,10 @@ TEST(AbstractTerminalsRegressionTest, OGSparseMatrix_T) {
  * Enforcing check that OGScalar<T> can be used in a templated function.
  */
 TEST(AbstractTerminalsRegressionTest, OGScalar_T) {
-  OGScalar<real16>::Ptr r16_0 = OGScalar<real16>::create(10);
-  OGScalar<real16>::Ptr r16_1 = OGScalar<real16>::create(20);
-  real16 ranswer = ogscalar_t_add<real16>(r16_0, r16_1);
-  real16 rexpected = 30;
+  OGScalar<real8>::Ptr r8_0 = OGScalar<real8>::create(10);
+  OGScalar<real8>::Ptr r8_1 = OGScalar<real8>::create(20);
+  real8 ranswer = ogscalar_t_add<real8>(r8_0, r8_1);
+  real8 rexpected = 30;
   ASSERT_TRUE(ranswer==rexpected);
 
   OGScalar<complex16>::Ptr c16_0 = OGScalar<complex16>::create({10,7});
@@ -125,9 +125,9 @@ TEST(AbstractTerminalsRegressionTest, OGScalar_T) {
   complex16 cexpected = {30,21};
   ASSERT_TRUE(canswer==cexpected);
 
-  OGScalar<int>::Ptr i16_0 = OGScalar<int>::create(10);
-  OGScalar<int>::Ptr i16_1 = OGScalar<int>::create(20);
-  int ianswer = ogscalar_t_add<int>(i16_0, i16_1);
+  OGScalar<int>::Ptr i4_0 = OGScalar<int>::create(10);
+  OGScalar<int>::Ptr i4_1 = OGScalar<int>::create(20);
+  int ianswer = ogscalar_t_add<int>(i4_0, i4_1);
   int iexpected = 30;
   ASSERT_TRUE(ianswer==iexpected);
 }
