@@ -21,12 +21,12 @@ using namespace std;
 typedef complex<double> complex16;
 typedef complex<float> complex8;
 typedef double real16;
-typedef float real8;
+typedef float real4;
 #else
 typedef double complex complex16;
 typedef float complex complex8;
 typedef double real16;
-typedef float real8;
+typedef float real4;
 #endif
 
 #ifdef __cplusplus
