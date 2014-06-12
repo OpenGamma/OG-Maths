@@ -50,7 +50,7 @@ template<typename T> void xpotrf(char * UPLO, int * N, T * A, int * LDA, int * I
 template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
 template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV, int *INFO);
 template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, T * WORK, int * LWORK, int * INFO );
-template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * LDA, real16 * WORK );
+template<typename T> real8 xlange(char * NORM, int * M, int * N, T * A, int * LDA, real8 * WORK );
 template<typename T> void xgetrs(char * TRANS, int * N, int * NRHS, T * A, int * LDA, int * IPIV, T * B, int * LDB, int * INFO);
 template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, T * WORK, int * LWORK, int * INFO );
 template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, T * WORK, int * LWORK, int *INFO);
@@ -321,7 +321,7 @@ template<typename T> void xpotrs(char * UPLO, int * N, int * NRHS, T * A, int * 
  * @param A data type specific with intent as LAPACK dlange A.
  * @param LDA as LAPACK dlange LDA.
  */
-template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * LDA);
+template<typename T> real8 xlange(char * NORM, int * M, int * N, T * A, int * LDA);
 
 /**
  * xgecon() computes reciprocal condition numbers calculated from a LU factorisation as
@@ -334,7 +334,7 @@ template<typename T> real16 xlange(char * NORM, int * M, int * N, T * A, int * L
  * @param RCOND as LAPACK dgecon RCOND.
  * @param INFO as LAPACK dgecon INFO.
  */
-template<typename T> void xgecon(char * NORM, int * N, T * A, int * LDA, real16 * ANORM, real16 * RCOND, int * INFO);
+template<typename T> void xgecon(char * NORM, int * N, T * A, int * LDA, real8 * ANORM, real8 * RCOND, int * INFO);
 
 /**
  * xgetrs() solves linear systems using a LU factorisation computed by xgetrf().
@@ -377,7 +377,7 @@ template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * 
  * @param RCOND as LAPACK dgelsd RCOND.
  * @param INFO as LAPACK dgels INFO.
  */
-template<typename T> void xgelsd(int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, real16 * S, real16 * RCOND, int * RANK, int * INFO );
+template<typename T> void xgelsd(int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, real8 * S, real8 * RCOND, int * RANK, int * INFO );
 
 /**
  * xgeev() computes eigen{values,vectors}.

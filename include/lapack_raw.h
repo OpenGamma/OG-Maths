@@ -183,27 +183,27 @@ void F77FUNC(zpotrs)(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA,
 #ifdef __cplusplus
 extern "C"
 #endif
-real16 F77FUNC(dlange)(char * NORM, int * M, int * N, real16 * A, int * LDA, real16 * WORK );
+real8 F77FUNC(dlange)(char * NORM, int * M, int * N, real8 * A, int * LDA, real8 * WORK );
 #ifdef __cplusplus
 extern "C"
 #endif
-real16 F77FUNC(zlange)(char * NORM, int * M, int * N, complex16 * A, int * LDA, real16 * WORK );
+real8 F77FUNC(zlange)(char * NORM, int * M, int * N, complex16 * A, int * LDA, real8 * WORK );
 
 // Reciprocal condition number calculated from a LU factorisation computed by XGETRF
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(dgecon)(char * NORM, int * N, real16 * A, int * LDA, real16 * ANORM, real16 * RCOND, real16 * WORK, int * IWORK, int * INFO);
+void F77FUNC(dgecon)(char * NORM, int * N, real8 * A, int * LDA, real8 * ANORM, real8 * RCOND, real8 * WORK, int * IWORK, int * INFO);
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(zgecon)(char * NORM, int * N, complex16 * A, int * LDA, real16 * ANORM, real16 * RCOND, complex16 * WORK, real16 * RWORK, int * INFO);
+void F77FUNC(zgecon)(char * NORM, int * N, complex16 * A, int * LDA, real8 * ANORM, real8 * RCOND, complex16 * WORK, real8 * RWORK, int * INFO);
 
 // Solves linear systems using a LU factorisation computed by XGETRF
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(dgetrs)(char * TRANS, int * N, int * NRHS, real16 * A, int * LDA, int * IPIV, real16 * B, int * LDB, int * INFO);
+void F77FUNC(dgetrs)(char * TRANS, int * N, int * NRHS, real8 * A, int * LDA, int * IPIV, real8 * B, int * LDB, int * INFO);
 #ifdef __cplusplus
 extern "C"
 #endif
@@ -213,7 +213,7 @@ void F77FUNC(zgetrs)(char * TRANS, int * N, int * NRHS, complex16 * A, int * LDA
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(dgels)(char * TRANS, int * M, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, real16 * WORK, int * LWORK, int * INFO);
+void F77FUNC(dgels)(char * TRANS, int * M, int * N, int * NRHS, real8 * A, int * LDA, real8 * B, int * LDB, real8 * WORK, int * LWORK, int * INFO);
 #ifdef __cplusplus
 extern "C"
 #endif
@@ -223,28 +223,28 @@ void F77FUNC(zgels)(char * TRANS, int * M, int * N, int * NRHS, complex16 * A, i
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(dgelsd)(int * M, int * N, int * NRHS, real16 * A, int * LDA, real16 * B, int * LDB, real16 * S, real16 * RCOND, int * RANK, real16 * WORK, int * LWORK, int * IWORK, int * INFO );
+void F77FUNC(dgelsd)(int * M, int * N, int * NRHS, real8 * A, int * LDA, real8 * B, int * LDB, real8 * S, real8 * RCOND, int * RANK, real8 * WORK, int * LWORK, int * IWORK, int * INFO );
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(zgelsd)(int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, real16 * S, real16 * RCOND, int * RANK, complex16 * WORK, int * LWORK, real16 * RWORK, int * IWORK, int * INFO);
+void F77FUNC(zgelsd)(int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, real8 * S, real8 * RCOND, int * RANK, complex16 * WORK, int * LWORK, real8 * RWORK, int * IWORK, int * INFO);
 
 // Compute eig{values,vectors}
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(dgeev)(char * JOBVL, char * JOBVR, int * N, real16 * A, int * LDA, real16 * WR, real16 * WI, real16 * VL, int * LDVL, real16 * VR, int * LDVR, real16 * WORK, int * LWORK, int * INFO);
+void F77FUNC(dgeev)(char * JOBVL, char * JOBVR, int * N, real8 * A, int * LDA, real8 * WR, real8 * WI, real8 * VL, int * LDVL, real8 * VR, int * LDVR, real8 * WORK, int * LWORK, int * INFO);
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(zgeev)(char * JOBVL, char * JOBVR, int * N, complex16 * A, int * LDA, complex16 * W, complex16 * VL, int * LDVL, complex16 * VR, int * LDVR, complex16 * WORK, int * LWORK, real16 * RWORK, int * INFO);
+void F77FUNC(zgeev)(char * JOBVL, char * JOBVR, int * N, complex16 * A, int * LDA, complex16 * W, complex16 * VL, int * LDVL, complex16 * VR, int * LDVR, complex16 * WORK, int * LWORK, real8 * RWORK, int * INFO);
 
 
 // Compute QR factorisation
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(dgeqrf)(int * M, int * N, real16 * A, int * LDA, real16 * TAU, real16 * WORK, int * LWORK, int *INFO);
+void F77FUNC(dgeqrf)(int * M, int * N, real8 * A, int * LDA, real8 * TAU, real8 * WORK, int * LWORK, int *INFO);
 #ifdef __cplusplus
 extern "C"
 #endif
@@ -254,7 +254,7 @@ void F77FUNC(zgeqrf)(int * M, int * N, complex16 * A, int * LDA, complex16 * TAU
 #ifdef __cplusplus
 extern "C"
 #endif
-void F77FUNC(dorgqr)(int * M, int * N, int * K, real16 * A, int * LDA, real16 * TAU, real16 * WORK, int * LWORK, int * INFO);
+void F77FUNC(dorgqr)(int * M, int * N, int * K, real8 * A, int * LDA, real8 * TAU, real8 * WORK, int * LWORK, int * INFO);
 #ifdef __cplusplus
 extern "C"
 #endif
