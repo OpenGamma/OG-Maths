@@ -1452,7 +1452,7 @@ OGRealSparseMatrix::create(int* colPtr, int* rowIdx, real8* data, int rows, int 
 void
 OGRealSparseMatrix::debug_print() const
 {
-  double nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
+  real8 nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
   printf("\nOGRealSparseMatrix\n");
   printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
   int * colPtr = this->getColPtr();
@@ -1545,7 +1545,7 @@ OGComplexSparseMatrix::create(int* colPtr, int* rowIdx, complex16* data, int row
 void
 OGComplexSparseMatrix::debug_print() const
 {
-  double nnz = 100.e0 * this->getDatalen() / (double)(this->getRows() * this->getCols());
+  real8 nnz = 100.e0 * this->getDatalen() / (real8)(this->getRows() * this->getCols());
   printf("\nOGComplexSparseMatrix\n");
   printf("[nnz density = %4.2f. rows = %d, columns = %d]\n", nnz, this->getRows(), this->getCols());
   int * colPtr = this->getColPtr();

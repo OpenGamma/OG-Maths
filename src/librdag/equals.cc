@@ -49,7 +49,7 @@ template bool ArrayFuzzyEquals(complex16 * arr1, complex16 * arr2, int count, re
 
 
 /**
- * Checks if two double precision floating point numbers are approximately "equal"
+ * Checks if two real8 numbers are approximately "equal"
  * The parameter "maxabserror" determines the minimum threshold for "equal" in terms
  * of the two numbers being very small in magnitude.
  * The parameter "maxrelerror" determines the minimum threshold for "equal" in terms

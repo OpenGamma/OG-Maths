@@ -489,7 +489,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   std::copy(data,data+(rows*cols),cdata);
   OGComplexMatrix::Ptr cmplx_tmp = OGComplexMatrix::create(cdata, rows, cols, OWNER);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
-  ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexMatrix()->getData())); // make sure the data is unique
+  ASSERT_FALSE(tmp->getData()==reinterpret_cast<real8 *>(owningComplexCopy->asOGComplexMatrix()->getData())); // make sure the data is unique
 
   // Check debug string
   copy->debug_print();
@@ -718,7 +718,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   std::copy(data, data+tmp->getDatalen(), cmplx_data);
   OGComplexDiagonalMatrix::Ptr cmplx_tmp = OGComplexDiagonalMatrix::create(cmplx_data, rows, cols, OWNER);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
-  ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexDiagonalMatrix()->getData())); // make sure the data is unique
+  ASSERT_FALSE(tmp->getData()==reinterpret_cast<real8 *>(owningComplexCopy->asOGComplexDiagonalMatrix()->getData())); // make sure the data is unique
 
   // Check debug string
   copy->debug_print();
@@ -856,7 +856,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
  */
 TEST(TerminalsTest, OGRealSparseMatrix) {
   // data
-  // double[][] data = { { 1, 2, 0, 0 }, { 3, 0, 4, 0 }, { 0, 5, 6, 0 }, { 0, 0, 7, 0 }, {0, 0, 0, 0} };
+  // real8[][] data = { { 1, 2, 0, 0 }, { 3, 0, 4, 0 }, { 0, 5, 6, 0 }, { 0, 0, 7, 0 }, {0, 0, 0, 0} };
   real8 data [7] = { 1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
   int colPtr [6] = { 0, 2, 4, 7, 7, 7 };
   int rowIdx [7] = { 0, 1, 0, 2, 1, 2, 3 };
@@ -984,7 +984,7 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()%owningComplexCopy);
   ASSERT_TRUE(owningComplexCopy->asOGComplexSparseMatrix()!=nullptr); // check type is correct as % was used to compare
-  ASSERT_FALSE(tmp->getData()==reinterpret_cast<double *>(owningComplexCopy->asOGComplexSparseMatrix()->getData())); // make sure the data is unique
+  ASSERT_FALSE(tmp->getData()==reinterpret_cast<real8 *>(owningComplexCopy->asOGComplexSparseMatrix()->getData())); // make sure the data is unique
   ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getColPtr()==owningComplexCopy->asOGComplexSparseMatrix()->getColPtr()); // make sure the colptr data is unique
   ASSERT_FALSE(tmp->asOGRealSparseMatrix()->getRowIdx()==owningComplexCopy->asOGComplexSparseMatrix()->getRowIdx()); // make sure the rowidx data is unique
 
