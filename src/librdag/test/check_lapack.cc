@@ -883,10 +883,7 @@ TEST(LAPACKTest_xgetrs, zgetrs) {
   // make the call
   int two = 2;
   lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO);
-  for(int i = 0 ; i < 8; i++)
-  {
-    std::cout << rhs[i] << std::endl;
-  }
+
   EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
 
   // clean up
@@ -895,3 +892,32 @@ TEST(LAPACKTest_xgetrs, zgetrs) {
   delete [] expected;
   delete [] rhs;
 }
+
+TEST(LAPACKTest_xgetrs, dgels) {
+  int m = 5;
+  int n = 4;
+  int INFO = 0;
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  // need an RHS
+  real8 * rhs = new real8[10]{1,2,3,4,5,1,2,3,4,5};
+
+  // expected
+  real8 * expected = new real8[8]{-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731,-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731};
+
+  // make the call
+  int two = 2;
+  lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO);
+
+  // answers are striped in "n" length columns in RHS
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  // clean up
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+}
+
