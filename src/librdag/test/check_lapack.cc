@@ -825,3 +825,73 @@ TEST(LAPACKTest_xgecon, zgecon) {
   delete [] ipiv;
   delete [] Acpy;
 }
+
+
+TEST(LAPACKTest_xgetrs, dgetrs) {
+  int m = 5;
+  int n = 4;
+  const int minmn = m > n ? n : m;
+  int INFO = 0;
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  // need a LU decomp
+  int * ipiv = new int[minmn]();
+  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+
+  // need an RHS
+  real8 * rhs = new real8[8]{1,2,3,4,1,2,3,4};
+
+  // expected
+  real8 * expected = new real8[8]{-0.2831168831168828,0.1194805194805193,0.0155844155844156,0.1480519480519481,
+   -0.2831168831168828,0.1194805194805193,0.0155844155844156,0.1480519480519481
+  };
+
+  // make the call
+  int two = 2;
+  lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
+
+  // clean up
+  delete [] ipiv;
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+}
+
+TEST(LAPACKTest_xgetrs, zgetrs) {
+  int m = 5;
+  int n = 4;
+  const int minmn = m > n ? n : m;
+  int INFO = 0;
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  // need a LU decomp
+  int * ipiv = new int[minmn]();
+  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+
+  // need an RHS
+  complex16 * rhs = new complex16[8]{{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.},{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}};
+
+  // expected
+  complex16 * expected = new complex16[8]{{      1.0758441558441547,      -0.6794805194805187}, {     -0.4540259740259733,       0.2867532467532462}, {     -0.0592207792207793,       0.0374025974025975}, {     -0.5625974025974027,       0.3553246753246754}, {      1.0758441558441547,      -0.6794805194805187}, {     -0.4540259740259733,       0.2867532467532462}, {     -0.0592207792207793,       0.0374025974025975}, {     -0.5625974025974027,       0.3553246753246754}};
+
+  // make the call
+  int two = 2;
+  lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO);
+  for(int i = 0 ; i < 8; i++)
+  {
+    std::cout << rhs[i] << std::endl;
+  }
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
+
+  // clean up
+  delete [] ipiv;
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+}
