@@ -735,7 +735,6 @@ TEST(LAPACKTest_xpotrs, zpotrs) {
   lapack::xpotrs(lapack::U, &n, lapack::ione, A, &n, RHS, &n, &INFO);
   complex16 expected[4] =  {{-1.0063762794655238,-1.5989977364878503}, {0.8869421128000980,0.5966984611395660}, {-0.1560914405265542,0.1826679640758723}, {-0.0562376225820731,0.1501070660620698}};
   EXPECT_TRUE(ArrayFuzzyEquals(expected,RHS,n, 1e-14, 1e-14));
-  cout << RHS[0] << " " << RHS[1] << " " << RHS[2] << " " << RHS[3] << std::endl;
   // check throw on bad arg
   n=-1;
   EXPECT_THROW(lapack::xpotrs(lapack::U, &n, lapack::ione, A, &n, RHS, &n, &INFO), rdag_error);
@@ -769,3 +768,60 @@ TEST(LAPACKTest_xlange, zlange) {
   delete[] A;
 }
 
+TEST(LAPACKTest_xgecon, dgecon) {
+  int m = 5;
+  int n = 4;
+  const int minmn = m > n ? n : m;
+  int INFO = 0;
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  // need a 1 norm
+  real8 anorm = lapack::xlange(lapack::O, &m, &n, Acpy, &m);
+  // check it
+  EXPECT_TRUE(anorm==82.e0);
+
+  // need a LU decomp
+  int * ipiv = new int[minmn]();
+  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+
+  // make the call
+  real8 rcond = 0;
+  lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO);
+  EXPECT_TRUE(SingleValueFuzzyEquals(rcond,1.8369021718386168e-3));
+
+  // clean up
+  delete [] ipiv;
+  delete [] Acpy;
+}
+
+
+TEST(LAPACKTest_xgecon, zgecon) {
+  int m = 5;
+  int n = 4;
+  const int minmn = m > n ? n : m;
+  int INFO = 0;
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  // need a 1 norm
+  real8 anorm = lapack::xlange(lapack::O, &m, &n, Acpy, &m);
+
+  // check it
+  EXPECT_TRUE(SingleValueFuzzyEquals(anorm,183.35757415498276e0));
+
+  // need a LU decomp
+  int * ipiv = new int[minmn]();
+  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+
+  // make the call
+  real8 rcond = 0;
+  lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO);
+  EXPECT_TRUE(SingleValueFuzzyEquals(rcond,1.8369021718386248e-3));
+
+  // clean up
+  delete [] ipiv;
+  delete [] Acpy;
+}
