@@ -303,8 +303,8 @@ JOGLogicalMatrix::debug_print() const
 
 JOGRealSparseMatrix::JOGRealSparseMatrix(jobject obj): OGRealSparseMatrix
   (
-    reinterpret_cast<int*>(bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getColPtr())),
-    reinterpret_cast<int*>(bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getRowIdx())),
+    reinterpret_cast<int4*>(bindPrimitiveArrayData<int4, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getColPtr())),
+    reinterpret_cast<int4*>(bindPrimitiveArrayData<int4, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getRowIdx())),
     static_cast<real8 *>(bindPrimitiveArrayData<real8, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
     getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
     getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)
@@ -358,8 +358,8 @@ JOGRealSparseMatrix::toComplex16ArrayOfArrays() const
 
 JOGComplexSparseMatrix::JOGComplexSparseMatrix(jobject obj): OGComplexSparseMatrix
   (
-    reinterpret_cast<int*>(bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getColPtr())),
-    reinterpret_cast<int*>(bindPrimitiveArrayData<jint, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getRowIdx())),
+    reinterpret_cast<int4*>(bindPrimitiveArrayData<int4, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getColPtr())),
+    reinterpret_cast<int4*>(bindPrimitiveArrayData<int4, jintArray>(obj, JVMManager::getOGSparseMatrixClazz_getRowIdx())),
     static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(obj, JVMManager::getOGTerminalClazz_getData())),
     getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
     getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getCols(), obj)

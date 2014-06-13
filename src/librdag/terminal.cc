@@ -286,7 +286,7 @@ OGScalar<T>::copy() const
 
 template class OGScalar<real8>;
 template class OGScalar<complex16>;
-template class OGScalar<int>;
+template class OGScalar<int4>;
 
 /**
  * OGRealScalar
@@ -434,10 +434,10 @@ OGComplexScalar::createComplexOwningCopy() const
  * OGIntegerScalar
  */
 
-OGIntegerScalar::OGIntegerScalar(int data): OGScalar<int>(data) {}
+OGIntegerScalar::OGIntegerScalar(int4 data): OGScalar<int4>(data) {}
 
 OGIntegerScalar::Ptr
-OGIntegerScalar::create(int data)
+OGIntegerScalar::create(int4 data)
 {
   return OGIntegerScalar::Ptr{new OGIntegerScalar{data}};
 }
@@ -1280,7 +1280,7 @@ OGComplexDiagonalMatrix::createComplexOwningCopy() const
  */
 
 template<typename T>
-OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
+OGSparseMatrix<T>::OGSparseMatrix(int4 * colPtr, int4 * rowIdx, T* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
 {
   if (data == nullptr)
   {
@@ -1297,7 +1297,7 @@ OGSparseMatrix<T>::OGSparseMatrix(int * colPtr, int * rowIdx, T* data, size_t ro
 
 template<typename T>
 typename OGSparseMatrix<T>::Ptr
-OGSparseMatrix<T>::create(int* colPtr, int* rowIdx, T* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
+OGSparseMatrix<T>::create(int4* colPtr, int4* rowIdx, T* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
 {
   return OGSparseMatrix<T>::Ptr{new OGSparseMatrix<T>{colPtr, rowIdx, data, rows, cols, access_spec}};
 }
@@ -1320,14 +1320,14 @@ OGSparseMatrix<T>::accept(Visitor &v) const
 }
 
 template<typename T>
-int*
+int4*
 OGSparseMatrix<T>::getColPtr() const
 {
   return _colPtr;
 }
 
 template<typename T>
-int*
+int4*
 OGSparseMatrix<T>::getRowIdx() const
 {
   return _rowIdx;
@@ -1335,7 +1335,7 @@ OGSparseMatrix<T>::getRowIdx() const
 
 template<typename T>
 void
-OGSparseMatrix<T>::setColPtr(int* colPtr)
+OGSparseMatrix<T>::setColPtr(int4* colPtr)
 {
   if(colPtr==nullptr)
   {
@@ -1346,7 +1346,7 @@ OGSparseMatrix<T>::setColPtr(int* colPtr)
 
 template<typename T>
 void
-OGSparseMatrix<T>::setRowIdx(int* rowIdx)
+OGSparseMatrix<T>::setRowIdx(int4* rowIdx)
 {
   if(rowIdx==nullptr)
   {
@@ -1360,8 +1360,8 @@ T**
 OGSparseMatrix<T>::toArrayOfArrays() const{
   size_t const rows = this->getRows();
   size_t const cols = this->getCols();
-  int * const colPtr = this->getColPtr();
-  int * const rowIdx = this->getRowIdx();
+  int4 * const colPtr = this->getColPtr();
+  int4 * const rowIdx = this->getRowIdx();
   T * const data = this->getData();
   T ** tmp = new T * [rows];
   for(size_t i=0; i < rows; i++)
@@ -1371,7 +1371,7 @@ OGSparseMatrix<T>::toArrayOfArrays() const{
   }
   for (size_t ir = 0; ir < cols; ir++)
   {
-      for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+      for (int4 i = colPtr[ir]; i < colPtr[ir + 1]; i++)
       {
         tmp[rowIdx[i]][ir] = data[i];
       }
@@ -1434,7 +1434,7 @@ template class OGSparseMatrix<complex16>;
  */
 
 OGRealSparseMatrix::Ptr
-OGRealSparseMatrix::create(int* colPtr, int* rowIdx, real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
+OGRealSparseMatrix::create(int4* colPtr, int4* rowIdx, real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
 {
   return OGRealSparseMatrix::Ptr{new OGRealSparseMatrix{colPtr, rowIdx, data, rows, cols, access_spec}};
 }
@@ -1445,10 +1445,10 @@ OGRealSparseMatrix::debug_print() const
   real8 nnz = 100.e0 * this->getDatalen() / (this->getRows() * this->getCols());
   printf("\nOGRealSparseMatrix\n");
   printf("[nnz density = %4.2f. rows = %zd, columns = %zd]\n", nnz, this->getRows(), this->getCols());
-  int * colPtr = this->getColPtr();
+  int4 * colPtr = this->getColPtr();
   for (size_t ir = 0; ir < this->getCols(); ir++)
   {
-    for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+    for (int4 i = colPtr[ir]; i < colPtr[ir + 1]; i++)
     {
       printf("(%d,%zd) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
     }
@@ -1503,9 +1503,9 @@ OGRealSparseMatrix::createOwningCopy() const
 {
   real8 * newdata =  new real8[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  int * newColPtr = new int[this->getCols()+1];
+  int4 * newColPtr = new int4[this->getCols()+1];
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
-  int * newRowIdx = new int[this->getDatalen()];
+  int4 * newRowIdx = new int4[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
   return OGRealSparseMatrix::create(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }
@@ -1515,9 +1515,9 @@ OGRealSparseMatrix::createComplexOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  int * newColPtr = new int[this->getCols()+1];
+  int4 * newColPtr = new int4[this->getCols()+1];
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
-  int * newRowIdx = new int[this->getDatalen()];
+  int4 * newRowIdx = new int4[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
   return OGComplexSparseMatrix::create(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }
@@ -1527,7 +1527,7 @@ OGRealSparseMatrix::createComplexOwningCopy() const
  */
 
 OGComplexSparseMatrix::Ptr
-OGComplexSparseMatrix::create(int* colPtr, int* rowIdx, complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
+OGComplexSparseMatrix::create(int4* colPtr, int4* rowIdx, complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
 {
   return OGComplexSparseMatrix::Ptr{new OGComplexSparseMatrix{colPtr, rowIdx, data, rows, cols, access_spec}};
 }
@@ -1538,10 +1538,10 @@ OGComplexSparseMatrix::debug_print() const
   real8 nnz = 100.e0 * this->getDatalen() / (real8)(this->getRows() * this->getCols());
   printf("\nOGComplexSparseMatrix\n");
   printf("[nnz density = %4.2f. rows = %zd, columns = %zd]\n", nnz, this->getRows(), this->getCols());
-  int * colPtr = this->getColPtr();
+  int4 * colPtr = this->getColPtr();
   for (size_t ir = 0; ir < this->getCols(); ir++)
   {
-    for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+    for (int4 i = colPtr[ir]; i < colPtr[ir + 1]; i++)
     {
       printf("(%d,%zd) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
     }
@@ -1596,9 +1596,9 @@ OGComplexSparseMatrix::createOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  int * newColPtr = new int[this->getCols()+1];
+  int4 * newColPtr = new int4[this->getCols()+1];
   std::copy(this->getColPtr(), this->getColPtr()+this->getCols()+1, newColPtr);
-  int * newRowIdx = new int[this->getDatalen()];
+  int4 * newRowIdx = new int4[this->getDatalen()];
   std::copy(this->getRowIdx(), this->getRowIdx()+this->getDatalen(), newRowIdx);
   return OGComplexSparseMatrix::create(newColPtr, newRowIdx, newdata, this->getRows(), this->getCols(), OWNER);
 }

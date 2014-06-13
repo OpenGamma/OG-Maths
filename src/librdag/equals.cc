@@ -31,7 +31,7 @@ template <typename T> bool ArrayBitEquals(T * arr1, T * arr2, size_t count)
 
 template bool ArrayBitEquals(real8 * arr1, real8 * arr2, size_t count);
 template bool ArrayBitEquals(complex16 * arr1, complex16 * arr2, size_t count);
-template bool ArrayBitEquals(int * arr1, int * arr2, size_t count);
+template bool ArrayBitEquals(int4 * arr1, int4 * arr2, size_t count);
 
 template <typename T> bool ArrayFuzzyEquals(T * arr1, T * arr2, size_t count, real8 maxabserror, real8 maxrelerror)
 {

@@ -74,7 +74,7 @@ class FakeVisitor: public librdag::Visitor
   void visit(OGScalar<complex16> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
-  void visit(OGScalar<int> const SUPPRESS_UNUSED *thing){
+  void visit(OGScalar<int4> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
   void visit(OGMatrix<real8> const SUPPRESS_UNUSED *thing){
@@ -297,7 +297,7 @@ TEST(TerminalsTest, OGComplexScalarTest) {
  */
 TEST(TerminalsTest, OGIntegerScalarTest) {
   // test ctor
-  int value = 3;
+  int4 value = 3;
   OGIntegerScalar::Ptr tmp = OGIntegerScalar::create(value);
   // check ctor worked
   ASSERT_NE(tmp, nullptr); 
@@ -832,13 +832,13 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   // data
   // real8[][] data = { { 1, 2, 0, 0 }, { 3, 0, 4, 0 }, { 0, 5, 6, 0 }, { 0, 0, 7, 0 }, {0, 0, 0, 0} };
   real8 data [7] = { 1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
-  int colPtr [6] = { 0, 2, 4, 7, 7, 7 };
-  int rowIdx [7] = { 0, 1, 0, 2, 1, 2, 3 };
+  int4 colPtr [6] = { 0, 2, 4, 7, 7, 7 };
+  int4 rowIdx [7] = { 0, 1, 0, 2, 1, 2, 3 };
   size_t rows = 5;
   size_t cols = 4;
 
   OGRealSparseMatrix::Ptr tmp;
-  int * nullintptr = nullptr;
+  int4 * nullintptr = nullptr;
 
   // attempt construct from colptr as null, should throw
   ASSERT_THROW(OGRealSparseMatrix::create(nullintptr,rowIdx,data,rows,cols), rdag_error);
@@ -851,7 +851,7 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   ASSERT_THROW(OGRealSparseMatrix::create(colPtr,rowIdx,nulldata,rows,cols), rdag_error);
 
     // attempt construct from ok data, own the data and delete it
-  tmp = OGRealSparseMatrix::create(new int[3]{0,2,2}, new int[2]{0,1},new real8[2]{10,20},2,2, OWNER);
+  tmp = OGRealSparseMatrix::create(new int4[3]{0,2,2}, new int4[2]{0,1},new real8[2]{10,20},2,2, OWNER);
   ASSERT_NE(tmp, OGRealSparseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
@@ -967,13 +967,13 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
 TEST(TerminalsTest, OGComplexSparseMatrix) {
   // data
   complex16 data [12] = { {1, 10}, {5, 0}, {0, 90}, {2, 20}, {0, 60}, {10, 100}, {0, 30}, {7, 70}, {11, 0}, {15, 0}, {0, 120}, {0, 160} };
-  int colPtr [6] = { 0, 3, 6, 10, 12, 12 };
-  int rowIdx [12] = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 };
+  int4 colPtr [6] = { 0, 3, 6, 10, 12, 12 };
+  int4 rowIdx [12] = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 };
   size_t rows = 5;
   size_t cols = 4;
 
   OGComplexSparseMatrix::Ptr tmp;
-  int * nullintptr = nullptr;
+  int4 * nullintptr = nullptr;
 
   // attempt construct from colptr as null, should throw
   ASSERT_THROW(OGComplexSparseMatrix::create(nullintptr,rowIdx,data,rows,cols), rdag_error);
@@ -986,7 +986,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_THROW(OGComplexSparseMatrix::create(colPtr,rowIdx,nulldata,rows,cols), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = OGComplexSparseMatrix::create(new int[3]{0,2,2}, new int[2]{0,1},new complex16[2]{{10,20},{30,40}},2,2, OWNER);
+  tmp = OGComplexSparseMatrix::create(new int4[3]{0,2,2}, new int4[2]{0,1},new complex16[2]{{10,20},{30,40}},2,2, OWNER);
   ASSERT_NE(tmp, OGComplexSparseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 

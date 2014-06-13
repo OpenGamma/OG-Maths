@@ -27,7 +27,7 @@ extern template bool
 ArrayBitEquals(complex16 * arr1, complex16 * arr2, size_t count);
 
 extern template bool
-ArrayBitEquals(int * arr1, int * arr2, size_t count);
+ArrayBitEquals(int4 * arr1, int4 * arr2, size_t count);
 
 /**
  * Fuzzy equals, equals within tolerance specified

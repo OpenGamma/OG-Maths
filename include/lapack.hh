@@ -29,8 +29,8 @@ extern char U;
 extern char D;
 extern char ONE;
 extern char O;
-extern int ione;
-extern int izero;
+extern int4 ione;
+extern int4 izero;
 extern real8 rone;
 extern complex16 cone;
 extern real8 rzero;
@@ -38,17 +38,17 @@ extern complex16 czero;
 
 template<typename T>char charmagic();
 
-template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
-template<typename T>void xswap(int * N, T * DX, int * INCX, T * DY, int * INCY);
-template<typename T> void xgemv(char * TRANS, int * M, int * N, T * ALPHA, T * A, int * LDA, T * X, int * INCX, T * BETA, T * Y, int * INCY );
-template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, T * ALPHA, T * A, int * LDA, T * B, int * LDB, T * BETA, T * C, int * LDC );
-template<typename T> real8 xnrm2(int * N, T * X, int * INCX);
-template<typename T> void xpotrs(char * UPLO, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
-template<typename T> real8 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA, real8 * WORK);
-template<typename T> void xpotrf(char * UPLO, int * N, T * A, int * LDA, int * INFO);
-template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
-template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV, int *INFO);
-template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, T * WORK, int * LWORK, int * INFO );
+template<typename T> void xscal(int4 * N, T * DA, T * DX, int4 * INCX);
+template<typename T>void xswap(int4 * N, T * DX, int4 * INCX, T * DY, int4 * INCY);
+template<typename T> void xgemv(char * TRANS, int4 * M, int4 * N, T * ALPHA, T * A, int4 * LDA, T * X, int4 * INCX, T * BETA, T * Y, int4 * INCY );
+template<typename T> void xgemm(char * TRANSA, char * TRANSB, int4 * M, int4 * N, int4 * K, T * ALPHA, T * A, int4 * LDA, T * B, int4 * LDB, T * BETA, T * C, int4 * LDC );
+template<typename T> real8 xnrm2(int4 * N, T * X, int4 * INCX);
+template<typename T> void xpotrs(char * UPLO, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO);
+template<typename T> real8 xlansy(char * NORM, char * UPLO, int4 * N, T * A, int4 * LDA, real8 * WORK);
+template<typename T> void xpotrf(char * UPLO, int4 * N, T * A, int4 * LDA, int4 * INFO);
+template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO);
+template<typename T> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, T * WORK, int4 * LWORK, int4 * INFO );
 }
 
 /**
@@ -86,11 +86,11 @@ extern char * O;
 /**
  * The F77 integer '1'
  */
-extern int * ione;
+extern int4 * ione;
 /**
  * The F77 integer '0'
  */
-extern int * izero;
+extern int4 * izero;
 /**
  * The F77 double precision '1.d0'
  */
@@ -118,7 +118,7 @@ extern complex16 * czero;
  * @param DX data type specific with intent as BLAS dscal DX
  * @param INCX as BLAS dscal INCX
  */
-template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
+template<typename T> void xscal(int4 * N, T * DA, T * DX, int4 * INCX);
 
 /**
  * xswap generalised vector interchange
@@ -128,7 +128,7 @@ template<typename T> void xscal(int * N, T * DA, T * DX, int * INCX);
  * @param DY data type specific with intent as BLAS dswap DY
  * @param INCY as BLAS dswap INCY
  */
-template<typename T>void xswap(int * N, T * DX, int * INCX, T * DY, int * INCY);
+template<typename T>void xswap(int4 * N, T * DX, int4 * INCX, T * DY, int4 * INCY);
 
 
 /**
@@ -145,7 +145,7 @@ template<typename T>void xswap(int * N, T * DX, int * INCX, T * DY, int * INCY);
  * @param Y data type specific with intent as BLAS dgemv Y
  * @param INCY as BLAS dgemv INCY
  */
-template<typename T> void xgemv(char * TRANS, int * M, int * N, T * ALPHA, T * A, int * LDA, T * X, int * INCX, T * BETA, T * Y, int * INCY );
+template<typename T> void xgemv(char * TRANS, int4 * M, int4 * N, T * ALPHA, T * A, int4 * LDA, T * X, int4 * INCX, T * BETA, T * Y, int4 * INCY );
 
 /**
  * xgemm generalised matrix matrix multiplication.
@@ -164,7 +164,7 @@ template<typename T> void xgemv(char * TRANS, int * M, int * N, T * ALPHA, T * A
  * @param LDC as BLAS dgemm LDC
 
  */
-template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, int * K, T * ALPHA, T * A, int * LDA, T * B, int * LDB, T * BETA, T * C, int * LDC );
+template<typename T> void xgemm(char * TRANSA, char * TRANSB, int4 * M, int4 * N, int4 * K, T * ALPHA, T * A, int4 * LDA, T * B, int4 * LDB, T * BETA, T * C, int4 * LDC );
 
 /**
  * xnrm2 generalised 2-norm implementation
@@ -173,7 +173,7 @@ template<typename T> void xgemm(char * TRANSA, char * TRANSB, int * M, int * N, 
  * @param INCX as BLAS dnrm2 INCX
  * @return the 2-norm of X
  */
-template<typename T> real8 xnrm2(int * N, T * X, int * INCX);
+template<typename T> real8 xnrm2(int4 * N, T * X, int4 * INCX);
 
 // LAPACK
 
@@ -193,7 +193,7 @@ template<typename T> real8 xnrm2(int * N, T * X, int * INCX);
  * @param INFO as LAPACK dgesvd INFO
  * @throws rdag_error on illegal input OR non-convergence
  */
-template<typename T> void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, T * A, int * LDA, real8 * S, T * U, int * LDU, T * VT, int * LDVT, int * INFO);
+template<typename T> void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, T * A, int4 * LDA, real8 * S, T * U, int4 * LDU, T * VT, int4 * LDVT, int4 * INFO);
 
 /**
  * xgetrf() computes the LU decomposition using parital pivoting
@@ -204,7 +204,7 @@ template<typename T> void xgesvd(char * JOBU, char * JOBVT, int * M, int * N, T 
  * @param IPIV as LAPACK dgetrf IPIV
  * @param INFO as LAPACK dgetrf INFO
  */
-template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV, int *INFO);
+template<typename T> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 
 /**
  * xgetri() computes the inverse of a matrix via LU decomposition
@@ -214,7 +214,7 @@ template<typename T> void xgetrf(int * M, int * N, T * A, int * LDA, int * IPIV,
  * @param IPIV as LAPACK dgetri IPIV
  * @param INFO as LAPACK dgetri INFO
  */
-template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, int * INFO );
+template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 * INFO );
 
 /**
  * xtrcon general triangular matrix condition number estimate
@@ -228,7 +228,7 @@ template<typename T> void xgetri(int * N, T * A, int * LDA, int * IPIV, int * IN
  * @param INFO as LAPACK dtrcon INFO
  * @throws rdag_error on illegal input
  */
-template<typename T> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N, T * A, int * LDA, real8 * RCOND, int * INFO);
+template<typename T> void xtrcon(char * NORM, char * UPLO, char * DIAG, int4 * N, T * A, int4 * LDA, real8 * RCOND, int4 * INFO);
 
 
 /**
@@ -245,7 +245,7 @@ template<typename T> void xtrcon(char * NORM, char * UPLO, char * DIAG, int * N,
  * @param INFO as LAPACK dtrtrs INFO
  * @throws rdag_error on illegal input
  */
-template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
+template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO);
 
 /**
  * xpotrf() computes the Cholesky factorization of a Hermitian positive definite matrix A.
@@ -256,7 +256,7 @@ template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int * N
  * @param INFO as LAPACK dpotrf INFO
  * @throws rdag_error on illegal input
  */
-template<typename T> void  xpotrf(char * UPLO, int * N, T * A, int * LDA, int * INFO);
+template<typename T> void  xpotrf(char * UPLO, int4 * N, T * A, int4 * LDA, int4 * INFO);
 
 
 /**
@@ -269,7 +269,7 @@ template<typename T> void  xpotrf(char * UPLO, int * N, T * A, int * LDA, int * 
  * @param RCOND as LAPACK dpocon RCOND
  * @param INFO as LAPACK dpocon INFO
  */
-template<typename T> void xpocon(char * UPLO, int * N, T * A, int * LDA, real8 * ANORM, real8 * RCOND, int * INFO);
+template<typename T> void xpocon(char * UPLO, int4 * N, T * A, int4 * LDA, real8 * ANORM, real8 * RCOND, int4 * INFO);
 
 /**
  * xlansy() computes condition numbers for a symmetric matrix.
@@ -280,7 +280,7 @@ template<typename T> void xpocon(char * UPLO, int * N, T * A, int * LDA, real8 *
  * @param LDA as LAPACK dlansy LDA
  * @return the NORM as indicated by \a NORM.
  */
-template<typename T> real8 xlansy(char * NORM, char * UPLO, int * N, T * A, int * LDA);
+template<typename T> real8 xlansy(char * NORM, char * UPLO, int4 * N, T * A, int4 * LDA);
 
 /**
  * zlanhe() computes condition numbers for a Hermitian matrix.
@@ -291,7 +291,7 @@ template<typename T> real8 xlansy(char * NORM, char * UPLO, int * N, T * A, int 
  * @param LDA as LAPACK zlanhe LDA
  * @return the NORM as indicated by \a NORM.
  */
-real8 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA);
+real8 zlanhe(char * NORM, char * UPLO, int4 * N, complex16 * A, int4 * LDA);
 
 /**
  * xpotrs() solves s.p.d. systems via Cholesky decomposition as computed by xpotrf().
@@ -304,7 +304,7 @@ real8 zlanhe(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA);
  * @param LDB as LAPACK dpotrs LDB.
  * @param INFO as LAPACK dpotrs INFO.
  */
-template<typename T> void xpotrs(char * UPLO, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO);
+template<typename T> void xpotrs(char * UPLO, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO);
 
 }
 

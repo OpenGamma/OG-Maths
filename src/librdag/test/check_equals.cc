@@ -132,9 +132,9 @@ TEST(EqualsTest, ArrayFuzzyEquals_complex16) {
 TEST(EqualsTest, ArrayBitEquals_int) {
 
   constexpr size_t len = 4;
-  int * data1 = new int[len] {1,2,3,4};
-  int * data2 = new int[len] {1,2,3,4};
-  int * data3 = new int[len] {-1,2,3,4};
+  int4 * data1 = new int4[len] {1,2,3,4};
+  int4 * data2 = new int4[len] {1,2,3,4};
+  int4 * data3 = new int4[len] {-1,2,3,4};
 
   ASSERT_TRUE(ArrayBitEquals(data1, data2, len));
   ASSERT_FALSE(ArrayBitEquals(data1, data3, len));
@@ -363,10 +363,10 @@ TEST(EqualsTest, OGComplexMatrix) {
 TEST(EqualsTest, OGRealSparseMatrix) {
   real8 * r_data1 = new real8[7] {1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
   real8 * r_data2 = new real8[7] {-1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
-  int * colPtr = new int[6] {0, 2, 4, 7, 7, 7};
-  int * colPtr2 = new int[6] {0, 1, 3, 7, 7, 7};
-  int * rowIdx = new int[7] {0, 1, 0, 2, 1, 2, 3 };
-  int * rowIdx2 = new int[7] {0, 1, 1, 2, 1, 2, 3 };
+  int4 * colPtr = new int4[6] {0, 2, 4, 7, 7, 7};
+  int4 * colPtr2 = new int4[6] {0, 1, 3, 7, 7, 7};
+  int4 * rowIdx = new int4[7] {0, 1, 0, 2, 1, 2, 3 };
+  int4 * rowIdx2 = new int4[7] {0, 1, 1, 2, 1, 2, 3 };
   size_t rows = 5;
   size_t cols = 4;
   OGRealSparseMatrix::Ptr matrix = OGRealSparseMatrix::create(colPtr, rowIdx, r_data1, rows, cols);
@@ -377,9 +377,9 @@ TEST(EqualsTest, OGRealSparseMatrix) {
   OGRealSparseMatrix::Ptr badcolptr = OGRealSparseMatrix::create(colPtr2, rowIdx, r_data1, rows, cols);
   OGRealSparseMatrix::Ptr badrowidx = OGRealSparseMatrix::create(colPtr, rowIdx2, r_data1, rows, cols);
   OGRealScalar::Ptr badtype = OGRealScalar::create(1.0e0);
-  OGRealSparseMatrix::Ptr r_comparable_sparse = OGRealSparseMatrix::create(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new real8[7] {1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 }, 5, 4, OWNER);
+  OGRealSparseMatrix::Ptr r_comparable_sparse = OGRealSparseMatrix::create(new int4[6] {0, 2, 4, 7, 7, 7}, new int4[7] {0, 1, 0, 2, 1, 2, 3 }, new real8[7] {1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 }, 5, 4, OWNER);
   OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
-  OGComplexSparseMatrix::Ptr c_comparable_sparse = OGComplexSparseMatrix::create(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new complex16[7] {{1.0e0,0.e0}, {3.0e0,0.e0}, {2.0e0,0.e0}, {5.0e0,0.e0}, {4.0e0,0.e0}, {6.0e0,0.e0}, {7.0e0,0.e0}}, 5, 4, OWNER);
+  OGComplexSparseMatrix::Ptr c_comparable_sparse = OGComplexSparseMatrix::create(new int4[6] {0, 2, 4, 7, 7, 7}, new int4[7] {0, 1, 0, 2, 1, 2, 3 }, new complex16[7] {{1.0e0,0.e0}, {3.0e0,0.e0}, {2.0e0,0.e0}, {5.0e0,0.e0}, {4.0e0,0.e0}, {6.0e0,0.e0}, {7.0e0,0.e0}}, 5, 4, OWNER);
   OGComplexDiagonalMatrix::Ptr c_notcomparable = OGComplexDiagonalMatrix::create(new complex16[4]{1.e0,2.e0,3.e0,5.e0},5,4, OWNER);
 
   ASSERT_TRUE(matrix->equals(same));
@@ -433,10 +433,10 @@ TEST(EqualsTest, OGRealSparseMatrix) {
 TEST(EqualsTest, OGComplexSparseMatrix) {
   complex16 * c_data1 = new complex16[7] {{1.0e0,10.0e0}, {3.0e0,30.0e0}, {2.0e0,20.0e0}, {5.0e0,50.0e0}, {4.0e0,40.0e0}, {6.0e0,60.0e0}, {7.0e0,70.0e0} };
   complex16 * c_data2 = new complex16[7] {{-1.0e0,10.0e0}, {3.0e0,30.0e0}, {2.0e0,20.0e0}, {5.0e0,50.0e0}, {4.0e0,40.0e0}, {6.0e0,60.0e0}, {7.0e0,70.0e0} };
-  int * colPtr = new int[6] {0, 2, 4, 7, 7, 7};
-  int * colPtr2 = new int[6] {0, 1, 3, 7, 7, 7};
-  int * rowIdx = new int[7] {0, 1, 0, 2, 1, 2, 3 };
-  int * rowIdx2 = new int[7] {0, 1, 1, 2, 1, 2, 3 };
+  int4 * colPtr = new int4[6] {0, 2, 4, 7, 7, 7};
+  int4 * colPtr2 = new int4[6] {0, 1, 3, 7, 7, 7};
+  int4 * rowIdx = new int4[7] {0, 1, 0, 2, 1, 2, 3 };
+  int4 * rowIdx2 = new int4[7] {0, 1, 1, 2, 1, 2, 3 };
   size_t rows = 5;
   size_t cols = 4;
   OGComplexSparseMatrix::Ptr matrix = OGComplexSparseMatrix::create(colPtr, rowIdx, c_data1, rows, cols);
@@ -448,7 +448,7 @@ TEST(EqualsTest, OGComplexSparseMatrix) {
   OGComplexSparseMatrix::Ptr badrowidx = OGComplexSparseMatrix::create(colPtr, rowIdx2, c_data1, rows, cols);
   OGRealScalar::Ptr badtype = OGRealScalar::create(1.0e0);
   OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
-  OGComplexSparseMatrix::Ptr c_comparable_sparse = OGComplexSparseMatrix::create(new int[6] {0, 2, 4, 7, 7, 7}, new int[7] {0, 1, 0, 2, 1, 2, 3 }, new complex16[7] {{1.0e0,10.0e0}, {3.0e0,30.0e0}, {2.0e0,20.0e0}, {5.0e0,50.0e0}, {4.0e0,40.0e0}, {6.0e0,60.0e0}, {7.0e0,70.0e0} }, 5, 4, OWNER);
+  OGComplexSparseMatrix::Ptr c_comparable_sparse = OGComplexSparseMatrix::create(new int4[6] {0, 2, 4, 7, 7, 7}, new int4[7] {0, 1, 0, 2, 1, 2, 3 }, new complex16[7] {{1.0e0,10.0e0}, {3.0e0,30.0e0}, {2.0e0,20.0e0}, {5.0e0,50.0e0}, {4.0e0,40.0e0}, {6.0e0,60.0e0}, {7.0e0,70.0e0} }, 5, 4, OWNER);
   OGComplexDiagonalMatrix::Ptr c_notcomparable = OGComplexDiagonalMatrix::create(new complex16[4]{1.e0,2.e0,3.e0,5.e0},5,4, OWNER);
 
 
@@ -510,7 +510,7 @@ TEST(EqualsTest, OGRealDiagonalMatrix) {
   OGRealDiagonalMatrix::Ptr baddata = OGRealDiagonalMatrix::create(r_data2,4,4);
   OGRealMatrix::Ptr comparable = OGRealMatrix::create(r_fullmatrix,4,4);
   OGComplexMatrix::Ptr badtype = OGComplexMatrix::create(c_data1,2,2);
-  OGRealSparseMatrix::Ptr r_comparable_sparse = OGRealSparseMatrix::create(new int[5] {0, 1, 2, 3, 4}, new int[4] {0, 1, 2, 3}, new real8[7] {1.0e0, 2.0e0, 3.0e0, 4.0e0}, 4, 4, OWNER);
+  OGRealSparseMatrix::Ptr r_comparable_sparse = OGRealSparseMatrix::create(new int4[5] {0, 1, 2, 3, 4}, new int4[4] {0, 1, 2, 3}, new real8[7] {1.0e0, 2.0e0, 3.0e0, 4.0e0}, 4, 4, OWNER);
   OGRealMatrix::Ptr r_notcomparable = OGRealMatrix::create(new real8[4]{1.e0,2.e0,3.e0,5.e0},2,2,OWNER);
   OGComplexDiagonalMatrix::Ptr c_comparable_diag = OGComplexDiagonalMatrix::create(new complex16[4] {{1.0e0,0.e0}, {2.0e0,0.e0}, {3.0e0,0.e0}, {4.0e0,0.e0}},4, 4, OWNER);
   OGComplexDiagonalMatrix::Ptr c_notcomparable = OGComplexDiagonalMatrix::create(new complex16[4]{1.e0,2.e0,3.e0,5.e0},4,4, OWNER);

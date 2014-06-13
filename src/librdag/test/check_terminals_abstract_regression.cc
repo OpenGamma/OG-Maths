@@ -95,14 +95,14 @@ TEST(AbstractTerminalsRegressionTest, OGDiagonalMatrix_T) {
  * Enforcing check that OGSparseMatrix<T> can be used in a templated function.
  */
 TEST(AbstractTerminalsRegressionTest, OGSparseMatrix_T) {
-  OGSparseMatrix<real8>::Ptr r8_0 = OGSparseMatrix<real8>::create(new int[2]{0,1}, new int[1]{0},new real8[1]{10},1,1,OWNER);
-  OGSparseMatrix<real8>::Ptr r8_1 = OGSparseMatrix<real8>::create(new int[2]{0,1}, new int[1]{0},new real8[1]{20},1,1,OWNER);
+  OGSparseMatrix<real8>::Ptr r8_0 = OGSparseMatrix<real8>::create(new int4[2]{0,1}, new int4[1]{0},new real8[1]{10},1,1,OWNER);
+  OGSparseMatrix<real8>::Ptr r8_1 = OGSparseMatrix<real8>::create(new int4[2]{0,1}, new int4[1]{0},new real8[1]{20},1,1,OWNER);
   real8 ranswer = ogsparsematrix_t_add_1x1<real8>(r8_0, r8_1);
   real8 rexpected = 30;
   ASSERT_TRUE(ranswer==rexpected);
 
-  OGSparseMatrix<complex16>::Ptr c16_0 = OGSparseMatrix<complex16>::create(new int[2]{0,1}, new int[1]{0},new complex16[1]{{10,7}},1,1,OWNER);
-  OGSparseMatrix<complex16>::Ptr c16_1 = OGSparseMatrix<complex16>::create(new int[2]{0,1}, new int[1]{0},new complex16[1]{{20,14}},1,1,OWNER);
+  OGSparseMatrix<complex16>::Ptr c16_0 = OGSparseMatrix<complex16>::create(new int4[2]{0,1}, new int4[1]{0},new complex16[1]{{10,7}},1,1,OWNER);
+  OGSparseMatrix<complex16>::Ptr c16_1 = OGSparseMatrix<complex16>::create(new int4[2]{0,1}, new int4[1]{0},new complex16[1]{{20,14}},1,1,OWNER);
   complex16 canswer = ogsparsematrix_t_add_1x1<complex16>(c16_0, c16_1);
   complex16 cexpected = {30,21};
   ASSERT_TRUE(canswer==cexpected);
@@ -125,9 +125,9 @@ TEST(AbstractTerminalsRegressionTest, OGScalar_T) {
   complex16 cexpected = {30,21};
   ASSERT_TRUE(canswer==cexpected);
 
-  OGScalar<int>::Ptr i4_0 = OGScalar<int>::create(10);
-  OGScalar<int>::Ptr i4_1 = OGScalar<int>::create(20);
-  int ianswer = ogscalar_t_add<int>(i4_0, i4_1);
-  int iexpected = 30;
+  OGScalar<int4>::Ptr i4_0 = OGScalar<int4>::create(10);
+  OGScalar<int4>::Ptr i4_1 = OGScalar<int4>::create(20);
+  int4 ianswer = ogscalar_t_add<int4>(i4_0, i4_1);
+  int4 iexpected = 30;
   ASSERT_TRUE(ianswer==iexpected);
 }

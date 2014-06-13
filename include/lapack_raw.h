@@ -21,64 +21,64 @@
 #ifdef __cplusplus
 extern "C" 
 #endif
-void set_xerbla_death_switch(int * value);
+void set_xerbla_death_switch(int4 * value);
 
 #ifdef __cplusplus
 extern "C" 
 #endif
-int get_xerbla_death_switch();
+int4 get_xerbla_death_switch();
 
 // BLAS
 // Standard xSCAL
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dscal)(int * N, real8 * DA, real8* DX, int * INCX);
+void F77FUNC(dscal)(int4 * N, real8 * DA, real8* DX, int4 * INCX);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zscal)(int * N, complex16 * DA, complex16* DX, int * INCX);
+void F77FUNC(zscal)(int4 * N, complex16 * DA, complex16* DX, int4 * INCX);
 
 // Standard xSWAP
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dswap)(int * N, real8 * DX, int * INCX, real8 * DY, int * INCY);
+void F77FUNC(dswap)(int4 * N, real8 * DX, int4 * INCX, real8 * DY, int4 * INCY);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zswap)(int * N, complex16 * DX, int * INCX, complex16 * DY, int * INCY);
+void F77FUNC(zswap)(int4 * N, complex16 * DX, int4 * INCX, complex16 * DY, int4 * INCY);
 
 
 // Standard xGEMV
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dgemv)(char * TRANS, int * M, int * N, real8 * ALPHA, real8 * A, int * LDA, real8 * X, int * INCX, real8 * BETA, real8 * Y, int * INCY);
+void F77FUNC(dgemv)(char * TRANS, int4 * M, int4 * N, real8 * ALPHA, real8 * A, int4 * LDA, real8 * X, int4 * INCX, real8 * BETA, real8 * Y, int4 * INCY);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zgemv)(char * TRANS, int * M, int * N, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * X, int * INCX, complex16 * BETA, complex16 * Y, int * INCY);
+void F77FUNC(zgemv)(char * TRANS, int4 * M, int4 * N, complex16 * ALPHA, complex16 * A, int4 * LDA, complex16 * X, int4 * INCX, complex16 * BETA, complex16 * Y, int4 * INCY);
 
 // Standard xGEMM
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dgemm)(char * TRANSA, char * TRANSB, int * M, int * N, int * K, real8 * ALPHA, real8 * A, int * LDA, real8 * B, int * LDB, real8 * BETA, real8 * C, int * LDC );
+void F77FUNC(dgemm)(char * TRANSA, char * TRANSB, int4 * M, int4 * N, int4 * K, real8 * ALPHA, real8 * A, int4 * LDA, real8 * B, int4 * LDB, real8 * BETA, real8 * C, int4 * LDC );
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zgemm)(char * TRANSA, char * TRANSB, int * M, int * N, int * K, complex16 * ALPHA, complex16 * A, int * LDA, complex16 * B, int * LDB, complex16 * BETA, complex16 * C, int * LDC );
+void F77FUNC(zgemm)(char * TRANSA, char * TRANSB, int4 * M, int4 * N, int4 * K, complex16 * ALPHA, complex16 * A, int4 * LDA, complex16 * B, int4 * LDB, complex16 * BETA, complex16 * C, int4 * LDC );
 
 // Standard NORM2 implementations.
 #ifdef __cplusplus
 extern "C" 
 #endif
-real8 F77FUNC(dnrm2)(int * N, real8 * X, int * INCX);
+real8 F77FUNC(dnrm2)(int4 * N, real8 * X, int4 * INCX);
 #ifdef __cplusplus
 extern "C" 
 #endif
-real8 F77FUNC(dznrm2)(int * N, complex16 * X, int * INCX);
+real8 F77FUNC(dznrm2)(int4 * N, complex16 * X, int4 * INCX);
 
 
 // LAPACK
@@ -87,97 +87,97 @@ real8 F77FUNC(dznrm2)(int * N, complex16 * X, int * INCX);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dgesvd)(char * JOBU, char * JOBVT, int * M, int * N, real8 * A, int * LDA, real8 * S, real8 * U, int * LDU, real8 * VT, int * LDVT, real8 * WORK, int * LWORK, int * INFO);
+void F77FUNC(dgesvd)(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, real8 * WORK, int4 * LWORK, int4 * INFO);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zgesvd)(char * JOBU, char * JOBVT, int * M, int * N, complex16 * A, int * LDA, real8 * S, complex16 * U, int * LDU, complex16 * VT, int * LDVT, complex16 * WORK, int * LWORK, real8 * RWORK, int * INFO);
+void F77FUNC(zgesvd)(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, complex16 * WORK, int4 * LWORK, real8 * RWORK, int4 * INFO);
 
 // Reciprocal condition number estimates
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dtrcon)(char * NORM, char * UPLO, char * DIAG, int * N, real8 * A, int * LDA, real8 * RCOND, real8 * WORK, int * IWORK, int * INFO);
+void F77FUNC(dtrcon)(char * NORM, char * UPLO, char * DIAG, int4 * N, real8 * A, int4 * LDA, real8 * RCOND, real8 * WORK, int4 * IWORK, int4 * INFO);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(ztrcon)(char * NORM, char * UPLO, char * DIAG, int * N, complex16 * A, int * LDA, real8 * RCOND, complex16 * WORK, real8 * IWORK, int * INFO);
+void F77FUNC(ztrcon)(char * NORM, char * UPLO, char * DIAG, int4 * N, complex16 * A, int4 * LDA, real8 * RCOND, complex16 * WORK, real8 * IWORK, int4 * INFO);
 
 // LUP decomposition
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dgetrf)(int * M, int * N, real8 * A, int * LDA, int * IPIV, int *INFO);
+void F77FUNC(dgetrf)(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zgetrf)(int * M, int * N, complex16 * A, int * LDA, int * IPIV, int *INFO);
+void F77FUNC(zgetrf)(int4 * M, int4 * N, complex16 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 
 // inverse based on LU
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dgetri)(int * N, real8 * A, int * LDA, int * IPIV, real8 * WORK, int * LWORK, int * INFO );
+void F77FUNC(dgetri)(int4 * N, real8 * A, int4 * LDA, int4 * IPIV, real8 * WORK, int4 * LWORK, int4 * INFO );
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zgetri)(int * N, complex16 * A, int * LDA, int * IPIV, complex16 * WORK, int * LWORK, int * INFO );
+void F77FUNC(zgetri)(int4 * N, complex16 * A, int4 * LDA, int4 * IPIV, complex16 * WORK, int4 * LWORK, int4 * INFO );
 
 // solves a triangular system of the form : A * X = B  or  A**T * X = B
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dtrtrs)(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, real8 * A, int * LDA, real8 * B, int * LDB, int * INFO);
+void F77FUNC(dtrtrs)(char * UPLO, char * TRANS, char * DIAG, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, real8 * B, int4 * LDB, int4 * INFO);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(ztrtrs)(char * UPLO, char * TRANS, char * DIAG, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO);
+void F77FUNC(ztrtrs)(char * UPLO, char * TRANS, char * DIAG, int4 * N, int4 * NRHS, complex16 * A, int4 * LDA, complex16 * B, int4 * LDB, int4 * INFO);
 
 // Cholesky factorisation for s.p.d matrices
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dpotrf)(char * UPLO, int * N, real8 * A, int * LDA, int * INFO);
+void F77FUNC(dpotrf)(char * UPLO, int4 * N, real8 * A, int4 * LDA, int4 * INFO);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zpotrf)(char * UPLO, int * N, complex16 * A, int * LDA, int * INFO);
+void F77FUNC(zpotrf)(char * UPLO, int4 * N, complex16 * A, int4 * LDA, int4 * INFO);
 
 // Reciprocal condition estimate in the 1-norm of a Cholesky decomposition as computed by xpotrf
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dpocon)(char * UPLO, int * N, real8 * A, int * LDA, real8 * ANORM, real8 * RCOND, real8 * WORK, int * IWORK, int * INFO);
+void F77FUNC(dpocon)(char * UPLO, int4 * N, real8 * A, int4 * LDA, real8 * ANORM, real8 * RCOND, real8 * WORK, int4 * IWORK, int4 * INFO);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zpocon)(char * UPLO, int * N, complex16 * A, int * LDA, real8 * ANORM, real8 * RCOND, complex16 * WORK, real8 * RWORK, int * INFO);
+void F77FUNC(zpocon)(char * UPLO, int4 * N, complex16 * A, int4 * LDA, real8 * ANORM, real8 * RCOND, complex16 * WORK, real8 * RWORK, int4 * INFO);
 
 // Norm calculators for symmetric matrices
 #ifdef __cplusplus
 extern "C" 
 #endif
-real8 F77FUNC(dlansy)(char * NORM, char * UPLO, int * N, real8 * A, int * LDA, real8 * WORK);
+real8 F77FUNC(dlansy)(char * NORM, char * UPLO, int4 * N, real8 * A, int4 * LDA, real8 * WORK);
 #ifdef __cplusplus
 extern "C" 
 #endif
-real8 F77FUNC(zlansy)(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA, real8 * WORK);
+real8 F77FUNC(zlansy)(char * NORM, char * UPLO, int4 * N, complex16 * A, int4 * LDA, real8 * WORK);
 
 // Norm calculator for Hermitian matrix
 #ifdef __cplusplus
 extern "C" 
 #endif
-real8 F77FUNC(zlanhe)(char * NORM, char * UPLO, int * N, complex16 * A, int * LDA, real8 * WORK);
+real8 F77FUNC(zlanhe)(char * NORM, char * UPLO, int4 * N, complex16 * A, int4 * LDA, real8 * WORK);
 
 
 // Cholesky based solvers
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(dpotrs)(char * UPLO, int * N, int * NRHS, real8 * A, int * LDA, real8 * B, int * LDB, int * INFO);
+void F77FUNC(dpotrs)(char * UPLO, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, real8 * B, int4 * LDB, int4 * INFO);
 #ifdef __cplusplus
 extern "C" 
 #endif
-void F77FUNC(zpotrs)(char * UPLO, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO);
+void F77FUNC(zpotrs)(char * UPLO, int4 * N, int4 * NRHS, complex16 * A, int4 * LDA, complex16 * B, int4 * LDB, int4 * INFO);
 
 #endif //_LAPACK_RAW_H

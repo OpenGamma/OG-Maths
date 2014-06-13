@@ -25,7 +25,7 @@ const OGTerminal::Ptr
 entrypt(const OGNumeric::Ptr& expr)
 {
   // Sort out LAPACK so xerbla calls don't kill the processes.
-  int zero = 0;
+  int4 zero = 0;
   set_xerbla_death_switch(&zero);
 
   OGTerminal::Ptr terminal = expr->asOGTerminal();

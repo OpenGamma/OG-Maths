@@ -120,8 +120,8 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealSparseMatrix)
   dataAoA[3] = new real8[cols]{ 0, 0, 5 };
 
   real8 * data= new real8[5]{1.0, 4.0, 2.0, 3.0, 5.0};
-  int * rowInd=new int[5]{0, 2, 0, 1, 3};
-  int * colPtr=new int[4]{0, 2, 4, 5};
+  int4 * rowInd=new int4[5]{0, 2, 0, 1, 3};
+  int4 * colPtr=new int4[4]{0, 2, 4, 5};
 
   OGNumeric::Ptr mat = OGRealSparseMatrix::create(colPtr, rowInd, data, rows, cols);
   Real8AoA r = Real8AoA{mat};
@@ -143,8 +143,8 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexSparseMatrix)
   const size_t rows = 4;
   const size_t cols = 3;
   complex16 * data= new complex16[5]{{1.0,10}, {4.0,40}, {2.0,20}, {3.0,30}, {5.0,50}};
-  int * rowInd=new int[5]{0, 2, 0, 1, 3};
-  int * colPtr=new int[4]{0, 2, 4, 5};
+  int4 * rowInd=new int4[5]{0, 2, 0, 1, 3};
+  int4 * colPtr=new int4[4]{0, 2, 4, 5};
 
   OGNumeric::Ptr mat = OGComplexSparseMatrix::create(colPtr, rowInd, data, rows, cols);
   ASSERT_THROW(Real8AoA{mat}, convert_error);
@@ -273,8 +273,8 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexSparseMatrix)
   dataAoA[3] = new complex16[cols]{ {0,0} , {0,0} , {5,50} };
 
   complex16 * data= new complex16[5]{{1.0,10.0}, {4.0,40}, {2.0,20}, {3.0,30}, {5.0,50}};
-  int * rowInd=new int[5]{0, 2, 0, 1, 3};
-  int * colPtr=new int[4]{0, 2, 4, 5};
+  int4 * rowInd=new int4[5]{0, 2, 0, 1, 3};
+  int4 * colPtr=new int4[4]{0, 2, 4, 5};
 
   OGNumeric::Ptr mat = OGComplexSparseMatrix::create(colPtr, rowInd, data, rows, cols);
   Complex16AoA c = Complex16AoA{mat};
@@ -297,8 +297,8 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealSparseMatrix)
   const size_t rows = 4;
   const size_t cols = 3;
   real8 * data= new real8[5]{1,4,2,3,5};
-  int * rowInd=new int[5]{0, 2, 0, 1, 3};
-  int * colPtr=new int[4]{0, 2, 4, 5};
+  int4 * rowInd=new int4[5]{0, 2, 0, 1, 3};
+  int4 * colPtr=new int4[4]{0, 2, 4, 5};
 
   OGNumeric::Ptr mat = OGRealSparseMatrix::create(colPtr, rowInd, data, rows, cols);
   ASSERT_THROW(Complex16AoA{mat}, convert_error);

@@ -45,22 +45,22 @@ transpose_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
   }
   else // Matrix is a full matrix
   {
-    int m = arg->getRows();
-    int n = arg->getCols();
-    int retRows = n, retCols = m;
+    size_t m = arg->getRows();
+    size_t n = arg->getCols();
+    size_t retRows = n, retCols = m;
     T * data = arg->getData();
     T * tmp = new T[m * n];
     if(isVector(arg))
     {
-      int len = m > n ? m : n;
+      size_t len = m > n ? m : n;
       std::copy(data, data+len, tmp);
     }
     else
     {
-      int ir;
-      for (int i = 0; i < n; i++) {
+      size_t ir;
+      for (size_t i = 0; i < n; i++) {
         ir = i * m;
-        for (int j = 0; j < m; j++) {
+        for (size_t j = 0; j < m; j++) {
           tmp[j * n + i] = data[ir + j];
         }
       }

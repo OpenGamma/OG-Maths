@@ -32,7 +32,7 @@ class Visitor
     virtual void visit(OGExpr const *thing) = 0;
     virtual void visit(OGScalar<real8> const *thing) = 0;
     virtual void visit(OGScalar<complex16> const *thing) = 0;
-    virtual void visit(OGScalar<int> const *thing) = 0;
+    virtual void visit(OGScalar<int4> const *thing) = 0;
     virtual void visit(OGMatrix<real8> const *thing) = 0;
     virtual void visit(OGMatrix<complex16> const *thing) = 0;
     virtual void visit(OGDiagonalMatrix<real8> const *thing) = 0;

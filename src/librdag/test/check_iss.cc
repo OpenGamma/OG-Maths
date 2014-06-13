@@ -34,14 +34,14 @@ class issTest : public ::testing::Test
     OGComplexMatrix::Ptr _ogcomplexvector2 = nullptr;
     real8 * r_data;
     complex16 * c_data;
-    int * colPtr;
-    int * rowIdx;
+    int4 * colPtr;
+    int4 * rowIdx;
     virtual void SetUp()
   {
     r_data = new real8[1]{12};
     c_data = new complex16[1]{{12,34}};
-    rowIdx = new int[1]{0};
-    colPtr = new int[2]{0,1};
+    rowIdx = new int4[1]{0};
+    colPtr = new int4[2]{0,1};
     _ogrealscalar = OGRealScalar::create(12);
     _ogcomplexscalar = OGComplexScalar::create({12,34});
     _ogintegerscalar = OGIntegerScalar::create(4);

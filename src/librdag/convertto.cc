@@ -71,15 +71,15 @@ ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix::Ptr thing) const
 
   size_t rows = thing->getRows();
   size_t cols = thing->getCols();
-  int * colPtr = thing->getColPtr();
-  int * rowIdx = thing->getRowIdx();
+  int4 * colPtr = thing->getColPtr();
+  int4 * rowIdx = thing->getRowIdx();
   real8 * sparsedata = thing->getData();
 
   OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[rows*cols](),rows,cols, OWNER);
   real8 * data = ret->getData();
   for (size_t ir = 0; ir < cols; ir++)
   {
-    for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+    for (int4 i = colPtr[ir]; i < colPtr[ir + 1]; i++)
     {
       data[rowIdx[i] + ir * rows] = sparsedata[i];
     }
@@ -151,14 +151,14 @@ ConvertTo::convertToOGComplexMatrix(OGRealSparseMatrix::Ptr thing) const
 {
   size_t rows = thing->getRows();
   size_t cols = thing->getCols();
-  int * colPtr = thing->getColPtr();
-  int * rowIdx = thing->getRowIdx();
+  int4 * colPtr = thing->getColPtr();
+  int4 * rowIdx = thing->getRowIdx();
   real8 * sparsedata = thing->getData();
   OGComplexMatrix::Ptr ret = OGComplexMatrix::create(new complex16[rows*cols](),rows,cols, OWNER);
   complex16 * data = ret->getData();
   for (size_t ir = 0; ir < cols; ir++)
   {
-    for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+    for (int4 i = colPtr[ir]; i < colPtr[ir + 1]; i++)
     {
       data[rowIdx[i] + ir * rows] = sparsedata[i];
     }
@@ -171,14 +171,14 @@ ConvertTo::convertToOGComplexMatrix(OGComplexSparseMatrix::Ptr thing) const
 {
   size_t rows = thing->getRows();
   size_t cols = thing->getCols();
-  int * colPtr = thing->getColPtr();
-  int * rowIdx = thing->getRowIdx();
+  int4 * colPtr = thing->getColPtr();
+  int4 * rowIdx = thing->getRowIdx();
   complex16 * sparsedata = thing->getData();
   OGComplexMatrix::Ptr ret = OGComplexMatrix::create(new complex16[rows*cols](),rows,cols, OWNER);
   complex16 * data = ret->getData();
   for (size_t ir = 0; ir < cols; ir++)
   {
-    for (int i = colPtr[ir]; i < colPtr[ir + 1]; i++)
+    for (int4 i = colPtr[ir]; i < colPtr[ir + 1]; i++)
     {
       data[rowIdx[i] + ir * rows] = sparsedata[i];
     }

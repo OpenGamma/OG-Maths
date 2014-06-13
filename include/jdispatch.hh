@@ -111,7 +111,7 @@ class DLLEXPORT_C DispatchToOGTerminal: public librdag::Visitor
     virtual void visit(librdag::OGExpr const *thing);
     virtual void visit(librdag::OGScalar<real8> const *thing);
     virtual void visit(librdag::OGScalar<complex16> const *thing);
-    virtual void visit(librdag::OGScalar<int> const *thing);
+    virtual void visit(librdag::OGScalar<int4> const *thing);
     virtual void visit(librdag::OGMatrix<real8> const *thing);
     virtual void visit(librdag::OGMatrix<complex16> const *thing);
     virtual void visit(librdag::OGDiagonalMatrix<real8> const *thing);

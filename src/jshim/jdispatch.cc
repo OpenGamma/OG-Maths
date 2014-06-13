@@ -288,7 +288,7 @@ DispatchToOGTerminal::visit(librdag::OGScalar<complex16> const *thing)
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGScalar<int> SUPPRESS_UNUSED const *thing)
+DispatchToOGTerminal::visit(librdag::OGScalar<int4> SUPPRESS_UNUSED const *thing)
 {
   throw convert_error("We do not materialise integer scalars.");
 }
@@ -338,7 +338,7 @@ DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
   setObject(newobject);
 }
 
-jint* makeCJintArray(const int* arr, size_t len)
+jint* makeCJintArray(const int4* arr, size_t len)
 {
   jint* jintArr = new jint[len];
   for (size_t i = 0; i < len; ++i)
