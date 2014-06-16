@@ -63,7 +63,7 @@ TEST(LinearisationTest, BinaryTreeLinearisation)
   // Check ordering. We iterate over the list and get
   // its contents first.
   OGNumeric::Ptr nodes[3];
-  int i = 0;
+  size_t i = 0;
   for (auto it = el1.begin(); it != el1.end(); ++it)
   {
     nodes[i] = *it;
@@ -101,7 +101,7 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
   // Check ordering. We iterate over the list and get
   // its contents first.
   OGNumeric::Ptr nodes[4];
-  int i = 0;
+  size_t i = 0;
   for (auto it = el1.begin(); it != el1.end(); ++it)
   {
     nodes[i] = *it;
@@ -118,7 +118,7 @@ TEST(LinearisationTest, BinaryUnaryLinearisation)
               || (nodes[0] != real1 && nodes[1] == real1 && nodes[2] != real1)
               || (nodes[0] != real1 && nodes[1] != real1 && nodes[2] == real1) );
   // Check subscripting order is the same as iteration order
-  for (int j = 0; j<4; ++j)
+  for (size_t j = 0; j < 4; ++j)
   {
     EXPECT_EQ(nodes[j], el1[j]);
   }

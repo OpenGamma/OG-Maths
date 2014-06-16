@@ -107,6 +107,7 @@ string get_fname(const string& backtrace_string)
   return fname;
 }
 
+// status is int as abi::__cxa_demangle status is int
 const string demangle_fname(const string& fname, int* status)
 {
   string ret = fname;

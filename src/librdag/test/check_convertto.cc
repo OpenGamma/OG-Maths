@@ -28,7 +28,7 @@ TEST(ConvertToTest, OGRealScalarConvertToOGRealMatrix) {
 
 TEST(ConvertToTest, OGIntegerScalarConvertToOGRealMatrix) {
 
-  int value = 13;
+  int4 value = 13;
   OGIntegerScalar::Ptr scalar = OGIntegerScalar::create(value);
   real8 data[1];
   data[0] = value;
@@ -63,8 +63,8 @@ TEST(ConvertToTest, OGRealDiagonalMatrixConvertToOGRealMatrix) {
 TEST(ConvertToTest, OGRealSparseMatrixConvertToOGRealMatrix) {
 
   real8 input_values[7] = {1,4,2,8,11,6,12};
-  int input_colPtr[4] = {0,2,5,7};
-  int input_rowIdx[7] = {0,1,0,2,3,1,3};
+  int4 input_colPtr[4] = {0,2,5,7};
+  int4 input_rowIdx[7] = {0,1,0,2,3,1,3};
   real8 expected_values[12] = {1,4,0,0,2,0,8,11,0,6,0,12};
   OGRealSparseMatrix::Ptr input = OGRealSparseMatrix::create(input_colPtr, input_rowIdx, input_values,4,3);
   OGRealMatrix::Ptr expected = OGRealMatrix::create(expected_values,4,3);
@@ -88,7 +88,7 @@ TEST(ConvertToTest, OGRealScalarConvertToOGComplexMatrix) {
 
 TEST(ConvertToTest, OGIntegerScalarConvertToOGComplexMatrix) {
 
-  int value = {13};
+  int4 value = {13};
   OGIntegerScalar::Ptr scalar = OGIntegerScalar::create(13);
   complex16 data[1]; 
   data[0]=value;
@@ -137,8 +137,8 @@ TEST(ConvertToTest, OGComplexDiagonalMatrixConvertToOGComplexMatrix) {
 TEST(ConvertToTest, OGRealSparseMatrixConvertToOGComplexMatrix) {
 
   real8 input_values[7] = {1,4,2,8,11,6,12};
-  int input_colPtr[4] = {0,2,5,7};
-  int input_rowIdx[7] = {0,1,0,2,3,1,3};
+  int4 input_colPtr[4] = {0,2,5,7};
+  int4 input_rowIdx[7] = {0,1,0,2,3,1,3};
   complex16 expected_values[12] = {{1,0},{4,0},{0,0},{0,0},{2,0},{0,0},{8,0},{11,0},{0,0},{6,0},{0,0},{12,0}};
   OGRealSparseMatrix::Ptr input = OGRealSparseMatrix::create(input_colPtr, input_rowIdx, input_values,4,3);
   OGComplexMatrix::Ptr expected = OGComplexMatrix::create(expected_values,4,3);
@@ -151,8 +151,8 @@ TEST(ConvertToTest, OGRealSparseMatrixConvertToOGComplexMatrix) {
 TEST(ConvertToTest, OGComplexSparseMatrixConvertToOGComplexMatrix) {
 
   complex16 input_values[8] = {{1,0},{4,0},{0,70},{2,0},{8,0},{11,0},{6,0},{12,0}};
-  int input_colPtr[4] = {0,3,6,8};
-  int input_rowIdx[8] = {0,1,2,0,2,3,1,3};
+  int4 input_colPtr[4] = {0,3,6,8};
+  int4 input_rowIdx[8] = {0,1,2,0,2,3,1,3};
   complex16 expected_values[12] = {{1,0},{4,0},{0,70},{0,0},{2,0},{0,0},{8,0},{11,0},{0,0},{6,0},{0,0},{12,0}};
   OGComplexSparseMatrix::Ptr input = OGComplexSparseMatrix::create(input_colPtr, input_rowIdx, input_values,4,3);
   OGComplexMatrix::Ptr expected = OGComplexMatrix::create(expected_values,4,3);

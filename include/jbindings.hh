@@ -12,13 +12,6 @@
 
 namespace convert {
 
-/*
- * Binds some OGArray data in an OGArray object obj to a type T (T extends double)
- * FIXME: Not implemented. Is it needed?
- */
-template <typename T>
-T* bindOGArrayData(jobject obj);
-
 /**
  * free (unbind) the data in an OGArray class from a nativeT pointer
  * @param nativeT the class of the native copy of the data
@@ -35,6 +28,7 @@ unbindOGArrayData<real8, jdoubleArray>(real8* nativeData, jobject obj);
 extern template DLLEXPORT_C  void
 unbindOGArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj);
 
+// We must use jint instead of int4 because the definition of jint varies between int and long int
 extern template DLLEXPORT_C  void
 unbindOGArrayData<jint, jintArray>(jint* nativeData, jobject obj);
 
@@ -55,8 +49,9 @@ bindPrimitiveArrayData<real8, jdoubleArray>(jobject obj, jmethodID method);
 extern template DLLEXPORT_C complex16*
 bindPrimitiveArrayData<complex16, jdoubleArray>(jobject obj, jmethodID method);
 
-extern template DLLEXPORT_C int*
-bindPrimitiveArrayData<int, jintArray>(jobject obj, jmethodID method);
+// We must use jint instead of int4 because the definition of jint varies between int and long int
+extern template DLLEXPORT_C jint*
+bindPrimitiveArrayData<jint, jintArray>(jobject obj, jmethodID method);
 
 /**
  * free (unbind) the data in an OGArray class from a nativeT pointer
@@ -75,6 +70,7 @@ unbindPrimitiveArrayData<real8, jdoubleArray>(real8* nativeData, jobject obj, jm
 extern template DLLEXPORT_C void
 unbindPrimitiveArrayData<complex16, jdoubleArray>(complex16* nativeData, jobject obj, jmethodID method);
 
+// We must use jint instead of int4 because the definition of jint varies between int and long int
 extern template DLLEXPORT_C void
 unbindPrimitiveArrayData<jint, jintArray>(jint* nativeData, jobject obj, jmethodID method);
 

@@ -23,12 +23,12 @@ namespace librdag {
 
 template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 {
-  int m = arg->getRows();
-  int n = arg->getCols();
-  int lda = m;
-  int minmn = m > n ? n : m;
-  int mn = m * n;
-  int info = 0;
+  int4 m = arg->getRows();
+  int4 n = arg->getCols();
+  int4 lda = m;
+  int4 minmn = m > n ? n : m;
+  int4 mn = m * n;
+  int4 info = 0;
 
 // Sizes of output
 //   L = [m x minmn ]
@@ -42,7 +42,7 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
   std::memcpy(A, arg->getData(), sizeof(T)*mn);
 
   // create pivot vector
-  int * ipiv = new int[minmn]();
+  int4 * ipiv = new int4[minmn]();
 
   // call lapack
   try
@@ -69,43 +69,43 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
 
   // extract U, get triangle, then square
   // U strides in 'minmn', A strides in 'm'
-  int lim = minmn > n ? n : minmn;
-  for (int i = 0; i < lim - 1; i++)
+  int4 lim = minmn > n ? n : minmn;
+  for (int4 i = 0; i < lim - 1; i++)
   {
-    int mi = m * i;
-    int ni = minmn * i;
-    for (int j = 0; j <= i; j++)
+    int4 mi = m * i;
+    int4 ni = minmn * i;
+    for (int4 j = 0; j <= i; j++)
     {
       U[ni + j] = A[mi + j];
     }
   }
-  for (int i = lim - 1; i < n; i++)
+  for (int4 i = lim - 1; i < n; i++)
   {
-    int mi = m * i;
-    int ni = minmn * i;
-    for (int j = 0; j < minmn; j++)
+    int4 mi = m * i;
+    int4 ni = minmn * i;
+    for (int4 j = 0; j < minmn; j++)
     {
       U[ni + j] = A[mi + j];
     }
   }
 
   // Transpose the pivot... create as permutation
-  int * perm = new int[m];
+  int4 * perm = new int4[m];
   // 1) turn into 0 based indexing
-  for (int i = 0; i < minmn; i++)
+  for (int4 i = 0; i < minmn; i++)
   {
     ipiv[i] -= 1;
   }
   // 2) 0:m-1 range vector, will be permuted in a tick
-  for (int i = 0; i < m; i++)
+  for (int4 i = 0; i < m; i++)
   {
     perm[i] = i;
   }
   // 3) apply permutation to range indexed vector, just walk through in order and apply the swaps
-  int swp;
-  for (int i = 0; i < minmn; i++)
+  int4 swp;
+  for (int4 i = 0; i < minmn; i++)
   {
-    int piv = ipiv[i]; // get pivot at index "i"
+    int4 piv = ipiv[i]; // get pivot at index "i"
     // apply the pivot by swapping the corresponding "row" indices in the perm index vector
     if (piv != i)
     {
@@ -117,33 +117,33 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
 
   // kill triu of A, write 1 onto diag of A too
   A[0] = 1.e0;
-  for (int i = 1; i < minmn; i++)
+  for (int4 i = 1; i < minmn; i++)
   {
     A[m*i+i] = 1.e0;
-    for (int j = 0; j < i; j++)
+    for (int4 j = 0; j < i; j++)
     {
       A[i*m+j]=0.e0;
     }
   }
 
   // apply pivot during assign to L
-  for (int i = 0; i < m; i++)
+  for (int4 i = 0; i < m; i++)
   {
-    int permi = perm[i];
-    int row = perm[permi];
+    int4 permi = perm[i];
+    int4 row = perm[permi];
     if(row==i)
     {
-      for (int j = 0; j < minmn; j++)
+      for (int4 j = 0; j < minmn; j++)
       {
-        int jm = j*m;
+        int4 jm = j*m;
         L[jm+i] = A[jm+permi];
       }
     }
     else
     {
-      for (int j = 0; j < minmn; j++)
+      for (int4 j = 0; j < minmn; j++)
       {
-        int jm = j*m;
+        int4 jm = j*m;
         L[jm+i] = A[jm+row];
       }
     }

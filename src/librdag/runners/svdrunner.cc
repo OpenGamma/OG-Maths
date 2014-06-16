@@ -23,13 +23,13 @@ namespace librdag {
 
 template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 {
-  int m = arg->getRows();
-  int n = arg->getCols();
-  int lda = m > 1 ? m : 1;
-  int ldu = lda;
-  int minmn = m > n ? n : m;
-  int ldvt = n;
-  int info = 0;
+  int4 m = arg->getRows();
+  int4 n = arg->getCols();
+  int4 lda = m > 1 ? m : 1;
+  int4 ldu = lda;
+  int4 minmn = m > n ? n : m;
+  int4 ldvt = n;
+  int4 info = 0;
 
   T * U = new T[ldu*m];
   T * VT = new T[ldvt*n];

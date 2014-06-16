@@ -29,10 +29,10 @@ template<typename T>
 void*
 mtimes_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, shared_ptr<const OGMatrix<T>> arg1)
 {
-  int colsArray1 = arg0->getCols();
-  int colsArray2 = arg1->getCols();
-  int rowsArray1 = arg0->getRows();
-  int rowsArray2 = arg1->getRows();
+  int4 colsArray1 = arg0->getCols();
+  int4 colsArray2 = arg1->getCols();
+  int4 rowsArray1 = arg0->getRows();
+  int4 rowsArray2 = arg1->getRows();
   T * data1 = arg0->getData();
   T * data2 = arg1->getData();
 
@@ -45,14 +45,14 @@ mtimes_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, shar
 
   if (colsArray1 == 1 && rowsArray1 == 1) { // We have scalar * matrix
     T deref = data1[0];
-    int n = rowsArray2 * colsArray2;
+    int4 n = rowsArray2 * colsArray2;
     tmp = new T[n];
     memcpy(tmp,data2,n*sizeof(T));
     lapack::xscal(&n,&deref,tmp,lapack::ione);
     ret = makeConcreteDenseMatrix(tmp, rowsArray2, colsArray2, OWNER);
   } else if (colsArray2 == 1 && rowsArray2 == 1) { // We have matrix * scalar
     T deref = data2[0];
-    int n = rowsArray1 * colsArray1;
+    int4 n = rowsArray1 * colsArray1;
     tmp = new T[n];
     memcpy(tmp,data1,n*sizeof(T));
     lapack::xscal(&n,&deref,tmp,lapack::ione);
@@ -69,14 +69,14 @@ mtimes_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, shar
       lapack::xgemv(lapack::N, &rowsArray1, &colsArray1, &fp_one, data1, &rowsArray1, data2, lapack::ione, &fp_one, tmp, lapack::ione);
       ret = makeConcreteDenseMatrix(tmp, rowsArray1, 1, OWNER);
     } else {
-      int fm = rowsArray1;
-      int fn = colsArray2;
-      int fk = colsArray1;
-      int lda = fm;
-      int ldb = fk;
+      int4 fm = rowsArray1;
+      int4 fn = colsArray2;
+      int4 fk = colsArray1;
+      int4 lda = fm;
+      int4 ldb = fk;
       T beta = 0.e0;
       tmp = new T[fm * fn];
-      int ldc = fm;
+      int4 ldc = fm;
       lapack::xgemm(lapack::N, lapack::N, &fm, &fn, &fk, &fp_one, data1, &lda, data2, &ldb, &beta, tmp, &ldc);
       ret = makeConcreteDenseMatrix(tmp, fm, fn, OWNER);
     }

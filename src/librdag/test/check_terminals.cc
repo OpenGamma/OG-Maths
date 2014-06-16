@@ -74,7 +74,7 @@ class FakeVisitor: public librdag::Visitor
   void visit(OGScalar<complex16> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
-  void visit(OGScalar<int> const SUPPRESS_UNUSED *thing){
+  void visit(OGScalar<int4> const SUPPRESS_UNUSED *thing){
     toggleHasBeenVisited();
   };
   void visit(OGMatrix<real8> const SUPPRESS_UNUSED *thing){
@@ -297,7 +297,7 @@ TEST(TerminalsTest, OGComplexScalarTest) {
  */
 TEST(TerminalsTest, OGIntegerScalarTest) {
   // test ctor
-  int value = 3;
+  int4 value = 3;
   OGIntegerScalar::Ptr tmp = OGIntegerScalar::create(value);
   // check ctor worked
   ASSERT_NE(tmp, nullptr); 
@@ -360,8 +360,8 @@ TEST(TerminalsTest, OGArrayTest) {
 
 TEST(TerminalsTest, OGMatrix_T_real8) {
   real8 data [12] = {1e0,2e0,3e0,4e0,5e0,6e0,7e0,8e0,9e0,10e0,11e0,12e0};
-  int rows = 3;
-  int cols = 4;
+  size_t rows = 3;
+  size_t cols = 4;
   OGMatrix<real8>::Ptr tmp = OGMatrix<real8>::create(data,rows,cols);
   OGNumeric::Ptr copy = tmp->copy();
   // can't do much here as at present we can't cast via RTTI asFOO() methods to an OGMatrix<T>
@@ -370,8 +370,8 @@ TEST(TerminalsTest, OGMatrix_T_real8) {
 
 TEST(TerminalsTest, OGMatrix_T_complex16) {
   complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
-  int rows = 3;
-  int cols = 4;
+  size_t rows = 3;
+  size_t cols = 4;
   OGMatrix<complex16>::Ptr tmp = OGMatrix<complex16>::create(data,rows,cols);
   OGNumeric::Ptr copy = tmp->copy();
   // can't do much here as at present we can't cast via RTTI asFOO() methods to an OGMatrix<T>
@@ -384,19 +384,13 @@ TEST(TerminalsTest, OGMatrix_T_complex16) {
 TEST(TerminalsTest, OGRealMatrixTest) {
   // data
   real8 data [12] = {1e0,2e0,3e0,4e0,5e0,6e0,7e0,8e0,9e0,10e0,11e0,12e0};
-  int rows = 3;
-  int cols = 4;
+  size_t rows = 3;
+  size_t cols = 4;
 
   // attempt construct from nullptr, should throw
   real8 * null = nullptr;
   OGRealMatrix::Ptr tmp;
   ASSERT_THROW(OGRealMatrix::create(null,rows,cols), rdag_error);
-
-  // attempt construct from bad rows
-  ASSERT_THROW(OGRealMatrix::create(data,-1,cols), rdag_error);
-
-  // attempt construct from bad cols
-  ASSERT_THROW(OGRealMatrix::create(data,rows,-1), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = OGRealMatrix::create(new real8[2]{10,20},1,2, OWNER);
@@ -430,14 +424,14 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   // wire up array for ArrOfArr test
   real8 expectedtmp[12] = {1e0,4e0,7e0,10e0,2e0,5e0,8e0,11e0,3e0,6e0,9e0,12e0};
   real8 ** expected = new real8  * [rows];
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
 
   // check toArrayOfArrays()
   real8 ** computed = tmp->toArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<real8>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -445,7 +439,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   // check toReal8ArrayOfArrays()
   computed = tmp->toReal8ArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<real8>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -454,12 +448,12 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   // check toComplex16ArrayOfArrays()
   complex16 c_expectedtmp[12] = {{1e0,0},{4e0,0},{7e0,0},{10e0,0},{2e0,0},{5e0,0},{8e0,0},{11e0,0},{3e0,0},{6e0,0},{9e0,0},{12e0,0}};
   complex16 ** c_expected = new complex16  * [rows];
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     c_expected[i] = &(c_expectedtmp[i*cols]);
   }
   complex16 ** c_computed = tmp->toComplex16ArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(c_expected,c_computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] c_computed[i];
   }
   delete [] c_computed;
@@ -503,21 +497,13 @@ TEST(TerminalsTest, OGRealMatrixTest) {
 TEST(TerminalsTest, OGComplexMatrixTest) {
   // data
   complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
-  int rows = 3;
-  int cols = 4;
+  size_t rows = 3;
+  size_t cols = 4;
 
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
   OGComplexMatrix::Ptr tmp;
   ASSERT_THROW(OGComplexMatrix::create(null,rows,cols), rdag_error);
-
-  // attempt construct from bad rows
-  tmp = nullptr;
-  ASSERT_THROW(OGComplexMatrix::create(data,-1,cols), rdag_error);
-
-  // attempt construct from bad cols
-  tmp = nullptr;
-  ASSERT_THROW(OGComplexMatrix::create(data,rows,-1), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = OGComplexMatrix::create(new complex16[2]{{10,20},{30,40}},1,2, OWNER);
@@ -553,14 +539,14 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0},{2e0,20e0},{5e0,50e0},{8e0,80e0},{11e0,110e0},{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}};
   complex16 ** expected = new complex16  * [rows];
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
 
   // check toArrayOfArrays()
   complex16 ** computed = tmp->toArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -568,7 +554,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   // check toComplex16ArrayOfArrays()
   computed = tmp->toComplex16ArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -611,19 +597,13 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 TEST(TerminalsTest, OGRealDiagonalMatrix) {
   // data
   real8 data [3] = {1e0,2e0,3e0};
-  int rows = 3;
-  int cols = 4;
+  size_t rows = 3;
+  size_t cols = 4;
 
   // attempt construct from nullptr, should throw
   real8 * null = nullptr;
   OGRealDiagonalMatrix::Ptr tmp;
   ASSERT_THROW(OGRealDiagonalMatrix::create(null,rows,cols), rdag_error);
-
-  // attempt construct from bad rows
-  ASSERT_THROW(OGRealDiagonalMatrix::create(data,-1,cols), rdag_error);
-
-  // attempt construct from bad cols
-  ASSERT_THROW(OGRealDiagonalMatrix::create(data,rows,-1), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = OGRealDiagonalMatrix::create(new real8[2]{10,20},2,2, OWNER);
@@ -658,26 +638,26 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   real8 expectedtmp[12] = {1e0,0e0,0e0,0e0,0e0,2e0,0e0,0e0,0e0,0e0,3e0,0e0};
   real8 expectedarr[3] = {1e0, 2e0, 3e0};
   real8 ** expected = new real8  * [rows];
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
 
   // check toArray()
   real8* arr = tmp->toArray();
-  for (int i = 0; i < 3; i++)
+  for (size_t i = 0; i < 3; i++)
     EXPECT_TRUE(arr[i] == expectedarr[i]);
   delete[] arr;
 
   // check toReal8Array()
   arr = tmp->toReal8Array();
-  for (int i = 0; i < 3; i++)
+  for (size_t i = 0; i < 3; i++)
     EXPECT_TRUE(arr[i] == expectedarr[i]);
   delete[] arr;
 
   // check toArrayOfArrays()
   real8 ** computed = tmp->toArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<real8>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -685,7 +665,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   // check toReal8ArrayOfArrays()
   computed = tmp->toReal8ArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<real8>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -734,19 +714,13 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
 TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   // data
   complex16 data [3] = {{1e0,10e0},{2e0,20e0},{3e0,30e0}};
-  int rows = 3;
-  int cols = 4;
+  size_t rows = 3;
+  size_t cols = 4;
 
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
   OGComplexDiagonalMatrix::Ptr tmp;
   ASSERT_THROW(OGComplexDiagonalMatrix::create(null,rows,cols), rdag_error);
-
-  // attempt construct from bad rows
-  ASSERT_THROW(OGComplexDiagonalMatrix::create(data,-1,cols), rdag_error);
-
-  // attempt construct from bad cols
-  ASSERT_THROW(OGComplexDiagonalMatrix::create(data,rows,-1), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = OGComplexDiagonalMatrix::create(new complex16[2]{{10,20},{30,40}},2,2, OWNER);
@@ -784,26 +758,26 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   complex16 expectedtmp[12] = {{1e0,10e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{2e0,20e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{3e0,30e0},{0e0,0e0}};
   complex16 expectedarr[3] = {{1e0,10e0}, {2e0,20e0}, {3e0,30e0}};
   complex16 ** expected = new complex16  * [rows];
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
 
   // check toArray()
   complex16* arr = tmp->toArray();
-  for (int i = 0; i < 3; i++)
+  for (size_t i = 0; i < 3; i++)
     EXPECT_TRUE(arr[i] == expectedarr[i]);
   delete[] arr;
 
   // check toComplex16Array()
   arr = tmp->toComplex16Array();
-  for (int i = 0; i < 3; i++)
+  for (size_t i = 0; i < 3; i++)
     EXPECT_TRUE(arr[i] == expectedarr[i]);
   delete[] arr;
 
   // check toArrayOfArrays()
   complex16 ** computed = tmp->toArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -811,7 +785,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   // check toComplex16ArrayOfArrays()
   computed = tmp->toComplex16ArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -858,13 +832,13 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   // data
   // real8[][] data = { { 1, 2, 0, 0 }, { 3, 0, 4, 0 }, { 0, 5, 6, 0 }, { 0, 0, 7, 0 }, {0, 0, 0, 0} };
   real8 data [7] = { 1.0e0, 3.0e0, 2.0e0, 5.0e0, 4.0e0, 6.0e0, 7.0e0 };
-  int colPtr [6] = { 0, 2, 4, 7, 7, 7 };
-  int rowIdx [7] = { 0, 1, 0, 2, 1, 2, 3 };
-  int rows = 5;
-  int cols = 4;
+  int4 colPtr [6] = { 0, 2, 4, 7, 7, 7 };
+  int4 rowIdx [7] = { 0, 1, 0, 2, 1, 2, 3 };
+  size_t rows = 5;
+  size_t cols = 4;
 
   OGRealSparseMatrix::Ptr tmp;
-  int * nullintptr = nullptr;
+  int4 * nullintptr = nullptr;
 
   // attempt construct from colptr as null, should throw
   ASSERT_THROW(OGRealSparseMatrix::create(nullintptr,rowIdx,data,rows,cols), rdag_error);
@@ -876,14 +850,8 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   real8 * nulldata = nullptr;
   ASSERT_THROW(OGRealSparseMatrix::create(colPtr,rowIdx,nulldata,rows,cols), rdag_error);
 
-  // attempt construct from bad rows
-  ASSERT_THROW(OGRealSparseMatrix::create(colPtr,rowIdx,data,-1,cols), rdag_error);
-
-  // attempt construct from bad cols
-  ASSERT_THROW(OGRealSparseMatrix::create(colPtr,rowIdx,data,rows,-1), rdag_error);
-
     // attempt construct from ok data, own the data and delete it
-  tmp = OGRealSparseMatrix::create(new int[3]{0,2,2}, new int[2]{0,1},new real8[2]{10,20},2,2, OWNER);
+  tmp = OGRealSparseMatrix::create(new int4[3]{0,2,2}, new int4[2]{0,1},new real8[2]{10,20},2,2, OWNER);
   ASSERT_NE(tmp, OGRealSparseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
@@ -920,26 +888,26 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   // wire up array for ArrOfArr test
   real8 expectedtmp[20] = { 1e0, 2e0, 0e0, 0e0 ,  3e0, 0e0, 4e0, 0e0 ,  0e0, 5e0, 6e0, 0e0 ,  0e0, 0e0, 7e0, 0e0 , 0e0, 0e0, 0e0, 0e0};
   real8 ** expected = new real8  * [rows];
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
 
   // check toArray()
   real8* arr = tmp->toArray();
-  for (int i = 0; i < 7; i++)
+  for (size_t i = 0; i < 7; i++)
     EXPECT_EQ(arr[i], data[i]);
   delete[] arr;
 
   // check toReal8Array()
   arr = tmp->toReal8Array();
-  for (int i = 0; i < 7; i++)
+  for (size_t i = 0; i < 7; i++)
     EXPECT_EQ(arr[i], data[i]);
   delete[] arr;
 
   // check toArrayOfArrays()
   real8 ** computed = tmp->toArrayOfArrays(); 
   ASSERT_TRUE(ArrayOfArraysEquals<real8>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -947,7 +915,7 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
   // check toReal8ArrayOfArrays()
   computed = tmp->toReal8ArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<real8>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -999,13 +967,13 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
 TEST(TerminalsTest, OGComplexSparseMatrix) {
   // data
   complex16 data [12] = { {1, 10}, {5, 0}, {0, 90}, {2, 20}, {0, 60}, {10, 100}, {0, 30}, {7, 70}, {11, 0}, {15, 0}, {0, 120}, {0, 160} };
-  int colPtr [6] = { 0, 3, 6, 10, 12, 12 };
-  int rowIdx [12] = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 };
-  int rows = 5;
-  int cols = 4;
+  int4 colPtr [6] = { 0, 3, 6, 10, 12, 12 };
+  int4 rowIdx [12] = { 0, 1, 2, 0, 1, 2, 0, 1, 2, 3, 2, 3 };
+  size_t rows = 5;
+  size_t cols = 4;
 
   OGComplexSparseMatrix::Ptr tmp;
-  int * nullintptr = nullptr;
+  int4 * nullintptr = nullptr;
 
   // attempt construct from colptr as null, should throw
   ASSERT_THROW(OGComplexSparseMatrix::create(nullintptr,rowIdx,data,rows,cols), rdag_error);
@@ -1017,14 +985,8 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   complex16 * nulldata = nullptr;
   ASSERT_THROW(OGComplexSparseMatrix::create(colPtr,rowIdx,nulldata,rows,cols), rdag_error);
 
-  // attempt construct from bad rows
-  ASSERT_THROW(OGComplexSparseMatrix::create(colPtr,rowIdx,data,-1,cols), rdag_error);
-
-  // attempt construct from bad cols
-  ASSERT_THROW(OGComplexSparseMatrix::create(colPtr,rowIdx,data,rows,-1), rdag_error);
-
   // attempt construct from ok data, own the data and delete it
-  tmp = OGComplexSparseMatrix::create(new int[3]{0,2,2}, new int[2]{0,1},new complex16[2]{{10,20},{30,40}},2,2, OWNER);
+  tmp = OGComplexSparseMatrix::create(new int4[3]{0,2,2}, new int4[2]{0,1},new complex16[2]{{10,20},{30,40}},2,2, OWNER);
   ASSERT_NE(tmp, OGComplexSparseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
@@ -1070,26 +1032,26 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
     {0,0},{0,0},{0,0},{0,0}
   };
   complex16 ** expected = new complex16  * [rows];
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     expected[i] = &(expectedtmp[i*cols]);
   }
 
   // check toArray()
   complex16* arr = tmp->toArray();
-  for (int i = 0; i < 12; i++)
+  for (size_t i = 0; i < 12; i++)
     EXPECT_EQ(arr[i], data[i]);
   delete[] arr;
 
   // check toComplex16Array()
   arr = tmp->toComplex16Array();
-  for (int i = 0; i < 12; i++)
+  for (size_t i = 0; i < 12; i++)
     EXPECT_EQ(arr[i], data[i]);
   delete[] arr;
 
   // check toArrayOfArrays()
   complex16 ** computed = tmp->toArrayOfArrays(); 
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -1097,7 +1059,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   // check toComplex16ArrayOfArrays()
   computed = tmp->toComplex16ArrayOfArrays();
   ASSERT_TRUE(ArrayOfArraysEquals<complex16>(expected,computed,rows,cols));
-  for(int i = 0; i < rows; i++){
+  for(size_t i = 0; i < rows; i++){
     delete [] computed[i];
   }
   delete [] computed;
@@ -1140,33 +1102,4 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
 
   // Check debug string
   copy->debug_print();
-}
-
-
-/**
- * Check OGArray methods not tested otherwise
- */
-
-/* Subclass of OGArray that will allow us to get at the setDatalen method with
- * invalid data.
- */
-class OGNaughtyArray: public OGArray<real8>
-{
-public:
-    OGNaughtyArray(int datalen)
-    {
-      setDatalen(datalen);
-    }
-    virtual void debug_print() const override {}
-    virtual void accept(Visitor SUPPRESS_UNUSED &v) const override {}
-    virtual OGNumeric::Ptr copy() const override { return OGNumeric::Ptr{}; }
-    virtual OGRealMatrix::Ptr asFullOGRealMatrix() const override { return OGRealMatrix::Ptr{}; }
-    virtual OGComplexMatrix::Ptr asFullOGComplexMatrix() const override { return OGComplexMatrix::Ptr{}; }
-    virtual OGTerminal::Ptr createOwningCopy() const override { return OGTerminal::Ptr{}; }
-    virtual OGTerminal::Ptr createComplexOwningCopy() const override { return OGTerminal::Ptr{};}
-};
-
-TEST(OGArrayTest, NegativeDatalen)
-{
-  EXPECT_THROW(OGNaughtyArray(-1), rdag_error);
 }

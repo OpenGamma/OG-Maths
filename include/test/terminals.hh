@@ -39,8 +39,8 @@ OGTerminal::Ptr ogrealdiagonalmatrix = OGRealDiagonalMatrix::create(rdiagData, 3
 complex16 cdiagData[3] = { {1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0} };
 OGComplexDiagonalMatrix::Ptr ogcomplexdiagonalmatrix = OGComplexDiagonalMatrix::create(cdiagData, 3, 4);
 
-int colPtr[3] = { 0, 2, 2 };
-int rowIdx[2] = { 0, 1 };
+int4 colPtr[3] = { 0, 2, 2 };
+int4 rowIdx[2] = { 0, 1 };
 double rsparseData[2] = { 1.0, 2.0 };
 OGRealSparseMatrix::Ptr ogrealsparsematrix = OGRealSparseMatrix::create(colPtr, rowIdx, rsparseData, 2, 2);
 

@@ -61,15 +61,15 @@ class OGTerminal: public OGNumeric
     /**
      * Gets the number of rows
      */
-    virtual int getRows() const = 0;
+    virtual size_t getRows() const = 0;
     /**
      * Gets the number of columns
      */
-    virtual int getCols() const = 0;
+    virtual size_t getCols() const = 0;
     /**
      * Gets the data length
      */
-    virtual int getDatalen() const = 0;
+    virtual size_t getDatalen() const = 0;
     /**
      * Copies the underlying data to a new real8 array
      */
@@ -166,9 +166,9 @@ class OGScalar: public OGTerminal
      */
     typedef std::shared_ptr<const OGScalar<T>> Ptr;
     static OGScalar<T>::Ptr create(T data);
-    virtual int getRows() const override;
-    virtual int getCols() const override;
-    virtual int getDatalen() const override;
+    virtual size_t getRows() const override;
+    virtual size_t getCols() const override;
+    virtual size_t getDatalen() const override;
     virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
@@ -191,7 +191,7 @@ class OGScalar: public OGTerminal
 
 extern template class OGScalar<real8>;
 extern template class OGScalar<complex16>;
-extern template class OGScalar<int>;
+extern template class OGScalar<int4>;
 
 class OGRealScalar: public OGScalar<real8>
 {
@@ -237,14 +237,14 @@ class OGComplexScalar: public OGScalar<complex16>
     OGComplexScalar(complex16 data);
 };
 
-class OGIntegerScalar: public OGScalar<int>
+class OGIntegerScalar: public OGScalar<int4>
 {
   public:
     /**
      * Pointer type.
      */
     typedef std::shared_ptr<const OGIntegerScalar> Ptr;
-    static OGIntegerScalar::Ptr create(int data);
+    static OGIntegerScalar::Ptr create(int4 data);
     virtual OGNumeric::Ptr copy() const override;
     virtual OGIntegerScalar::Ptr asOGIntegerScalar() const override;
     virtual void debug_print() const override;
@@ -254,7 +254,7 @@ class OGIntegerScalar: public OGScalar<int>
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
-    OGIntegerScalar(int data);
+    OGIntegerScalar(int4 data);
 };
 
 
@@ -264,9 +264,9 @@ template <typename T> class OGArray: public OGTerminal
     virtual ~OGArray() override;
     T * getData() const; // Returns a pointer to the underlying data
     T * toArray() const; // Returns a pointer to a copy of the underlying data
-    virtual int getRows() const override;
-    virtual int getCols() const override;
-    virtual int getDatalen() const override;
+    virtual size_t getRows() const override;
+    virtual size_t getCols() const override;
+    virtual size_t getDatalen() const override;
     virtual DATA_ACCESS getDataAccess() const;
     virtual bool equals(const OGTerminal::Ptr&) const override;
     virtual bool fuzzyequals(const OGTerminal::Ptr& term)const override;
@@ -283,17 +283,17 @@ template <typename T> class OGArray: public OGTerminal
     virtual void accept(Visitor &v) const override;
   protected:
     void setData(T * data);
-    void setRows(int rows);
-    void setCols(int cols);
-    void setDatalen(int datalen);
+    void setRows(size_t rows);
+    void setCols(size_t cols);
+    void setDatalen(size_t datalen);
     void setDataAccess(DATA_ACCESS access_spec);
     bool fundamentalsEqual(const OGTerminal::Ptr&) const;
     bool fundamentalsEqual(const OGTerminal*) const;
   private:
     T * _data = nullptr;
-    int _rows  = 0;
-    int _cols  = 0;
-    int _datalen = 0;
+    size_t _rows  = 0;
+    size_t _cols  = 0;
+    size_t _datalen = 0;
     DATA_ACCESS _data_access = VIEWER;
 };
 
@@ -305,7 +305,7 @@ template <typename T> class OGMatrix: public OGArray<T>
 {
   public:
     typedef std::shared_ptr<const OGMatrix<T>> Ptr;
-    static OGMatrix<T>::Ptr create(T* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGMatrix<T>::Ptr create(T* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual void accept(Visitor &v) const override;
     virtual void debug_print() const override;
     virtual OGNumeric::Ptr copy() const override;
@@ -316,7 +316,7 @@ template <typename T> class OGMatrix: public OGArray<T>
     virtual ExprType_t getType() const override;
     T** toArrayOfArrays() const;
   protected:
-    OGMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    OGMatrix(T * data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
 };
 
 template<> real8 ** OGMatrix<real8>::toReal8ArrayOfArrays() const;
@@ -335,7 +335,7 @@ class OGRealMatrix: public OGMatrix<real8>
      * Pointer type.
      */
     typedef std::shared_ptr<const OGRealMatrix> Ptr;
-    static OGRealMatrix::Ptr create(real8* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGRealMatrix::Ptr create(real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual OGNumeric::Ptr copy() const override;
     virtual OGRealMatrix::Ptr asOGRealMatrix() const override;
     virtual ExprType_t getType() const override;
@@ -355,7 +355,7 @@ class OGComplexMatrix: public OGMatrix<complex16>
      * Pointer type.
      */
     typedef std::shared_ptr<const OGComplexMatrix> Ptr;
-    static OGComplexMatrix::Ptr create(complex16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGComplexMatrix::Ptr create(complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric::Ptr copy() const override;
     virtual OGComplexMatrix::Ptr asOGComplexMatrix() const override;
@@ -377,7 +377,7 @@ class OGLogicalMatrix: public OGRealMatrix
      */
     typedef std::shared_ptr<const OGLogicalMatrix> Ptr;
     // TODO: range limit inputs
-    static OGLogicalMatrix::Ptr create(real8* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGLogicalMatrix::Ptr create(real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual OGLogicalMatrix::Ptr asOGLogicalMatrix() const override;
   protected:
     using OGRealMatrix::OGRealMatrix;
@@ -391,11 +391,11 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
 {
   public:
     typedef std::shared_ptr<const OGDiagonalMatrix<T>> Ptr;
-    static OGDiagonalMatrix<T>::Ptr create(T* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGDiagonalMatrix<T>::Ptr create(T* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
   protected:
-    OGDiagonalMatrix(T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    OGDiagonalMatrix(T * data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
 };
 
 extern template class OGDiagonalMatrix<real8>;
@@ -408,7 +408,7 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real8>
      * Pointer type.
      */
     typedef std::shared_ptr<const OGRealDiagonalMatrix> Ptr;
-    static OGRealDiagonalMatrix::Ptr create(real8* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGRealDiagonalMatrix::Ptr create(real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual void debug_print() const override;
     virtual real8* toReal8Array() const override;
     virtual real8** toReal8ArrayOfArrays() const override;
@@ -431,7 +431,7 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
      * Pointer type.
      */
     typedef std::shared_ptr<const OGComplexDiagonalMatrix> Ptr;
-    static OGComplexDiagonalMatrix::Ptr create(complex16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGComplexDiagonalMatrix::Ptr create(complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual void debug_print() const override;
     virtual complex16* toComplex16Array() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
@@ -455,22 +455,22 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
 {
   public:
     typedef std::shared_ptr<const OGSparseMatrix<T>> Ptr;
-    static OGSparseMatrix<T>::Ptr create(int* colPtr, int* rowIdx, T* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGSparseMatrix<T>::Ptr create(int4* colPtr, int4* rowIdx, T* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual ~OGSparseMatrix();
     virtual void accept(Visitor &v) const override;
-    int* getColPtr() const;
-    int* getRowIdx() const;
+    int4* getColPtr() const;
+    int4* getRowIdx() const;
     T** toArrayOfArrays() const;
     virtual bool equals(const OGTerminal::Ptr&) const override; // override OGArray equals to add in calls to check colPtr and rowIdx
     virtual bool fuzzyequals(const OGTerminal::Ptr& term) const override;
     virtual bool fuzzyequals(const OGTerminal::Ptr&, real8 maxabserror, real8 maxrelerror) const override;
   protected:
-    void setColPtr(int * colPtr);
-    void setRowIdx(int * rowIdx);
-    OGSparseMatrix(int * colPtr, int * rowIdx, T * data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    void setColPtr(int4 * colPtr);
+    void setRowIdx(int4 * rowIdx);
+    OGSparseMatrix(int4 * colPtr, int4 * rowIdx, T * data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
   private:
-    int* _colPtr = nullptr; // the column pointer index
-    int* _rowIdx = nullptr; // the row index
+    int4* _colPtr = nullptr; // the column pointer index
+    int4* _rowIdx = nullptr; // the row index
 };
 
 extern template class OGSparseMatrix<real8>;
@@ -483,7 +483,7 @@ class OGRealSparseMatrix: public OGSparseMatrix<real8>
      * Pointer type.
      */
     typedef std::shared_ptr<const OGRealSparseMatrix> Ptr;
-    static OGRealSparseMatrix::Ptr create(int* colPtr, int* rowIdx, real8* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGRealSparseMatrix::Ptr create(int4* colPtr, int4* rowIdx, real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual void debug_print() const override;
     virtual real8* toReal8Array() const override;
     virtual real8** toReal8ArrayOfArrays() const override;
@@ -506,7 +506,7 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
      * Pointer type.
      */
     typedef std::shared_ptr<const OGComplexSparseMatrix> Ptr;
-    static OGComplexSparseMatrix::Ptr create(int* colPtr, int* rowIdx, complex16* data, int rows, int cols, DATA_ACCESS access_spec=VIEWER);
+    static OGComplexSparseMatrix::Ptr create(int4* colPtr, int4* rowIdx, complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual void debug_print() const override;
     virtual complex16* toComplex16Array() const override;
     virtual complex16** toComplex16ArrayOfArrays() const override;
@@ -530,12 +530,12 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
  * @return a non-templated OGMatrix object.
  */
 template<typename T>
-OGNumeric::Ptr makeConcreteDenseMatrix(T * data, int rows, int cols, DATA_ACCESS access);
+OGNumeric::Ptr makeConcreteDenseMatrix(T * data, size_t rows, size_t cols, DATA_ACCESS access);
 // PTS
 template<>
-OGNumeric::Ptr makeConcreteDenseMatrix(real8 * data, int rows, int cols, DATA_ACCESS access);
+OGNumeric::Ptr makeConcreteDenseMatrix(real8 * data, size_t rows, size_t cols, DATA_ACCESS access);
 template<>
-OGNumeric::Ptr makeConcreteDenseMatrix(complex16 * data, int rows, int cols, DATA_ACCESS access);
+OGNumeric::Ptr makeConcreteDenseMatrix(complex16 * data, size_t rows, size_t cols, DATA_ACCESS access);
 
 /**
  * Creates a non-templated OGScalar object based on the type of data \a T.

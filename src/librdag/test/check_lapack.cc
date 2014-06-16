@@ -45,7 +45,7 @@ complex16 csingular3x3[9] = {{1,10},{10,100},{1,10},{2,20},{20,200},{2,20},{3,30
 
 // Check successful templating of dscal.
 TEST(LAPACKTest_xscal, dscal) {
-  int N = 4;
+  int4 N = 4;
   real8 alpha = 10.e0;
   real8 * x = new real8[4]{1,2,3,4};
   real8 * expected = new real8[4]{10,20,30,40};
@@ -58,7 +58,7 @@ TEST(LAPACKTest_xscal, dscal) {
 
 // Check successful templating of zscal.
 TEST(LAPACKTest_xscal, zscal) {
-  int N = 4;
+  int4 N = 4;
   complex16 alpha = {2,10};
   complex16 * x = new complex16[4]{{1,10},{2,20},{3,30},{4,40}};
   complex16 * expected = new complex16[4]{{-98.,30.}, {-196.,60.}, {-294.,90.}, {-392.,120.}};
@@ -71,7 +71,7 @@ TEST(LAPACKTest_xscal, zscal) {
 
 // Check successful templating of dswap.
 TEST(LAPACKTest_xswap, dswap) {
-  int N = 4;
+  int4 N = 4;
   real8 * x = new real8[8]{1,2,3,4,5,6,7,8};
   real8 * y = new real8[8]{-1,-2,-3,-4,-5,-6,-7,-8};
   real8 * expectedx = new real8[8]{-1,-2,-3,-4,5,6,7,8};
@@ -89,7 +89,7 @@ TEST(LAPACKTest_xswap, dswap) {
 
 // Check successful templating of zswap.
 TEST(LAPACKTest_xswap, zswap) {
-  int N = 4;
+  int4 N = 4;
   complex16 * x = new complex16[8]{{1,10},{2,20},{3,30},{4,40},{5,50},{6,60},{7,70},{8,80}};
   complex16 * y = new complex16[8]{{-1,-10},{-2,-20},{-3,-30},{-4,-40},{-5,-50},{-6,-60},{-7,-70},{-8,-80}};
   complex16 * expectedx = new complex16[8]{{-1,-10},{-2,-20},{-3,-30},{-4,-40},{5,50},{6,60},{7,70},{8,80}};
@@ -108,8 +108,8 @@ TEST(LAPACKTest_xswap, zswap) {
 // Check successful templating of dgemv
 TEST(LAPACKTest_xgemv, dgemv) {
 
-  int m = 5;
-  int n = 4;
+  int4 m = 5;
+  int4 n = 4;
 
   // copy in A
   real8 * A = new real8[20];
@@ -139,8 +139,8 @@ TEST(LAPACKTest_xgemv, dgemv) {
 // Check successful templating of zgemv
 TEST(LAPACKTest_xgemv, zgemv) {
 
-  int m = 5;
-  int n = 4;
+  int4 m = 5;
+  int4 n = 4;
 
   // copy in A
   complex16 * A = new complex16[20];
@@ -170,9 +170,9 @@ TEST(LAPACKTest_xgemv, zgemv) {
 // Check successful templating of dgemm
 TEST(LAPACKTest_xgemm, dgemm) {
 
-  int m = 5;
-  int k = 4;
-  int n = 2;
+  int4 m = 5;
+  int4 k = 4;
+  int4 n = 2;
 
   // copy in A
   real8 * A = new real8[20];
@@ -203,9 +203,9 @@ TEST(LAPACKTest_xgemm, dgemm) {
 // Check successful templating of dgemm
 TEST(LAPACKTest_xgemm, zgemm) {
 
-  int m = 5;
-  int k = 4;
-  int n = 2;
+  int4 m = 5;
+  int4 k = 4;
+  int4 n = 2;
 
   // copy in A
   complex16 * A = new complex16[20];
@@ -236,7 +236,7 @@ TEST(LAPACKTest_xgemm, zgemm) {
 // Check successful templating of dnrm2
 TEST(LAPACKTest_xnrm2, dnrm2) {
 
-  int n = 4;
+  int4 n = 4;
   real8 answer = lapack::xnrm2(&n, r4x1, lapack::ione);
   real8 expected = 5.4772255750516612e0;
   EXPECT_TRUE(SingleValueFuzzyEquals(expected,answer));
@@ -245,7 +245,7 @@ TEST(LAPACKTest_xnrm2, dnrm2) {
 // Check successful templating of znrm2
 TEST(LAPACKTest_xnrm2, znrm2) {
 
-  int n = 4;
+  int4 n = 4;
   real8 answer = lapack::xnrm2(&n, c4x1, lapack::ione);
   real8 expected = 55.0454357780915302e0;
   EXPECT_TRUE(SingleValueFuzzyEquals(expected,answer));
@@ -254,9 +254,9 @@ TEST(LAPACKTest_xnrm2, znrm2) {
 
 // Check successful templating of dgesvd.
 TEST(LAPACKTest_xgesvd, dgesvd) {
-  int m = 3;
-  int n = 2;
-  int INFO;
+  int4 m = 3;
+  int4 n = 2;
+  int4 INFO;
 
   real8* expectedU = new real8[9] {-0.2298476964000714,-0.5247448187602936,-0.8196419411205156,0.8834610176985253,0.2407824921325463,-0.4018960334334317,0.4082482904638627,-0.8164965809277263,0.4082482904638631};
   real8* expectedS = new real8[2] {9.525518091565107,  0.514300580658644};
@@ -293,9 +293,9 @@ TEST(LAPACKTest_xgesvd, dgesvd) {
 
 // Check successful templating of zgesvd.
 TEST(LAPACKTest_xgesvd, zgesvd) {
-  int m = 3;
-  int n = 2;
-  int INFO;
+  int4 m = 3;
+  int4 n = 2;
+  int4 INFO;
 
   complex16* expectedU = new complex16[9] {{-0.0228707006002169,-0.2287070060021659}, {-0.0522140610036492,-0.5221406100364927}, {-0.0815574214070819,-0.8155742140708198}, {-0.0879076568710847,-0.8790765687107978}, {-0.0239587534423321,-0.2395875344233279}, {0.0399901499864153, 0.3999014998641418}, {0.3147401422050641, 0.2600102104752862}, {-0.6294802844101258,-0.5200204209505755}, {0.3147401422050625, 0.2600102104752883}};
   real8* expectedS = new real8[2] {95.7302720469661779,5.1686568674896343};
@@ -333,18 +333,18 @@ TEST(LAPACKTest_xgesvd, zgesvd) {
 
 // Check successful templating of dgetrf.
 TEST(LAPACKTest_xgetrf, dgetrf) {
-  int m = 5;
-  int n = 4;
-  const int minmn = m > n ? n : m;
-  int INFO = 0;
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
 
   real8 * expectedA = new real8[20]{10.,0.5,0.9,0.8,0.1,19.,-0.5,0.2000000000000028,0.4000000000000021,-0.1999999999999997,29.,-4.5,-6.1999999999999886,0.0645161290322571,0.1290322580645162,21.,-2.5,-3.3999999999999950,12.4193548387096779,0.1480519480519481};
 
-  int * expectedIPIV = new int[4]{3,3,3,4};
+  int4 * expectedIPIV = new int4[4]{3,3,3,4};
 
   real8 * Acpy = new real8[20];
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
-  int * ipiv = new int[minmn]();
+  int4 * ipiv = new int4[minmn]();
   lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
 
   EXPECT_TRUE(ArrayBitEquals(expectedIPIV,ipiv,4));
@@ -369,18 +369,18 @@ TEST(LAPACKTest_xgetrf, dgetrf) {
 
 // Check successful templating of zgetrf.
 TEST(LAPACKTest_xgetrf, zgetrf) {
-  int m = 5;
-  int n = 4;
-  const int minmn = m > n ? n : m;
-  int INFO = 0;
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
 
   complex16 * expectedA = new complex16[20] {{10.,-20.}, { 0.5, 0.}, { 0.8999999999999999,  0.}, { 0.8, 0.}, { 0.1,  0.}, {19.,-38.}, {-0.5,  1.}, { 0.1999999999999957,  0.}, { 0.4000000000000021,  0.}, {-0.1999999999999998,  0.}, {29.,-58.}, {-4.5,  9.}, {-6.2000000000000171, 12.4000000000000341}, { 0.0645161290322568,  0.}, { 0.1290322580645157,  0.}, {21.,-42.}, {-2.5000000000000000,  5.}, {-3.4000000000000092,  6.8000000000000185}, {12.4193548387096779,-24.8387096774193559}, { 0.1480519480519480,  0.}};
 
-  int * expectedIPIV = new int[4]{3,3,3,4};
+  int4 * expectedIPIV = new int4[4]{3,3,3,4};
 
   complex16 * Acpy = new complex16[20];
   std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
-  int * ipiv = new int[minmn]();
+  int4 * ipiv = new int4[minmn]();
   lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
 
   EXPECT_TRUE(ArrayBitEquals(expectedIPIV,ipiv,4));
@@ -405,9 +405,9 @@ TEST(LAPACKTest_xgetrf, zgetrf) {
 
 // Check successful templating of dtrcon.
 TEST(LAPACKTest_xtrcon, dtrcon) {
-  int n = 4;
+  int4 n = 4;
   real8 rcond = 0;
-  int INFO = 0;
+  int4 INFO = 0;
   lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, rutri4, &n, &rcond, &INFO );
   real8 expected = 0.025e0;
   EXPECT_TRUE(SingleValueFuzzyEquals(expected,rcond));
@@ -418,16 +418,16 @@ TEST(LAPACKTest_xtrcon, dtrcon) {
 
   // check throw on bad arg (second throw)
   n=4;
-  int lda = -1;
+  int4 lda = -1;
   EXPECT_THROW(lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, rutri4, &lda, &rcond, &INFO ), rdag_error);
 
 }
 
 // Check successful templating of ztrcon.
 TEST(LAPACKTest_xtrcon, ztrcon) {
-  int n = 4;
+  int4 n = 4;
   real8 rcond = 0;
-  int INFO = 0;
+  int4 INFO = 0;
   lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, cutri4, &n, &rcond, &INFO );
   real8 expected = 0.025e0;
   EXPECT_TRUE(SingleValueFuzzyEquals(expected,rcond));
@@ -438,15 +438,15 @@ TEST(LAPACKTest_xtrcon, ztrcon) {
 
   // check throw on bad arg (second throw)
   n=4;
-  int lda = -1;
+  int4 lda = -1;
   EXPECT_THROW(lapack::xtrcon(lapack::ONE, lapack::U, lapack::N, &n, cutri4, &lda, &rcond, &INFO ), rdag_error);
 }
 
 // Check successful templating of dtrtrs.
 TEST(LAPACKTest_xtrtrs, dtrtrs) {
-  int n = 4;
+  int4 n = 4;
   real8 * RHS = new real8[4]{10,8,2,-1};
-  int INFO = 0;
+  int4 INFO = 0;
   lapack::xtrtrs(lapack::U, lapack::N, lapack::N, &n, lapack::ione, rutri4, &n, RHS, &n, &INFO );
   real8 expected[4] = {7.25,1.125,0.25,-0.0625};
   EXPECT_TRUE(ArrayFuzzyEquals(expected,RHS,n));
@@ -466,9 +466,9 @@ TEST(LAPACKTest_xtrtrs, dtrtrs) {
 
 // Check successful templating of ztrtrs.
 TEST(LAPACKTest_xtrtrs, ztrtrs) {
-  int n = 4;
+  int4 n = 4;
   complex16 * RHS = new complex16[4]{{10.,-2.}, {-7.,3.}, {3.,-6.}, {-2.,-5.}};
-  int INFO = 0;
+  int4 INFO = 0;
   lapack::xtrtrs(lapack::U, lapack::N, lapack::N, &n, lapack::ione, cutri4, &n, RHS, &n, &INFO );
   complex16 expected[4] = {{-0.1212121212121212,-1.2348484848484849}, {0.0997599759975998, 0.1577032703270327}, {-0.0162016201620162,-0.0425292529252925}, {-0.0321782178217822, 0.0092821782178218}};
   EXPECT_TRUE(ArrayFuzzyEquals(expected,RHS,n));
@@ -489,8 +489,8 @@ TEST(LAPACKTest_xtrtrs, ztrtrs) {
 
 // Check successful templating of dgetri.
 TEST(LAPACKTest_xgetri, dgetri) {
-  int n = 4;
-  int INFO = 0;
+  int4 n = 4;
+  int4 INFO = 0;
 
   // this is the decomp of rcondok5x4[1:16] from dgetrf
   real8 * A = new real8[16]{10,0.5000000000000000,0.9000000000000000,0.8000000000000000,19,-0.5000000000000000,0.2000000000000028,0.4000000000000021,29,-4.5000000000000000,-6.1999999999999886,0.0645161290322571,21,-2.5000000000000000,-3.3999999999999950,12.4193548387096779};
@@ -500,7 +500,7 @@ TEST(LAPACKTest_xgetri, dgetri) {
   // this is the decomp of rsingular3x3 from dgetrf
   real8 * Asingular = new real8[9] {10., 0.1, 0.10000000000000001, 20., -0., -0., 30.,-0.,-0.};
 
-  int * ipiv = new int[4]{3,3,3,4};
+  int4 * ipiv = new int4[4]{3,3,3,4};
 
   real8 * Acpy = new real8[16];
   std::copy(A,A+n*n,Acpy);
@@ -528,8 +528,8 @@ TEST(LAPACKTest_xgetri, dgetri) {
 
 // Check successful templating of zgetri.
 TEST(LAPACKTest_xgetri, zgetri) {
-  int n = 4;
-  int INFO = 0;
+  int4 n = 4;
+  int4 INFO = 0;
 
   // this is the decomp of ccondok5x4[1:16] from zgetrf
   complex16 * A = new complex16[16]{{10,-20}, {0.5,0}, {0.8999999999999999,0}, {      0.8,0}, {19,-38}, {-0.5,1}, {0.1999999999999957,0}, {0.4000000000000021,0}, {29,-58}, {     -4.5,9}, {     -6.2000000000000171,12.4000000000000341}, {0.0645161290322568,0}, {21,-42}, {-2.5,5}, {     -3.4000000000000092,6.8000000000000185}, {12.4193548387096779,-24.8387096774193559}};
@@ -540,7 +540,7 @@ TEST(LAPACKTest_xgetri, zgetri) {
   // this is the decomp of csingular3x3 from zgetrf
   complex16 * Asingular = new complex16[9] {{10.,100.},{0.1,0.1},{20.,200.},{-0.,-0.},{30.,300.}, 0.,0.};
 
-  int * ipiv = new int[4]{3,3,3,4};
+  int4 * ipiv = new int4[4]{3,3,3,4};
 
   complex16 * Acpy = new complex16[16];
   std::copy(A,A+n*n,Acpy);
@@ -570,8 +570,8 @@ TEST(LAPACKTest_xgetri, zgetri) {
 
 // Check successful templating of dpotrf.
 TEST(LAPACKTest_xpotrf, dpotrf) {
-  int n=4;
-  int INFO = 0;
+  int4 n=4;
+  int4 INFO = 0;
   real8 * A = new real8[16];
 
   std::copy(rspd,rspd+n*n,A);
@@ -598,8 +598,8 @@ TEST(LAPACKTest_xpotrf, dpotrf) {
 
 // Check successful templating of zpotrf.
 TEST(LAPACKTest_xpotrf, zpotrf) {
-  int n=4;
-  int INFO = 0;
+  int4 n=4;
+  int4 INFO = 0;
   complex16 * A = new complex16[16];
 
   std::copy(cspd,cspd+n*n,A);
@@ -626,8 +626,8 @@ TEST(LAPACKTest_xpotrf, zpotrf) {
 
 // Check successful templating of dpocon.
 TEST(LAPACKTest_xpocon, dpocon) {
-  int n = 4;
-  int INFO = 0;
+  int4 n = 4;
+  int4 INFO = 0;
   real8 * A = new real8[16];
   std::copy(rspd,rspd+n*n,A);
   real8 ANORM = lapack::xlansy(lapack::ONE, lapack::U, &n, A, &n);
@@ -654,8 +654,8 @@ TEST(LAPACKTest_xpocon, dpocon) {
 
 // Check successful templating of zpocon.
 TEST(LAPACKTest_xpocon, zpocon) {
-  int n = 4;
-  int INFO = 0;
+  int4 n = 4;
+  int4 INFO = 0;
   complex16 * A = new complex16[16];
   std::copy(cspd,cspd+n*n,A);
   real8 ANORM = lapack::zlanhe(lapack::ONE, lapack::U, &n, A, &n);
@@ -680,7 +680,7 @@ TEST(LAPACKTest_xpocon, zpocon) {
 }
 
 TEST(LAPACKTest_xlansy, dlansy) {
-  int n = 4;
+  int4 n = 4;
   real8 NORM = lapack::xlansy(lapack::ONE, lapack::U, &n, rspd, &n);
   real8 expected = 79;
   EXPECT_TRUE(SingleValueFuzzyEquals(expected, NORM));
@@ -691,7 +691,7 @@ TEST(LAPACKTest_xlansy, dlansy) {
 }
 
 TEST(LAPACKTest_xlansy, zlansy) {
-  int n = 4;
+  int4 n = 4;
   // cpsd is Hermitian, but the upper triangle only is addressed so we
   // can pretend it's symmetric.
   real8 NORM = lapack::xlansy(lapack::ONE, lapack::U, &n, cspd, &n);
@@ -705,8 +705,8 @@ TEST(LAPACKTest_xlansy, zlansy) {
 
 
 TEST(LAPACKTest_xpotrs, dpotrs) {
-  int n = 4;
-  int INFO;
+  int4 n = 4;
+  int4 INFO;
   real8 * A = new real8[16];
   std::copy(rspd,rspd+n*n,A);
   lapack::xpotrf(lapack::U, &n, A, &n, &INFO);
@@ -725,8 +725,8 @@ TEST(LAPACKTest_xpotrs, dpotrs) {
 }
 
 TEST(LAPACKTest_xpotrs, zpotrs) {
-  int n = 4;
-  int INFO;
+  int4 n = 4;
+  int4 INFO;
   complex16 * A = new complex16[16];
   std::copy(cspd,cspd+n*n,A);
   lapack::xpotrf(lapack::U, &n, A, &n, &INFO);

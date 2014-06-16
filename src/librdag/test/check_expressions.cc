@@ -161,8 +161,8 @@ TEST(VirtualCopyTest, ComplexDiagonalMatrix){
 }
 
 TEST(VirtualCopyTest, RealSparseMatrix){
-  int colPtr[3] = { 0, 2, 2 };
-  int rowIdx[2] = { 0, 1 };
+  int4 colPtr[3] = { 0, 2, 2 };
+  int4 rowIdx[2] = { 0, 1 };
   real8 rsparseData[2] = { 1.0, 2.0 };
   OGRealSparseMatrix::Ptr rsm1 = OGRealSparseMatrix::create(colPtr, rowIdx, rsparseData, 2, 2);
   OGRealSparseMatrix::Ptr rsm2 = rsm1->copy()->asOGRealSparseMatrix();
@@ -175,8 +175,8 @@ TEST(VirtualCopyTest, RealSparseMatrix){
 }
 
 TEST(VirtualCopyTest, ComplexSparseMatrix){
-  int colPtr[3] = { 0, 2, 2 };
-  int rowIdx[2] = { 0, 1 };
+  int4 colPtr[3] = { 0, 2, 2 };
+  int4 rowIdx[2] = { 0, 1 };
   complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };
   OGComplexSparseMatrix::Ptr csm1 = OGComplexSparseMatrix::create(colPtr, rowIdx, csparseData, 2, 2);
   OGComplexSparseMatrix::Ptr csm2 = csm1->copy()->asOGComplexSparseMatrix();

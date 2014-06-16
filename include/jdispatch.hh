@@ -45,15 +45,15 @@ class Real8AoA
     /**
      * Get the number of rows.
      */
-    int getRows() const;
+    size_t getRows() const;
     /**
      * Get the number of columns.
      */
-    int getCols() const;
+    size_t getCols() const;
   private:
     real8** _data;
-    int _rows;
-    int _cols;
+    size_t _rows;
+    size_t _cols;
 };
 
 /**
@@ -88,19 +88,19 @@ class Complex16AoA
     /**
      * Get the number of rows.
      */
-    int getRows() const;
+    size_t getRows() const;
     /**
      * Get the number of columns.
      */
-    int getCols() const;
+    size_t getCols() const;
   private:
     /**
      * Used by {real,imag}PartToJDoubleAoA
      */
     template<real8 (F)(const complex16&)> jobjectArray toJDoubleAoA(JNIEnv* env) const;
     complex16** _data;
-    int _rows;
-    int _cols;
+    size_t _rows;
+    size_t _cols;
 };
   
 class DLLEXPORT_C DispatchToOGTerminal: public librdag::Visitor
@@ -111,7 +111,7 @@ class DLLEXPORT_C DispatchToOGTerminal: public librdag::Visitor
     virtual void visit(librdag::OGExpr const *thing);
     virtual void visit(librdag::OGScalar<real8> const *thing);
     virtual void visit(librdag::OGScalar<complex16> const *thing);
-    virtual void visit(librdag::OGScalar<int> const *thing);
+    virtual void visit(librdag::OGScalar<int4> const *thing);
     virtual void visit(librdag::OGMatrix<real8> const *thing);
     virtual void visit(librdag::OGMatrix<complex16> const *thing);
     virtual void visit(librdag::OGDiagonalMatrix<real8> const *thing);

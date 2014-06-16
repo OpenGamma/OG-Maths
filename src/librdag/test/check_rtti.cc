@@ -162,16 +162,16 @@ TEST(RTTITerminalTest, TestOGComplexDiagonalMatrix) {
 }
 
 TEST(RTTITerminalTest, TestOGRealSparseMatrix) {
-  int colPtr[3] = { 0, 2, 2 };
-  int rowIdx[2] = { 0, 1 };
+  int4 colPtr[3] = { 0, 2, 2 };
+  int4 rowIdx[2] = { 0, 1 };
   real8 rsparseData[2] = { 1.0, 2.0 };
   OGNumeric::Ptr node = OGRealSparseMatrix::create(colPtr, rowIdx, rsparseData, 2, 2);
   check_rtti(node, "OGRealSparseMatrix");
 }
 
 TEST(RTTITerminalTest, TestOGComplexSparseMatrix) {
-  int colPtr[3] = { 0, 2, 2 };
-  int rowIdx[2] = { 0, 1 };
+  int4 colPtr[3] = { 0, 2, 2 };
+  int4 rowIdx[2] = { 0, 1 };
   complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };
   OGNumeric::Ptr node = OGComplexSparseMatrix::create(colPtr, rowIdx, csparseData, 2, 2);
   check_rtti(node, "OGComplexSparseMatrix");

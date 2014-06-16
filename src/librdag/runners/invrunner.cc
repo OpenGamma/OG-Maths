@@ -70,8 +70,8 @@ inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
   }
   else
   {
-    int m = arg->getRows();
-    int n = arg->getCols();
+    int4 m = arg->getRows();
+    int4 n = arg->getCols();
 
     // require matrix is square.
     if(m!=n)
@@ -82,19 +82,19 @@ inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     }
 
     // dimensions
-    int size = m;
-    int sizesize = size*size;
-    int lda = size;
+    int4 size = m;
+    int4 sizesize = size*size;
+    int4 lda = size;
 
     // status
-    int info = 0;
+    int4 info = 0;
 
     // copy A else it's destroyed
     T * A = new T[sizesize];
     std::memcpy(A, arg->getData(), sizeof(T)*sizesize);
 
     // create pivot vector
-    int * ipiv = new int[size]();
+    int4 * ipiv = new int4[size]();
 
     // call lapack to get LU decomp
     try

@@ -45,19 +45,19 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
   }
   else if(isVector(arg)) // Matrix is a vector, norm2 computed via BLAS xnrm2
   {
-    int len = arg->getRows() > arg->getCols() ? arg->getRows(): arg->getCols();
+    int4 len = arg->getRows() > arg->getCols() ? arg->getRows(): arg->getCols();
     real8 value = lapack::xnrm2(&len, arg->getData(), lapack::ione);
     ret = OGRealScalar::create(value);
   }
   else // Matrix is a full matrix, norm2 computed via LAPACK xgesvd
   {
-    int m = arg->getRows();
-    int n = arg->getCols();
-    int lda = m > 1 ? m : 1;
-    int ldu = lda;
-    int minmn = m > n ? n : m;
-    int ldvt = minmn;
-    int info = 0;
+    int4 m = arg->getRows();
+    int4 n = arg->getCols();
+    int4 lda = m > 1 ? m : 1;
+    int4 ldu = lda;
+    int4 minmn = m > n ? n : m;
+    int4 ldvt = minmn;
+    int4 info = 0;
 
     T * U = nullptr; //IGNORED
     T * VT = nullptr; //IGNORED

@@ -97,15 +97,15 @@ infix_scalar_runner_implementation = """\
 """
 
 infix_matrix_runner_implementation = """\
-  int r0 = arg0->getRows();
-  int r1 = arg1->getRows();
-  int c0 = arg0->getCols();
-  int c1 = arg1->getCols();
+  size_t r0 = arg0->getRows();
+  size_t r1 = arg1->getRows();
+  size_t c0 = arg0->getCols();
+  size_t c1 = arg1->getCols();
   
   bool arg0scalar = false, arg1scalar = false;
   %(datatype)s arg0value = 0.0, arg1value = 0.0;
 
-  int newRows, newCols;
+  size_t newRows, newCols;
   
   if ((r0 == 1) && (c0 == 1))
   {
@@ -142,34 +142,34 @@ infix_matrix_runner_implementation = """\
 
   if (arg0scalar)
   {
-    int datalen = arg1->getDatalen();
+    size_t datalen = arg1->getDatalen();
     %(datatype)s* data1 = arg1->getData();
     newData = new %(datatype)s[datalen];
     
-    for (int i = 0; i < datalen; i++)
+    for (size_t i = 0; i < datalen; i++)
     {
       newData[i] = data1[i] %(symbol)s arg0value;
     }
   }
   else if (arg1scalar)
   {
-    int datalen = arg0->getDatalen();
+    size_t datalen = arg0->getDatalen();
     %(datatype)s* data0 = arg0->getData();
     newData = new %(datatype)s[datalen];
     
-    for (int i = 0; i < datalen; i++)
+    for (size_t i = 0; i < datalen; i++)
     {
       newData[i] = data0[i] %(symbol)s arg1value;
     }
   }
   else
   {
-    int datalen = arg0->getDatalen();
+    size_t datalen = arg0->getDatalen();
     %(datatype)s* data0 = arg0->getData();
     %(datatype)s* data1 = arg1->getData();
     newData = new %(datatype)s[datalen];
     
-    for (int i = 0; i < datalen; i++)
+    for (size_t i = 0; i < datalen; i++)
     {
       newData[i] = data0[i] %(symbol)s data1[i];
     }
@@ -210,9 +210,9 @@ prefix_scalar_runner_implementation = """\
 
 prefix_matrix_runner_implementation = """\
   %(datatype)s* data = arg->getData();
-  int datalen = arg->getDatalen();
+  size_t datalen = arg->getDatalen();
   %(datatype)s* newData = new %(datatype)s[datalen];
-  for (int i = 0; i < datalen; ++i)
+  for (size_t i = 0; i < datalen; ++i)
   {
     newData[i] = %(symbol)sdata[i];
   }
@@ -227,9 +227,9 @@ unaryfunction_scalar_runner_implementation = """\
 
 unaryfunction_matrix_runner_implementation = """\
   %(datatype)s* data = arg->getData();
-  int datalen = arg->getDatalen();
+  size_t datalen = arg->getDatalen();
   %(datatype)s* newData = new %(datatype)s[datalen];
-  for (int i = 0; i < datalen; ++i)
+  for (size_t i = 0; i < datalen; ++i)
   {
     newData[i] = %(function)s(data[i]);
   }

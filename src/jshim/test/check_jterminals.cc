@@ -21,17 +21,17 @@ using namespace std;
 using namespace convert;
 
 
-TEST(JTerminals, Test_getIntFromVoidJMethod_null_meth)
+TEST(JTerminals, Test_getSizeTFromVoidJMethod_null_meth)
 {
   jobject obj = new _jobject();
-  ASSERT_THROW(getIntFromVoidJMethod(nullptr,obj), convert_error);
+  ASSERT_THROW(getSizeTFromVoidJMethod(nullptr,obj), convert_error);
   delete obj;
 }
 
-TEST(JTerminals, Test_getIntFromVoidJMethod_null_obj)
+TEST(JTerminals, Test_getSizeTFromVoidJMethod_null_obj)
 {
   jmethodID meth = new _jmethodID();
-  ASSERT_THROW(getIntFromVoidJMethod(meth,nullptr), convert_error);
+  ASSERT_THROW(getSizeTFromVoidJMethod(meth,nullptr), convert_error);
   delete meth;
 }
 
@@ -39,7 +39,7 @@ TEST(JTerminals, Test_getIntFromVoidJMethod_null_obj)
 // AttachCurrentThread so the code is always safe WRT the *env reference being valid.
 // The test below will fail as a result of impairing the AttachCurrentThread function.
 // 
-// TEST(JTerminals, Test_getIntFromVoidJMethod_null_envptr)
+// TEST(JTerminals, Test_getSizeTFromVoidJMethod_null_envptr)
 // {
 //   class Fake_JavaVM_bad_attach: public Fake_JavaVM
 //   {
@@ -55,7 +55,7 @@ TEST(JTerminals, Test_getIntFromVoidJMethod_null_obj)
 //   JVMManager::initialize(jvm);
 //   jmethodID meth = new _jmethodID();
 //   jobject obj = new _jobject();
-//   ASSERT_THROW(getIntFromVoidJMethod(meth,obj), convert_error);
+//   ASSERT_THROW(getSizeTFromVoidJMethod(meth,obj), convert_error);
 //   delete env;
 //   delete jvm;
 //   delete meth;
@@ -216,7 +216,7 @@ TEST(JTerminals, Test_binding_getArrayFromJava_bad_GetIntArrayElements)
 template<typename T>class Fake_JNIEnv_for_OGMatrix_T: public Fake_JNIEnv
 {
   public:
-    Fake_JNIEnv_for_OGMatrix_T(int rows, T * value):Fake_JNIEnv()
+    Fake_JNIEnv_for_OGMatrix_T(size_t rows, T * value):Fake_JNIEnv()
     {
       _rows = rows;
       _value = value;
@@ -233,13 +233,13 @@ template<typename T>class Fake_JNIEnv_for_OGMatrix_T: public Fake_JNIEnv
       return reinterpret_cast<real8 *>(_value);
     }
   protected:
-    int _rows;
+    size_t _rows;
     T * _value;
 };
 
 TEST(JTerminals, Test_JOGRealMatrix_ctor)
 {
-    int rval = 2;
+    size_t rval = 2;
     real8 * datav = new real8[4]{1,2,3,4};
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real8>(rval, datav);
@@ -266,7 +266,7 @@ TEST(JTerminals, Test_JOGRealMatrix_ctor)
 
 TEST(JTerminals, Test_JOGLogicalMatrix_ctor)
 {
-    int rval = 2;
+    size_t rval = 2;
     real8 * datav = new real8[4]{1,2,3,4};
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real8>(rval, datav);
@@ -293,7 +293,7 @@ TEST(JTerminals, Test_JOGLogicalMatrix_ctor)
 
 TEST(JTerminals, Test_JOGComplexMatrix_ctor)
 {
-    int rval = 2;
+    size_t rval = 2;
     complex16 * datav = new complex16[4]{{1,10},{2,20},{3,30},{4,40}};
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<complex16>(rval, datav);
@@ -320,7 +320,7 @@ TEST(JTerminals, Test_JOGComplexMatrix_ctor)
 
 TEST(JTerminals, Test_JOGRealDiagonalMatrix_ctor)
 {
-    int rval = 2;
+    size_t rval = 2;
     real8 * datav = new real8[2]{10,20};
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<real8>(rval, datav);
@@ -347,7 +347,7 @@ TEST(JTerminals, Test_JOGRealDiagonalMatrix_ctor)
 
 TEST(JTerminals, Test_JOGComplexDiagonalMatrix_ctor)
 {
-    int rval = 2;
+    size_t rval = 2;
     complex16 * datav = new complex16[2]{{1,10},{2,20}};
     Fake_JavaVM * jvm = new Fake_JavaVM();
     Fake_JNIEnv * env  = new Fake_JNIEnv_for_OGMatrix_T<complex16>(rval, datav);
@@ -376,7 +376,7 @@ TEST(JTerminals, Test_JOGComplexDiagonalMatrix_ctor)
 template<typename T>class Fake_JNIEnv_for_OGSparseMatrix_T: public Fake_JNIEnv_for_OGMatrix_T<T>
 {
   public:
-    Fake_JNIEnv_for_OGSparseMatrix_T(int rows, T * value, int * idx):Fake_JNIEnv_for_OGMatrix_T<T>(rows,value)
+    Fake_JNIEnv_for_OGSparseMatrix_T(size_t rows, T * value, int * idx):Fake_JNIEnv_for_OGMatrix_T<T>(rows,value)
     {
       _idx = idx;
     }
@@ -404,7 +404,7 @@ template<typename T>class Fake_JNIEnv_for_OGSparseMatrix_T: public Fake_JNIEnv_f
 
 TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
 {
-    int rval = 2;
+    size_t rval = 2;
     real8 * datav = new real8[4]{1,2,3,4};
     int * idx = new int[4]{1,2,2,2};
 
@@ -438,7 +438,7 @@ TEST(JTerminals, Test_JOGRealSparseMatrix_ctor)
 
 TEST(JTerminals, Test_JOGComplexSparseMatrix_ctor)
 {
-    int rval = 2;
+    size_t rval = 2;
     complex16 * datav = new complex16[4]{{1,10},{2,20},{3,30},{4,40}};
     int * idx = new int[4]{1,2,2,2};
 

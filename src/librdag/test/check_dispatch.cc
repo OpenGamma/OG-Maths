@@ -31,7 +31,7 @@ TEST(DispatchTest, SimpleTest) {
   OGNumeric::Ptr real2 = OGRealScalar::create(2.0);
   OGNumeric::Ptr plus = PLUS::create(real1, real2);
   ExecutionList el1 = ExecutionList{plus};
-  int counter = 0;
+  size_t counter = 0;
   for (auto it: el1)
   {
     cout << "counter is" << ++counter << std::endl;
