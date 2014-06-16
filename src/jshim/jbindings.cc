@@ -104,8 +104,8 @@ bindPrimitiveArrayData<real8, jdoubleArray>(jobject obj, jmethodID method);
 template complex16*
 bindPrimitiveArrayData<complex16, jdoubleArray>(jobject obj, jmethodID method);
 
-template int*
-bindPrimitiveArrayData<int, jintArray>(jobject obj, jmethodID method);
+template jint*
+bindPrimitiveArrayData<jint, jintArray>(jobject obj, jmethodID method);
 
 /**
  * unbindPrimitiveArrayData
