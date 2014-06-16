@@ -51,7 +51,7 @@ PINVRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
  * @param cols the number of cols in the matrix
  * @return the threshold value for "zero"
  */
-real8 pinv_threshold(real8 msv, int rows, int cols)
+real8 pinv_threshold(real8 msv, size_t rows, size_t cols)
 {
   return (rows > cols ? rows : cols) * msv * std::numeric_limits<real8>::epsilon();
 }
@@ -80,9 +80,9 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
   }
   else
   {
-    const int m = arg->getRows();
-    const int n = arg->getCols();
-    const int minmn = m > n ? n : m;
+    const size_t m = arg->getRows();
+    const size_t n = arg->getCols();
+    const size_t minmn = m > n ? n : m;
 
     // Perform SVD on a copy of the argument, since it will get destroyed
     OGExpr::Ptr svd = SVD::create(arg);
@@ -99,7 +99,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     // go backwards as singular values are ordered descending.
     real8 * S = numericS->asOGRealDiagonalMatrix()->getData();
     real8 thres = pinv_threshold(S[0], m, n);
-    int lim;
+    size_t lim;
     for(lim = minmn - 1 ; lim >= 0; lim--)
     {
       if(std::abs(S[lim])>thres)
@@ -109,11 +109,11 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     }
 
     // scale the diags in the reachable part, zero the rest
-    for(int i = 0 ; i <= lim; i++)
+    for(size_t i = 0 ; i <= lim; i++)
     {
       S[i] = 1.e0/S[i];
     }
-    for(int i = lim + 1; i < minmn; i++)
+    for(size_t i = lim + 1; i < minmn; i++)
     {
       S[i] = 0.e0;
     }
