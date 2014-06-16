@@ -893,7 +893,7 @@ TEST(LAPACKTest_xgetrs, zgetrs) {
   delete [] rhs;
 }
 
-TEST(LAPACKTest_xgetrs, dgels) {
+TEST(LAPACKTest_xgels, dgels) {
   int m = 5;
   int n = 4;
   int INFO = 0;
@@ -920,4 +920,120 @@ TEST(LAPACKTest_xgetrs, dgels) {
   delete [] expected;
   delete [] rhs;
 }
+
+
+TEST(LAPACKTest_xgels, zgels) {
+  int m = 5;
+  int n = 4;
+  int INFO = 0;
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  // need an RHS
+  complex16 * rhs = new complex16[10]{{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}, {5., 50.},{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}, {5.,50.}};
+
+  // expected
+  complex16 * expected = new complex16[8]{{     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}, {     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}};
+
+  // make the call
+  int two = 2;
+  lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO);
+
+  // answers are striped in "n" length columns in RHS
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  // clean up
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+}
+
+
+TEST(LAPACKTest_xgelsd, dgelsd) {
+  int m = 5;
+  int n = 4;
+  int INFO = 0;
+  int minmn = m > n ? n : m;
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  // need an RHS
+  real8 * rhs = new real8[10]{1,2,3,4,5,1,2,3,4,5};
+
+  // expected
+  real8 * expected = new real8[8]{-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731,-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731};
+  real8 * expected_S = new real8[4] {66.4703325718839153,9.0396484167794604,3.5978090226222377,0.1881874621350516};
+
+  // need somewhere to write S
+  real8 * S = new real8[minmn];
+  // condition and rank
+  real8 RCOND = - 1; // -1 so rank is computed wrt machine precision
+  int RANK;
+
+  // make the call
+  int two = 2;
+  lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO);
+
+  // answers are striped in "n" length columns in RHS
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_S,S,minmn,1e-13,1e-13));
+
+  EXPECT_TRUE(RANK==n);
+
+  // clean up
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+  delete [] S;
+  delete [] expected_S;
+}
+
+
+TEST(LAPACKTest_xgelsd, zgelsd) {
+  int m = 5;
+  int n = 4;
+  int INFO = 0;
+  int minmn = m > n ? n : m;
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  // need an RHS
+  complex16 * rhs = new complex16[10]{{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}, {5., 50.},{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}, {5.,50.}};
+
+  // expected
+  complex16 * expected = new complex16[8]{{     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}, {     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}};
+  real8 * expected_S = new real8[4]{148.6321821177508014,20.2132683526172237,8.0449455446454117,0.4207999578471437};
+
+  // need somewhere to write S
+  real8 * S = new real8[minmn];
+  // condition and rank
+  real8 RCOND = - 1; // -1 so rank is computed wrt machine precision
+  int RANK;
+
+  // make the call
+  int two = 2;
+  lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO);
+
+  // answers are striped in "n" length columns in RHS
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_S,S,minmn,1e-13,1e-13));
+
+  EXPECT_TRUE(RANK==n);
+
+  // clean up
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+  delete [] S;
+  delete [] expected_S;
+}
+
 
