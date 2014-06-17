@@ -172,52 +172,52 @@ namespace detail
   }
 
   //xLANGE specialisation
-  template<> real8 xlange(char * NORM, int * M, int * N, real8 * A, int * LDA, real8 * WORK )
+  template<> real8 xlange(char * NORM, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * WORK )
   {
     return F77FUNC(dlange)(NORM, M, N, A, LDA, WORK);
   }
 
-  template<> real8 xlange(char * NORM, int * M, int * N, complex16 * A, int * LDA, real8 * WORK )
+  template<> real8 xlange(char * NORM, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * WORK )
   {
     return F77FUNC(zlange)(NORM, M, N, A, LDA, WORK);
   }
 
   // xGETRS specialisations
-  template<> void xgetrs(char * TRANS, int * N, int * NRHS, real8 * A, int * LDA, int * IPIV, real8 * B, int * LDB, int * INFO)
+  template<> void xgetrs(char * TRANS, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, int4 * IPIV, real8 * B, int4 * LDB, int4 * INFO)
   {
     F77FUNC(dgetrs)(TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
   }
-  template<> void xgetrs(char * TRANS, int * N, int * NRHS, complex16 * A, int * LDA, int * IPIV, complex16 * B, int * LDB, int * INFO)
+  template<> void xgetrs(char * TRANS, int4 * N, int4 * NRHS, complex16 * A, int4 * LDA, int4 * IPIV, complex16 * B, int4 * LDB, int4 * INFO)
   {
     F77FUNC(zgetrs)(TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
   }
 
   //xGELS specialisations
-  template<> void xgels(char * TRANS, int * M, int * N, int * NRHS, real8 * A, int * LDA, real8 * B, int * LDB, real8 * WORK, int * LWORK, int * INFO )
+  template<> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, real8 * B, int4 * LDB, real8 * WORK, int4 * LWORK, int4 * INFO )
   {
     F77FUNC(dgels)(TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK, INFO );
   }
-  template<> void xgels(char * TRANS, int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, complex16 * WORK, int * LWORK, int * INFO )
+  template<> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, complex16 * A, int4 * LDA, complex16 * B, int4 * LDB, complex16 * WORK, int4 * LWORK, int4 * INFO )
   {
     F77FUNC(zgels)(TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK, INFO );
   }
 
   //xGEQRF specialisations
-  template<> void xgeqrf(int * M, int * N, real8 * A, int * LDA, real8 * TAU, real8 * WORK, int * LWORK, int *INFO)
+  template<> void xgeqrf(int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * TAU, real8 * WORK, int4 * LWORK, int4 *INFO)
   {
     F77FUNC(dgeqrf)(M, N, A, LDA, TAU, WORK, LWORK, INFO);
   }
-  template<> void xgeqrf(int * M, int * N, complex16 * A, int * LDA, complex16 * TAU, complex16 * WORK, int * LWORK, int *INFO)
+  template<> void xgeqrf(int4 * M, int4 * N, complex16 * A, int4 * LDA, complex16 * TAU, complex16 * WORK, int4 * LWORK, int4 *INFO)
   {
     F77FUNC(zgeqrf)(M, N, A, LDA, TAU, WORK, LWORK, INFO);
   }
 
   // xxxGQR specialisations
-  template<> void xxxgqr(int * M, int * N, int * K, real8 * A, int * LDA, real8 * TAU, real8 * WORK, int * LWORK, int * INFO)
+  template<> void xxxgqr(int4 * M, int4 * N, int4 * K, real8 * A, int4 * LDA, real8 * TAU, real8 * WORK, int4 * LWORK, int4 * INFO)
   {
     F77FUNC(dorgqr)(M, N, K, A, LDA, TAU, WORK, LWORK, INFO);
   }
-  template<> void xxxgqr(int * M, int * N, int * K, complex16 * A, int * LDA, complex16 * TAU, complex16 * WORK, int * LWORK, int * INFO)
+  template<> void xxxgqr(int4 * M, int4 * N, int4 * K, complex16 * A, int4 * LDA, complex16 * TAU, complex16 * WORK, int4 * LWORK, int4 * INFO)
   {
     F77FUNC(zungqr)(M, N, K, A, LDA, TAU, WORK, LWORK, INFO);
   }
@@ -295,7 +295,7 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A
   set_xerbla_death_switch(lapack::izero);
 
   real8 tmp;
-  int lwork = -1; // set for query
+  int4 lwork = -1; // set for query
 
   // work space query
   F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, &tmp, &lwork, INFO);
@@ -308,7 +308,7 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A
   }
 
   // query complete tmp contains size needed
-  lwork = (int)tmp;
+  lwork = (int4)tmp;
   std::unique_ptr<real8[]> workPtr(new real8[lwork]());
   real8 * WORK = workPtr.get();
 
@@ -325,9 +325,9 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16
 {
   set_xerbla_death_switch(lapack::izero);
 
-  int minmn = *M > *N ? *N : *M; // compute scale for RWORK
+  int4 minmn = *M > *N ? *N : *M; // compute scale for RWORK
   complex16 tmp;
-  int lwork = -1; // set for query
+  int4 lwork = -1; // set for query
   real8 * RWORK = nullptr;
 
   // work space query
@@ -340,7 +340,7 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16
   }
 
   // query complete tmp contains size needed
-  lwork = (int)(tmp.real());
+  lwork = (int4)(tmp.real());
 
   std::unique_ptr<complex16[]> workPtr(new complex16[lwork]);
   complex16 * WORK = workPtr.get();
@@ -395,7 +395,7 @@ template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 
   // will check on true call below.
 
   // Allocate work space based on queried value
-  lwork = (int)std::real(worktmp);
+  lwork = (int4)std::real(worktmp);
   std::unique_ptr<T[]> workPtr (new T[lwork]);
   T * work = workPtr.get();
 
@@ -432,8 +432,8 @@ template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int4 * N, real8 * 
 
   std::unique_ptr<real8[]> workPtr (new real8[ 3 * *N]);
   real8 * WORK = workPtr.get();
-  std::unique_ptr<int[]> iworkPtr (new int[*N]);
-  int * IWORK = iworkPtr.get();
+  std::unique_ptr<int4[]> iworkPtr (new int4[*N]);
+  int4 * IWORK = iworkPtr.get();
 
   F77FUNC(dtrcon)(NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK, IWORK, INFO);
   if(*INFO!=0)
@@ -523,8 +523,8 @@ template<> void xpocon(char * UPLO, int4 * N, real8 * A, int4 * LDA, real8 * ANO
 
   std::unique_ptr<real8[]> workPtr (new real8[3 * (*N)]);
   real8 * WORK = workPtr.get();
-  std::unique_ptr<int[]> iworkPtr (new int[(*N)]);
-  int * IWORK = iworkPtr.get();
+  std::unique_ptr<int4[]> iworkPtr (new int4[(*N)]);
+  int4 * IWORK = iworkPtr.get();
 
   F77FUNC(dpocon)(UPLO, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
   if(*INFO<0)
@@ -605,7 +605,7 @@ template void xpotrs<real8>(char * UPLO, int4 * N, int4 * NRHS, real8 * A, int4 
 template void xpotrs<complex16>(char * UPLO, int4 * N, int4 * NRHS, complex16 * A, int4 * LDA, complex16 * B, int4 * LDB, int4 * INFO);
 
 
-template<typename T> real8 xlange(char * NORM, int * M, int * N, T * A, int * LDA)
+template<typename T> real8 xlange(char * NORM, int4 * M, int4 * N, T * A, int4 * LDA)
 {
   set_xerbla_death_switch(lapack::izero);
   if(*M<=0)
@@ -619,11 +619,11 @@ template<typename T> real8 xlange(char * NORM, int * M, int * N, T * A, int * LD
   real8 ret = detail::xlange(NORM, M, N, A, LDA, WORK);
   return ret;
 }
-template real8 xlange<real8>(char * NORM, int * M, int * N, real8 * A, int * LDA);
-template real8 xlange<complex16>(char * NORM, int * M, int * N, complex16 * A, int * LDA);
+template real8 xlange<real8>(char * NORM, int4 * M, int4 * N, real8 * A, int4 * LDA);
+template real8 xlange<complex16>(char * NORM, int4 * M, int4 * N, complex16 * A, int4 * LDA);
 
 
-template<> void xgecon(char * NORM, int * N, real8 * A, int * LDA, real8 * ANORM, real8 * RCOND, int * INFO)
+template<> void xgecon(char * NORM, int4 * N, real8 * A, int4 * LDA, real8 * ANORM, real8 * RCOND, int4 * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
   if(*N<=0)
@@ -635,8 +635,8 @@ template<> void xgecon(char * NORM, int * N, real8 * A, int * LDA, real8 * ANORM
 
   std::unique_ptr<real8[]> workPtr (new real8[4*(*N)]);
   real8 * WORK = workPtr.get();
-  std::unique_ptr<int[]> iworkPtr (new int[*N]);
-  int * IWORK = iworkPtr.get();
+  std::unique_ptr<int4[]> iworkPtr (new int4[*N]);
+  int4 * IWORK = iworkPtr.get();
   F77FUNC(dgecon)(NORM, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
 
   if(*INFO<0)
@@ -647,7 +647,7 @@ template<> void xgecon(char * NORM, int * N, real8 * A, int * LDA, real8 * ANORM
   }
 }
 
-template<> void xgecon(char * NORM, int * N, complex16 * A, int * LDA, real8 * ANORM, real8 * RCOND, int * INFO)
+template<> void xgecon(char * NORM, int4 * N, complex16 * A, int4 * LDA, real8 * ANORM, real8 * RCOND, int4 * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
   if(*N<=0)
@@ -673,7 +673,7 @@ template<> void xgecon(char * NORM, int * N, complex16 * A, int * LDA, real8 * A
 }
 
 
-template<typename T> void xgetrs(char * TRANS, int * N, int * NRHS, T * A, int * LDA, int * IPIV, T * B, int * LDB, int * INFO)
+template<typename T> void xgetrs(char * TRANS, int4 * N, int4 * NRHS, T * A, int4 * LDA, int4 * IPIV, T * B, int4 * LDB, int4 * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
   detail::xgetrs(TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO);
@@ -684,15 +684,15 @@ template<typename T> void xgetrs(char * TRANS, int * N, int * NRHS, T * A, int *
     throw rdag_error(message.str());
   }
 }
-template void xgetrs<real8>(char * TRANS, int * N, int * NRHS, real8 * A, int * LDA, int * IPIV, real8 * B, int * LDB, int * INFO);
-template void xgetrs<complex16>(char * TRANS, int * N, int * NRHS, complex16 * A, int * LDA, int * IPIV, complex16 * B, int * LDB, int * INFO);
+template void xgetrs<real8>(char * TRANS, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, int4 * IPIV, real8 * B, int4 * LDB, int4 * INFO);
+template void xgetrs<complex16>(char * TRANS, int4 * N, int4 * NRHS, complex16 * A, int4 * LDA, int4 * IPIV, complex16 * B, int4 * LDB, int4 * INFO);
 
 
-template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * A, int * LDA, T * B, int * LDB, int * INFO )
+template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO )
 {
   set_xerbla_death_switch(lapack::izero);
   T worktmp;
-  int lwork = -1; // -1 to trigger size query
+  int4 lwork = -1; // -1 to trigger size query
 
   // Workspace size query
   detail::xgels(TRANS, M, N, NRHS, A, LDA, B, LDB, &worktmp, &lwork, INFO);
@@ -706,7 +706,7 @@ template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * 
   // will check on true call below.
 
   // Allocate work space based on queried value
-  lwork = (int)std::real(worktmp);
+  lwork = (int4)std::real(worktmp);
   std::unique_ptr<T[]> workPtr (new T[lwork]);
   T * work = workPtr.get();
 
@@ -729,16 +729,16 @@ template<typename T> void xgels(char * TRANS, int * M, int * N, int * NRHS, T * 
   }
   // normal return
 }
-template void xgels<real8>(char * TRANS, int * M, int * N, int * NRHS, real8 * A, int * LDA, real8 * B, int * LDB, int * INFO );
-template void xgels<complex16>(char * TRANS, int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, int * INFO );
+template void xgels<real8>(char * TRANS, int4 * M, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, real8 * B, int4 * LDB, int4 * INFO );
+template void xgels<complex16>(char * TRANS, int4 * M, int4 * N, int4 * NRHS, complex16 * A, int4 * LDA, complex16 * B, int4 * LDB, int4 * INFO );
 
 
-template<> void xgelsd(int * M, int * N, int * NRHS, real8 * A, int * LDA, real8 * B, int * LDB, real8 * S, real8 * RCOND, int * RANK, int * INFO )
+template<> void xgelsd(int4 * M, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, real8 * B, int4 * LDB, real8 * S, real8 * RCOND, int4 * RANK, int4 * INFO )
 {
   set_xerbla_death_switch(lapack::izero);
   real8 worktmp;
-  int iworktmp;
-  int lwork = -1; // -1 to trigger size query
+  int4 iworktmp;
+  int4 lwork = -1; // -1 to trigger size query
 
   // Workspace size query
   F77FUNC(dgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, &worktmp, &lwork, &iworktmp, INFO);
@@ -752,13 +752,13 @@ template<> void xgelsd(int * M, int * N, int * NRHS, real8 * A, int * LDA, real8
   // will check on true call below.
 
   // Allocate work space based on queried value
-  lwork = (int)(worktmp);
+  lwork = (int4)(worktmp);
 
   std::unique_ptr<real8[]> workPtr (new real8[lwork]);
   real8 * work = workPtr.get();
 
-  std::unique_ptr<int[]> iworkPtr (new int[iworktmp]);
-  int * iwork = iworkPtr.get();
+  std::unique_ptr<int4[]> iworkPtr (new int4[iworktmp]);
+  int4 * iwork = iworkPtr.get();
 
   // the actual call
   F77FUNC(dgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, work, &lwork, iwork, INFO);
@@ -781,13 +781,13 @@ template<> void xgelsd(int * M, int * N, int * NRHS, real8 * A, int * LDA, real8
 }
 
 
-template<> void xgelsd(int * M, int * N, int * NRHS, complex16 * A, int * LDA, complex16 * B, int * LDB, real8 * S, real8 * RCOND, int * RANK, int * INFO )
+template<> void xgelsd(int4 * M, int4 * N, int4 * NRHS, complex16 * A, int4 * LDA, complex16 * B, int4 * LDB, real8 * S, real8 * RCOND, int4 * RANK, int4 * INFO )
 {
   set_xerbla_death_switch(lapack::izero);
   complex16 worktmp;
   real8 rworktmp;
-  int iworktmp;
-  int lwork = -1; // -1 to trigger size query
+  int4 iworktmp;
+  int4 lwork = -1; // -1 to trigger size query
 
   // Workspace size query
   F77FUNC(zgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, &worktmp, &lwork, &rworktmp, &iworktmp, INFO);
@@ -801,15 +801,15 @@ template<> void xgelsd(int * M, int * N, int * NRHS, complex16 * A, int * LDA, c
   // will check on true call below.
 
   // Allocate work space based on queried value
-  lwork = (int)std::real(worktmp);
+  lwork = (int4)std::real(worktmp);
 
   std::unique_ptr<complex16[]> workPtr (new complex16[lwork]);
-  std::unique_ptr<real8[]> rworkPtr (new real8[(int)(rworktmp)]);
-  std::unique_ptr<int[]> iworkPtr (new int[iworktmp]);
+  std::unique_ptr<real8[]> rworkPtr (new real8[(int4)(rworktmp)]);
+  std::unique_ptr<int4[]> iworkPtr (new int4[iworktmp]);
 
   complex16 * work = workPtr.get();
   real8 * rwork = rworkPtr.get();
-  int * iwork = iworkPtr.get();
+  int4 * iwork = iworkPtr.get();
 
   // the actual call
   F77FUNC(zgelsd)(M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, work, &lwork, rwork, iwork, INFO);
@@ -832,11 +832,11 @@ template<> void xgelsd(int * M, int * N, int * NRHS, complex16 * A, int * LDA, c
 }
 
 
-template<> void xgeev(char * JOBVL, char * JOBVR, int * N, real8 * A, int * LDA, complex16 * W, real8 * VL, int * LDVL, real8 * VR, int * LDVR, int * INFO)
+template<> void xgeev(char * JOBVL, char * JOBVR, int4 * N, real8 * A, int4 * LDA, complex16 * W, real8 * VL, int4 * LDVL, real8 * VR, int4 * LDVR, int4 * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
   real8 worktmp;
-  int lwork = -1; // -1 to trigger size query
+  int4 lwork = -1; // -1 to trigger size query
 
   real8 * WR = nullptr;
   real8 * WI = nullptr;
@@ -856,7 +856,7 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, real8 * A, int * LDA,
   WI = ptrWI.get();
 
     // Allocate work space based on queried value
-  lwork = (int)(worktmp);
+  lwork = (int4)(worktmp);
   std::unique_ptr<real8 []> ptrWORK (new real8[lwork]);
   real8 * work = ptrWORK.get();
 
@@ -864,7 +864,7 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, real8 * A, int * LDA,
   F77FUNC(dgeev)(JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR, LDVR, work, &lwork, INFO);
 
   // copy back answer
-  for(int i = 0 ; i < *N; i++)
+  for(int4 i = 0 ; i < *N; i++)
   {
     W[i] = std::complex<real8>(WR[i],WI[i]);
   }
@@ -886,12 +886,12 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, real8 * A, int * LDA,
 }
 
 
-template<> void xgeev(char * JOBVL, char * JOBVR, int * N, complex16 * A, int * LDA, complex16 * W, complex16 * VL, int * LDVL, complex16 * VR, int * LDVR, int * INFO)
+template<> void xgeev(char * JOBVL, char * JOBVR, int4 * N, complex16 * A, int4 * LDA, complex16 * W, complex16 * VL, int4 * LDVL, complex16 * VR, int4 * LDVR, int4 * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
   complex16 worktmp;
   real8 * rwork = nullptr;
-  int lwork = -1; // -1 to trigger size query
+  int4 lwork = -1; // -1 to trigger size query
 
   // Workspace size query
   F77FUNC(zgeev)(JOBVL, JOBVR, N, A, LDA, W, VL, LDVL, VR, LDVR, &worktmp, &lwork, rwork, INFO);
@@ -904,7 +904,7 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, complex16 * A, int * 
   }
 
     // Allocate work space based on queried value
-  lwork = (int)std::real(worktmp);
+  lwork = (int4)std::real(worktmp);
   std::unique_ptr<complex16 []> workPtr (new complex16[lwork]);
   complex16 * work = workPtr.get();
   std::unique_ptr<real8 []> rworkPtr (new real8[2 * (*N)]);
@@ -930,11 +930,11 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, complex16 * A, int * 
 }
 
 
-template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, int *INFO)
+template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, int4 *INFO)
 {
   set_xerbla_death_switch(lapack::izero);
   T worktmp;
-  int lwork = -1; // -1 to trigger size query
+  int4 lwork = -1; // -1 to trigger size query
 
   detail::xgeqrf(M, N, A, LDA, TAU, &worktmp, &lwork, INFO );
 
@@ -945,7 +945,7 @@ template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, in
     throw rdag_error(message.str());
   }
 
-  lwork = (int)std::real(worktmp);
+  lwork = (int4)std::real(worktmp);
   std::unique_ptr<T[]> workPtr (new T[lwork]);
   T * work = workPtr.get();
 
@@ -957,14 +957,14 @@ template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, in
     throw rdag_error(message.str());
   }
 }
-template void xgeqrf<real8>(int * M, int * N, real8 * A, int * LDA, real8 * TAU, int *INFO);
-template void xgeqrf<complex16>(int * M, int * N, complex16 * A, int * LDA, complex16 * TAU, int *INFO);
+template void xgeqrf<real8>(int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * TAU, int4 *INFO);
+template void xgeqrf<complex16>(int4 * M, int4 * N, complex16 * A, int4 * LDA, complex16 * TAU, int4 *INFO);
 
-template<typename T>void xxxgqr(int * M, int * N, int * K, T * A, int * LDA, T * TAU, int * INFO)
+template<typename T>void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, int4 * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
   T worktmp;
-  int lwork = -1; // -1 to trigger size query
+  int4 lwork = -1; // -1 to trigger size query
 
   detail::xxxgqr(M, N, K, A, LDA, TAU, &worktmp, &lwork, INFO);
 
@@ -975,7 +975,7 @@ template<typename T>void xxxgqr(int * M, int * N, int * K, T * A, int * LDA, T *
     throw rdag_error(message.str());
   }
 
-  lwork = (int)std::real(worktmp);
+  lwork = (int4)std::real(worktmp);
   std::unique_ptr<T[]> workPtr (new T[lwork]);
   T * work = workPtr.get();
 
@@ -987,7 +987,7 @@ template<typename T>void xxxgqr(int * M, int * N, int * K, T * A, int * LDA, T *
     throw rdag_error(message.str());
   }
 }
-template void xxxgqr<real8>(int * M, int * N, int * K, real8 * A, int * LDA, real8 * TAU, int * INFO);
-template void xxxgqr<complex16>(int * M, int * N, int * K, complex16 * A, int * LDA, complex16 * TAU, int * INFO);
+template void xxxgqr<real8>(int4 * M, int4 * N, int4 * K, real8 * A, int4 * LDA, real8 * TAU, int4 * INFO);
+template void xxxgqr<complex16>(int4 * M, int4 * N, int4 * K, complex16 * A, int4 * LDA, complex16 * TAU, int4 * INFO);
 
 } // end namespace lapack

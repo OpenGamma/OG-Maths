@@ -745,7 +745,7 @@ TEST(LAPACKTest_xpotrs, zpotrs) {
 
 
 TEST(LAPACKTest_xlange, dlange) {
-  int n = 4;
+  int4 n = 4;
   real8 * A = new real8[16];
   std::copy(rspd,rspd+n*n,A);
   real8 answer = lapack::xlange(lapack::O, &n, &n, A, &n);
@@ -757,7 +757,7 @@ TEST(LAPACKTest_xlange, dlange) {
 }
 
 TEST(LAPACKTest_xlange, zlange) {
-  int n = 4;
+  int4 n = 4;
   complex16 * A = new complex16[16];
   std::copy(cspd,cspd+n*n,A);
   real8 answer = lapack::xlange(lapack::O, &n, &n, A, &n);
@@ -769,10 +769,10 @@ TEST(LAPACKTest_xlange, zlange) {
 }
 
 TEST(LAPACKTest_xgecon, dgecon) {
-  int m = 5;
-  int n = 4;
-  const int minmn = m > n ? n : m;
-  int INFO = 0;
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
 
   real8 * Acpy = new real8[20];
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
@@ -783,7 +783,7 @@ TEST(LAPACKTest_xgecon, dgecon) {
   EXPECT_TRUE(anorm==82.e0);
 
   // need a LU decomp
-  int * ipiv = new int[minmn]();
+  int4 * ipiv = new int4[minmn]();
   lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // make the call
@@ -805,10 +805,10 @@ TEST(LAPACKTest_xgecon, dgecon) {
 
 
 TEST(LAPACKTest_xgecon, zgecon) {
-  int m = 5;
-  int n = 4;
-  const int minmn = m > n ? n : m;
-  int INFO = 0;
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
 
   complex16 * Acpy = new complex16[20];
   std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
@@ -820,7 +820,7 @@ TEST(LAPACKTest_xgecon, zgecon) {
   EXPECT_TRUE(SingleValueFuzzyEquals(anorm,183.35757415498276e0));
 
   // need a LU decomp
-  int * ipiv = new int[minmn]();
+  int4 * ipiv = new int4[minmn]();
   lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // make the call
@@ -841,16 +841,16 @@ TEST(LAPACKTest_xgecon, zgecon) {
 
 
 TEST(LAPACKTest_xgetrs, dgetrs) {
-  int m = 5;
-  int n = 4;
-  const int minmn = m > n ? n : m;
-  int INFO = 0;
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
 
   real8 * Acpy = new real8[20];
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
 
   // need a LU decomp
-  int * ipiv = new int[minmn]();
+  int4 * ipiv = new int4[minmn]();
   lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // need an RHS
@@ -862,7 +862,7 @@ TEST(LAPACKTest_xgetrs, dgetrs) {
   };
 
   // make the call
-  int two = 2;
+  int4 two = 2;
   lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
@@ -879,16 +879,16 @@ TEST(LAPACKTest_xgetrs, dgetrs) {
 }
 
 TEST(LAPACKTest_xgetrs, zgetrs) {
-  int m = 5;
-  int n = 4;
-  const int minmn = m > n ? n : m;
-  int INFO = 0;
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
 
   complex16 * Acpy = new complex16[20];
   std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
 
   // need a LU decomp
-  int * ipiv = new int[minmn]();
+  int4 * ipiv = new int4[minmn]();
   lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // need an RHS
@@ -898,7 +898,7 @@ TEST(LAPACKTest_xgetrs, zgetrs) {
   complex16 * expected = new complex16[8]{{      1.0758441558441547,      -0.6794805194805187}, {     -0.4540259740259733,       0.2867532467532462}, {     -0.0592207792207793,       0.0374025974025975}, {     -0.5625974025974027,       0.3553246753246754}, {      1.0758441558441547,      -0.6794805194805187}, {     -0.4540259740259733,       0.2867532467532462}, {     -0.0592207792207793,       0.0374025974025975}, {     -0.5625974025974027,       0.3553246753246754}};
 
   // make the call
-  int two = 2;
+  int4 two = 2;
   lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
@@ -915,9 +915,9 @@ TEST(LAPACKTest_xgetrs, zgetrs) {
 }
 
 TEST(LAPACKTest_xgels, dgels) {
-  int m = 5;
-  int n = 4;
-  int INFO = 0;
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
 
   real8 * Acpy = new real8[20];
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
@@ -929,7 +929,7 @@ TEST(LAPACKTest_xgels, dgels) {
   real8 * expected = new real8[8]{-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731,-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731};
 
   // make the call
-  int two = 2;
+  int4 two = 2;
   lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO);
 
   // answers are striped in "n" length columns in RHS
@@ -948,9 +948,9 @@ TEST(LAPACKTest_xgels, dgels) {
 
 
 TEST(LAPACKTest_xgels, zgels) {
-  int m = 5;
-  int n = 4;
-  int INFO = 0;
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
 
   complex16 * Acpy = new complex16[20];
   std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
@@ -962,7 +962,7 @@ TEST(LAPACKTest_xgels, zgels) {
   complex16 * expected = new complex16[8]{{     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}, {     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}};
 
   // make the call
-  int two = 2;
+  int4 two = 2;
   lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO);
 
   // answers are striped in "n" length columns in RHS
@@ -981,10 +981,10 @@ TEST(LAPACKTest_xgels, zgels) {
 
 
 TEST(LAPACKTest_xgelsd, dgelsd) {
-  int m = 5;
-  int n = 4;
-  int INFO = 0;
-  int minmn = m > n ? n : m;
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
 
   real8 * Acpy = new real8[20];
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
@@ -1000,10 +1000,10 @@ TEST(LAPACKTest_xgelsd, dgelsd) {
   real8 * S = new real8[minmn];
   // condition and rank
   real8 RCOND = - 1; // -1 so rank is computed wrt machine precision
-  int RANK;
+  int4 RANK;
 
   // make the call
-  int two = 2;
+  int4 two = 2;
   lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO);
 
   // answers are striped in "n" length columns in RHS
@@ -1029,10 +1029,10 @@ TEST(LAPACKTest_xgelsd, dgelsd) {
 
 
 TEST(LAPACKTest_xgelsd, zgelsd) {
-  int m = 5;
-  int n = 4;
-  int INFO = 0;
-  int minmn = m > n ? n : m;
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
 
   complex16 * Acpy = new complex16[20];
   std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
@@ -1048,10 +1048,10 @@ TEST(LAPACKTest_xgelsd, zgelsd) {
   real8 * S = new real8[minmn];
   // condition and rank
   real8 RCOND = - 1; // -1 so rank is computed wrt machine precision
-  int RANK;
+  int4 RANK;
 
   // make the call
-  int two = 2;
+  int4 two = 2;
   lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO);
 
   // answers are striped in "n" length columns in RHS
@@ -1076,10 +1076,10 @@ TEST(LAPACKTest_xgelsd, zgelsd) {
 
 
 TEST(LAPACKTest_xgeev, dgeev) {
-  int m = 4;
-  int n = 4;
-  int minmn = m > n ? n : m;
-  int INFO = 0;
+  int4 m = 4;
+  int4 n = 4;
+  int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
 
   real8 * A = new real8[16] {1.,3.,10.,-2.,3.,6.,-1.,-1.,4.,4.,4.,6.,5.,-5.,7.,-10.};
 
@@ -1117,10 +1117,10 @@ TEST(LAPACKTest_xgeev, dgeev) {
 }
 
 TEST(LAPACKTest_xgeev, zgeev) {
-  int m = 4;
-  int n = 4;
-  int minmn = m > n ? n : m;
-  int INFO = 0;
+  int4 m = 4;
+  int4 n = 4;
+  int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
 
   complex16 * A = new complex16[16] {{1.,10.}, {3.,30.}, {10.,100.}, {-2.,-20.}, {3.,30.}, {6.,60.}, {-1.,-10.}, {-1.,-10.}, {4.,40.}, {4.,40.}, {4.,40.}, {6.,60.}, {5.,50.}, {-5.,-50.}, {7.,70.}, {-10.,-100.}};
 
@@ -1160,10 +1160,10 @@ TEST(LAPACKTest_xgeev, zgeev) {
 
 TEST(LAPACKTest_xgeqrf, dgeqrf) {
 
-  int m = 5;
-  int n = 4;
-  int INFO = 0;
-  int minmn = m > n ? n : m;
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
 
   real8 * TAU = new real8[minmn];
 
@@ -1192,10 +1192,10 @@ TEST(LAPACKTest_xgeqrf, dgeqrf) {
 
 TEST(LAPACKTest_xgeqrf, zgeqrf) {
 
-  int m = 5;
-  int n = 4;
-  int INFO = 0;
-  int minmn = m > n ? n : m;
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
 
   complex16 * TAU = new complex16[minmn];
 
@@ -1225,10 +1225,10 @@ TEST(LAPACKTest_xgeqrf, zgeqrf) {
 
 TEST(LAPACKTest_xxxgqr, dorgqr) {
 
-  int m = 5;
-  int n = 4;
-  int INFO = 0;
-  int minmn = m > n ? n : m;
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
 
   real8 * TAU = new real8[minmn];
 
@@ -1241,7 +1241,7 @@ TEST(LAPACKTest_xxxgqr, dorgqr) {
   lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
 
   // extract Q from packed form of xgeqrf, scalings are in TAU
-  int k = n;
+  int4 k = n;
   lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
@@ -1259,10 +1259,10 @@ TEST(LAPACKTest_xxxgqr, dorgqr) {
 
 TEST(LAPACKTest_xxxgqr, zunrgqr) {
 
-  int m = 5;
-  int n = 4;
-  int INFO = 0;
-  int minmn = m > n ? n : m;
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
 
   complex16 * TAU = new complex16[minmn];
 
@@ -1275,7 +1275,7 @@ TEST(LAPACKTest_xxxgqr, zunrgqr) {
   lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
 
   // extract Q from packed form of xgeqrf, scalings are in TAU
-  int k = n;
+  int4 k = n;
   lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
