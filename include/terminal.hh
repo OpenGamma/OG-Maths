@@ -169,7 +169,6 @@ class OGScalar: public OGTerminal
     virtual size_t getRows() const override;
     virtual size_t getCols() const override;
     virtual size_t getDatalen() const override;
-    virtual void accept(Visitor &v) const override;
     T getValue() const;
     T ** toArrayOfArrays() const;
     virtual bool equals(const OGTerminal::Ptr&) const override;
@@ -280,7 +279,6 @@ template <typename T> class OGArray: public OGTerminal
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
     virtual void debug_print() const override;
     virtual OGNumeric::Ptr copy() const override;
-    virtual void accept(Visitor &v) const override;
   protected:
     void setData(T * data);
     void setRows(size_t rows);
@@ -306,7 +304,6 @@ template <typename T> class OGMatrix: public OGArray<T>
   public:
     typedef std::shared_ptr<const OGMatrix<T>> Ptr;
     static OGMatrix<T>::Ptr create(T* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
-    virtual void accept(Visitor &v) const override;
     virtual void debug_print() const override;
     virtual OGNumeric::Ptr copy() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
@@ -392,7 +389,6 @@ template <typename T> class OGDiagonalMatrix: public OGArray<T>
   public:
     typedef std::shared_ptr<const OGDiagonalMatrix<T>> Ptr;
     static OGDiagonalMatrix<T>::Ptr create(T* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
-    virtual void accept(Visitor &v) const override;
     T** toArrayOfArrays() const;
   protected:
     OGDiagonalMatrix(T * data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
@@ -457,7 +453,6 @@ template <typename T> class OGSparseMatrix: public OGArray<T>
     typedef std::shared_ptr<const OGSparseMatrix<T>> Ptr;
     static OGSparseMatrix<T>::Ptr create(int4* colPtr, int4* rowIdx, T* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual ~OGSparseMatrix();
-    virtual void accept(Visitor &v) const override;
     int4* getColPtr() const;
     int4* getRowIdx() const;
     T** toArrayOfArrays() const;

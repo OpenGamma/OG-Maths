@@ -12,7 +12,6 @@
 #include "exprfactory.hh"
 #include "warningmacros.h"
 #include "jdispatch.hh"
-#include "visitor.hh"
 #include "debug.h"
 #include <stdio.h>
 

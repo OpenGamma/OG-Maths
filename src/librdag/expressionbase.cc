@@ -35,12 +35,6 @@ OGExpr::getNArgs() const
   return _args.size();
 }
 
-void
-OGExpr::accept(Visitor& v) const
-{
-  v.visit(this);
-}
-
 OGExpr::Ptr
 OGExpr::asOGExpr() const
 {

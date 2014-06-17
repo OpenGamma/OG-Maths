@@ -5,7 +5,6 @@
  */
 
 #include "jdispatch.hh"
-#include "visitor.hh"
 #include "warningmacros.h"
 #include "terminal.hh"
 #include "expression.hh"

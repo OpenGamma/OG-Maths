@@ -27,7 +27,6 @@ expression_hh = """\
 
 #include "expressionbase.hh"
 #include "numeric.hh"
-#include "visitor.hh"
 #include "exceptions.hh"
 
 /**
@@ -205,7 +204,6 @@ class MTIMES;
 class LU;
 
 class ConvertTo;
-class Visitor;
 
 %(fwd_decls)s
 
@@ -218,7 +216,6 @@ class OGNumeric: private Uncopyable, public std::enable_shared_from_this<OGNumer
     typedef std::shared_ptr<const OGNumeric> Ptr;
     virtual ~OGNumeric();
     virtual void debug_print() const = 0;
-    virtual void accept(Visitor &v) const = 0;
     virtual OGNumeric::Ptr copy() const = 0;
     virtual std::shared_ptr<const OGExpr> asOGExpr() const;
     virtual std::shared_ptr<const COPY> asCOPY() const;
