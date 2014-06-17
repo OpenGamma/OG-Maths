@@ -791,6 +791,13 @@ TEST(LAPACKTest_xgecon, dgecon) {
   lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO);
   EXPECT_TRUE(SingleValueFuzzyEquals(rcond,1.8369021718386168e-3));
 
+  // check throw on bad arg, malloc guard test
+  n=-1;
+  EXPECT_THROW(lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO), rdag_error);
+  // xerbla test
+  n=5; m=-1;
+  EXPECT_THROW(lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO), rdag_error);
+
   // clean up
   delete [] ipiv;
   delete [] Acpy;
@@ -821,6 +828,12 @@ TEST(LAPACKTest_xgecon, zgecon) {
   lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO);
   EXPECT_TRUE(SingleValueFuzzyEquals(rcond,1.8369021718386248e-3));
 
+  // check throw on bad arg, malloc guard test
+  n=-1;
+  EXPECT_THROW(lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO), rdag_error);
+  // xerbla test
+  n=5; m=-1;
+  EXPECT_THROW(lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO), rdag_error);
   // clean up
   delete [] ipiv;
   delete [] Acpy;
@@ -854,6 +867,10 @@ TEST(LAPACKTest_xgetrs, dgetrs) {
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
 
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO),rdag_error);
+
   // clean up
   delete [] ipiv;
   delete [] Acpy;
@@ -886,6 +903,10 @@ TEST(LAPACKTest_xgetrs, zgetrs) {
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
 
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO),rdag_error);
+
   // clean up
   delete [] ipiv;
   delete [] Acpy;
@@ -915,6 +936,10 @@ TEST(LAPACKTest_xgels, dgels) {
   EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
   EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
 
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO),rdag_error);
+
   // clean up
   delete [] Acpy;
   delete [] expected;
@@ -943,6 +968,10 @@ TEST(LAPACKTest_xgels, zgels) {
   // answers are striped in "n" length columns in RHS
   EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
   EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO),rdag_error);
 
   // clean up
   delete [] Acpy;
@@ -984,6 +1013,11 @@ TEST(LAPACKTest_xgelsd, dgelsd) {
   EXPECT_TRUE(ArrayFuzzyEquals(expected_S,S,minmn,1e-13,1e-13));
 
   EXPECT_TRUE(RANK==n);
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO),rdag_error);
+
 
   // clean up
   delete [] Acpy;
@@ -1028,6 +1062,10 @@ TEST(LAPACKTest_xgelsd, zgelsd) {
 
   EXPECT_TRUE(RANK==n);
 
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO),rdag_error);
+
   // clean up
   delete [] Acpy;
   delete [] expected;
@@ -1063,6 +1101,10 @@ TEST(LAPACKTest_xgeev, dgeev) {
   EXPECT_TRUE(ArrayFuzzyEquals(expected_W,W,n,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n*n,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n*n,1e-14,1e-14));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgeev(lapack::V, lapack::V, &n, A, &m, W, VL, &n, VR, &n, &INFO),rdag_error);
 
   // clean up
   delete [] A;
@@ -1101,6 +1143,10 @@ TEST(LAPACKTest_xgeev, zgeev) {
   EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n*n,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n*n,1e-14,1e-14));
 
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgeev(lapack::V, lapack::V, &n, A, &m, W, VL, &n, VR, &n, &INFO),rdag_error);
+
   // clean up
   delete [] A;
   delete [] expected_W;
@@ -1133,6 +1179,10 @@ TEST(LAPACKTest_xgeqrf, dgeqrf) {
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_TAU,TAU,n,1e-13,1e-13));
 
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO),rdag_error);
+
   delete [] TAU;
   delete [] Acpy;
   delete [] expected;
@@ -1160,6 +1210,10 @@ TEST(LAPACKTest_xgeqrf, zgeqrf) {
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_TAU,TAU,n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO),rdag_error);
 
   delete [] TAU;
   delete [] Acpy;
@@ -1192,6 +1246,11 @@ TEST(LAPACKTest_xxxgqr, dorgqr) {
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
 
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO),rdag_error);
+
+
   delete [] TAU;
   delete [] Acpy;
   delete [] expected;
@@ -1220,6 +1279,10 @@ TEST(LAPACKTest_xxxgqr, zunrgqr) {
   lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO),rdag_error);
 
   delete [] TAU;
   delete [] Acpy;
