@@ -29,6 +29,7 @@ extern char U;
 extern char D;
 extern char ONE;
 extern char O;
+extern char V;
 extern int ione;
 extern int izero;
 extern real8 rone;
@@ -90,6 +91,10 @@ extern char * ONE;
  * The F77 character 'O'
  */
 extern char * O;
+/**
+ * The F77 character 'V'
+ */
+extern char * V;
 /**
  * The F77 integer '1'
  */

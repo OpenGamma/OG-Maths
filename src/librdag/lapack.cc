@@ -22,6 +22,7 @@ namespace detail
   char U = 'U';
   char D = 'D';
   char O = 'O';
+  char V = 'V';
   char ONE = '1';
   int ione = 1;
   int izero = 0;
@@ -230,6 +231,7 @@ char *      L     = &detail::L;
 char *      U     = &detail::U;
 char *      D     = &detail::D;
 char *      O     = &detail::O;
+char *      V     = &detail::V;
 char *      ONE   = &detail::ONE;
 int *       ione  = &detail::ione;
 int *       izero  = &detail::izero;

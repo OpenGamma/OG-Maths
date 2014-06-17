@@ -1037,3 +1037,39 @@ TEST(LAPACKTest_xgelsd, zgelsd) {
 }
 
 
+TEST(LAPACKTest_xgeev, dgeev) {
+  int m = 4;
+  int n = 4;
+  int minmn = m > n ? n : m;
+  int INFO = 0;
+
+  real8 * A = new real8[16] {1.,3.,10.,-2.,3.,6.,-1.,-1.,4.,4.,4.,6.,5.,-5.,7.,-10.};
+
+  // expected
+  complex16 * expected_W = new complex16[4]{{-9.6888202793819147,0},{-7.1209208815126370,0},{11.5341107067997743,0},{6.2756304540948005,0}};
+
+  real8 * expected_VL = new real8[16] {0.5674175178806528,-0.0926660731685940,-0.4408469400904874,0.6892781257943167,-0.7391126256525055,0.1682952376639553,0.4565908903993675,-0.4657402692327615,-0.6308032002519173,-0.1585352980899745,-0.6832883559806681,-0.3317693542096654,0.2418102871777062,-0.7172636824241223,0.4394794928726053,0.4836510831527837};
+  real8 * expected_VR = new real8[16]{-0.4604743713776651,0.3593615791115275,-0.0515866317850007,0.8100379177445289,-0.6283589719101941,0.3481029226389141,0.1720238421645797,0.6740898718992491,-0.4636997919781236,-0.6132122861110744,-0.6309391734073038,-0.1042542782910278,-0.1550485207601204,-0.9326141205284221,0.2734940465430895,0.1771774954856935};
+
+  // need somewhere to write W, VL and VR
+  complex16 * W = new complex16[minmn];
+  real8 * VL = new real8[n*n];
+  real8 * VR = new real8[n*n];
+
+  // make the call
+  lapack::xgeev(lapack::V, lapack::V, &n, A, &m, W, VL, &n, VR, &n, &INFO);
+
+  // check
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_W,W,n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n,1e-14,1e-14));
+
+  // clean up
+  delete [] A;
+  delete [] expected_W;
+  delete [] expected_VL;
+  delete [] expected_VR;
+  delete [] VL;
+  delete [] VR;
+  delete [] W;
+}
