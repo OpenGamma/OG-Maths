@@ -1061,8 +1061,8 @@ TEST(LAPACKTest_xgeev, dgeev) {
 
   // check
   EXPECT_TRUE(ArrayFuzzyEquals(expected_W,W,n,1e-14,1e-14));
-  EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n,1e-14,1e-14));
-  EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n*n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n*n,1e-14,1e-14));
 
   // clean up
   delete [] A;
@@ -1098,8 +1098,8 @@ TEST(LAPACKTest_xgeev, zgeev) {
 
   // check
   EXPECT_TRUE(ArrayFuzzyEquals(expected_W,W,n,1e-13,1e-13));
-  EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n,1e-14,1e-14));
-  EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n*n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n*n,1e-14,1e-14));
 
   // clean up
   delete [] A;
@@ -1130,7 +1130,7 @@ TEST(LAPACKTest_xgeqrf, dgeqrf) {
 
   lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
 
-  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_TAU,TAU,n,1e-13,1e-13));
 
   delete [] TAU;
@@ -1158,7 +1158,7 @@ TEST(LAPACKTest_xgeqrf, zgeqrf) {
 
   lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
 
-  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_TAU,TAU,n,1e-13,1e-13));
 
   delete [] TAU;
@@ -1166,4 +1166,62 @@ TEST(LAPACKTest_xgeqrf, zgeqrf) {
   delete [] expected;
   delete [] expected_TAU;
 
+}
+
+
+TEST(LAPACKTest_xxxgqr, dorgqr) {
+
+  int m = 5;
+  int n = 4;
+  int INFO = 0;
+  int minmn = m > n ? n : m;
+
+  real8 * TAU = new real8[minmn];
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  real8 * expected = new real8[20] {-0.3037283696153934,-0.5467110653077083,-0.6074567392307869,-0.4859653913846296,-0.0607456739230787,0.8704878387954510,-0.1333179572929945,-0.3842694063151109,0.1176334917291140,-0.2509514490221096,-0.0499168744229821,0.8153089489086596,-0.5158077023707830,-0.2495843721148959,0.0665558325639719,0.2751778011656992,0.0762869151746490,0.4658950891023217,-0.8173598054426700,-0.1825436898821958};
+
+  // create a packed QR form with elementary reflectors in lower part
+  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+
+  // extract Q from packed form of xgeqrf, scalings are in TAU
+  int k = n;
+  lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
+
+  delete [] TAU;
+  delete [] Acpy;
+  delete [] expected;
+}
+
+
+TEST(LAPACKTest_xxxgqr, zunrgqr) {
+
+  int m = 5;
+  int n = 4;
+  int INFO = 0;
+  int minmn = m > n ? n : m;
+
+  complex16 * TAU = new complex16[minmn];
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  complex16 * expected = new complex16[20] {{     -0.1358314562310403,       0.2716629124620806}, {     -0.2444966212158725,       0.4889932424317451}, {     -0.2716629124620806,       0.5433258249241611}, {     -0.2173303299696644,       0.4346606599393290}, {     -0.0271662912462081,       0.0543325824924161}, {     -0.3892939962266967,       0.7785879924534080}, {      0.0596216030257065,      -0.1192432060514235}, {      0.1718505028388125,      -0.3437010056776262}, {     -0.0526072967873878,       0.1052145935747794}, {      0.1122288998131025,      -0.2244577996262045}, {     -0.0223235048868174,       0.0446470097736447}, {      0.3646172464847307,      -0.7292344929694671}, {     -0.2306762171638115,       0.4613524343276225}, {     -0.1116175244341002,       0.2232350488682011}, {      0.0297646731824274,      -0.0595293463648534}, {      0.1230632538610821,      -0.2461265077221643}, {      0.0341165456248574,      -0.0682330912497137}, {      0.2083546179232226,      -0.4167092358464459}, {     -0.3655344174091633,       0.7310688348183267}, {     -0.0816360198880458,       0.1632720397760899}};
+
+  // create a packed QR form with elementary reflectors in lower part
+  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+
+  // extract Q from packed form of xgeqrf, scalings are in TAU
+  int k = n;
+  lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
+
+  delete [] TAU;
+  delete [] Acpy;
+  delete [] expected;
 }
