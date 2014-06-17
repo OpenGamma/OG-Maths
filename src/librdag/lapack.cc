@@ -837,13 +837,6 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, real8 * A, int * LDA,
   real8 worktmp;
   int lwork = -1; // -1 to trigger size query
 
-  if(*N<=0)
-  {
-    std::stringstream message;
-    message << "Input to LAPACK::dgeev call incorrect at arg: " << 3;
-    throw rdag_error(message.str());
-  }
-
   real8 * WR = nullptr;
   real8 * WI = nullptr;
 
@@ -899,13 +892,6 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int * N, complex16 * A, int * 
   real8 * rwork = nullptr;
   int lwork = -1; // -1 to trigger size query
 
-  if(*N<=0)
-  {
-    std::stringstream message;
-    message << "Input to LAPACK::zgeev call incorrect at arg: " << 3;
-    throw rdag_error(message.str());
-  }
-
   // Workspace size query
   F77FUNC(zgeev)(JOBVL, JOBVR, N, A, LDA, W, VL, LDVL, VR, LDVR, &worktmp, &lwork, rwork, INFO);
 
@@ -948,13 +934,6 @@ template<typename T> void xgeqrf(int * M, int * N, T * A, int * LDA, T * TAU, in
   set_xerbla_death_switch(lapack::izero);
   T worktmp;
   int lwork = -1; // -1 to trigger size query
-
-  if(*N<=0)
-  {
-    std::stringstream message;
-    message << "Input to LAPACK::" << detail::charmagic<T>() << "geqrf call incorrect at arg: " << 2;
-    throw rdag_error(message.str());
-  }
 
   detail::xgeqrf(M, N, A, LDA, TAU, &worktmp, &lwork, INFO );
 
