@@ -303,7 +303,7 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A
   if(*INFO < 0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::dgesvd call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::dgesvd call incorrect at arg: " << -(*INFO);
     throw rdag_error(message.str());
   }
 
@@ -335,7 +335,7 @@ template<>  void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16
   if(*INFO < 0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::zgesvd call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::zgesvd call incorrect at arg: " << -(*INFO);
     throw rdag_error(message.str());
   }
 
@@ -365,7 +365,7 @@ template<typename T> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * I
     std::stringstream message;
     if(*INFO<0)
     {
-      message << "Input to LAPACK::xgetrf call incorrect at arg: " << *INFO << ".";
+      message << "Input to LAPACK::xgetrf call incorrect at arg: " << -(*INFO) << ".";
     }
     else
     {
@@ -388,7 +388,7 @@ template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::xgetri call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::xgetri call incorrect at arg: " << -(*INFO);
     throw rdag_error(message.str());
   }
   // else { continue }. NOTE: Workspace query doesn't care about validity of inversion,
@@ -404,14 +404,7 @@ template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 
   if(*INFO!=0)
   {
     std::stringstream message;
-    if(*INFO<0)
-    {
-      message << "Input to LAPACK::xgetri call incorrect at arg: " << *INFO << ".";
-    }
-    else
-    {
-      message << "LAPACK::xgetri, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
-    }
+    message << "LAPACK::xgetri, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
     throw rdag_error(message.str());
   }
 
@@ -439,7 +432,7 @@ template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int4 * N, real8 * 
   if(*INFO!=0)
   {
       std::stringstream message;
-      message << "Input to LAPACK::dtrcon call incorrect at arg: " << *INFO;
+      message << "Input to LAPACK::dtrcon call incorrect at arg: " << -(*INFO);
       throw rdag_error(message.str());
   }
 }
@@ -464,7 +457,7 @@ template<> void xtrcon(char * NORM, char * UPLO, char * DIAG, int4 * N, complex1
   if(*INFO!=0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::ztrcon call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::ztrcon call incorrect at arg: " << -(*INFO);
     throw rdag_error(message.str());
   }
 }
@@ -473,17 +466,20 @@ template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int4 * 
 {
   set_xerbla_death_switch(lapack::izero);
   detail::xtrtrs(UPLO, TRANS, DIAG, N, NRHS, A, LDA, B, LDB, INFO);
-  if(*INFO>0)
-  {
-    std::stringstream message;
-    message << "LAPACK::"<<detail::charmagic<T>()<<"trtrs matrix is reported as being singular, the " << *INFO << "th diagonal is zero. No solutions have been computed.";
-    throw rdag_error(message.str());
-  }
   if(*INFO!=0)
   {
-    std::stringstream message;
-    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"trtrs call incorrect at arg: " << *INFO;
-    throw rdag_error(message.str());
+    if(*INFO>0)
+    {
+      std::stringstream message;
+      message << "LAPACK::"<<detail::charmagic<T>()<<"trtrs matrix is reported as being singular, the " << *INFO << "th diagonal is zero. No solutions have been computed.";
+      throw rdag_error(message.str());
+    }
+    else
+    {
+      std::stringstream message;
+      message << "Input to LAPACK::"<<detail::charmagic<T>()<<"trtrs call incorrect at arg: " << -(*INFO);
+      throw rdag_error(message.str());
+    }
   }
 }
 template void xtrtrs<real8>(char * UPLO, char * TRANS, char * DIAG, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, real8 * B, int4 * LDB, int4 * INFO);
@@ -494,17 +490,20 @@ template<typename T> void xpotrf(char * UPLO, int4 * N, T * A, int4 * LDA, int4 
 {
   set_xerbla_death_switch(lapack::izero);
   detail::xpotrf(UPLO, N, A, LDA, INFO);
-  if(*INFO>0)
+  if(*INFO!=0)
   {
-    std::stringstream message;
-    message << "LAPACK::"<<detail::charmagic<T>()<<"potrf matrix is reported as being non s.p.d OR the factorisation failed. The " << *INFO << "th leading minor is not positive definite.";
-    throw rdag_error(message.str());
-  }
-  if(*INFO<0)
-  {
-    std::stringstream message;
-    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"potrf call incorrect at arg: " << *INFO;
-    throw rdag_error(message.str());
+    if(*INFO>0)
+    {
+      std::stringstream message;
+      message << "LAPACK::"<<detail::charmagic<T>()<<"potrf matrix is reported as being non s.p.d OR the factorisation failed. The " << *INFO << "th leading minor is not positive definite.";
+      throw rdag_error(message.str());
+    }
+    else
+    {
+      std::stringstream message;
+      message << "Input to LAPACK::"<<detail::charmagic<T>()<<"potrf call incorrect at arg: " << -(*INFO);
+      throw rdag_error(message.str());
+    }
   }
 }
 template void xpotrf<real8>(char * UPLO, int4 * N, real8 * A, int4 * LDA, int4 * INFO);
@@ -530,7 +529,7 @@ template<> void xpocon(char * UPLO, int4 * N, real8 * A, int4 * LDA, real8 * ANO
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::dpocon call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::dpocon call incorrect at arg: " << -(*INFO);
     throw rdag_error(message.str());
   }
 }
@@ -554,7 +553,7 @@ template<> void xpocon(char * UPLO, int4 * N, complex16 * A, int4 * LDA, real8 *
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::dpocon call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::dpocon call incorrect at arg: " << -(*INFO);
     throw rdag_error(message.str());
   }
 }
@@ -581,7 +580,12 @@ template real8  xlansy<complex16>(char * NORM, char * UPLO, int4 * N, complex16 
 real8 zlanhe(char * NORM, char * UPLO, int4 * N, complex16 * A, int4 * LDA)
 {
   set_xerbla_death_switch(lapack::izero);
-
+  if(*N<=0)
+  {
+    std::stringstream message;
+    message << "Input to LAPACK::zlanhe call incorrect at arg: " << 3;
+    throw rdag_error(message.str());
+  }
   std::unique_ptr<real8[]> workPtr (new real8[*N]);// allocate regardless of *NORM
   real8 * WORK = workPtr.get();
   real8 ret = F77FUNC(zlanhe)(NORM, UPLO, N, A, LDA, WORK);
@@ -597,7 +601,7 @@ template<typename T> void xpotrs(char * UPLO, int4 * N, int4 * NRHS, T * A, int4
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"potrs call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"potrs call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
 }
@@ -638,11 +642,10 @@ template<> void xgecon(char * NORM, int4 * N, real8 * A, int4 * LDA, real8 * ANO
   std::unique_ptr<int4[]> iworkPtr (new int4[*N]);
   int4 * IWORK = iworkPtr.get();
   F77FUNC(dgecon)(NORM, N, A, LDA, ANORM, RCOND, WORK, IWORK, INFO);
-
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::dgecon call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::dgecon call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
 }
@@ -663,11 +666,10 @@ template<> void xgecon(char * NORM, int4 * N, complex16 * A, int4 * LDA, real8 *
   real8 * RWORK = rworkPtr.get();
 
   F77FUNC(zgecon)(NORM, N, A, LDA, ANORM, RCOND, WORK, RWORK, INFO);
-
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::zgecon call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::zgecon call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
 }
@@ -680,7 +682,7 @@ template<typename T> void xgetrs(char * TRANS, int4 * N, int4 * NRHS, T * A, int
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"getrs call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::"<<detail::charmagic<T>()<<"getrs call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
 }
@@ -699,7 +701,7 @@ template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::xgels call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::xgels call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
   // else { continue }. NOTE: Workspace query doesn't care about validity of solution,
@@ -715,16 +717,9 @@ template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T
   if(*INFO!=0)
   {
     std::stringstream message;
-    if(*INFO<0)
-    {
-      message << "Input to LAPACK::xgels call incorrect at arg: " << *INFO << ".";
-    }
-    else
-    {
-      message << "LAPACK::xgels, the [" << (*INFO - 1) << " element of the triangular " <<
-      "factorisation of A is zero, A does not have full rank, the least squares solution " <<
-      "could not be computed";
-    }
+    message << "LAPACK::xgels, the [" << (*INFO - 1) << " element of the triangular " <<
+    "factorisation of A is zero, A does not have full rank, the least squares solution " <<
+    "could not be computed";
     throw rdag_error(message.str());
   }
   // normal return
@@ -745,7 +740,7 @@ template<> void xgelsd(int4 * M, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, r
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::dgelsd call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::dgelsd call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
   // else { continue }. NOTE: Workspace query doesn't care about validity of solution,
@@ -766,15 +761,8 @@ template<> void xgelsd(int4 * M, int4 * N, int4 * NRHS, real8 * A, int4 * LDA, r
   if(*INFO!=0)
   {
     std::stringstream message;
-    if(*INFO<0)
-    {
-      message << "Input to LAPACK::dgelsd call incorrect at arg: " << *INFO << ".";
-    }
-    else
-    {
-      message << "LAPACK::dgelsd, SVD computation failed to converge, " << (*INFO) <<
-      " elements of the intermediate bi-diagonal form did not converge to zero.";
-    }
+    message << "LAPACK::dgelsd, SVD computation failed to converge, " << (*INFO) <<
+    " elements of the intermediate bi-diagonal form did not converge to zero.";
     throw rdag_error(message.str());
   }
 
@@ -794,7 +782,7 @@ template<> void xgelsd(int4 * M, int4 * N, int4 * NRHS, complex16 * A, int4 * LD
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::zgelsd call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::zgelsd call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
   // else { continue }. NOTE: Workspace query doesn't care about validity of solution,
@@ -817,15 +805,8 @@ template<> void xgelsd(int4 * M, int4 * N, int4 * NRHS, complex16 * A, int4 * LD
   if(*INFO!=0)
   {
     std::stringstream message;
-    if(*INFO<0)
-    {
-      message << "Input to LAPACK::zgelsd call incorrect at arg: " << *INFO << ".";
-    }
-    else
-    {
-      message << "LAPACK::zgelsd, SVD computation failed to converge, " << (*INFO) <<
-      " elements of the intermediate bi-diagonal form did not converge to zero.";
-    }
+    message << "LAPACK::zgelsd, SVD computation failed to converge, " << (*INFO) <<
+    " elements of the intermediate bi-diagonal form did not converge to zero.";
     throw rdag_error(message.str());
   }
 
@@ -846,7 +827,7 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int4 * N, real8 * A, int4 * LD
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::dgeev call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::dgeev call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
 
@@ -863,26 +844,20 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int4 * N, real8 * A, int4 * LD
   // the actual call
   F77FUNC(dgeev)(JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR, LDVR, work, &lwork, INFO);
 
+  if(*INFO!=0)
+  {
+    std::stringstream message;
+    message << "LAPACK::dgeev, QR alg failed. Eigenvalues in elements, " << (*INFO - 1) <<
+    ":" << (*N-1) << " have successfully converged, no eigenvectors have been computed.";
+    throw rdag_error(message.str());
+  }
+
   // copy back answer
   for(int4 i = 0 ; i < *N; i++)
   {
     W[i] = std::complex<real8>(WR[i],WI[i]);
   }
 
-  if(*INFO!=0)
-  {
-    std::stringstream message;
-    if(*INFO<0)
-    {
-      message << "Input to LAPACK::dgeev call incorrect at arg: " << *INFO << ".";
-    }
-    else
-    {
-      message << "LAPACK::dgeev, QR alg failed. Eigenvalues in elements, " << (*INFO - 1) <<
-      ":" << (*N-1) << " have successfully converged, no eigenvectors have been computed.";
-    }
-    throw rdag_error(message.str());
-  }
 }
 
 
@@ -899,7 +874,7 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int4 * N, complex16 * A, int4 
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::zgeev call incorrect at arg: " << *INFO;
+    message << "Input to LAPACK::zgeev call incorrect at arg: " <<  -(*INFO);
     throw rdag_error(message.str());
   }
 
@@ -916,15 +891,8 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int4 * N, complex16 * A, int4 
   if(*INFO!=0)
   {
     std::stringstream message;
-    if(*INFO<0)
-    {
-      message << "Input to LAPACK::zgeev call incorrect at arg: " << *INFO << ".";
-    }
-    else
-    {
-      message << "LAPACK::zgeev, QR alg failed. Eigenvalues in elements, " << (*INFO - 1) <<
-      ":" << (*N-1) << " have successfully converged, no eigenvectors have been computed.";
-    }
+    message << "LAPACK::zgeev, QR alg failed. Eigenvalues in elements, " << (*INFO - 1) <<
+    ":" << (*N-1) << " have successfully converged, no eigenvectors have been computed.";
     throw rdag_error(message.str());
   }
 }
@@ -941,7 +909,7 @@ template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU,
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::" << detail::charmagic<T>() << "geqrf call incorrect at arg: "  << *INFO;
+    message << "Input to LAPACK::" << detail::charmagic<T>() << "geqrf call incorrect at arg: "  << -(*INFO);
     throw rdag_error(message.str());
   }
 
@@ -950,12 +918,7 @@ template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU,
   T * work = workPtr.get();
 
   detail::xgeqrf(M, N, A, LDA, TAU, work, &lwork, INFO );
-  if(*INFO<0)
-  {
-    std::stringstream message;
-    message << "Input to LAPACK::" << detail::charmagic<T>() << "geqrf call incorrect at arg: "  << *INFO;
-    throw rdag_error(message.str());
-  }
+
 }
 template void xgeqrf<real8>(int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * TAU, int4 *INFO);
 template void xgeqrf<complex16>(int4 * M, int4 * N, complex16 * A, int4 * LDA, complex16 * TAU, int4 *INFO);
@@ -971,7 +934,7 @@ template<typename T>void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA,
   if(*INFO<0)
   {
     std::stringstream message;
-    message << "Input to LAPACK::" << detail::xxxgqrcharmagic<T>() << "gqr call incorrect at arg: "  << *INFO;
+    message << "Input to LAPACK::" << detail::xxxgqrcharmagic<T>() << "gqr call incorrect at arg: "  << -(*INFO);
     throw rdag_error(message.str());
   }
 
@@ -980,12 +943,7 @@ template<typename T>void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA,
   T * work = workPtr.get();
 
   detail::xxxgqr(M, N, K, A, LDA, TAU, work, &lwork, INFO);
-  if(*INFO<0)
-  {
-    std::stringstream message;
-    message << "Input to LAPACK::" << detail::xxxgqrcharmagic<T>() << "gqr call incorrect at arg: "  << *INFO;
-    throw rdag_error(message.str());
-  }
+
 }
 template void xxxgqr<real8>(int4 * M, int4 * N, int4 * K, real8 * A, int4 * LDA, real8 * TAU, int4 * INFO);
 template void xxxgqr<complex16>(int4 * M, int4 * N, int4 * K, complex16 * A, int4 * LDA, complex16 * TAU, int4 * INFO);
