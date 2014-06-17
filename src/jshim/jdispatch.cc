@@ -212,8 +212,44 @@ Complex16AoA::getCols() const
 }
 
 /**
- * DispatchToOGTerminal
+ * JavaTerminal
  */
+
+JavaTerminal::JavaTerminal(JNIEnv* env, const OGNumeric::Ptr& node)
+{
+  ExprType_t type = node->getType();
+  switch(type)
+  {
+  case REAL_SCALAR_ENUM:
+    createRealScalar(env, node);
+    break;
+  case COMPLEX_SCALAR_ENUM:
+    createComplexScalar(env, node);
+    break;
+  case REAL_MATRIX_ENUM:
+    createRealMatrix(env, node);
+    break;
+  case COMPLEX_MATRIX_ENUM:
+    createComplexMatrix(env, node);
+    break;
+  case REAL_DIAGONAL_MATRIX_ENUM:
+    createRealDiagonalMatrix(env, node);
+    break;
+  case COMPLEX_DIAGONAL_MATRIX_ENUM:
+    createComplexDiagonalMatrix(env, node);
+    break;
+  case REAL_SPARSE_MATRIX_ENUM:
+    createRealSparseMatrix(env, node);
+    break;
+  case COMPLEX_SPARSE_MATRIX_ENUM:
+    createComplexSparseMatrix(env, node);
+    break;
+  default:
+    stringstream message;
+    message << "Unsupported type for JavaTerminal. Type is " << type << ".";
+    throw convert_error(message.str());
+  }
+}
 
 // Helpers
 
@@ -255,87 +291,67 @@ jdoubleArray extractComplexPartOfComplex16Arr2JDoubleArr(JNIEnv* env, complex16*
   return returnVal;
 }
 
-DispatchToOGTerminal::DispatchToOGTerminal(JNIEnv* env): _obj(nullptr), _env(env) {}
-
-DispatchToOGTerminal::~DispatchToOGTerminal() {}
-
 void
-DispatchToOGTerminal::visit(librdag::OGExpr SUPPRESS_UNUSED const *thing)
-{
-  throw convert_error("Dispatch of expression to terminal not allowed");
-}
-
-void
-DispatchToOGTerminal::visit(librdag::OGScalar<real8> const *thing)
+JavaTerminal::createRealScalar(JNIEnv* env, const OGNumeric::Ptr& node)
 {
   jclass cls = JVMManager::getOGRealScalarClazz();
   jmethodID constructor = JVMManager::getOGRealScalarClazz_init();
-  jobject value = JVMManager::newDouble(_env, thing->getValue());
-  jobject newobject = _env->NewObject(cls, constructor, value);
-  setObject(newobject);
+  jobject value = JVMManager::newDouble(env, node->asOGRealScalar()->getValue());
+  _obj = env->NewObject(cls, constructor, value);
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGScalar<complex16> const *thing)
+JavaTerminal::createComplexScalar(JNIEnv* env, const OGNumeric::Ptr& node)
 {
   jclass cls = JVMManager::getOGComplexScalarClazz();
   jmethodID constructor = JVMManager::getOGComplexScalarClazz_init();
-  complex16 value = thing->getValue();
-  jobject real = JVMManager::newDouble(_env, value.real());
-  jobject imag = JVMManager::newDouble(_env, value.imag());
-  jobject newobject = _env->NewObject(cls, constructor, real, imag);
-  setObject(newobject);
+  complex16 value = node->asOGComplexScalar()->getValue();
+  jobject real = JVMManager::newDouble(env, value.real());
+  jobject imag = JVMManager::newDouble(env, value.imag());
+  _obj = env->NewObject(cls, constructor, real, imag);
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGScalar<int4> SUPPRESS_UNUSED const *thing)
-{
-  throw convert_error("We do not materialise integer scalars.");
-}
-
-void
-DispatchToOGTerminal::visit(librdag::OGMatrix<real8> const *thing)
+JavaTerminal::createRealMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 {
   jclass cls = JVMManager::getOGRealDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealDenseMatrixClazz_init();
-  jobjectArray darr = Real8AoA{OGNumeric::Ptr{thing->createOwningCopy()}}.toJDoubleAoA(_env);
-  jobject newobject = _env->NewObject(cls, constructor, darr);
-  setObject(newobject);
+  jobjectArray darr = Real8AoA{node}.toJDoubleAoA(env);
+  _obj = env->NewObject(cls, constructor, darr);
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGMatrix<complex16> const *thing)
+JavaTerminal::createComplexMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 {
   jclass cls = JVMManager::getOGComplexDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGComplexDenseMatrixClazz_init();
-  Complex16AoA c = Complex16AoA{OGNumeric::Ptr{thing->createOwningCopy()}};
-  jobjectArray realPart = c.realPartToJDoubleAoA(_env);
-  jobjectArray imagPart = c.imagPartToJDoubleAoA(_env);
-  jobject newobject = _env->NewObject(cls, constructor, realPart, imagPart);
-  setObject(newobject);
+  Complex16AoA c = Complex16AoA{node};
+  jobjectArray realPart = c.realPartToJDoubleAoA(env);
+  jobjectArray imagPart = c.imagPartToJDoubleAoA(env);
+  _obj = env->NewObject(cls, constructor, realPart, imagPart);
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<real8> const *thing)
+JavaTerminal::createRealDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 {
   jclass cls = JVMManager::getOGRealDiagonalMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealDiagonalMatrixClazz_init();
-  jdoubleArray darr = convertCreal8Arr2JDoubleArr(_env, thing->toReal8Array(), thing->getDatalen());
-  jobject newobject = _env->NewObject(cls, constructor, darr, thing->getRows(), thing->getCols());
-  setObject(newobject);
+  const OGRealDiagonalMatrix::Ptr mat = node->asOGRealDiagonalMatrix();
+  jdoubleArray darr = convertCreal8Arr2JDoubleArr(env, mat->toReal8Array(), mat->getDatalen());
+  _obj = env->NewObject(cls, constructor, darr, mat->getRows(), mat->getCols());
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGDiagonalMatrix<complex16> const *thing)
+JavaTerminal::createComplexDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 {
   jclass cls = JVMManager::getOGComplexDiagonalMatrixClazz();
   jmethodID constructor = JVMManager::getOGComplexDiagonalMatrixClazz_init();
-  complex16* values = thing->toComplex16Array();
-  size_t datalen = thing->getDatalen();
-  jdoubleArray realpart = extractRealPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
-  jdoubleArray imagpart = extractComplexPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
-  jobject newobject = _env->NewObject(cls, constructor, realpart, imagpart, thing->getRows(), thing->getCols());
-  setObject(newobject);
+  const OGComplexDiagonalMatrix::Ptr mat = node->asOGComplexDiagonalMatrix();
+  complex16* values = mat->toComplex16Array();
+  size_t datalen = mat->getDatalen();
+  jdoubleArray realpart = extractRealPartOfComplex16Arr2JDoubleArr(env, values, datalen);
+  jdoubleArray imagpart = extractComplexPartOfComplex16Arr2JDoubleArr(env, values, datalen);
+  _obj = env->NewObject(cls, constructor, realpart, imagpart, mat->getRows(), mat->getCols());
 }
 
 jint* makeCJintArray(const int4* arr, size_t len)
@@ -349,77 +365,65 @@ jint* makeCJintArray(const int4* arr, size_t len)
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGSparseMatrix<real8> const *thing)
+JavaTerminal::createRealSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 {
+  const OGRealSparseMatrix::Ptr mat = node->asOGRealSparseMatrix();
   // Column pointer
-  size_t colPtrLen = thing->getCols() + 1;
-  jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
-  jint* colPtr = makeCJintArray(thing->getColPtr(), colPtrLen);
-  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  size_t colPtrLen = mat->getCols() + 1;
+  jintArray jColPtr = JVMManager::newIntArray(env, colPtrLen);
+  jint* colPtr = makeCJintArray(mat->getColPtr(), colPtrLen);
+  env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
   delete[] colPtr;
 
   // Row index
-  size_t datalen = thing->getDatalen();
-  jintArray jRowIdx = JVMManager::newIntArray(_env, datalen);
-  jint* rowIdx = makeCJintArray(thing->getRowIdx(), datalen);
-  _env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  size_t datalen = mat->getDatalen();
+  jintArray jRowIdx = JVMManager::newIntArray(env, datalen);
+  jint* rowIdx = makeCJintArray(mat->getRowIdx(), datalen);
+  env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
   delete[] rowIdx;
 
   // Values
-  jdoubleArray values = convertCreal8Arr2JDoubleArr(_env, thing->toReal8Array(), datalen);
+  jdoubleArray values = convertCreal8Arr2JDoubleArr(env, mat->toReal8Array(), datalen);
 
   // Call constructor
   jclass cls = JVMManager::getOGRealSparseMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealSparseMatrixClazz_init();
-  jobject newobject = _env->NewObject(cls, constructor, jColPtr, jRowIdx, values, thing->getRows(), thing->getCols());
-
-  // Done
-  setObject(newobject);
+  _obj = env->NewObject(cls, constructor, jColPtr, jRowIdx, values, mat->getRows(), mat->getCols());
 }
 
 void
-DispatchToOGTerminal::visit(librdag::OGSparseMatrix<complex16> const *thing)
+JavaTerminal::createComplexSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 {
+  const OGComplexSparseMatrix::Ptr mat = node->asOGComplexSparseMatrix();
   // Column pointer
-  size_t colPtrLen = thing->getCols() + 1;
-  jintArray jColPtr = JVMManager::newIntArray(_env, colPtrLen);
-  jint* colPtr = makeCJintArray(thing->getColPtr(), colPtrLen);
-  _env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  size_t colPtrLen = mat->getCols() + 1;
+  jintArray jColPtr = JVMManager::newIntArray(env, colPtrLen);
+  jint* colPtr = makeCJintArray(mat->getColPtr(), colPtrLen);
+  env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
   delete[] colPtr;
 
   // Row index
-  size_t datalen = thing->getDatalen();
-  jintArray jRowIdx = JVMManager::newIntArray(_env, datalen);
-  jint* rowIdx = makeCJintArray(thing->getRowIdx(), datalen);
-  _env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  size_t datalen = mat->getDatalen();
+  jintArray jRowIdx = JVMManager::newIntArray(env, datalen);
+  jint* rowIdx = makeCJintArray(mat->getRowIdx(), datalen);
+  env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
   delete[] rowIdx;
 
   // Values
-  complex16* values = thing->toComplex16Array();
-  jdoubleArray realpart = extractRealPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
-  jdoubleArray imagpart = extractComplexPartOfComplex16Arr2JDoubleArr(_env, values, datalen);
+  complex16* values = mat->toComplex16Array();
+  jdoubleArray realpart = extractRealPartOfComplex16Arr2JDoubleArr(env, values, datalen);
+  jdoubleArray imagpart = extractComplexPartOfComplex16Arr2JDoubleArr(env, values, datalen);
 
   // Call constructor
   jclass cls = JVMManager::getOGComplexSparseMatrixClazz();
   jmethodID constructor = JVMManager::getOGComplexSparseMatrixClazz_init();
-  jobject newobject = _env->NewObject(cls, constructor, jColPtr, jRowIdx, realpart, imagpart, thing->getRows(), thing->getCols());
-
-  // Done
-  setObject(newobject);
+  _obj = env->NewObject(cls, constructor, jColPtr, jRowIdx, realpart, imagpart, mat->getRows(), mat->getCols());
 }
 
 jobject
-DispatchToOGTerminal::getObject()
+JavaTerminal::getObject()
 {
   return _obj;
 }
-
-void
-DispatchToOGTerminal::setObject(jobject obj)
-{
-  _obj = obj;
-}
-
-
 
 } // namespace convert

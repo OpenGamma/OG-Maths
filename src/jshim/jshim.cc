@@ -354,9 +354,7 @@ Java_com_opengamma_maths_materialisers_Materialisers_materialiseToOGTerminal(JNI
     DEBUG_PRINT("Calling entrypt function\n");
     librdag::OGTerminal::Ptr answer = entrypt(chain);
 
-    DispatchToOGTerminal visitor{env};
-    answer->accept(visitor);
-    result = visitor.getObject();
+    result = JavaTerminal{env, answer}.getObject();
   }
   catch (convert_error e)
   {
