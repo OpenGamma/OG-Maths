@@ -14,6 +14,7 @@
 #include "exceptions.hh"
 #include "jvmmanager.hh"
 #include "modifiermacros.h"
+#include "uncopyable.hh"
 
 namespace convert {
 
@@ -105,10 +106,8 @@ class Complex16AoA
 
 /**
  * Class for converting a terminal back to a java terminal
- *
- * FIXME: Exception checks/cleanup
  */
-class JavaTerminal
+class JavaTerminal: private Uncopyable
 {
   public:
     /**
@@ -118,8 +117,6 @@ class JavaTerminal
      * @param node The terminal to translate into a java terminal.
      */
     JavaTerminal(JNIEnv* env, const OGNumeric::Ptr& node);
-    JavaTerminal operator=(const JavaTerminal& other) = delete;
-    JavaTerminal(const JavaTerminal& other) = delete;
 
     /**
      * Get the java object represented by this instance.
