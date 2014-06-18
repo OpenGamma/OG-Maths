@@ -381,6 +381,7 @@ template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T
  * @param LDB as LAPACK dgelsd LDB.
  * @param S as LAPACK dgelsd S.
  * @param RCOND as LAPACK dgelsd RCOND.
+ * @param RANK as LAPACK dgelsd RANK.
  * @param INFO as LAPACK dgels INFO.
  */
 template<typename T> void xgelsd(int4 * M, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, real8 * S, real8 * RCOND, int4 * RANK, int4 * INFO );

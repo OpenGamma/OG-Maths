@@ -749,7 +749,7 @@ TEST(LAPACKTest_xlange, dlange) {
   real8 * A = new real8[16];
   std::copy(rspd,rspd+n*n,A);
   real8 answer = lapack::xlange(lapack::O, &n, &n, A, &n);
-  EXPECT_TRUE(answer == 79);
+  EXPECT_TRUE(SingleValueFuzzyEquals(answer, 79.e0));
   // check throw on bad arg
   n=-1;
   EXPECT_THROW(lapack::xlange(lapack::O, &n, &n, A, &n), rdag_error);
@@ -780,7 +780,7 @@ TEST(LAPACKTest_xgecon, dgecon) {
   // need a 1 norm
   real8 anorm = lapack::xlange(lapack::O, &m, &n, Acpy, &m);
   // check it
-  EXPECT_TRUE(anorm==82.e0);
+  EXPECT_TRUE(SingleValueFuzzyEquals(anorm, 82.e0));
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
@@ -1012,7 +1012,7 @@ TEST(LAPACKTest_xgelsd, dgelsd) {
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected_S,S,minmn,1e-13,1e-13));
 
-  EXPECT_TRUE(RANK==n);
+  EXPECT_EQ(RANK, n);
 
   // xerbla test
   n=-1;
@@ -1060,7 +1060,7 @@ TEST(LAPACKTest_xgelsd, zgelsd) {
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected_S,S,minmn,1e-13,1e-13));
 
-  EXPECT_TRUE(RANK==n);
+  EXPECT_EQ(RANK, n);
 
   // xerbla test
   n=-1;
