@@ -76,7 +76,7 @@ SVDRunner::run(RegContainer& reg, OGRealScalar::Ptr arg) const
   return nullptr;
 }
 void *
-SVDRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
+SVDRunner::run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const
 {
   svd_dense_runner<real8>(reg, arg);
   return nullptr;

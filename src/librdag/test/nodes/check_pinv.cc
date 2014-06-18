@@ -43,21 +43,21 @@ INSTANTIATE_NODE_TEST_CASE_P(PINVTests,PINV,
   // Test matrix context real space
 
   // pinv(1) = 1
-  new CheckUnary<PINV>( OGRealMatrix::create(new real8[1]{1},1,1, OWNER), OGRealScalar::create(1.0), MATHSEQUAL),
+  new CheckUnary<PINV>( OGRealDenseMatrix::create(new real8[1]{1},1,1, OWNER), OGRealScalar::create(1.0), MATHSEQUAL),
   // pinv(-1) = -1
-  new CheckUnary<PINV>( OGRealMatrix::create(new real8[1]{-1},1,1, OWNER), OGRealScalar::create(-1.0),
+  new CheckUnary<PINV>( OGRealDenseMatrix::create(new real8[1]{-1},1,1, OWNER), OGRealScalar::create(-1.0),
   MATHSEQUAL),
   // pinv(0) = 0
-  new CheckUnary<PINV>( OGRealMatrix::create(new real8[1]{0.e0},1,1, OWNER), OGRealScalar::create(0.0), MATHSEQUAL),
+  new CheckUnary<PINV>( OGRealDenseMatrix::create(new real8[1]{0.e0},1,1, OWNER), OGRealScalar::create(0.0), MATHSEQUAL),
   // pinv(full rank system) [condition number ~= 13]
   new CheckUnary<PINV>(
-      OGRealMatrix::create(new real8[12] {1.,-4.,7.,-12.,2.,2.,9.,4.,3.,1.,11.,7.},4,3, OWNER),
-      OGRealMatrix::create(new real8[12] {0.0142560142560143,-0.1236907236907242,0.1100683100683104,-0.0598455598455599,0.5727155727155739,-0.4266409266409274,0.0299970299970300,0.0800118800118803,0.0024354024354022,-0.0446985446985447,-0.1545391545391548,0.1528066528066529},3,4, OWNER),
+      OGRealDenseMatrix::create(new real8[12] {1.,-4.,7.,-12.,2.,2.,9.,4.,3.,1.,11.,7.},4,3, OWNER),
+      OGRealDenseMatrix::create(new real8[12] {0.0142560142560143,-0.1236907236907242,0.1100683100683104,-0.0598455598455599,0.5727155727155739,-0.4266409266409274,0.0299970299970300,0.0800118800118803,0.0024354024354022,-0.0446985446985447,-0.1545391545391548,0.1528066528066529},3,4, OWNER),
       MATHSEQUAL),
   // pinv(rank 2 system of size 4) [condition number ~=1.4e16]
   new CheckUnary<PINV>(
-      OGRealMatrix::create(new real8[12]{1,4,7,10,2,5,8,11,3,6,9,12},4,3, OWNER),
-      OGRealMatrix::create(new real8[12]{-0.4833333333333338,-0.0333333333333326,0.4166666666666664,-0.2444444444444440,-0.0111111111111107,0.2222222222222215,-0.0055555555555554,0.0111111111111111,0.0277777777777776,0.2333333333333329,0.0333333333333330,-0.1666666666666660},3,4,OWNER),
+      OGRealDenseMatrix::create(new real8[12]{1,4,7,10,2,5,8,11,3,6,9,12},4,3, OWNER),
+      OGRealDenseMatrix::create(new real8[12]{-0.4833333333333338,-0.0333333333333326,0.4166666666666664,-0.2444444444444440,-0.0111111111111107,0.2222222222222215,-0.0055555555555554,0.0111111111111111,0.0277777777777776,0.2333333333333329,0.0333333333333330,-0.1666666666666660},3,4,OWNER),
       MATHSEQUAL),
 
 
@@ -90,7 +90,7 @@ INSTANTIATE_NODE_TEST_CASE_P(PINVTests,PINV,
 namespace testinternal {
 
 real8 reals[9] = {1,-4,7,2,2,9,3,1,11};
-OGTerminal::Ptr real = OGRealMatrix::create(reals,3,3);
+OGTerminal::Ptr real = OGRealDenseMatrix::create(reals,3,3);
 complex16 complexs[9] = {{1,10},{-4,-40},{7,70},{2,20},{2,20},{9,90},{3,30},{1,10},{11,110}};
 OGTerminal::Ptr complex = OGComplexMatrix::create(complexs,3,3);
 
@@ -107,7 +107,7 @@ TEST_P(ReconstructPinvNodeTest, TerminalTypes)
   OGTerminal::Ptr A = GetParam();
   OGExpr::Ptr pinv = PINV::create(A);
   OGExpr::Ptr AtimesPinvA = MTIMES::create(A, pinv);
-  OGTerminal::Ptr expected = OGRealMatrix::create(new real8[9] {1,0,0,0,1,0,0,0,1},3,3, OWNER);
+  OGTerminal::Ptr expected = OGRealDenseMatrix::create(new real8[9] {1,0,0,0,1,0,0,0,1},3,3, OWNER);
   runtree(AtimesPinvA);
   EXPECT_TRUE(AtimesPinvA->getRegs()[0]->asOGTerminal()->mathsequals(expected, 1e-14, 1e-14));
 }

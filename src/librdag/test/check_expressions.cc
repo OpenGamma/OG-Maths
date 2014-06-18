@@ -117,8 +117,8 @@ TEST(VirtualCopyTest, IntegerScalar){
 
 TEST(VirtualCopyTest, RealMatrix){
   real8 realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGRealMatrix::Ptr rm1 = OGRealMatrix::create(realData, 2, 3);
-  OGRealMatrix::Ptr rm2 = rm1->copy()->asOGRealMatrix();
+  OGRealDenseMatrix::Ptr rm1 = OGRealDenseMatrix::create(realData, 2, 3);
+  OGRealDenseMatrix::Ptr rm2 = rm1->copy()->asOGRealDenseMatrix();
   EXPECT_EQ(rm1->getData(), rm2->getData());
   EXPECT_EQ(rm1->getRows(), rm2->getRows());
   EXPECT_EQ(rm1->getCols(), rm2->getCols());
@@ -262,7 +262,7 @@ TEST(VirtualCopyTest, NEGATE) {
 
 TEST(VirtualCopyTest, NORM2) {
   real8 matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
+  OGNumeric::Ptr realMat = OGRealDenseMatrix::create(matData, 3, 2);
   NORM2::Ptr norm1 = NORM2::create(realMat);
   
   // Check that the copy is of the correct type
@@ -275,10 +275,10 @@ TEST(VirtualCopyTest, NORM2) {
   OGNumeric::Ptr s1arg1 = a1[0];
   OGNumeric::Ptr s2arg1 = a2[0];
   EXPECT_NE(s1arg1, s2arg1);
-  OGRealMatrix::Ptr s1m = s1arg1->asOGRealMatrix();
-  OGRealMatrix::Ptr s2m = s2arg1->asOGRealMatrix();
-  ASSERT_NE(OGRealMatrix::Ptr{}, s1m);
-  ASSERT_NE(OGRealMatrix::Ptr{}, s2m);
+  OGRealDenseMatrix::Ptr s1m = s1arg1->asOGRealDenseMatrix();
+  OGRealDenseMatrix::Ptr s2m = s2arg1->asOGRealDenseMatrix();
+  ASSERT_NE(OGRealDenseMatrix::Ptr{}, s1m);
+  ASSERT_NE(OGRealDenseMatrix::Ptr{}, s2m);
   EXPECT_EQ(s1m->getData(), s2m->getData());
   EXPECT_EQ(s1m->getRows(), s2m->getRows());
   EXPECT_EQ(s1m->getCols(), s2m->getCols());
@@ -288,7 +288,7 @@ TEST(VirtualCopyTest, NORM2) {
 
 TEST(VirtualCopyTest, SVD) {
   real8 matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
+  OGNumeric::Ptr realMat = OGRealDenseMatrix::create(matData, 3, 2);
   SVD::Ptr svd1 = SVD::create(realMat);
 
   // Check that the copy is of the correct type
@@ -301,10 +301,10 @@ TEST(VirtualCopyTest, SVD) {
   OGNumeric::Ptr s1arg1 = a1[0];
   OGNumeric::Ptr s2arg1 = a2[0];
   EXPECT_NE(s1arg1, s2arg1);
-  OGRealMatrix::Ptr s1m = s1arg1->asOGRealMatrix();
-  OGRealMatrix::Ptr s2m = s2arg1->asOGRealMatrix();
-  ASSERT_NE(OGRealMatrix::Ptr{}, s1m);
-  ASSERT_NE(OGRealMatrix::Ptr{}, s2m);
+  OGRealDenseMatrix::Ptr s1m = s1arg1->asOGRealDenseMatrix();
+  OGRealDenseMatrix::Ptr s2m = s2arg1->asOGRealDenseMatrix();
+  ASSERT_NE(OGRealDenseMatrix::Ptr{}, s1m);
+  ASSERT_NE(OGRealDenseMatrix::Ptr{}, s2m);
   EXPECT_EQ(s1m->getData(), s2m->getData());
   EXPECT_EQ(s1m->getRows(), s2m->getRows());
   EXPECT_EQ(s1m->getCols(), s2m->getCols());
@@ -313,7 +313,7 @@ TEST(VirtualCopyTest, SVD) {
 
 TEST(VirtualCopyTest, LU) {
   real8 matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
+  OGNumeric::Ptr realMat = OGRealDenseMatrix::create(matData, 3, 2);
   LU::Ptr lu1 = LU::create(realMat);
   
   // Check that the copy is of the correct type
@@ -326,10 +326,10 @@ TEST(VirtualCopyTest, LU) {
   OGNumeric::Ptr s1arg1 = a1[0];
   OGNumeric::Ptr s2arg1 = a2[0];
   EXPECT_NE(s1arg1, s2arg1);
-  OGRealMatrix::Ptr s1m = s1arg1->asOGRealMatrix();
-  OGRealMatrix::Ptr s2m = s2arg1->asOGRealMatrix();
-  ASSERT_NE(OGRealMatrix::Ptr{}, s1m);
-  ASSERT_NE(OGRealMatrix::Ptr{}, s2m);
+  OGRealDenseMatrix::Ptr s1m = s1arg1->asOGRealDenseMatrix();
+  OGRealDenseMatrix::Ptr s2m = s2arg1->asOGRealDenseMatrix();
+  ASSERT_NE(OGRealDenseMatrix::Ptr{}, s1m);
+  ASSERT_NE(OGRealDenseMatrix::Ptr{}, s2m);
   EXPECT_EQ(s1m->getData(), s2m->getData());
   EXPECT_EQ(s1m->getRows(), s2m->getRows());
   EXPECT_EQ(s1m->getCols(), s2m->getCols());
@@ -338,7 +338,7 @@ TEST(VirtualCopyTest, LU) {
 
 TEST(VirtualCopyTest, SELECTRESULT) {
   real8 matData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr realMat = OGRealMatrix::create(matData, 3, 2);
+  OGNumeric::Ptr realMat = OGRealDenseMatrix::create(matData, 3, 2);
   OGExpr::Ptr svd = SVD::create(realMat);
   OGNumeric::Ptr i = OGIntegerScalar::create(0);
   SELECTRESULT::Ptr sr1 = SELECTRESULT::create(svd, i);

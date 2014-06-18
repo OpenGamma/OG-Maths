@@ -29,7 +29,7 @@ public enum ExprEnum {
    */
   OGRealScalar            (0x0002L),
   OGComplexScalar         (0x0003L),
-  OGRealMatrix            (0x0005L),
+  OGRealDenseMatrix       (0x0005L),
   OGComplexMatrix         (0x0007L),
   OGRealSparseMatrix      (0x000BL),
   OGComplexSparseMatrix   (0x000DL),

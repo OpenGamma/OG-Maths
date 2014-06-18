@@ -130,7 +130,7 @@ inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 }
 
 void *
-INVRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
+INVRunner::run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const
 {
   inv_dense_runner<real8>(reg, arg);
   return nullptr;

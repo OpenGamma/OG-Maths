@@ -34,8 +34,8 @@ class UnaryExpressionRunner(UnaryExpression):
         implementation = self.real_matrix_implementation
         d = { 'implementation': implementation,
               'nodename': self.typename,
-              'argtype': 'OGRealMatrix',
-              'returntype': 'OGRealMatrix' }
+              'argtype': 'OGRealDenseMatrix',
+              'returntype': 'OGRealDenseMatrix' }
         return unary_runner_function % d
 
     @property
@@ -72,9 +72,9 @@ class BinaryExpressionRunner(BinaryExpression):
         implementation = self.real_matrix_implementation
         d = { 'implementation': implementation,
               'nodename': self.typename,
-              'arg0type': 'OGRealMatrix',
-              'arg1type': 'OGRealMatrix',
-              'returntype': 'OGRealMatrix' }
+              'arg0type': 'OGRealDenseMatrix',
+              'arg1type': 'OGRealDenseMatrix',
+              'returntype': 'OGRealDenseMatrix' }
         return binary_runner_function % d
 
     @property
@@ -118,7 +118,7 @@ class SelectResultRunner(BinaryExpression):
         implementation = self.real_matrix_implementation
         d = { 'implementation': implementation,
               'nodename': self.typename,
-              'arg0type': 'OGRealMatrix',
+              'arg0type': 'OGRealDenseMatrix',
               'arg1type': 'OGIntegerScalar',
               'returntype': 'OGTerminal' }
         return binary_runner_function % d
@@ -162,7 +162,7 @@ class InfixOpRunner(BinaryExpressionRunner):
     def real_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'real8',
-              'returntype': 'OGRealMatrix' }
+              'returntype': 'OGRealDenseMatrix' }
         return infix_matrix_runner_implementation % d
 
     @property
@@ -193,7 +193,7 @@ class PrefixOpRunner(UnaryExpressionRunner):
     def real_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'real8',
-              'returntype': 'OGRealMatrix' }
+              'returntype': 'OGRealDenseMatrix' }
         return prefix_matrix_runner_implementation % d
 
     @property
@@ -225,7 +225,7 @@ class UnaryFunctionRunner(UnaryExpressionRunner):
     def real_matrix_implementation(self):
         d = { 'function':    self.function,
               'datatype':   'real8',
-              'returntype': 'OGRealMatrix' }
+              'returntype': 'OGRealDenseMatrix' }
         return unaryfunction_matrix_runner_implementation % d
 
     @property
@@ -252,8 +252,8 @@ class UnimplementedUnary(UnaryExpressionRunner):
     @property
     def real_matrix_runner_function(self):
         d = { 'nodename': self.typename,
-              'argtype': 'OGRealMatrix',
-              'returntype': 'OGRealMatrix' }
+              'argtype': 'OGRealDenseMatrix',
+              'returntype': 'OGRealDenseMatrix' }
         return unimplementedunary_runner_function % d
 
     @property
@@ -281,9 +281,9 @@ class UnimplementedBinary(BinaryExpressionRunner):
     @property
     def real_matrix_runner_function(self):
         d = { 'nodename': self.typename,
-              'arg0type': 'OGRealMatrix',
-              'arg1type': 'OGRealMatrix',
-              'returntype': 'OGRealMatrix' }
+              'arg0type': 'OGRealDenseMatrix',
+              'arg1type': 'OGRealDenseMatrix',
+              'returntype': 'OGRealDenseMatrix' }
         return unimplementedbinary_runner_function % d
 
     @property

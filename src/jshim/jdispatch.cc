@@ -31,7 +31,7 @@ Real8AoA::Real8AoA(const OGNumeric::Ptr& node)
     _rows = 1;
     _cols = 1;
     break;
-  case REAL_MATRIX_ENUM:
+  case REAL_DENSE_MATRIX_ENUM:
   case REAL_DIAGONAL_MATRIX_ENUM:
   case REAL_SPARSE_MATRIX_ENUM:
     _data = node->asOGTerminal()->toReal8ArrayOfArrays();
@@ -119,7 +119,7 @@ Complex16AoA::Complex16AoA(const OGNumeric::Ptr& node)
     _rows = 1;
     _cols = 1;
     break;
-  case REAL_MATRIX_ENUM:
+  case REAL_DENSE_MATRIX_ENUM:
   case COMPLEX_MATRIX_ENUM:
   case COMPLEX_DIAGONAL_MATRIX_ENUM:
   case COMPLEX_SPARSE_MATRIX_ENUM:

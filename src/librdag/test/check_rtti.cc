@@ -32,7 +32,7 @@ void check_rtti(OGNumeric::Ptr node, string name)
   CHECK_CAST(OGRealScalar);
   CHECK_CAST(OGComplexScalar);
   CHECK_CAST(OGIntegerScalar);
-  CHECK_CAST(OGRealMatrix);
+  CHECK_CAST(OGRealDenseMatrix);
   CHECK_CAST(OGComplexMatrix);
   CHECK_CAST(OGRealDiagonalMatrix);
   CHECK_CAST(OGComplexDiagonalMatrix);
@@ -136,10 +136,10 @@ TEST(RTTITerminalTest, TestOGIntegerScalar) {
   check_rtti(node, "OGIntegerScalar");
 }
 
-TEST(RTTITerminalTest, TestOGRealMatrix) {
+TEST(RTTITerminalTest, TestOGRealDenseMatrix) {
   real8 realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-  OGNumeric::Ptr node = OGRealMatrix::create(realData, 2, 3);
-  check_rtti(node, "OGRealMatrix");
+  OGNumeric::Ptr node = OGRealDenseMatrix::create(realData, 2, 3);
+  check_rtti(node, "OGRealDenseMatrix");
 }
 
 TEST(RTTITerminalTest, TestOGComplexMatrix) {

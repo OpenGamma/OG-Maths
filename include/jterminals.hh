@@ -78,17 +78,17 @@ class DLLEXPORT_C JOGIntegerScalar: public OGIntegerScalar
 };
 
 /*
- * An OGRealMatrix backed by data pinned from a Java based OGRealMatrix
+ * An OGRealDenseMatrix backed by data pinned from a Java based OGRealDenseMatrix
  */
-class DLLEXPORT_C JOGRealMatrix: public OGRealMatrix
+class DLLEXPORT_C JOGRealDenseMatrix: public OGRealDenseMatrix
 {
   public:
-    typedef std::shared_ptr<const JOGRealMatrix> Ptr;
-    static JOGRealMatrix::Ptr create(jobject obj);
-    virtual ~JOGRealMatrix() override;
+    typedef std::shared_ptr<const JOGRealDenseMatrix> Ptr;
+    static JOGRealDenseMatrix::Ptr create(jobject obj);
+    virtual ~JOGRealDenseMatrix() override;
     virtual void debug_print() const override;
   private:
-    JOGRealMatrix(jobject obj);
+    JOGRealDenseMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 

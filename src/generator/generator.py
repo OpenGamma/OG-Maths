@@ -76,7 +76,7 @@ custom_nodes = [
 terminals = [ Terminal('Real', 'Scalar'),
               Terminal('Complex', 'Scalar'),
               Terminal('Integer', 'Scalar'),
-              Terminal('Real', 'Matrix'),
+              Terminal('Real', 'DenseMatrix'),
               Terminal('Logical', 'Matrix'),
               Terminal('Complex', 'Matrix'),
               Terminal('Real', 'DiagonalMatrix'),

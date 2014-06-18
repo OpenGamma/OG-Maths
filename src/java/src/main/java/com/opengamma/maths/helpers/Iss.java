@@ -37,7 +37,7 @@ public class Iss {
     switch (terminal.getType()) {
       case OGRealScalar:
       case OGLogicalMatrix:
-      case OGRealMatrix:
+      case OGRealDenseMatrix:
       case OGRealDiagonalMatrix:
       case OGRealSparseMatrix:
       case OGIntegerScalar:

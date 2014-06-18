@@ -103,7 +103,7 @@ class DispatchUnaryOp(object):
     def __init__(self, terminals, nodes):
         self._terminals = terminals
         self._nodes = nodes
-        self._backstop_terminals = [ 'OGRealMatrix', 'OGComplexMatrix' ]
+        self._backstop_terminals = [ 'OGRealDenseMatrix', 'OGComplexMatrix' ]
 
     @property
     def class_definition(self):
@@ -141,7 +141,7 @@ class DispatchBinaryOp(object):
     def __init__(self, terminals, nodes):
         self._terminals = terminals
         self._nodes = nodes
-        self._backstop_terminals = [ 'OGRealMatrix', 'OGComplexMatrix' ]
+        self._backstop_terminals = [ 'OGRealDenseMatrix', 'OGComplexMatrix' ]
 
     @property
     def class_definition(self):
@@ -166,7 +166,7 @@ class DispatchBinaryOp(object):
                 if 'Complex' in (t0.datatype, t1.datatype):
                     type_to_convert_to = 'OGComplexMatrix'
                 else:
-                    type_to_convert_to = 'OGRealMatrix'
+                    type_to_convert_to = 'OGRealDenseMatrix'
                 # Check if we need to convert arg0 at all and act accordingly
                 if t0.typename == type_to_convert_to:
                     d = { 'argno': '0', 'nodetype': type_to_convert_to }
