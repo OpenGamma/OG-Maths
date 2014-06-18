@@ -187,12 +187,12 @@ TEST(SVDTests,CheckComplexMatrix)
 {
 
   // answers
-  OGTerminal::Ptr U = OGComplexMatrix::create(new complex16[9] {{     -0.0228707006002169,      -0.2287070060021659}, {     -0.0522140610036492,      -0.5221406100364927}, {     -0.0815574214070819,      -0.8155742140708198}, {     -0.0879076568710847,      -0.8790765687107978}, {     -0.0239587534423321,      -0.2395875344233279}, {      0.0399901499864153,       0.3999014998641418}, {      0.3147401422050641,       0.2600102104752862}, {     -0.6294802844101258,      -0.5200204209505755}, {      0.3147401422050625,       0.2600102104752883}},3,3,OWNER);
+  OGTerminal::Ptr U = OGComplexDenseMatrix::create(new complex16[9] {{     -0.0228707006002169,      -0.2287070060021659}, {     -0.0522140610036492,      -0.5221406100364927}, {     -0.0815574214070819,      -0.8155742140708198}, {     -0.0879076568710847,      -0.8790765687107978}, {     -0.0239587534423321,      -0.2395875344233279}, {      0.0399901499864153,       0.3999014998641418}, {      0.3147401422050641,       0.2600102104752862}, {     -0.6294802844101258,      -0.5200204209505755}, {      0.3147401422050625,       0.2600102104752883}},3,3,OWNER);
   OGTerminal::Ptr S = OGRealDiagonalMatrix::create(new real8[2] {95.7302720469661779,5.1686568674896343},3,2,OWNER);
-  OGTerminal::Ptr VT = OGComplexMatrix::create(new complex16[4]{{-0.6196294838293402,0},{0.7848944532670524,-0.e0},{-0.7848944532670524,0},{-0.6196294838293402,0}}, 2,2, OWNER);
+  OGTerminal::Ptr VT = OGComplexDenseMatrix::create(new complex16[4]{{-0.6196294838293402,0},{0.7848944532670524,-0.e0},{-0.7848944532670524,0},{-0.6196294838293402,0}}, 2,2, OWNER);
 
   // input
-  OGTerminal::Ptr M = OGComplexMatrix::create(new complex16[6]{{1,10}, {3,30}, {5,50}, {2,20}, {4,40}, {6,60}},3,2,OWNER);
+  OGTerminal::Ptr M = OGComplexDenseMatrix::create(new complex16[6]{{1,10}, {3,30}, {5,50}, {2,20}, {4,40}, {6,60}},3,2,OWNER);
   OGExpr::Ptr svd = SVD::create(M);
 
   // computed answer pointers
@@ -240,5 +240,5 @@ TEST(SVDTests,CheckComplexMatrix)
   }
   reconstruct = m2->getRegs()[0];
   // FP fuzz causes grief on reconstruction
-  EXPECT_TRUE(ArrayFuzzyEquals(M->asOGComplexMatrix()->getData(),reconstruct->asOGComplexMatrix()->getData(),1e-15,1e-15));
+  EXPECT_TRUE(ArrayFuzzyEquals(M->asOGComplexDenseMatrix()->getData(),reconstruct->asOGComplexDenseMatrix()->getData(),1e-15,1e-15));
 }

@@ -129,8 +129,8 @@ TEST(VirtualCopyTest, RealMatrix){
 TEST(VirtualCopyTest, ComplexMatrix){
   complex16 complexData[6] = { {1.0, 2.0}, {3.0, 4.0},  {5.0, 6.0},
                                {7.0, 8.0}, {9.0, 10.0}, {11.0, 12.0} };
-  OGComplexMatrix::Ptr cm1 = OGComplexMatrix::create(complexData, 2, 3);
-  OGComplexMatrix::Ptr cm2 = cm1->copy()->asOGComplexMatrix();
+  OGComplexDenseMatrix::Ptr cm1 = OGComplexDenseMatrix::create(complexData, 2, 3);
+  OGComplexDenseMatrix::Ptr cm2 = cm1->copy()->asOGComplexDenseMatrix();
   EXPECT_EQ(cm1->getData(), cm2->getData());
   EXPECT_EQ(cm1->getRows(), cm2->getRows());
   EXPECT_EQ(cm1->getCols(), cm2->getCols());

@@ -118,10 +118,10 @@ OGNumeric::asOGRealDenseMatrix() const
   return OGRealDenseMatrix::Ptr{};
 }
 
-OGComplexMatrix::Ptr
-OGNumeric::asOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGNumeric::asOGComplexDenseMatrix() const
 {
-  return OGComplexMatrix::Ptr{};
+  return OGComplexDenseMatrix::Ptr{};
 }
 
 OGLogicalMatrix::Ptr

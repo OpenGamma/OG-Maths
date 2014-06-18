@@ -90,9 +90,9 @@ complex16 complexNegData[6] = { {-1.0, -2.0}, {-3.0, -4.0},  {-5.0,  -6.0},
 
 TreeResultPair negatecomplexmatrix()
 {
-  OGNumeric::Ptr ogcomplexmatrix = OGComplexMatrix::create(complexData, 2, 3);
+  OGNumeric::Ptr ogcomplexmatrix = OGComplexDenseMatrix::create(complexData, 2, 3);
   OGNumeric::Ptr negate = NEGATE::create(ogcomplexmatrix);
-  OGTerminal::Ptr ogcomplexnegmatrix = OGComplexMatrix::create(complexNegData, 2, 3);
+  OGTerminal::Ptr ogcomplexnegmatrix = OGComplexDenseMatrix::create(complexNegData, 2, 3);
   return TreeResultPair(negate, ogcomplexnegmatrix);
 }
 

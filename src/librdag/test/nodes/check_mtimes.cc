@@ -43,17 +43,17 @@ INSTANTIATE_NODE_TEST_CASE_P(MTIMESTests,MTIMES,
    // cscalar * cscalar
   new CheckBinary<MTIMES>( OGComplexScalar::create({2.0,4.0}), OGComplexScalar::create({3.0,5.e0}), OGComplexScalar::create({-14,22}),MATHSEQUAL),
   // rscalar * cmatrix
-  new CheckBinary<MTIMES>( OGRealScalar::create(10), OGComplexMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER),OGComplexMatrix::create(new complex16[2]{{10,100},{20,200}},2,1,OWNER),MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGRealScalar::create(10), OGComplexDenseMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER),OGComplexDenseMatrix::create(new complex16[2]{{10,100},{20,200}},2,1,OWNER),MATHSEQUAL),
   // cmatrix * rscalar
-  new CheckBinary<MTIMES>( OGComplexMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER), OGRealScalar::create(10), OGComplexMatrix::create(new complex16[2]{{10,100},{20,200}},2,1,OWNER),MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGComplexDenseMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER), OGRealScalar::create(10), OGComplexDenseMatrix::create(new complex16[2]{{10,100},{20,200}},2,1,OWNER),MATHSEQUAL),
   // cscalar * cmatrix
-  new CheckBinary<MTIMES>( OGComplexMatrix::create(new complex16[1]{{2,3}},1,1,OWNER), OGComplexMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER),OGComplexMatrix::create(new complex16[2]{{-28,23},{-56,46}},2,1,OWNER),MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGComplexDenseMatrix::create(new complex16[1]{{2,3}},1,1,OWNER), OGComplexDenseMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER),OGComplexDenseMatrix::create(new complex16[2]{{-28,23},{-56,46}},2,1,OWNER),MATHSEQUAL),
   // cmatrix * cscalar
-  new CheckBinary<MTIMES>( OGComplexMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER), OGComplexMatrix::create(new complex16[1]{{2,3}},1,1,OWNER), OGComplexMatrix::create(new complex16[2]{{-28,23},{-56,46}},2,1,OWNER),MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGComplexDenseMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER), OGComplexDenseMatrix::create(new complex16[1]{{2,3}},1,1,OWNER), OGComplexDenseMatrix::create(new complex16[2]{{-28,23},{-56,46}},2,1,OWNER),MATHSEQUAL),
   // cmatrix * cvector
-  new CheckBinary<MTIMES>( OGComplexMatrix::create(new complex16[6]{{1.,10.}, {3.,30.}, {5.,50.}, {2.,20.}, {4.,40.}, {6.,60.}},3,2,OWNER), OGComplexMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER), OGComplexMatrix::create(new complex16[3]{{-495.,100.}, {-1089.,220.}, {-1683.,340.}},3,1,OWNER),MATHSEQUAL),
+  new CheckBinary<MTIMES>( OGComplexDenseMatrix::create(new complex16[6]{{1.,10.}, {3.,30.}, {5.,50.}, {2.,20.}, {4.,40.}, {6.,60.}},3,2,OWNER), OGComplexDenseMatrix::create(new complex16[2]{{1,10},{2,20}},2,1,OWNER), OGComplexDenseMatrix::create(new complex16[3]{{-495.,100.}, {-1089.,220.}, {-1683.,340.}},3,1,OWNER),MATHSEQUAL),
    // cmatrix * cmatrix
-  new CheckBinary<MTIMES>( OGComplexMatrix::create(new complex16[6]{{1.,10.}, {3.,30.}, {5.,50.}, {2.,20.}, {4.,40.}, {6.,60.}},3,2,OWNER), OGComplexMatrix::create(new complex16[4] {{1.,10.}, {3.,30.}, {2.,20.}, {5.,50.}},2,2,OWNER), OGComplexMatrix::create(new complex16[6]{{-693.,140.}, {-1485.,300.}, {-2277.,460.}, {-1188.,240.}, {-2574.,520.}, {-3960.,800.}},3,2,OWNER),MATHSEQUAL)
+  new CheckBinary<MTIMES>( OGComplexDenseMatrix::create(new complex16[6]{{1.,10.}, {3.,30.}, {5.,50.}, {2.,20.}, {4.,40.}, {6.,60.}},3,2,OWNER), OGComplexDenseMatrix::create(new complex16[4] {{1.,10.}, {3.,30.}, {2.,20.}, {5.,50.}},2,2,OWNER), OGComplexDenseMatrix::create(new complex16[6]{{-693.,140.}, {-1485.,300.}, {-2277.,460.}, {-1188.,240.}, {-2574.,520.}, {-3960.,800.}},3,2,OWNER),MATHSEQUAL)
   )
 );
 

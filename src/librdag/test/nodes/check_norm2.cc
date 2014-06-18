@@ -38,7 +38,7 @@ INSTANTIATE_NODE_TEST_CASE_P(NORM2Tests,NORM2,
   new CheckUnary<NORM2>( OGComplexScalar::create({1.0,1.0}), OGRealScalar::create(std::sqrt(2)), MATHSEQUAL),
 new CheckUnary<NORM2>( OGComplexScalar::create({-1.0,1.0}), OGRealScalar::create(std::sqrt(2)), MATHSEQUAL),
   new CheckUnary<NORM2>( OGComplexScalar::create({0,0}), OGRealScalar::create(0.0), MATHSEQUAL),
-  new CheckUnary<NORM2>( OGComplexMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER), OGRealScalar::create(37.6031913539263), MATHSEQUAL),
-  new CheckUnary<NORM2>( OGComplexMatrix::create(new complex16[12]{{1,10},{4,40},{7,70},{10,100},{2,20},{5,50},{8,80},{11,110},{3,30},{6,60},{9,90},{12,120}},4,3, OWNER), OGRealScalar::create(255.894027746469), MATHSEQUAL)
+  new CheckUnary<NORM2>( OGComplexDenseMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER), OGRealScalar::create(37.6031913539263), MATHSEQUAL),
+  new CheckUnary<NORM2>( OGComplexDenseMatrix::create(new complex16[12]{{1,10},{4,40},{7,70},{10,100},{2,20},{5,50},{8,80},{11,110},{3,30},{6,60},{9,90},{12,120}},4,3, OWNER), OGRealScalar::create(255.894027746469), MATHSEQUAL)
   )
 );

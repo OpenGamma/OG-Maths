@@ -31,7 +31,7 @@ OGTerminal::Ptr ogrealmatrix = OGRealDenseMatrix::create(realData, 2, 3);
 
 complex16 complexData[6] = { {1.0, 2.0}, {3.0, 4.0},  {5.0, 6.0},
                              {7.0, 8.0}, {9.0, 10.0}, {11.0, 12.0} };
-OGTerminal::Ptr ogcomplexmatrix = OGComplexMatrix::create(complexData, 2, 3);
+OGTerminal::Ptr ogcomplexmatrix = OGComplexDenseMatrix::create(complexData, 2, 3);
 
 double rdiagData[3] = { 1.0, 2.0, 3.0 };
 OGTerminal::Ptr ogrealdiagonalmatrix = OGRealDiagonalMatrix::create(rdiagData, 3, 4);

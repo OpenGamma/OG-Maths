@@ -43,8 +43,8 @@ class UnaryExpressionRunner(UnaryExpression):
         implementation = self.complex_matrix_implementation
         d = { 'implementation': implementation,
               'nodename': self.typename,
-              'argtype': 'OGComplexMatrix',
-              'returntype': 'OGComplexMatrix' }
+              'argtype': 'OGComplexDenseMatrix',
+              'returntype': 'OGComplexDenseMatrix' }
         return unary_runner_function % d
 
 class BinaryExpressionRunner(BinaryExpression):
@@ -82,9 +82,9 @@ class BinaryExpressionRunner(BinaryExpression):
         implementation = self.complex_matrix_implementation
         d = { 'implementation': implementation,
               'nodename': self.typename,
-              'arg0type': 'OGComplexMatrix',
-              'arg1type': 'OGComplexMatrix',
-              'returntype': 'OGComplexMatrix' }
+              'arg0type': 'OGComplexDenseMatrix',
+              'arg1type': 'OGComplexDenseMatrix',
+              'returntype': 'OGComplexDenseMatrix' }
         return binary_runner_function % d
 
     @property
@@ -128,7 +128,7 @@ class SelectResultRunner(BinaryExpression):
         implementation = self.complex_matrix_implementation
         d = { 'implementation': implementation,
               'nodename': self.typename,
-              'arg0type': 'OGComplexMatrix',
+              'arg0type': 'OGComplexDenseMatrix',
               'arg1type': 'OGIntegerScalar',
               'returntype': 'OGTerminal' }
         return binary_runner_function % d
@@ -169,7 +169,7 @@ class InfixOpRunner(BinaryExpressionRunner):
     def complex_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'complex16',
-              'returntype': 'OGComplexMatrix' }
+              'returntype': 'OGComplexDenseMatrix' }
         return infix_matrix_runner_implementation % d
 
 class PrefixOpRunner(UnaryExpressionRunner):
@@ -200,7 +200,7 @@ class PrefixOpRunner(UnaryExpressionRunner):
     def complex_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
               'datatype':   'complex16',
-              'returntype': 'OGComplexMatrix' }
+              'returntype': 'OGComplexDenseMatrix' }
         return prefix_matrix_runner_implementation % d
 
 class UnaryFunctionRunner(UnaryExpressionRunner):
@@ -232,7 +232,7 @@ class UnaryFunctionRunner(UnaryExpressionRunner):
     def complex_matrix_implementation(self):
         d = { 'function':   self.function,
               'datatype':   'complex16',
-              'returntype': 'OGComplexMatrix' }
+              'returntype': 'OGComplexDenseMatrix' }
         return unaryfunction_matrix_runner_implementation % d
 
 class UnimplementedUnary(UnaryExpressionRunner):
@@ -259,8 +259,8 @@ class UnimplementedUnary(UnaryExpressionRunner):
     @property
     def complex_matrix_runner_function(self):
         d = { 'nodename': self.typename,
-              'argtype': 'OGComplexMatrix',
-              'returntype': 'OGComplexMatrix' }
+              'argtype': 'OGComplexDenseMatrix',
+              'returntype': 'OGComplexDenseMatrix' }
         return unimplementedunary_runner_function % d
 
 class UnimplementedBinary(BinaryExpressionRunner):
@@ -289,9 +289,9 @@ class UnimplementedBinary(BinaryExpressionRunner):
     @property
     def complex_matrix_runner_function(self):
         d = { 'nodename': self.typename,
-              'arg0type': 'OGComplexMatrix',
-              'arg1type': 'OGComplexMatrix',
-              'returntype': 'OGComplexMatrix' }
+              'arg0type': 'OGComplexDenseMatrix',
+              'arg1type': 'OGComplexDenseMatrix',
+              'returntype': 'OGComplexDenseMatrix' }
         return unimplementedbinary_runner_function % d
 
 class Runners(object):

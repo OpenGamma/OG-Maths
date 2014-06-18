@@ -83,7 +83,7 @@ SVDRunner::run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const
 }
 
 void *
-SVDRunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
+SVDRunner::run(RegContainer& reg, OGComplexDenseMatrix::Ptr arg) const
 {
   svd_dense_runner<complex16>(reg, arg);
   return nullptr;

@@ -87,7 +87,7 @@ NORM2Runner::run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const
 }
 
 void *
-NORM2Runner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
+NORM2Runner::run(RegContainer& reg, OGComplexDenseMatrix::Ptr arg) const
 {
   norm2_dense_runner<complex16>(reg, arg);
   return nullptr;
