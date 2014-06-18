@@ -735,7 +735,6 @@ TEST(LAPACKTest_xpotrs, zpotrs) {
   lapack::xpotrs(lapack::U, &n, lapack::ione, A, &n, RHS, &n, &INFO);
   complex16 expected[4] =  {{-1.0063762794655238,-1.5989977364878503}, {0.8869421128000980,0.5966984611395660}, {-0.1560914405265542,0.1826679640758723}, {-0.0562376225820731,0.1501070660620698}};
   EXPECT_TRUE(ArrayFuzzyEquals(expected,RHS,n, 1e-14, 1e-14));
-  cout << RHS[0] << " " << RHS[1] << " " << RHS[2] << " " << RHS[3] << std::endl;
   // check throw on bad arg
   n=-1;
   EXPECT_THROW(lapack::xpotrs(lapack::U, &n, lapack::ione, A, &n, RHS, &n, &INFO), rdag_error);
@@ -743,3 +742,550 @@ TEST(LAPACKTest_xpotrs, zpotrs) {
   delete [] A;
   delete [] RHS;
 }
+
+
+TEST(LAPACKTest_xlange, dlange) {
+  int4 n = 4;
+  real8 * A = new real8[16];
+  std::copy(rspd,rspd+n*n,A);
+  real8 answer = lapack::xlange(lapack::O, &n, &n, A, &n);
+  EXPECT_TRUE(SingleValueFuzzyEquals(answer, 79.e0));
+  // check throw on bad arg
+  n=-1;
+  EXPECT_THROW(lapack::xlange(lapack::O, &n, &n, A, &n), rdag_error);
+  delete[] A;
+}
+
+TEST(LAPACKTest_xlange, zlange) {
+  int4 n = 4;
+  complex16 * A = new complex16[16];
+  std::copy(cspd,cspd+n*n,A);
+  real8 answer = lapack::xlange(lapack::O, &n, &n, A, &n);
+  EXPECT_TRUE(SingleValueFuzzyEquals(answer,792.493781056045));
+  // check throw on bad arg
+  n=-1;
+  EXPECT_THROW(lapack::xlange(lapack::O, &n, &n, A, &n), rdag_error);
+  delete[] A;
+}
+
+TEST(LAPACKTest_xgecon, dgecon) {
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  // need a 1 norm
+  real8 anorm = lapack::xlange(lapack::O, &m, &n, Acpy, &m);
+  // check it
+  EXPECT_TRUE(SingleValueFuzzyEquals(anorm, 82.e0));
+
+  // need a LU decomp
+  int4 * ipiv = new int4[minmn]();
+  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+
+  // make the call
+  real8 rcond = 0;
+  lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO);
+  EXPECT_TRUE(SingleValueFuzzyEquals(rcond,1.8369021718386168e-3));
+
+  // check throw on bad arg, malloc guard test
+  n=-1;
+  EXPECT_THROW(lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO), rdag_error);
+  // xerbla test
+  n=5; m=-1;
+  EXPECT_THROW(lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO), rdag_error);
+
+  // clean up
+  delete [] ipiv;
+  delete [] Acpy;
+}
+
+
+TEST(LAPACKTest_xgecon, zgecon) {
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  // need a 1 norm
+  real8 anorm = lapack::xlange(lapack::O, &m, &n, Acpy, &m);
+
+  // check it
+  EXPECT_TRUE(SingleValueFuzzyEquals(anorm,183.35757415498276e0));
+
+  // need a LU decomp
+  int4 * ipiv = new int4[minmn]();
+  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+
+  // make the call
+  real8 rcond = 0;
+  lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO);
+  EXPECT_TRUE(SingleValueFuzzyEquals(rcond,1.8369021718386248e-3));
+
+  // check throw on bad arg, malloc guard test
+  n=-1;
+  EXPECT_THROW(lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO), rdag_error);
+  // xerbla test
+  n=5; m=-1;
+  EXPECT_THROW(lapack::xgecon(lapack::O, &n, Acpy, &m, &anorm, &rcond, &INFO), rdag_error);
+  // clean up
+  delete [] ipiv;
+  delete [] Acpy;
+}
+
+
+TEST(LAPACKTest_xgetrs, dgetrs) {
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  // need a LU decomp
+  int4 * ipiv = new int4[minmn]();
+  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+
+  // need an RHS
+  real8 * rhs = new real8[8]{1,2,3,4,1,2,3,4};
+
+  // expected
+  real8 * expected = new real8[8]{-0.2831168831168828,0.1194805194805193,0.0155844155844156,0.1480519480519481,
+   -0.2831168831168828,0.1194805194805193,0.0155844155844156,0.1480519480519481
+  };
+
+  // make the call
+  int4 two = 2;
+  lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO),rdag_error);
+
+  // clean up
+  delete [] ipiv;
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+}
+
+TEST(LAPACKTest_xgetrs, zgetrs) {
+  int4 m = 5;
+  int4 n = 4;
+  const int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  // need a LU decomp
+  int4 * ipiv = new int4[minmn]();
+  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+
+  // need an RHS
+  complex16 * rhs = new complex16[8]{{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.},{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}};
+
+  // expected
+  complex16 * expected = new complex16[8]{{      1.0758441558441547,      -0.6794805194805187}, {     -0.4540259740259733,       0.2867532467532462}, {     -0.0592207792207793,       0.0374025974025975}, {     -0.5625974025974027,       0.3553246753246754}, {      1.0758441558441547,      -0.6794805194805187}, {     -0.4540259740259733,       0.2867532467532462}, {     -0.0592207792207793,       0.0374025974025975}, {     -0.5625974025974027,       0.3553246753246754}};
+
+  // make the call
+  int4 two = 2;
+  lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,8,1e-14,1e-14));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgetrs(lapack::N, &n, &two, Acpy, &m, ipiv, rhs, &n, &INFO),rdag_error);
+
+  // clean up
+  delete [] ipiv;
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+}
+
+TEST(LAPACKTest_xgels, dgels) {
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  // need an RHS
+  real8 * rhs = new real8[10]{1,2,3,4,5,1,2,3,4,5};
+
+  // expected
+  real8 * expected = new real8[8]{-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731,-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731};
+
+  // make the call
+  int4 two = 2;
+  lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO);
+
+  // answers are striped in "n" length columns in RHS
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO),rdag_error);
+
+  // clean up
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+}
+
+
+TEST(LAPACKTest_xgels, zgels) {
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  // need an RHS
+  complex16 * rhs = new complex16[10]{{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}, {5., 50.},{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}, {5.,50.}};
+
+  // expected
+  complex16 * expected = new complex16[8]{{     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}, {     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}};
+
+  // make the call
+  int4 two = 2;
+  lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO);
+
+  // answers are striped in "n" length columns in RHS
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgels(lapack::N, &m, &n, &two, Acpy, &m, rhs, &m, &INFO),rdag_error);
+
+  // clean up
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+}
+
+
+TEST(LAPACKTest_xgelsd, dgelsd) {
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  // need an RHS
+  real8 * rhs = new real8[10]{1,2,3,4,5,1,2,3,4,5};
+
+  // expected
+  real8 * expected = new real8[8]{-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731,-6.1464892723569555,3.3470608493900018,-0.1305926637544035,0.2247336970641731};
+  real8 * expected_S = new real8[4] {66.4703325718839153,9.0396484167794604,3.5978090226222377,0.1881874621350516};
+
+  // need somewhere to write S
+  real8 * S = new real8[minmn];
+  // condition and rank
+  real8 RCOND = - 1; // -1 so rank is computed wrt machine precision
+  int4 RANK;
+
+  // make the call
+  int4 two = 2;
+  lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO);
+
+  // answers are striped in "n" length columns in RHS
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_S,S,minmn,1e-13,1e-13));
+
+  EXPECT_EQ(RANK, n);
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO),rdag_error);
+
+
+  // clean up
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+  delete [] S;
+  delete [] expected_S;
+}
+
+
+TEST(LAPACKTest_xgelsd, zgelsd) {
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  // need an RHS
+  complex16 * rhs = new complex16[10]{{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}, {5., 50.},{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}, {5.,50.}};
+
+  // expected
+  complex16 * expected = new complex16[8]{{     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}, {     23.3566592349563571,     -14.7515742536566901}, {    -12.7188312276819353,       8.0329460385359930}, {      0.4962521222667151,      -0.3134223930105628}, {     -0.8539880488438545,       0.5393608729540187}};
+  real8 * expected_S = new real8[4]{148.6321821177508014,20.2132683526172237,8.0449455446454117,0.4207999578471437};
+
+  // need somewhere to write S
+  real8 * S = new real8[minmn];
+  // condition and rank
+  real8 RCOND = - 1; // -1 so rank is computed wrt machine precision
+  int4 RANK;
+
+  // make the call
+  int4 two = 2;
+  lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO);
+
+  // answers are striped in "n" length columns in RHS
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,rhs,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(&expected[4],&rhs[5],n,1e-13,1e-13));
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_S,S,minmn,1e-13,1e-13));
+
+  EXPECT_EQ(RANK, n);
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgelsd(&m, &n, &two, Acpy, &m, rhs, &m, S, &RCOND, &RANK, &INFO),rdag_error);
+
+  // clean up
+  delete [] Acpy;
+  delete [] expected;
+  delete [] rhs;
+  delete [] S;
+  delete [] expected_S;
+}
+
+
+TEST(LAPACKTest_xgeev, dgeev) {
+  int4 m = 4;
+  int4 n = 4;
+  int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
+
+  real8 * A = new real8[16] {1.,3.,10.,-2.,3.,6.,-1.,-1.,4.,4.,4.,6.,5.,-5.,7.,-10.};
+
+  // expected
+  complex16 * expected_W = new complex16[4]{{-9.6888202793819147,0},{-7.1209208815126370,0},{11.5341107067997743,0},{6.2756304540948005,0}};
+
+  real8 * expected_VL = new real8[16] {0.5674175178806528,-0.0926660731685940,-0.4408469400904874,0.6892781257943167,-0.7391126256525055,0.1682952376639553,0.4565908903993675,-0.4657402692327615,-0.6308032002519173,-0.1585352980899745,-0.6832883559806681,-0.3317693542096654,0.2418102871777062,-0.7172636824241223,0.4394794928726053,0.4836510831527837};
+  real8 * expected_VR = new real8[16]{-0.4604743713776651,0.3593615791115275,-0.0515866317850007,0.8100379177445289,-0.6283589719101941,0.3481029226389141,0.1720238421645797,0.6740898718992491,-0.4636997919781236,-0.6132122861110744,-0.6309391734073038,-0.1042542782910278,-0.1550485207601204,-0.9326141205284221,0.2734940465430895,0.1771774954856935};
+
+  // need somewhere to write W, VL and VR
+  complex16 * W = new complex16[minmn];
+  real8 * VL = new real8[n*n];
+  real8 * VR = new real8[n*n];
+
+  // make the call
+  lapack::xgeev(lapack::V, lapack::V, &n, A, &m, W, VL, &n, VR, &n, &INFO);
+
+  // check
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_W,W,n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n*n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n*n,1e-14,1e-14));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgeev(lapack::V, lapack::V, &n, A, &m, W, VL, &n, VR, &n, &INFO),rdag_error);
+
+  // clean up
+  delete [] A;
+  delete [] expected_W;
+  delete [] expected_VL;
+  delete [] expected_VR;
+  delete [] VL;
+  delete [] VR;
+  delete [] W;
+}
+
+TEST(LAPACKTest_xgeev, zgeev) {
+  int4 m = 4;
+  int4 n = 4;
+  int4 minmn = m > n ? n : m;
+  int4 INFO = 0;
+
+  complex16 * A = new complex16[16] {{1.,10.}, {3.,30.}, {10.,100.}, {-2.,-20.}, {3.,30.}, {6.,60.}, {-1.,-10.}, {-1.,-10.}, {4.,40.}, {4.,40.}, {4.,40.}, {6.,60.}, {5.,50.}, {-5.,-50.}, {7.,70.}, {-10.,-100.}};
+
+  // expected
+  complex16 * expected_W = new complex16[4]{{     -9.6888202793818152,     -96.8882027938191897}, {     -7.1209208815127178,     -71.2092088151264164}, {     11.5341107067997406,     115.3411070679975126}, {      6.2756304540948138,      62.7563045409480083}};
+
+  complex16 * expected_VL = new complex16[16] {{      0.5674175178806546,      -0.0000000000000009}, {     -0.0926660731685946,       0.0000000000000003}, {     -0.4408469400904876,       0.0000000000000004}, 0.6892781257943149,0.7391126256525051,{     -0.1682952376639549,      -0.0000000000000000}, {     -0.4565908903993674,       0.0000000000000004}, {      0.4657402692327622,      -0.0000000000000014}, {      0.6308032002519175,      -0.0000000000000002}, {      0.1585352980899743,      -0.0000000000000000}, 0.6832883559806681,{      0.3317693542096652,       0.0000000000000002}, {     -0.2418102871777065,      -0.0000000000000001}, 0.7172636824241221,{     -0.4394794928726055,       0.0000000000000002}, {     -0.4836510831527837,       0.0000000000000003}};
+  complex16 * expected_VR = new complex16[16]{{     -0.4604743713776652,       0.0000000000000003}, {      0.3593615791115276,       0.0000000000000002}, {     -0.0515866317850003,      -0.0000000000000004}, 0.8100379177445289,{     -0.6283589719101929,      -0.0000000000000011}, {      0.3481029226389143,       0.0000000000000005}, {      0.1720238421645784,       0.0000000000000010}, 0.6740898718992501,{      0.4636997919781238,      -0.0000000000000001}, 0.6132122861110739,0.6309391734073042,{      0.1042542782910277,       0.0000000000000001}, {      0.1550485207601204,      -0.0000000000000000}, 0.9326141205284220,{     -0.2734940465430895,       0.0000000000000002}, {     -0.1771774954856937,       0.0000000000000001}};
+
+  // need somewhere to write W, VL and VR
+  complex16 * W = new complex16[minmn];
+  complex16 * VL = new complex16[n*n];
+  complex16 * VR = new complex16[n*n];
+
+  // make the call
+  lapack::xgeev(lapack::V, lapack::V, &n, A, &m, W, VL, &n, VR, &n, &INFO);
+
+  // check
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_W,W,n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VL,VL,n*n,1e-14,1e-14));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_VR,VR,n*n,1e-14,1e-14));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgeev(lapack::V, lapack::V, &n, A, &m, W, VL, &n, VR, &n, &INFO),rdag_error);
+
+  // clean up
+  delete [] A;
+  delete [] expected_W;
+  delete [] expected_VL;
+  delete [] expected_VR;
+  delete [] VL;
+  delete [] VR;
+  delete [] W;
+}
+
+
+TEST(LAPACKTest_xgeqrf, dgeqrf) {
+
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
+
+  real8 * TAU = new real8[minmn];
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  real8 * expected = new real8[20] {-16.4620776331543297,0.4193443036519876,0.4659381151688751,0.3727504921351001,0.0465938115168875,-30.9802937007701331,-0.4705339669164644,0.5271543871195484,0.1380458452882069,0.1945542709156689,-41.4285496155396729,-3.2545266045055365,-5.0083264004388974,0.1791773291023356,0.0485226775213250,-37.2370981148472424,-0.8155922093218853,-5.7238016005016057,-10.4867263038294549,0.1036735557501358};
+
+  real8 * expected_TAU = new real8[4]{1.3037283696153934,1.4983520738901965,1.9333778010585592,1.9787321786052121};
+
+  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_TAU,TAU,n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO),rdag_error);
+
+  delete [] TAU;
+  delete [] Acpy;
+  delete [] expected;
+  delete [] expected_TAU;
+
+}
+
+TEST(LAPACKTest_xgeqrf, zgeqrf) {
+
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
+
+  complex16 * TAU = new complex16[minmn];
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  complex16 * expected = new complex16[20] {{    -36.8103246386119238,       0.0000000000000000}, {      0.3010074912401742,      -0.3585220927405818}, {      0.3344527680446380,      -0.3983578808228687}, {      0.2675622144357104,      -0.3186863046582949}, {      0.0334452768044638,      -0.0398357880822869}, {    -69.2740426778305647,      -0.0000000000000106}, {      1.0521459357478518,       0.0000000000000000}, {      0.2628571444550748,       0.5711000051181361}, {      0.2254041184152971,       0.1052355328720274}, {      0.0187265130198877,       0.2329322361230564}, {    -92.6370531495694678,       0.0000000000000142}, {      7.2773427222559253,       0.0000000000000258}, {    -11.1989582848882208,       0.0000000000000000}, {      0.1933057235253725,      -0.1432100966228572}, {      0.0646250639237787,       0.0899178386939252}, {    -83.2646826696277031,       0.0000000000000000}, {      1.8237196219630949,      -0.0000000000000391}, {    -12.7988094684436007,      -0.0000000000000080}, {    -23.4490328767978156,       0.0000000000000000}, {      0.1118475673158655,      -0.0377993268530200}};
+
+  complex16 * expected_TAU = new complex16[4]{{1.1358314562310403,-0.27166291246208063},{1.1023389842523179,0.49317452258808697},{1.7631082023084017,-0.43191932046510112},{1.3367239865466765,-0.92188119028587789}};
+
+  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
+  EXPECT_TRUE(ArrayFuzzyEquals(expected_TAU,TAU,n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO),rdag_error);
+
+  delete [] TAU;
+  delete [] Acpy;
+  delete [] expected;
+  delete [] expected_TAU;
+
+}
+
+
+TEST(LAPACKTest_xxxgqr, dorgqr) {
+
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
+
+  real8 * TAU = new real8[minmn];
+
+  real8 * Acpy = new real8[20];
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+
+  real8 * expected = new real8[20] {-0.3037283696153934,-0.5467110653077083,-0.6074567392307869,-0.4859653913846296,-0.0607456739230787,0.8704878387954510,-0.1333179572929945,-0.3842694063151109,0.1176334917291140,-0.2509514490221096,-0.0499168744229821,0.8153089489086596,-0.5158077023707830,-0.2495843721148959,0.0665558325639719,0.2751778011656992,0.0762869151746490,0.4658950891023217,-0.8173598054426700,-0.1825436898821958};
+
+  // create a packed QR form with elementary reflectors in lower part
+  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+
+  // extract Q from packed form of xgeqrf, scalings are in TAU
+  int4 k = n;
+  lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO),rdag_error);
+
+
+  delete [] TAU;
+  delete [] Acpy;
+  delete [] expected;
+}
+
+
+TEST(LAPACKTest_xxxgqr, zunrgqr) {
+
+  int4 m = 5;
+  int4 n = 4;
+  int4 INFO = 0;
+  int4 minmn = m > n ? n : m;
+
+  complex16 * TAU = new complex16[minmn];
+
+  complex16 * Acpy = new complex16[20];
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+
+  complex16 * expected = new complex16[20] {{     -0.1358314562310403,       0.2716629124620806}, {     -0.2444966212158725,       0.4889932424317451}, {     -0.2716629124620806,       0.5433258249241611}, {     -0.2173303299696644,       0.4346606599393290}, {     -0.0271662912462081,       0.0543325824924161}, {     -0.3892939962266967,       0.7785879924534080}, {      0.0596216030257065,      -0.1192432060514235}, {      0.1718505028388125,      -0.3437010056776262}, {     -0.0526072967873878,       0.1052145935747794}, {      0.1122288998131025,      -0.2244577996262045}, {     -0.0223235048868174,       0.0446470097736447}, {      0.3646172464847307,      -0.7292344929694671}, {     -0.2306762171638115,       0.4613524343276225}, {     -0.1116175244341002,       0.2232350488682011}, {      0.0297646731824274,      -0.0595293463648534}, {      0.1230632538610821,      -0.2461265077221643}, {      0.0341165456248574,      -0.0682330912497137}, {      0.2083546179232226,      -0.4167092358464459}, {     -0.3655344174091633,       0.7310688348183267}, {     -0.0816360198880458,       0.1632720397760899}};
+
+  // create a packed QR form with elementary reflectors in lower part
+  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+
+  // extract Q from packed form of xgeqrf, scalings are in TAU
+  int4 k = n;
+  lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
+
+  EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
+
+  // xerbla test
+  n=-1;
+  EXPECT_THROW(lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO),rdag_error);
+
+  delete [] TAU;
+  delete [] Acpy;
+  delete [] expected;
+}
+

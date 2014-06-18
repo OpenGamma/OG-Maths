@@ -29,6 +29,7 @@ extern char U;
 extern char D;
 extern char ONE;
 extern char O;
+extern char V;
 extern int4 ione;
 extern int4 izero;
 extern real8 rone;
@@ -37,6 +38,8 @@ extern real8 rzero;
 extern complex16 czero;
 
 template<typename T>char charmagic();
+template<typename T>std::string xxxgqrcharmagic();
+
 
 template<typename T> void xscal(int4 * N, T * DA, T * DX, int4 * INCX);
 template<typename T>void xswap(int4 * N, T * DX, int4 * INCX, T * DY, int4 * INCY);
@@ -49,6 +52,12 @@ template<typename T> void xpotrf(char * UPLO, int4 * N, T * A, int4 * LDA, int4 
 template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO);
 template<typename T> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, T * WORK, int4 * LWORK, int4 * INFO );
+template<typename T> real8 xlange(char * NORM, int4 * M, int4 * N, T * A, int4 * LDA, real8 * WORK );
+template<typename T> void xgetrs(char * TRANS, int4 * N, int4 * NRHS, T * A, int4 * LDA, int4 * IPIV, T * B, int4 * LDB, int4 * INFO);
+template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, T * WORK, int4 * LWORK, int4 * INFO );
+template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, T * WORK, int4 * LWORK, int4 *INFO);
+template<typename T> void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, T * WORK, int4 * LWORK, int4 * INFO);
+
 }
 
 /**
@@ -83,6 +92,10 @@ extern char * ONE;
  * The F77 character 'O'
  */
 extern char * O;
+/**
+ * The F77 character 'V'
+ */
+extern char * V;
 /**
  * The F77 integer '1'
  */
@@ -248,7 +261,7 @@ template<typename T> void xtrcon(char * NORM, char * UPLO, char * DIAG, int4 * N
 template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO);
 
 /**
- * xpotrf() computes the Cholesky factorization of a Hermitian positive definite matrix A.
+ * xpotrf() computes the Cholesky factorisation of a Hermitian positive definite matrix A.
  * @param UPLO as LAPACK dpotrf UPLO
  * @param N as LAPACK dpotrf N
  * @param A data type specific with intent as LAPACK dpotrf A
@@ -306,7 +319,115 @@ real8 zlanhe(char * NORM, char * UPLO, int4 * N, complex16 * A, int4 * LDA);
  */
 template<typename T> void xpotrs(char * UPLO, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO);
 
+/**
+ * xlange() computes matrix norms (one, Inf, Frobenius)
+ * @param NORM as LAPACK dlange NORM.
+ * @param M as LAPACK dlange M.
+ * @param N as LAPACK dlange N.
+ * @param A data type specific with intent as LAPACK dlange A.
+ * @param LDA as LAPACK dlange LDA.
+ */
+template<typename T> real8 xlange(char * NORM, int4 * M, int4 * N, T * A, int4 * LDA);
+
+/**
+ * xgecon() computes reciprocal condition numbers calculated from a LU factorisation as
+ * computed by xgetrf().
+ * @param NORM as LAPACK dgecon NORM.
+ * @param N as LAPACK dgecon N.
+ * @param A data type specific with intent as LAPACK dgecon A.
+ * @param LDA as LAPACK dgecon LDA.
+ * @param ANORM as LAPACK dgecon ANORM.
+ * @param RCOND as LAPACK dgecon RCOND.
+ * @param INFO as LAPACK dgecon INFO.
+ */
+template<typename T> void xgecon(char * NORM, int4 * N, T * A, int4 * LDA, real8 * ANORM, real8 * RCOND, int4 * INFO);
+
+/**
+ * xgetrs() solves linear systems using a LU factorisation computed by xgetrf().
+ * @param TRANS as LAPACK xgetrs TRANS.
+ * @param N as LAPACK xgetrs N.
+ * @param NRHS as LAPACK xgetrs NRHS.
+ * @param A data type specific with intent as LAPACK xgetrs A.
+ * @param LDA as LAPACK xgetrs LDA.
+ * @param IPIV as LAPACK xgetrs IPIV.
+ * @param B data type specific with intent as LAPACK xgetrs B.
+ * @param LDB as LAPACK xgetrs LDB.
+ * @param INFO as LAPACK xgetrs INFO.
+ */
+template<typename T>void xgetrs(char * TRANS, int4 * N, int4 * NRHS, T * A, int4 * LDA, int4 * IPIV, T * B, int4 * LDB, int4 * INFO);
+
+/**
+ * xgels() solves {over,under}determined linear systems via QR decomposition.
+ * @param TRANS as LAPACK dgels TRANS.
+ * @param M as LAPACK dgels M.
+ * @param N as LAPACK dgels N.
+ * @param NRHS as LAPACK dgels NRHS.
+ * @param A data type specific with intent as LAPACK dgels A.
+ * @param LDA as LAPACK dgels LDA.
+ * @param B data type specific with intent as  LAPACK dgels TRANS.
+ * @param LDB as LAPACK dgels LDB.
+ * @param INFO as LAPACK dgels INFO.
+ */
+template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, int4 * INFO );
+
+/**
+ * xgelsd() solves {over,under}determined linear systems via SV decomposition.
+ * @param M as LAPACK dgelsd M.
+ * @param N as LAPACK dgelsd N.
+ * @param NRHS as LAPACK dgelsd NRHS.
+ * @param A data type specific with intent as LAPACK dgelsd A.
+ * @param LDA as LAPACK dgelsd LDA.
+ * @param B data type specific with intent as LAPACK dgelsd TRANS.
+ * @param LDB as LAPACK dgelsd LDB.
+ * @param S as LAPACK dgelsd S.
+ * @param RCOND as LAPACK dgelsd RCOND.
+ * @param RANK as LAPACK dgelsd RANK.
+ * @param INFO as LAPACK dgels INFO.
+ */
+template<typename T> void xgelsd(int4 * M, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, real8 * S, real8 * RCOND, int4 * RANK, int4 * INFO );
+
+/**
+ * xgeev() computes eigen{values,vectors}.
+ * @param JOBVL as LAPACK dgeev JOBVL.
+ * @param JOBVR as LAPACK dgeev JOBVR.
+ * @param N as LAPACK dgeev N.
+ * @param A data type specific with intent as LAPACK dgeev A.
+ * @param LDA as LAPACK dgeev LDA.
+ * @param W the computed eigenvalues.
+ * @param VL data type specific with intent as LAPACK dgeev VL.
+ * @param LDVL as LAPACK dgeev LDVL.
+ * @param VR data type specific with intent as LAPACK dgeev VR.
+ * @param LDVR as LAPACK dgeev LDVR.
+ * @param LDVL as LAPACK dgeev INFO.
+ */
+template<typename T> void xgeev(char * JOBVL, char * JOBVR, int4 * N, T * A, int4 * LDA, complex16 * W, T * VL, int4 * LDVL, T * VR, int4 * LDVR, int4 * INFO);
+
+
+/**
+ * xgeqrf() computes the QR decomposition.
+ * @param M as LAPACK degqrf M.
+ * @param N as LAPACK degqrf N.
+ * @param A data type specific with intent as LAPACK degqrf A.
+ * @param LDA as LAPACK dgeqrf LDA.
+ * @param TAU  data type specific with intent as LAPACK degqrf TAU.
+ * @param INFO as LAPACK degqrf INFO.
+ */
+template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, int4 *INFO);
+
+
+/**
+ * xxxgqr() computes the orthogonal Q matrix from elementary reflectors as returned by xgeqrf()
+ * @param M as LAPACK dorgqr M.
+ * @param N as LAPACK dorgqr N.
+ * @param K as LAPACK dorgqr K.
+ * @param A data type specific with intent as LAPACK degqrf A.
+ * @param LDA as LAPACK dgeqrf LDA.
+ * @param TAU  data type specific with intent as LAPACK degqrf TAU.
+ * @param INFO as LAPACK degqrf INFO.
+ */
+template<typename T>void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, int4 * INFO);
 }
+
 
 
 #endif // _LAPACK_HH
