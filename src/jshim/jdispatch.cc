@@ -362,9 +362,9 @@ JavaTerminal::createComplexDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& nod
   checkEx(env);
 }
 
-jint* makeCJintArray(const int4* arr, size_t len)
+std::unique_ptr<jint[]> makeCJintArray(const int4* arr, size_t len)
 {
-  jint* jintArr = new jint[len];
+  std::unique_ptr<jint[]> jintArr{new jint[len]};
   for (size_t i = 0; i < len; ++i)
   {
     jintArr[i] = arr[i];
@@ -379,18 +379,16 @@ JavaTerminal::createRealSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   // Column pointer
   size_t colPtrLen = mat->getCols() + 1;
   jintArray jColPtr = JVMManager::newIntArray(env, colPtrLen);
-  jint* colPtr = makeCJintArray(mat->getColPtr(), colPtrLen);
-  env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  std::unique_ptr<jint[]> colPtr = makeCJintArray(mat->getColPtr(), colPtrLen);
+  env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr.get());
   checkEx(env);
-  delete[] colPtr;
 
   // Row index
   size_t datalen = mat->getDatalen();
   jintArray jRowIdx = JVMManager::newIntArray(env, datalen);
-  jint* rowIdx = makeCJintArray(mat->getRowIdx(), datalen);
-  env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  std::unique_ptr<jint[]> rowIdx = makeCJintArray(mat->getRowIdx(), datalen);
+  env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx.get());
   checkEx(env);
-  delete[] rowIdx;
 
   // Values
   jdoubleArray values = convertCreal8Arr2JDoubleArr(env, mat->toReal8Array(), datalen);
@@ -409,18 +407,16 @@ JavaTerminal::createComplexSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   // Column pointer
   size_t colPtrLen = mat->getCols() + 1;
   jintArray jColPtr = JVMManager::newIntArray(env, colPtrLen);
-  jint* colPtr = makeCJintArray(mat->getColPtr(), colPtrLen);
-  env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  std::unique_ptr<jint[]> colPtr = makeCJintArray(mat->getColPtr(), colPtrLen);
+  env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr.get());
   checkEx(env);
-  delete[] colPtr;
 
   // Row index
   size_t datalen = mat->getDatalen();
   jintArray jRowIdx = JVMManager::newIntArray(env, datalen);
-  jint* rowIdx = makeCJintArray(mat->getRowIdx(), datalen);
-  env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  std::unique_ptr<jint[]> rowIdx = makeCJintArray(mat->getRowIdx(), datalen);
+  env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx.get());
   checkEx(env);
-  delete[] rowIdx;
 
   // Values
   complex16* values = mat->toComplex16Array();
