@@ -263,6 +263,7 @@ jdoubleArray convertCreal8Arr2JDoubleArr(JNIEnv * env, real8 * inputData, size_t
 {
   jdoubleArray returnVal = JVMManager::newDoubleArray(env, len);
   env->SetDoubleArrayRegion(returnVal, 0, len, inputData);
+  checkEx(env);
   return returnVal;
 }
 
@@ -275,6 +276,7 @@ jdoubleArray extractRealPartOfComplex16Arr2JDoubleArr(JNIEnv* env, complex16* in
     reals[i] = std::real(inputData[i]);
   }
   env->SetDoubleArrayRegion(returnVal, 0, len, reals);
+  checkEx(env);
   return returnVal;
 }
 
@@ -287,6 +289,7 @@ jdoubleArray extractComplexPartOfComplex16Arr2JDoubleArr(JNIEnv* env, complex16*
     imags[i] = std::imag(inputData[i]);
   }
   env->SetDoubleArrayRegion(returnVal, 0, len, imags);
+  checkEx(env);
   return returnVal;
 }
 
@@ -297,6 +300,7 @@ JavaTerminal::createRealScalar(JNIEnv* env, const OGNumeric::Ptr& node)
   jmethodID constructor = JVMManager::getOGRealScalarClazz_init();
   jobject value = JVMManager::newDouble(env, node->asOGRealScalar()->getValue());
   _obj = env->NewObject(cls, constructor, value);
+  checkEx(env);
 }
 
 void
@@ -308,6 +312,7 @@ JavaTerminal::createComplexScalar(JNIEnv* env, const OGNumeric::Ptr& node)
   jobject real = JVMManager::newDouble(env, value.real());
   jobject imag = JVMManager::newDouble(env, value.imag());
   _obj = env->NewObject(cls, constructor, real, imag);
+  checkEx(env);
 }
 
 void
@@ -317,6 +322,7 @@ JavaTerminal::createRealMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   jmethodID constructor = JVMManager::getOGRealDenseMatrixClazz_init();
   jobjectArray darr = Real8AoA{node}.toJDoubleAoA(env);
   _obj = env->NewObject(cls, constructor, darr);
+  checkEx(env);
 }
 
 void
@@ -328,6 +334,7 @@ JavaTerminal::createComplexMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   jobjectArray realPart = c.realPartToJDoubleAoA(env);
   jobjectArray imagPart = c.imagPartToJDoubleAoA(env);
   _obj = env->NewObject(cls, constructor, realPart, imagPart);
+  checkEx(env);
 }
 
 void
@@ -338,6 +345,7 @@ JavaTerminal::createRealDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   const OGRealDiagonalMatrix::Ptr mat = node->asOGRealDiagonalMatrix();
   jdoubleArray darr = convertCreal8Arr2JDoubleArr(env, mat->toReal8Array(), mat->getDatalen());
   _obj = env->NewObject(cls, constructor, darr, mat->getRows(), mat->getCols());
+  checkEx(env);
 }
 
 void
@@ -351,6 +359,7 @@ JavaTerminal::createComplexDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& nod
   jdoubleArray realpart = extractRealPartOfComplex16Arr2JDoubleArr(env, values, datalen);
   jdoubleArray imagpart = extractComplexPartOfComplex16Arr2JDoubleArr(env, values, datalen);
   _obj = env->NewObject(cls, constructor, realpart, imagpart, mat->getRows(), mat->getCols());
+  checkEx(env);
 }
 
 jint* makeCJintArray(const int4* arr, size_t len)
@@ -372,6 +381,7 @@ JavaTerminal::createRealSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   jintArray jColPtr = JVMManager::newIntArray(env, colPtrLen);
   jint* colPtr = makeCJintArray(mat->getColPtr(), colPtrLen);
   env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  checkEx(env);
   delete[] colPtr;
 
   // Row index
@@ -379,6 +389,7 @@ JavaTerminal::createRealSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   jintArray jRowIdx = JVMManager::newIntArray(env, datalen);
   jint* rowIdx = makeCJintArray(mat->getRowIdx(), datalen);
   env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  checkEx(env);
   delete[] rowIdx;
 
   // Values
@@ -388,6 +399,7 @@ JavaTerminal::createRealSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   jclass cls = JVMManager::getOGRealSparseMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealSparseMatrixClazz_init();
   _obj = env->NewObject(cls, constructor, jColPtr, jRowIdx, values, mat->getRows(), mat->getCols());
+  checkEx(env);
 }
 
 void
@@ -399,6 +411,7 @@ JavaTerminal::createComplexSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   jintArray jColPtr = JVMManager::newIntArray(env, colPtrLen);
   jint* colPtr = makeCJintArray(mat->getColPtr(), colPtrLen);
   env->SetIntArrayRegion(jColPtr, 0, colPtrLen, colPtr);
+  checkEx(env);
   delete[] colPtr;
 
   // Row index
@@ -406,6 +419,7 @@ JavaTerminal::createComplexSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   jintArray jRowIdx = JVMManager::newIntArray(env, datalen);
   jint* rowIdx = makeCJintArray(mat->getRowIdx(), datalen);
   env->SetIntArrayRegion(jRowIdx, 0, datalen, rowIdx);
+  checkEx(env);
   delete[] rowIdx;
 
   // Values
@@ -417,6 +431,7 @@ JavaTerminal::createComplexSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
   jclass cls = JVMManager::getOGComplexSparseMatrixClazz();
   jmethodID constructor = JVMManager::getOGComplexSparseMatrixClazz_init();
   _obj = env->NewObject(cls, constructor, jColPtr, jRowIdx, realpart, imagpart, mat->getRows(), mat->getCols());
+  checkEx(env);
 }
 
 jobject
