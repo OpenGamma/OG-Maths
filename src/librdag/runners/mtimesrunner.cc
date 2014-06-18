@@ -97,7 +97,7 @@ void * MTIMESRunner::run(RegContainer& reg0, OGComplexMatrix::Ptr arg0, OGComple
 }
 
 
-void * MTIMESRunner::run(RegContainer& reg0, OGRealMatrix::Ptr arg0, OGRealMatrix::Ptr arg1) const
+void * MTIMESRunner::run(RegContainer& reg0, OGRealDenseMatrix::Ptr arg0, OGRealDenseMatrix::Ptr arg1) const
 {
   mtimes_dense_runner<real8>(reg0, arg0, arg1);
   return nullptr;

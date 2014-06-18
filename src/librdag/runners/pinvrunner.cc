@@ -144,7 +144,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 }
 
 void *
-PINVRunner::run(RegContainer& reg, OGRealMatrix::Ptr arg) const
+PINVRunner::run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const
 {
   pinv_dense_runner<real8>(reg, arg);
   return nullptr;

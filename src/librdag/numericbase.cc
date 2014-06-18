@@ -112,10 +112,10 @@ OGNumeric::asOGIntegerScalar() const
   return OGIntegerScalar::Ptr{};
 }
 
-OGRealMatrix::Ptr
-OGNumeric::asOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGNumeric::asOGRealDenseMatrix() const
 {
-  return OGRealMatrix::Ptr{};
+  return OGRealDenseMatrix::Ptr{};
 }
 
 OGComplexMatrix::Ptr

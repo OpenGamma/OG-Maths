@@ -18,30 +18,30 @@ namespace librdag {
 ConvertTo::ConvertTo()
 {}
 
-// things that convert to OGRealMatrix
-OGRealMatrix::Ptr
-ConvertTo::convertToOGRealMatrix(OGRealScalar::Ptr thing) const
+// things that convert to OGRealDenseMatrix
+OGRealDenseMatrix::Ptr
+ConvertTo::convertToOGRealDenseMatrix(OGRealScalar::Ptr thing) const
 {
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[1](),1,1, OWNER);
+  OGRealDenseMatrix::Ptr ret = OGRealDenseMatrix::create(new real8[1](),1,1, OWNER);
   ret->getData()[0] = thing->getValue();
   return ret;
 }
 
-OGRealMatrix::Ptr
-ConvertTo::convertToOGRealMatrix(OGIntegerScalar::Ptr thing) const
+OGRealDenseMatrix::Ptr
+ConvertTo::convertToOGRealDenseMatrix(OGIntegerScalar::Ptr thing) const
 {
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[1](),1,1, OWNER);
+  OGRealDenseMatrix::Ptr ret = OGRealDenseMatrix::create(new real8[1](),1,1, OWNER);
   ret->getData()[0]=thing->getValue();
   return ret;
 }
 
-OGRealMatrix::Ptr
-ConvertTo::convertToOGRealMatrix(OGRealDiagonalMatrix::Ptr thing) const
+OGRealDenseMatrix::Ptr
+ConvertTo::convertToOGRealDenseMatrix(OGRealDiagonalMatrix::Ptr thing) const
 {
   size_t rows = thing->getRows();
   size_t cols = thing->getCols();
   size_t wlen = thing->getDatalen();
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[rows*cols](),rows,cols, OWNER);
+  OGRealDenseMatrix::Ptr ret = OGRealDenseMatrix::create(new real8[rows*cols](),rows,cols, OWNER);
   real8 * diagdata = thing->getData();
   real8 * data = ret->getData();
   for(size_t i=0;i<wlen;i++)
@@ -51,13 +51,13 @@ ConvertTo::convertToOGRealMatrix(OGRealDiagonalMatrix::Ptr thing) const
   return ret;
 }
 
-OGRealMatrix::Ptr
-ConvertTo::convertToOGRealMatrix(OGLogicalMatrix::Ptr thing) const
+OGRealDenseMatrix::Ptr
+ConvertTo::convertToOGRealDenseMatrix(OGLogicalMatrix::Ptr thing) const
 {
   size_t rows = thing->getRows();
   size_t cols = thing->getCols();
   size_t wlen = thing->getDatalen();
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[wlen](),rows,cols, OWNER);
+  OGRealDenseMatrix::Ptr ret = OGRealDenseMatrix::create(new real8[wlen](),rows,cols, OWNER);
   real8 * thedata = thing->getData();
   real8 * data = ret->getData();
   memcpy(data,thedata,sizeof(real8)*wlen);
@@ -65,8 +65,8 @@ ConvertTo::convertToOGRealMatrix(OGLogicalMatrix::Ptr thing) const
 }
 
 
-OGRealMatrix::Ptr
-ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix::Ptr thing) const
+OGRealDenseMatrix::Ptr
+ConvertTo::convertToOGRealDenseMatrix(OGRealSparseMatrix::Ptr thing) const
 {
 
   size_t rows = thing->getRows();
@@ -75,7 +75,7 @@ ConvertTo::convertToOGRealMatrix(OGRealSparseMatrix::Ptr thing) const
   int4 * rowIdx = thing->getRowIdx();
   real8 * sparsedata = thing->getData();
 
-  OGRealMatrix::Ptr ret = OGRealMatrix::create(new real8[rows*cols](),rows,cols, OWNER);
+  OGRealDenseMatrix::Ptr ret = OGRealDenseMatrix::create(new real8[rows*cols](),rows,cols, OWNER);
   real8 * data = ret->getData();
   for (size_t ir = 0; ir < cols; ir++)
   {
@@ -187,7 +187,7 @@ ConvertTo::convertToOGComplexMatrix(OGComplexSparseMatrix::Ptr thing) const
 }
 
 OGComplexMatrix::Ptr
-ConvertTo::convertToOGComplexMatrix(OGRealMatrix::Ptr thing) const
+ConvertTo::convertToOGComplexMatrix(OGRealDenseMatrix::Ptr thing) const
 {
   size_t rows = thing->getRows();
   size_t cols = thing->getCols();

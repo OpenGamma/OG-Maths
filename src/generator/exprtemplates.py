@@ -185,7 +185,7 @@ class OGExpr;
 class OGRealScalar;
 class OGComplexScalar;
 class OGIntegerScalar;
-class OGRealMatrix;
+class OGRealDenseMatrix;
 class OGComplexMatrix;
 class OGLogicalMatrix;
 class OGRealDiagonalMatrix;
@@ -233,7 +233,7 @@ class OGNumeric: private Uncopyable, public std::enable_shared_from_this<OGNumer
     virtual std::shared_ptr<const OGRealScalar> asOGRealScalar() const;
     virtual std::shared_ptr<const OGComplexScalar> asOGComplexScalar() const;
     virtual std::shared_ptr<const OGIntegerScalar> asOGIntegerScalar() const;
-    virtual std::shared_ptr<const OGRealMatrix> asOGRealMatrix() const;
+    virtual std::shared_ptr<const OGRealDenseMatrix> asOGRealDenseMatrix() const;
     virtual std::shared_ptr<const OGComplexMatrix> asOGComplexMatrix() const;
     virtual std::shared_ptr<const OGLogicalMatrix> asOGLogicalMatrix() const;
     virtual std::shared_ptr<const OGRealDiagonalMatrix> asOGRealDiagonalMatrix() const;

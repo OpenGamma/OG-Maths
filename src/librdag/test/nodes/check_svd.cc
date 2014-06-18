@@ -67,12 +67,12 @@ TEST(SVDTests,CheckRealMatrix)
 {
 
   // answers
-  OGTerminal::Ptr U = OGRealMatrix::create(new real8[9] {-0.2298476964000714,-0.5247448187602936,-0.8196419411205156,0.8834610176985253,0.2407824921325463,-0.4018960334334317,0.4082482904638627,-0.8164965809277263,0.4082482904638631},3,3,OWNER);
+  OGTerminal::Ptr U = OGRealDenseMatrix::create(new real8[9] {-0.2298476964000714,-0.5247448187602936,-0.8196419411205156,0.8834610176985253,0.2407824921325463,-0.4018960334334317,0.4082482904638627,-0.8164965809277263,0.4082482904638631},3,3,OWNER);
   OGTerminal::Ptr S = OGRealDiagonalMatrix::create(new real8[2] {9.525518091565107,  0.514300580658644},3,2,OWNER);
-  OGTerminal::Ptr VT = OGRealMatrix::create(new real8[4]{-0.6196294838293402,-0.7848944532670524,-0.7848944532670524,0.6196294838293402}, 2,2, OWNER);
+  OGTerminal::Ptr VT = OGRealDenseMatrix::create(new real8[4]{-0.6196294838293402,-0.7848944532670524,-0.7848944532670524,0.6196294838293402}, 2,2, OWNER);
 
   // input
-  OGTerminal::Ptr M = OGRealMatrix::create(new real8[6]{1,3,5,2,4,6},3,2,OWNER);
+  OGTerminal::Ptr M = OGRealDenseMatrix::create(new real8[6]{1,3,5,2,4,6},3,2,OWNER);
   OGExpr::Ptr svd = SVD::create(M);
 
   // computed answer pointers
@@ -127,12 +127,12 @@ TEST(SVDTests,CheckRealHVector)
 {
 
   // answers
-  OGRealMatrix::Ptr U = OGRealMatrix::create(new real8[1] {1},1,1,OWNER);
+  OGRealDenseMatrix::Ptr U = OGRealDenseMatrix::create(new real8[1] {1},1,1,OWNER);
   OGTerminal::Ptr S = OGRealDiagonalMatrix::create(new real8[3] {3.74165738677394,0,0 },1,3,OWNER);
-  OGTerminal::Ptr VT = OGRealMatrix::create(new real8[9]{0.2672612419124243,-0.5345224838248488,-0.8017837257372732,0.5345224838248488,0.7745419205884383,-0.3381871191173426,0.8017837257372732,-0.3381871191173427,0.4927193213239860}, 3,3, OWNER);
+  OGTerminal::Ptr VT = OGRealDenseMatrix::create(new real8[9]{0.2672612419124243,-0.5345224838248488,-0.8017837257372732,0.5345224838248488,0.7745419205884383,-0.3381871191173426,0.8017837257372732,-0.3381871191173427,0.4927193213239860}, 3,3, OWNER);
 
   // input
-  OGTerminal::Ptr M = OGRealMatrix::create(new real8[3]{1,2,3},1,3,OWNER);
+  OGTerminal::Ptr M = OGRealDenseMatrix::create(new real8[3]{1,2,3},1,3,OWNER);
   SVD::Ptr svd = SVD::create(M);
 
   // computed answer pointers

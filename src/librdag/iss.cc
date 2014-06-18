@@ -52,7 +52,7 @@ bool isReal(const OGTerminal::Ptr& terminal)
   {
     return true;
   }
-  if(terminal->asOGRealMatrix()!=nullptr)
+  if(terminal->asOGRealDenseMatrix()!=nullptr)
   {
     return true;
   }

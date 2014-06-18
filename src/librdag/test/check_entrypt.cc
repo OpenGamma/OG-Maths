@@ -77,9 +77,9 @@ real8 realNegData[6] = { -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
 
 TreeResultPair negaterealmatrix()
 {
-  OGNumeric::Ptr ogrealmatrix = OGRealMatrix::create(realData, 2, 3);
+  OGNumeric::Ptr ogrealmatrix = OGRealDenseMatrix::create(realData, 2, 3);
   OGNumeric::Ptr negate = NEGATE::create(ogrealmatrix);
-  OGTerminal::Ptr ogrealnegmatrix = OGRealMatrix::create(realNegData, 2, 3);
+  OGTerminal::Ptr ogrealnegmatrix = OGRealDenseMatrix::create(realNegData, 2, 3);
   return TreeResultPair(negate, ogrealnegmatrix);
 }
 

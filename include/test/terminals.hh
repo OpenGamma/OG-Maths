@@ -26,7 +26,7 @@ OGTerminal::Ptr ogcomplex = OGComplexScalar::create(complex16(1.0, 2.0));
 OGTerminal::Ptr ogint = OGIntegerScalar::create(1);
 
 double realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
-OGTerminal::Ptr ogrealmatrix = OGRealMatrix::create(realData, 2, 3);
+OGTerminal::Ptr ogrealmatrix = OGRealDenseMatrix::create(realData, 2, 3);
 
 
 complex16 complexData[6] = { {1.0, 2.0}, {3.0, 4.0},  {5.0, 6.0},
