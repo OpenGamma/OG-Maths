@@ -14,6 +14,7 @@
 #include "exceptions.hh"
 #include "jvmmanager.hh"
 #include "modifiermacros.h"
+#include "uncopyable.hh"
 
 namespace convert {
 
@@ -102,30 +103,86 @@ class Complex16AoA
     size_t _rows;
     size_t _cols;
 };
-  
-class DLLEXPORT_C DispatchToOGTerminal: public librdag::Visitor
+
+/**
+ * Class for converting a terminal back to a java terminal
+ */
+class JavaTerminal: private Uncopyable
 {
   public:
-    DispatchToOGTerminal(JNIEnv* env);
-    virtual ~DispatchToOGTerminal();
-    virtual void visit(librdag::OGExpr const *thing);
-    virtual void visit(librdag::OGScalar<real8> const *thing);
-    virtual void visit(librdag::OGScalar<complex16> const *thing);
-    virtual void visit(librdag::OGScalar<int4> const *thing);
-    virtual void visit(librdag::OGMatrix<real8> const *thing);
-    virtual void visit(librdag::OGMatrix<complex16> const *thing);
-    virtual void visit(librdag::OGDiagonalMatrix<real8> const *thing);
-    virtual void visit(librdag::OGDiagonalMatrix<complex16> const *thing);
-    virtual void visit(librdag::OGSparseMatrix<real8> const *thing);
-    virtual void visit(librdag::OGSparseMatrix<complex16> const *thing);
+    /**
+     * Create a JavaTerminal from a node
+     *
+     * @param env The JNI environment pointer
+     * @param node The terminal to translate into a java terminal.
+     */
+    JavaTerminal(JNIEnv* env, const OGNumeric::Ptr& node);
+
+    /**
+     * Get the java object represented by this instance.
+     *
+     * @return the java object.
+     */
     jobject getObject();
   private:
-    void setObject(jobject obj);
-    jobject _obj = nullptr;
-    JNIEnv* _env;
+    /**
+     * Create a Java OGRealScalar object and store it.
+     *
+     * @param env the JNI environment pointer
+     * @parame node an OGRealScalar to convert
+     */
+    void createRealScalar(JNIEnv* env, const OGNumeric::Ptr& node);
+    /**
+     * Create a Java OGComplexScalar object and store it.
+     *
+     * @param env the JNI environment pointer
+     * @parame node an OGComplexScalar to convert
+     */
+    void createComplexScalar(JNIEnv* env, const OGNumeric::Ptr& node);
+    /**
+     * Create a Java OGRealMatrix object and store it.
+     *
+     * @param env the JNI environment pointer
+     * @parame node an OGRealMatrix to convert
+     */
+    void createRealMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
+    /**
+     * Create a Java OGComplexMatrix object and store it.
+     *
+     * @param env the JNI environment pointer
+     * @parame node an OGComplexMatrix to convert
+     */
+    void createComplexMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
+    /**
+     * Create a Java OGRealDiagonalMatrix object and store it.
+     *
+     * @param env the JNI environment pointer
+     * @parame node an OGRealDiagonalMatrix to convert
+     */
+    void createRealDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
+    /**
+     * Create a Java OGComplexDiagonalMatrix object and store it.
+     *
+     * @param env the JNI environment pointer
+     * @parame node an OGComplexDiagonalMatrix to convert
+     */
+    void createComplexDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
+    /**
+     * Create a Java OGRealSparseMatrix object and store it.
+     *
+     * @param env the JNI environment pointer
+     * @parame node an OGRealSparseMatrix to convert
+     */
+    void createRealSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
+    /**
+     * Create a Java OGComplexSparseMatrix object and store it.
+     *
+     * @param env the JNI environment pointer
+     * @parame node an OGComplexSparseMatrix to convert
+     */
+    void createComplexSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
+    jobject _obj;
 };
-
-
 
 } // namespace convert
 

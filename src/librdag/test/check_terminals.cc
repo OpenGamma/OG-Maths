@@ -6,7 +6,6 @@
 
 #include "terminal.hh"
 #include "expression.hh"
-#include "visitor.hh"
 #include "exceptions.hh"
 #include "gtest/gtest.h"
 #include "warningmacros.h"
@@ -58,53 +57,6 @@ template<typename T> bool ArrayOfArraysEquals(T ** expected, T ** computed, size
     }
     return true;
 }
-
-/**
- * To check that a class with accept Visitor is accepting correctly hasBeenVisited() returns true.
- */
-class FakeVisitor: public librdag::Visitor
-{
-  public:
-  void visit(OGExpr const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGScalar<real8> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGScalar<complex16> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGScalar<int4> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGMatrix<real8> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGMatrix<complex16> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGDiagonalMatrix<real8> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGDiagonalMatrix<complex16> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGSparseMatrix<real8> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  void visit(OGSparseMatrix<complex16> const SUPPRESS_UNUSED *thing){
-    toggleHasBeenVisited();
-  };
-  bool hasBeenVisited(){
-    return _hasBeenVisited;
-  }
-  private:
-  bool _hasBeenVisited = false;
-  void toggleHasBeenVisited()
-  {
-    _hasBeenVisited = !_hasBeenVisited;
-  }
-};
 
 /*
  * Check OGTerminal base class behaves
@@ -189,11 +141,6 @@ TEST(TerminalsTest, OGRealScalarTest) {
   delete [] cmplxcomputed[0];
   delete[] cmplxcomputed;
 
-  // check visitor
-  FakeVisitor v;
-  tmp->accept(v);
-  ASSERT_TRUE(v.hasBeenVisited());
-
   // check copy and asOGRealScalar
   OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getValue(),copy->asOGRealScalar()->getValue());
@@ -265,11 +212,6 @@ TEST(TerminalsTest, OGComplexScalarTest) {
 
   // check toReal8ArrayOfArrays, should throw
   ASSERT_THROW((tmp->toReal8ArrayOfArrays()), rdag_error);
-
-  // check visitor
-  FakeVisitor v;
-  tmp->accept(v);
-  ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGComplexScalar
   OGNumeric::Ptr copy = tmp->copy();
@@ -354,8 +296,6 @@ TEST(TerminalsTest, OGArrayTest) {
   ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
   ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
   ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
-  FakeVisitor v;
-  ASSERT_THROW((tmp->accept(v)), rdag_error);
 }
 
 TEST(TerminalsTest, OGMatrix_T_real8) {
@@ -459,11 +399,6 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   delete [] c_computed;
   delete [] c_expected;
 
-  // check visitor
-  FakeVisitor v;
-  tmp->accept(v);
-  ASSERT_TRUE(v.hasBeenVisited());
-
   // check copy and asOGRealMatrix
   OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGRealMatrix()->getData());
@@ -562,11 +497,6 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 
   // check toReal8ArrayOfArrays, expect throw
   ASSERT_THROW((tmp->toReal8ArrayOfArrays()), rdag_error);
-
-  // check visitor
-  FakeVisitor v;
-  tmp->accept(v);
-  ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGComplexMatrix
   OGNumeric::Ptr copy = tmp->copy();
@@ -673,11 +603,6 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
 
   // check toComplex16ArrayOfArrays, expect throw
   ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
-
-  // check visitor
-  FakeVisitor v;
-  tmp->accept(v);
-  ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGRealMatrix
   OGNumeric::Ptr  copy = tmp->copy();
@@ -793,11 +718,6 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
 
   // check toReal8ArrayOfArrays, expect throw
   ASSERT_THROW((tmp->toReal8ArrayOfArrays()), rdag_error);
-
-  // check visitor
-  FakeVisitor v;
-  tmp->accept(v);
-  ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGRealMatrix
   OGNumeric::Ptr copy = tmp->copy();
@@ -923,11 +843,6 @@ TEST(TerminalsTest, OGRealSparseMatrix) {
 
   // check toComplex16ArrayOfArrays, expect throw
   ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
-
-  // check visitor
-  FakeVisitor v;
-  tmp->accept(v);
-  ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGRealSparseMatrix
   OGNumeric::Ptr copy = tmp->copy();
@@ -1067,11 +982,6 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
 
   // check toReal8ArrayOfArrays, expect throw
   ASSERT_THROW((tmp->toReal8ArrayOfArrays()), rdag_error);
-
-  // check visitor
-  FakeVisitor v;
-  tmp->accept(v);
-  ASSERT_TRUE(v.hasBeenVisited());
 
   // check copy and asOGComplexSparseMatrix
   OGNumeric::Ptr copy = tmp->copy();

@@ -7,7 +7,6 @@
 #include <string.h>
 #include "terminal.hh"
 #include "exceptions.hh"
-#include "visitor.hh"
 #include "warningmacros.h"
 #include "equals.hh"
 #include "iss.hh"
@@ -178,13 +177,6 @@ size_t
 OGScalar<T>::getDatalen() const
 {
   return 1;
-}
-
-template<typename T>
-void
-OGScalar<T>::accept(Visitor &v) const
-{
-  v.visit(this);
 }
 
 template<typename T>
@@ -674,14 +666,6 @@ copy() const
 }
 
 template<typename T>
-void
-OGArray<T>::
-accept(Visitor SUPPRESS_UNUSED &v) const
-{
-  throw rdag_error("Cannot visit abstract OGArray<T> class.");
-}
-
-template<typename T>
 OGRealMatrix::Ptr
 OGArray<T>::
 asFullOGRealMatrix() const
@@ -743,13 +727,6 @@ typename OGMatrix<T>::Ptr
 OGMatrix<T>::create(T* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
 {
   return OGMatrix<T>::Ptr{new OGMatrix<T>{data, rows, cols, access_spec}};
-}
-
-template<typename T>
-void
-OGMatrix<T>::accept(Visitor &v) const
-{
-  v.visit(this);
 }
 
 template<typename T>
@@ -1040,13 +1017,6 @@ OGDiagonalMatrix<T>::create(T* data, size_t rows, size_t cols, DATA_ACCESS acces
 }
 
 template<typename T>
-void
-OGDiagonalMatrix<T>::accept(Visitor &v) const
-{
-  v.visit(this);
-}
-
-template<typename T>
 T**
 OGDiagonalMatrix<T>::toArrayOfArrays() const
 {
@@ -1310,13 +1280,6 @@ OGSparseMatrix<T>::~OGSparseMatrix()
     delete[] this->getColPtr();
     delete[] this->getRowIdx();
   }
-}
-
-template<typename T>
-void
-OGSparseMatrix<T>::accept(Visitor &v) const
-{
-  v.visit(this);
 }
 
 template<typename T>

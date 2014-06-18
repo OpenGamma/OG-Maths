@@ -10,7 +10,6 @@
 #include <memory>
 #include <vector>
 #include "numeric.hh"
-#include "visitor.hh"
 
 /**
  * The namespace for the DAG library
@@ -38,7 +37,6 @@ class OGExpr: public OGNumeric
     size_t getNArgs() const;
     virtual OGExpr::Ptr asOGExpr() const override;
     virtual void debug_print() const override;
-    virtual void accept(Visitor &v) const override;
   protected:
     OGExpr();
     ArgContainer _args;

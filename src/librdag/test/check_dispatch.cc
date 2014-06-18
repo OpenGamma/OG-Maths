@@ -6,7 +6,6 @@
 
 #include "terminal.hh"
 #include "expression.hh"
-#include "visitor.hh"
 #include "exceptions.hh"
 #include "gtest/gtest.h"
 #include "warningmacros.h"
