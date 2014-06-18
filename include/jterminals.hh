@@ -93,17 +93,17 @@ class DLLEXPORT_C JOGRealDenseMatrix: public OGRealDenseMatrix
 };
 
 /*
- * An OGComplexMatrix backed by data pinned from a Java based OGComplexMatrix
+ * An OGComplexDenseMatrix backed by data pinned from a Java based OGComplexDenseMatrix
  */
-class DLLEXPORT_C JOGComplexMatrix: public OGComplexMatrix
+class DLLEXPORT_C JOGComplexDenseMatrix: public OGComplexDenseMatrix
 {
   public:
-    typedef std::shared_ptr<const JOGComplexMatrix> Ptr;
-    static JOGComplexMatrix::Ptr create(jobject obj);
-    virtual ~JOGComplexMatrix() override;
+    typedef std::shared_ptr<const JOGComplexDenseMatrix> Ptr;
+    static JOGComplexDenseMatrix::Ptr create(jobject obj);
+    virtual ~JOGComplexDenseMatrix() override;
     virtual void debug_print() const override;
   private:
-    JOGComplexMatrix(jobject obj);
+    JOGComplexDenseMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 

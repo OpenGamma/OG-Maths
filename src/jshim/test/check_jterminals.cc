@@ -291,7 +291,7 @@ TEST(JTerminals, Test_JOGLogicalMatrix_ctor)
     delete jvm;
 }
 
-TEST(JTerminals, Test_JOGComplexMatrix_ctor)
+TEST(JTerminals, Test_JOGComplexDenseMatrix_ctor)
 {
     size_t rval = 2;
     complex16 * datav = new complex16[4]{{1,10},{2,20},{3,30},{4,40}};
@@ -301,7 +301,7 @@ TEST(JTerminals, Test_JOGComplexMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGComplexMatrix::Ptr mat = JOGComplexMatrix::create(obj);
+    JOGComplexDenseMatrix::Ptr mat = JOGComplexDenseMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));

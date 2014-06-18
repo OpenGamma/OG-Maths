@@ -22,7 +22,7 @@ class issTest : public ::testing::Test
     OGComplexScalar::Ptr _ogcomplexscalar = nullptr;
     OGIntegerScalar::Ptr _ogintegerscalar = nullptr;
     OGRealDenseMatrix::Ptr _ogrealmatrix = nullptr;
-    OGComplexMatrix::Ptr _ogcomplexmatrix = nullptr;
+    OGComplexDenseMatrix::Ptr _ogcomplexmatrix = nullptr;
     OGLogicalMatrix::Ptr _oglogicalmatrix = nullptr;
     OGRealDiagonalMatrix::Ptr _ogrealdiagonalmatrix = nullptr;
     OGComplexDiagonalMatrix::Ptr _ogcomplexdiagonalmatrix = nullptr;
@@ -30,8 +30,8 @@ class issTest : public ::testing::Test
     OGComplexSparseMatrix::Ptr _ogcomplexsparsematrix = nullptr;
     OGRealDenseMatrix::Ptr _ogrealvector1 = nullptr;
     OGRealDenseMatrix::Ptr _ogrealvector2 = nullptr;
-    OGComplexMatrix::Ptr _ogcomplexvector1 = nullptr;
-    OGComplexMatrix::Ptr _ogcomplexvector2 = nullptr;
+    OGComplexDenseMatrix::Ptr _ogcomplexvector1 = nullptr;
+    OGComplexDenseMatrix::Ptr _ogcomplexvector2 = nullptr;
     real8 * r_data;
     complex16 * c_data;
     int4 * colPtr;
@@ -46,7 +46,7 @@ class issTest : public ::testing::Test
     _ogcomplexscalar = OGComplexScalar::create({12,34});
     _ogintegerscalar = OGIntegerScalar::create(4);
     _ogrealmatrix = OGRealDenseMatrix::create(r_data,1,1);
-    _ogcomplexmatrix = OGComplexMatrix::create(c_data,1,1);
+    _ogcomplexmatrix = OGComplexDenseMatrix::create(c_data,1,1);
     _oglogicalmatrix = OGLogicalMatrix::create(r_data,1,1);
     _ogrealdiagonalmatrix = OGRealDiagonalMatrix::create(r_data,1,1);
     _ogcomplexdiagonalmatrix = OGComplexDiagonalMatrix::create(c_data,1,1);
@@ -54,8 +54,8 @@ class issTest : public ::testing::Test
     _ogcomplexsparsematrix = OGComplexSparseMatrix::create(colPtr,rowIdx,c_data,1,1);
     _ogrealvector1 = OGRealDenseMatrix::create(new real8[3]{1,2,3},1,3, OWNER);
     _ogrealvector2 = OGRealDenseMatrix::create(new real8[3]{1,2,3},3,1, OWNER);
-    _ogcomplexvector1 = OGComplexMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER);
-    _ogcomplexvector2 = OGComplexMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER);
+    _ogcomplexvector1 = OGComplexDenseMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER);
+    _ogcomplexvector2 = OGComplexDenseMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER);
   }
 
   virtual void TearDown()

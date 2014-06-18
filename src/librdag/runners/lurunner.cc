@@ -180,7 +180,7 @@ LURunner::run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const
 }
 
 void *
-LURunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
+LURunner::run(RegContainer& reg, OGComplexDenseMatrix::Ptr arg) const
 {
   lu_dense_runner<complex16>(reg, arg);
   return nullptr;

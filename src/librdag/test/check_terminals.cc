@@ -129,7 +129,7 @@ TEST(TerminalsTest, OGScalarTest) {
 
   ASSERT_THROW(tmp->copy(), rdag_error);
   ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
-  ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGComplexDenseMatrix()), rdag_error);
   ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
   ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
 
@@ -351,7 +351,7 @@ TEST(TerminalsTest, OGArrayTest) {
   ASSERT_THROW((tmp->copy()), rdag_error);
   ASSERT_THROW((tmp->debug_print()), rdag_error);
   ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
-  ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGComplexDenseMatrix()), rdag_error);
   ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
   ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
   FakeVisitor v;
@@ -481,9 +481,9 @@ TEST(TerminalsTest, OGRealDenseMatrixTest) {
   OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   complex16 * cdata = new complex16[rows*cols]();
   std::copy(data,data+(rows*cols),cdata);
-  OGComplexMatrix::Ptr cmplx_tmp = OGComplexMatrix::create(cdata, rows, cols, OWNER);
+  OGComplexDenseMatrix::Ptr cmplx_tmp = OGComplexDenseMatrix::create(cdata, rows, cols, OWNER);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
-  ASSERT_FALSE(tmp->getData()==reinterpret_cast<real8 *>(owningComplexCopy->asOGComplexMatrix()->getData())); // make sure the data is unique
+  ASSERT_FALSE(tmp->getData()==reinterpret_cast<real8 *>(owningComplexCopy->asOGComplexDenseMatrix()->getData())); // make sure the data is unique
 
   // Check debug string
   copy->debug_print();
@@ -492,9 +492,9 @@ TEST(TerminalsTest, OGRealDenseMatrixTest) {
 
 
 /*
- * Test OGComplexMatrix
+ * Test OGComplexDenseMatrix
  */
-TEST(TerminalsTest, OGComplexMatrixTest) {
+TEST(TerminalsTest, OGComplexDenseMatrixTest) {
   // data
   complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
   size_t rows = 3;
@@ -502,18 +502,18 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
-  OGComplexMatrix::Ptr tmp;
-  ASSERT_THROW(OGComplexMatrix::create(null,rows,cols), rdag_error);
+  OGComplexDenseMatrix::Ptr tmp;
+  ASSERT_THROW(OGComplexDenseMatrix::create(null,rows,cols), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = OGComplexMatrix::create(new complex16[2]{{10,20},{30,40}},1,2, OWNER);
-  ASSERT_NE(tmp, OGComplexMatrix::Ptr{});
+  tmp = OGComplexDenseMatrix::create(new complex16[2]{{10,20},{30,40}},1,2, OWNER);
+  ASSERT_NE(tmp, OGComplexDenseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = OGComplexMatrix::create(data,rows,cols);
+  tmp = OGComplexDenseMatrix::create(data,rows,cols);
   // check ctor worked
-  ASSERT_NE(tmp, OGComplexMatrix::Ptr{});
+  ASSERT_NE(tmp, OGComplexDenseMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -531,7 +531,7 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
 
   // check getType() is ok
-  ASSERT_EQ(tmp->getType(), COMPLEX_MATRIX_ENUM);    
+  ASSERT_EQ(tmp->getType(), COMPLEX_DENSE_MATRIX_ENUM);    
 
   // check can't promote as real
   ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
@@ -568,23 +568,23 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   tmp->accept(v);
   ASSERT_TRUE(v.hasBeenVisited());
 
-  // check copy and asOGComplexMatrix
+  // check copy and asOGComplexDenseMatrix
   OGNumeric::Ptr copy = tmp->copy();
-  ASSERT_EQ(tmp->getData(),copy->asOGComplexMatrix()->getData());
-  ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexMatrix()->getData(),tmp->getDatalen()));
-  ASSERT_EQ(tmp->getRows(),copy->asOGComplexMatrix()->getRows());
-  ASSERT_EQ(tmp->getCols(),copy->asOGComplexMatrix()->getCols());
-  ASSERT_EQ(copy,copy->asOGComplexMatrix());
+  ASSERT_EQ(tmp->getData(),copy->asOGComplexDenseMatrix()->getData());
+  ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexDenseMatrix()->getData(),tmp->getDatalen()));
+  ASSERT_EQ(tmp->getRows(),copy->asOGComplexDenseMatrix()->getRows());
+  ASSERT_EQ(tmp->getCols(),copy->asOGComplexDenseMatrix()->getCols());
+  ASSERT_EQ(copy,copy->asOGComplexDenseMatrix());
 
   // check createOwningCopy
   OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
-  ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexMatrix()->getData()); // make sure the data is unique
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexDenseMatrix()->getData()); // make sure the data is unique
 
   // check createComplexOwningCopy
   OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningComplexCopy);
-  ASSERT_FALSE(tmp->getData()==owningComplexCopy->asOGComplexMatrix()->getData());
+  ASSERT_FALSE(tmp->getData()==owningComplexCopy->asOGComplexDenseMatrix()->getData());
 
   // Check debug string
   copy->debug_print();

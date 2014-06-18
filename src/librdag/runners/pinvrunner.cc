@@ -151,7 +151,7 @@ PINVRunner::run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const
 }
 
 void *
-PINVRunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
+PINVRunner::run(RegContainer& reg, OGComplexDenseMatrix::Ptr arg) const
 {
   pinv_dense_runner<complex16>(reg, arg);
   return nullptr;

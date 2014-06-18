@@ -332,7 +332,7 @@ public class OGComplexDenseMatrixTest {
   @Test
   public void testGetTypeEnum() {
     OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
-    assertTrue(D.getType().equals(ExprEnum.OGComplexMatrix));
+    assertTrue(D.getType().equals(ExprEnum.OGComplexDenseMatrix));
   }
   
   @Test

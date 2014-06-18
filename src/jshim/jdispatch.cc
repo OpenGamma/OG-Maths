@@ -120,7 +120,7 @@ Complex16AoA::Complex16AoA(const OGNumeric::Ptr& node)
     _cols = 1;
     break;
   case REAL_DENSE_MATRIX_ENUM:
-  case COMPLEX_MATRIX_ENUM:
+  case COMPLEX_DENSE_MATRIX_ENUM:
   case COMPLEX_DIAGONAL_MATRIX_ENUM:
   case COMPLEX_SPARSE_MATRIX_ENUM:
     _data = node->asOGTerminal()->toComplex16ArrayOfArrays();

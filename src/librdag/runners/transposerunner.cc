@@ -80,7 +80,7 @@ TRANSPOSERunner::run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const
 }
 
 void *
-TRANSPOSERunner::run(RegContainer& reg, OGComplexMatrix::Ptr arg) const
+TRANSPOSERunner::run(RegContainer& reg, OGComplexDenseMatrix::Ptr arg) const
 {
   transpose_dense_runner<complex16>(reg, arg);
   return nullptr;

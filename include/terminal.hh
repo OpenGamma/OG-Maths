@@ -93,7 +93,7 @@ class OGTerminal: public OGNumeric
     /**
      * Returns a complex dense matrix representation of this terminal
      */
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const = 0;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const = 0;
     /**
      *  Returns this
      */
@@ -180,7 +180,7 @@ class OGScalar: public OGTerminal
      * The following will throw.
      */
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
     virtual OGNumeric::Ptr copy() const override;
@@ -208,7 +208,7 @@ class OGRealScalar: public OGScalar<real8>
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
@@ -230,7 +230,7 @@ class OGComplexScalar: public OGScalar<complex16>
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
@@ -250,7 +250,7 @@ class OGIntegerScalar: public OGScalar<int4>
     virtual void debug_print() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
@@ -275,7 +275,7 @@ template <typename T> class OGArray: public OGTerminal
      * The following will throw.
      */
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
     virtual void debug_print() const override;
@@ -310,7 +310,7 @@ template <typename T> class OGMatrix: public OGArray<T>
     virtual void debug_print() const override;
     virtual OGNumeric::Ptr copy() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual real8 ** toReal8ArrayOfArrays() const override;
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
     virtual ExprType_t getType() const override;
@@ -340,7 +340,7 @@ class OGRealDenseMatrix: public OGMatrix<real8>
     virtual OGRealDenseMatrix::Ptr asOGRealDenseMatrix() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
@@ -348,20 +348,20 @@ class OGRealDenseMatrix: public OGMatrix<real8>
 };
 
 
-class OGComplexMatrix: public OGMatrix<complex16>
+class OGComplexDenseMatrix: public OGMatrix<complex16>
 {
   public:
     /**
      * Pointer type.
      */
-    typedef std::shared_ptr<const OGComplexMatrix> Ptr;
-    static OGComplexMatrix::Ptr create(complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
+    typedef std::shared_ptr<const OGComplexDenseMatrix> Ptr;
+    static OGComplexDenseMatrix::Ptr create(complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric::Ptr copy() const override;
-    virtual OGComplexMatrix::Ptr asOGComplexMatrix() const override;
+    virtual OGComplexDenseMatrix::Ptr asOGComplexDenseMatrix() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
@@ -416,7 +416,7 @@ class OGRealDiagonalMatrix: public OGDiagonalMatrix<real8>
     virtual OGRealDiagonalMatrix::Ptr asOGRealDiagonalMatrix() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
@@ -439,7 +439,7 @@ class OGComplexDiagonalMatrix: public OGDiagonalMatrix<complex16>
     virtual OGComplexDiagonalMatrix::Ptr asOGComplexDiagonalMatrix() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
@@ -491,7 +491,7 @@ class OGRealSparseMatrix: public OGSparseMatrix<real8>
     virtual OGRealSparseMatrix::Ptr asOGRealSparseMatrix() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:
@@ -514,7 +514,7 @@ class OGComplexSparseMatrix: public OGSparseMatrix<complex16>
     virtual OGComplexSparseMatrix::Ptr asOGComplexSparseMatrix() const override;
     virtual ExprType_t getType() const override;
     virtual std::shared_ptr<const OGRealDenseMatrix> asFullOGRealDenseMatrix() const override;
-    virtual std::shared_ptr<const OGComplexMatrix> asFullOGComplexMatrix() const override;
+    virtual std::shared_ptr<const OGComplexDenseMatrix> asFullOGComplexDenseMatrix() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
     virtual OGTerminal::Ptr createComplexOwningCopy() const override;
   protected:

@@ -221,10 +221,10 @@ JOGRealDenseMatrix::debug_print() const
 }
 
 /*
- * JOGComplexMatrix
+ * JOGComplexDenseMatrix
  */
 
-JOGComplexMatrix::JOGComplexMatrix(jobject obj): OGComplexMatrix
+JOGComplexDenseMatrix::JOGComplexDenseMatrix(jobject obj): OGComplexDenseMatrix
   (
     static_cast<complex16 *>(bindPrimitiveArrayData<complex16, jdoubleArray>(obj,JVMManager::getOGTerminalClazz_getData())),
     getSizeTFromVoidJMethod(JVMManager::getOGArrayClazz_getRows(), obj),
@@ -234,28 +234,28 @@ JOGComplexMatrix::JOGComplexMatrix(jobject obj): OGComplexMatrix
   this->_backingObject = obj;
 }
 
-JOGComplexMatrix::Ptr
-JOGComplexMatrix::create(jobject obj)
+JOGComplexDenseMatrix::Ptr
+JOGComplexDenseMatrix::create(jobject obj)
 {
-  return JOGComplexMatrix::Ptr{new JOGComplexMatrix{obj}};
+  return JOGComplexDenseMatrix::Ptr{new JOGComplexDenseMatrix{obj}};
 }
 
-JOGComplexMatrix::~JOGComplexMatrix() {
+JOGComplexDenseMatrix::~JOGComplexDenseMatrix() {
   try {
     unbindOGArrayData<complex16, jdoubleArray>(this->getData(), _backingObject);
   }
   catch (convert_error e)
   {
-    cerr << "Warning (~JOGComplexMatrix): convert_error thrown when unbinding Java array data" << endl;
+    cerr << "Warning (~JOGComplexDenseMatrix): convert_error thrown when unbinding Java array data" << endl;
   }
 
   this->_backingObject = nullptr;
 }
 
 void
-JOGComplexMatrix::debug_print() const
+JOGComplexDenseMatrix::debug_print() const
 {
-  OGComplexMatrix::debug_print();
+  OGComplexDenseMatrix::debug_print();
 }
 
 /**

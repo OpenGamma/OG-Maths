@@ -73,13 +73,13 @@ INSTANTIATE_NODE_TEST_CASE_P(TRANSPOSETests,TRANSPOSE,
   new CheckUnary<TRANSPOSE>( OGComplexScalar::create({10.0,-10.0}), OGComplexScalar::create({10.0,-10.0}), MATHSEQUAL),
    // transpose vector
   new CheckUnary<TRANSPOSE>(
-    OGComplexMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER),
-    OGComplexMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER),
+    OGComplexDenseMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},1,3, OWNER),
+    OGComplexDenseMatrix::create(new complex16[3]{{1,10},{2,20},{3,30}},3,1, OWNER),
     MATHSEQUAL),
   // transpose(4x3 system)
   new CheckUnary<TRANSPOSE>(
-      OGComplexMatrix::create(new complex16[12]{{1,-10}, {-4,40}, {7,-70}, {-12,120}, {2,-20}, {2,-20}, {9,-90}, {4,-40}, {3,-30}, {1,-10}, {11,-110}, {7,-70}},4,3, OWNER),
-      OGComplexMatrix::create(new complex16[12]{{1,-10}, {2,-20}, {3,-30}, {-4,40}, {2,-20}, {1,-10}, {7,-70}, {9,-90}, {11,-110}, {-12,120}, {4,-40}, {7,-70}},3,4, OWNER),
+      OGComplexDenseMatrix::create(new complex16[12]{{1,-10}, {-4,40}, {7,-70}, {-12,120}, {2,-20}, {2,-20}, {9,-90}, {4,-40}, {3,-30}, {1,-10}, {11,-110}, {7,-70}},4,3, OWNER),
+      OGComplexDenseMatrix::create(new complex16[12]{{1,-10}, {2,-20}, {3,-30}, {-4,40}, {2,-20}, {1,-10}, {7,-70}, {9,-90}, {11,-110}, {-12,120}, {4,-40}, {7,-70}},3,4, OWNER),
       MATHSEQUAL)
   )
 );
@@ -92,7 +92,7 @@ using namespace librdag;
   real8 reals[12] = {1.,-4.,7.,-12.,2.,2.,9.,4.,3.,1.,11.,7.};
   OGTerminal::Ptr real = OGRealDenseMatrix::create(reals,4,3);
   complex16 complexs[12] = {{1,-10}, {-4,40}, {7,-70}, {-12,120}, {2,-20}, {2,-20}, {9,-90}, {4,-40}, {3,-30}, {1,-10}, {11,-110}, {7,-70}};
-  OGTerminal::Ptr complex = OGComplexMatrix::create(complexs,4,3);
+  OGTerminal::Ptr complex = OGComplexDenseMatrix::create(complexs,4,3);
 }
 
 // Reconstruction Testing
