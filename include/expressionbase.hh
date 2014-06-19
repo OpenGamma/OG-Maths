@@ -197,6 +197,19 @@ class LU: public OGUnaryExpr
     LU(const OGNumeric::Ptr& arg);
 };
 
+class MLDIVIDE: public OGBinaryExpr
+{
+  public:
+    typedef std::shared_ptr<const MLDIVIDE> Ptr;
+    static MLDIVIDE::Ptr create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1);
+    virtual OGNumeric::Ptr copy() const override;
+    virtual MLDIVIDE::Ptr asMLDIVIDE() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+  private:
+    MLDIVIDE(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1);
+};
+
 } // namespace librdag
 
 #endif // _EXPRESSIONBASE_HH

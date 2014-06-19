@@ -25,6 +25,7 @@ set(TESTS
     check_ctranspose
     check_inv
     check_lu
+    check_mldivide
     check_mtimes
     check_norm2
     check_pinv

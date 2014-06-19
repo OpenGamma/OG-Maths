@@ -82,6 +82,12 @@ OGNumeric::asLU() const
   return LU::Ptr{};
 }
 
+MLDIVIDE::Ptr
+OGNumeric::asMLDIVIDE() const
+{
+  return MLDIVIDE::Ptr{};
+}
+
 OGExpr::Ptr
 OGNumeric::asOGExpr() const
 {

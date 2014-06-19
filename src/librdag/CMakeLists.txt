@@ -28,13 +28,14 @@ set(RDAG_SOURCES convertto.cc
                  terminal.cc
                  runners/ctransposerunner.cc
                  runners/invrunner.cc
+                 runners/lurunner.cc
+                 runners/mldividerunner.cc
                  runners/mtimesrunner.cc
                  runners/norm2runner.cc
                  runners/pinvrunner.cc
                  runners/selectresultrunner.cc
                  runners/svdrunner.cc
                  runners/transposerunner.cc
-                 runners/lurunner.cc
                  ${RDAG_GENERATED})
 
 include(${LAPACK_BUILDINFO})

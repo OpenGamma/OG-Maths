@@ -202,6 +202,7 @@ class CTRANSPOSE;
 class SVD;
 class MTIMES;
 class LU;
+class MLDIVIDE;
 
 class ConvertTo;
 
@@ -228,6 +229,7 @@ class OGNumeric: private Uncopyable, public std::enable_shared_from_this<OGNumer
     virtual std::shared_ptr<const SVD> asSVD() const;
     virtual std::shared_ptr<const MTIMES> asMTIMES() const;
     virtual std::shared_ptr<const LU> asLU() const;
+    virtual std::shared_ptr<const MLDIVIDE> asMLDIVIDE() const;
 %(cast_methods)s
     virtual std::shared_ptr<const OGTerminal> asOGTerminal() const;
     virtual std::shared_ptr<const OGRealScalar> asOGRealScalar() const;

@@ -13,7 +13,7 @@
 #include "debug.h"
 #include "convertto.hh"
 #include <iostream>
-#include <iostream>
+#include <sstream>
 #include <iomanip>
 
 using namespace std;
@@ -723,10 +723,80 @@ OGMatrix<T>::OGMatrix(T* data, size_t rows, size_t cols, DATA_ACCESS access_spec
 }
 
 template<typename T>
+OGMatrix<T>::OGMatrix(T** data, size_t rows, size_t cols)
+{
+  if (data == nullptr)
+  {
+    throw rdag_error("Null data pointer passed to Matrix constructor");
+  }
+  T * tmp = new T[rows * cols];
+  for (size_t i = 0; i < rows; i++)
+  {
+      for (size_t j = 0; j < cols; j++) {
+        tmp[j * rows + i] = data[i][j];
+      }
+  }
+  this->setData(tmp);
+  this->setRows(rows);
+  this->setCols(cols);
+  this->setDatalen(rows*cols);
+  this->setDataAccess(OWNER);
+}
+
+template<typename T>
+OGMatrix<T>::OGMatrix(std::initializer_list<std::initializer_list<T>> list)
+{
+  std::size_t rows = list.size();
+  std::size_t cols = list.begin()->size();
+  // check that the rows are all the same length
+  for(auto it : list)
+  {
+    if(it.size()!=cols)
+    {
+      std::stringstream msg;
+      msg << "Invalid initialisation from lists, data must be square! Cols in first row = " << cols << " cols in this row " << it.size();
+      throw(rdag_error(msg.str()));
+    }
+  }
+  // construct column major
+  T * tmp = new T[rows * cols];
+  std::size_t i = 0, j = 0;
+  for(auto row : list)
+  {
+      for(auto col : row)
+      {
+        tmp[j * rows + i] = col;
+        j++;
+      }
+      i++;
+      j=0;
+  }
+  this->setData(tmp);
+  this->setRows(rows);
+  this->setCols(cols);
+  this->setDatalen(rows*cols);
+  this->setDataAccess(OWNER);
+}
+
+template<typename T>
 typename OGMatrix<T>::Ptr
 OGMatrix<T>::create(T* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
 {
   return OGMatrix<T>::Ptr{new OGMatrix<T>{data, rows, cols, access_spec}};
+}
+
+template<typename T>
+typename OGMatrix<T>::Ptr
+OGMatrix<T>::create(T** data, size_t rows, size_t cols)
+{
+  return OGMatrix<T>::Ptr{new OGMatrix<T>{data, rows, cols}};
+}
+
+
+template<typename T>
+typename OGMatrix<T>::Ptr create(std::initializer_list<std::initializer_list<T>> list)
+{
+  return OGMatrix<T>::Ptr(new OGMatrix<T>(list));
 }
 
 template<typename T>
@@ -869,6 +939,18 @@ OGRealDenseMatrix::create(real8* data, size_t rows, size_t cols, DATA_ACCESS acc
 }
 
 OGRealDenseMatrix::Ptr
+OGRealDenseMatrix::create(real8** data, size_t rows, size_t cols)
+{
+  return OGRealDenseMatrix::Ptr{new OGRealDenseMatrix{data, rows, cols}};
+}
+
+OGRealDenseMatrix::Ptr
+OGRealDenseMatrix::create(std::initializer_list<std::initializer_list<real8>> list)
+{
+  return OGRealDenseMatrix::Ptr{new OGRealDenseMatrix{list}};
+}
+
+OGRealDenseMatrix::Ptr
 OGRealDenseMatrix::asOGRealDenseMatrix() const
 {
   return static_pointer_cast<const OGRealDenseMatrix, const OGNumeric>(shared_from_this());
@@ -935,6 +1017,20 @@ OGComplexDenseMatrix::create(complex16* data, size_t rows, size_t cols, DATA_ACC
 {
   return OGComplexDenseMatrix::Ptr{new OGComplexDenseMatrix{data, rows, cols, access_spec}};
 }
+
+
+OGComplexDenseMatrix::Ptr
+OGComplexDenseMatrix::create(complex16** data, size_t rows, size_t cols)
+{
+  return OGComplexDenseMatrix::Ptr{new OGComplexDenseMatrix{data, rows, cols}};
+}
+
+OGComplexDenseMatrix::Ptr
+OGComplexDenseMatrix::create(std::initializer_list<std::initializer_list<complex16>> list)
+{
+  return OGComplexDenseMatrix::Ptr{new OGComplexDenseMatrix{list}};
+}
+
 
 
 complex16**
