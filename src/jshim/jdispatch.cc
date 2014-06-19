@@ -225,10 +225,10 @@ JavaTerminal::JavaTerminal(JNIEnv* env, const OGNumeric::Ptr& node)
   case COMPLEX_SCALAR_ENUM:
     createComplexScalar(env, node);
     break;
-  case REAL_MATRIX_ENUM:
+  case REAL_DENSE_MATRIX_ENUM:
     createRealMatrix(env, node);
     break;
-  case COMPLEX_MATRIX_ENUM:
+  case COMPLEX_DENSE_MATRIX_ENUM:
     createComplexMatrix(env, node);
     break;
   case REAL_DIAGONAL_MATRIX_ENUM:
