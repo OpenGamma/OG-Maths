@@ -63,7 +63,7 @@ TEST(SVDTests,CheckScalar)
 }
 
 
-TEST(SVDTests,CheckRealMatrix)
+TEST(SVDTests,CheckRealDenseMatrix)
 {
 
   // answers
@@ -183,7 +183,7 @@ TEST(SVDTests,CheckRealHVector)
 }
 
 
-TEST(SVDTests,CheckComplexMatrix)
+TEST(SVDTests,CheckComplexDenseMatrix)
 {
 
   // answers

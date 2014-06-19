@@ -94,28 +94,28 @@ TEST(OGExprTest, SELECTRESULT){
   EXPECT_THROW(SELECTRESULT::create(real, realcopy), rdag_error);
 }
 
-TEST(VirtualCopyTest, RealScalar){
+TEST(VirtualCopyTest, OGRealScalar){
   OGNumeric::Ptr r1 = OGRealScalar::create(3.142);
   OGNumeric::Ptr r2 = r1->copy();
   EXPECT_EQ(r1->asOGRealScalar()->getValue(), r2->asOGRealScalar()->getValue());
   EXPECT_NE(r1, r2);
 }
 
-TEST(VirtualCopyTest, ComplexScalar){
+TEST(VirtualCopyTest, OGComplexScalar){
   OGNumeric::Ptr c1 = OGComplexScalar::create(complex16{1.0, 2.0});
   OGNumeric::Ptr c2 = c1->copy();
   EXPECT_EQ(c1->asOGComplexScalar()->getValue(), c2->asOGComplexScalar()->getValue());
   EXPECT_NE(c1, c2);
 }
 
-TEST(VirtualCopyTest, IntegerScalar){
+TEST(VirtualCopyTest, OGIntegerScalar){
   OGNumeric::Ptr i1 = OGIntegerScalar::create(7);
   OGNumeric::Ptr i2 = OGNumeric::Ptr{i1->copy()};
   EXPECT_EQ(i1->asOGIntegerScalar()->getValue(), i2->asOGIntegerScalar()->getValue());
   EXPECT_NE(i1, i2);
 }
 
-TEST(VirtualCopyTest, RealMatrix){
+TEST(VirtualCopyTest, OGRealDenseMatrix){
   real8 realData[6] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0 };
   OGRealDenseMatrix::Ptr rm1 = OGRealDenseMatrix::create(realData, 2, 3);
   OGRealDenseMatrix::Ptr rm2 = rm1->copy()->asOGRealDenseMatrix();
@@ -126,7 +126,7 @@ TEST(VirtualCopyTest, RealMatrix){
   EXPECT_NE(rm1, rm2);
 }
 
-TEST(VirtualCopyTest, ComplexMatrix){
+TEST(VirtualCopyTest, OGComplexDenseMatrix){
   complex16 complexData[6] = { {1.0, 2.0}, {3.0, 4.0},  {5.0, 6.0},
                                {7.0, 8.0}, {9.0, 10.0}, {11.0, 12.0} };
   OGComplexDenseMatrix::Ptr cm1 = OGComplexDenseMatrix::create(complexData, 2, 3);
@@ -138,7 +138,7 @@ TEST(VirtualCopyTest, ComplexMatrix){
   EXPECT_NE(cm1, cm2);
 }
 
-TEST(VirtualCopyTest, RealDiagonalMatrix){
+TEST(VirtualCopyTest, OGRealDiagonalMatrix){
   real8 rdiagData[3] = { 1.0, 2.0, 3.0 };
   OGRealDiagonalMatrix::Ptr rdm1 = OGRealDiagonalMatrix::create(rdiagData, 3, 4);
   OGRealDiagonalMatrix::Ptr rdm2 = rdm1->copy()->asOGRealDiagonalMatrix();
@@ -149,7 +149,7 @@ TEST(VirtualCopyTest, RealDiagonalMatrix){
   EXPECT_NE(rdm1, rdm2);
 }
 
-TEST(VirtualCopyTest, ComplexDiagonalMatrix){
+TEST(VirtualCopyTest, OGComplexDiagonalMatrix){
   complex16 cdiagData[3] = { {1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0} };
   OGComplexDiagonalMatrix::Ptr cdm1 = OGComplexDiagonalMatrix::create(cdiagData, 3, 4);
   OGComplexDiagonalMatrix::Ptr cdm2 = cdm1->copy()->asOGComplexDiagonalMatrix();
@@ -160,7 +160,7 @@ TEST(VirtualCopyTest, ComplexDiagonalMatrix){
   EXPECT_NE(cdm1, cdm2);
 }
 
-TEST(VirtualCopyTest, RealSparseMatrix){
+TEST(VirtualCopyTest, OGRealSparseMatrix){
   int4 colPtr[3] = { 0, 2, 2 };
   int4 rowIdx[2] = { 0, 1 };
   real8 rsparseData[2] = { 1.0, 2.0 };
@@ -174,7 +174,7 @@ TEST(VirtualCopyTest, RealSparseMatrix){
   EXPECT_NE(rsm1, rsm2);
 }
 
-TEST(VirtualCopyTest, ComplexSparseMatrix){
+TEST(VirtualCopyTest, OGComplexSparseMatrix){
   int4 colPtr[3] = { 0, 2, 2 };
   int4 rowIdx[2] = { 0, 1 };
   complex16 csparseData[2] = { {1.0, 2.0}, {3.0, 4.0} };

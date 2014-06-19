@@ -226,10 +226,10 @@ JavaTerminal::JavaTerminal(JNIEnv* env, const OGNumeric::Ptr& node)
     createComplexScalar(env, node);
     break;
   case REAL_DENSE_MATRIX_ENUM:
-    createRealMatrix(env, node);
+    createRealDenseMatrix(env, node);
     break;
   case COMPLEX_DENSE_MATRIX_ENUM:
-    createComplexMatrix(env, node);
+    createComplexDenseMatrix(env, node);
     break;
   case REAL_DIAGONAL_MATRIX_ENUM:
     createRealDiagonalMatrix(env, node);
@@ -316,7 +316,7 @@ JavaTerminal::createComplexScalar(JNIEnv* env, const OGNumeric::Ptr& node)
 }
 
 void
-JavaTerminal::createRealMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
+JavaTerminal::createRealDenseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 {
   jclass cls = JVMManager::getOGRealDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGRealDenseMatrixClazz_init();
@@ -326,7 +326,7 @@ JavaTerminal::createRealMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 }
 
 void
-JavaTerminal::createComplexMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
+JavaTerminal::createComplexDenseMatrix(JNIEnv* env, const OGNumeric::Ptr& node)
 {
   jclass cls = JVMManager::getOGComplexDenseMatrixClazz();
   jmethodID constructor = JVMManager::getOGComplexDenseMatrixClazz_init();
