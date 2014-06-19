@@ -104,13 +104,13 @@ OGTerminal::mathsequals(const OGTerminal::Ptr& other, real8 maxabserror, real8 m
   }
   if(isReal(static_pointer_cast<const OGTerminal, const OGNumeric>(shared_from_this())) && isReal(other))
   {
-    otherconv = other->asFullOGRealMatrix();
-    thisconv = this->asFullOGRealMatrix();
+    otherconv = other->asFullOGRealDenseMatrix();
+    thisconv = this->asFullOGRealDenseMatrix();
   }
   else
   {
-    otherconv = other->asFullOGComplexMatrix();
-    thisconv = this->asFullOGComplexMatrix();
+    otherconv = other->asFullOGComplexDenseMatrix();
+    thisconv = this->asFullOGComplexDenseMatrix();
   }
   if(thisconv->fuzzyequals(otherconv, maxabserror, maxrelerror))
   {
@@ -234,17 +234,17 @@ OGScalar<T>::fuzzyequals(const OGTerminal::Ptr& other, real8 maxabserror, real8 
 }
 
 template<typename T>
-OGRealMatrix::Ptr
-OGScalar<T>::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGScalar<T>::asFullOGRealDenseMatrix() const
 {
-  throw rdag_error("Cannot asFullOGRealMatrix() template OGScalar<T> class.");
+  throw rdag_error("Cannot asFullOGRealDenseMatrix() template OGScalar<T> class.");
 }
 
 template<typename T>
-OGComplexMatrix::Ptr
-OGScalar<T>::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGScalar<T>::asFullOGComplexDenseMatrix() const
 {
-  throw rdag_error("Cannot asFullOGComplexMatrix() template OGScalar<T> class.");
+  throw rdag_error("Cannot asFullOGComplexDenseMatrix() template OGScalar<T> class.");
 }
 
 template<typename T>
@@ -331,16 +331,16 @@ OGRealScalar::getType() const
   return REAL_SCALAR_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGRealScalar::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGRealScalar::asFullOGRealDenseMatrix() const
 {
-  return _converter.convertToOGRealMatrix(asOGRealScalar());
+  return _converter.convertToOGRealDenseMatrix(asOGRealScalar());
 }
 
-OGComplexMatrix::Ptr
-OGRealScalar::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGRealScalar::asFullOGComplexDenseMatrix() const
 {
-  return _converter.convertToOGComplexMatrix(asOGRealScalar());
+  return _converter.convertToOGComplexDenseMatrix(asOGRealScalar());
 }
 
 OGTerminal::Ptr
@@ -397,16 +397,16 @@ OGComplexScalar::getType() const
   return COMPLEX_SCALAR_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGComplexScalar::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGComplexScalar::asFullOGRealDenseMatrix() const
 {
   throw rdag_error("Cannot represent complex data in linear memory of type real8");
 }
 
-OGComplexMatrix::Ptr
-OGComplexScalar::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGComplexScalar::asFullOGComplexDenseMatrix() const
 {
-  return _converter.convertToOGComplexMatrix(asOGComplexScalar());
+  return _converter.convertToOGComplexDenseMatrix(asOGComplexScalar());
 }
 
 OGTerminal::Ptr
@@ -458,16 +458,16 @@ OGIntegerScalar::getType() const
   return INTEGER_SCALAR_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGIntegerScalar::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGIntegerScalar::asFullOGRealDenseMatrix() const
 {
-  return _converter.convertToOGRealMatrix(asOGIntegerScalar());
+  return _converter.convertToOGRealDenseMatrix(asOGIntegerScalar());
 }
 
-OGComplexMatrix::Ptr
-OGIntegerScalar::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGIntegerScalar::asFullOGComplexDenseMatrix() const
 {
-  return _converter.convertToOGComplexMatrix(asOGIntegerScalar());
+  return _converter.convertToOGComplexDenseMatrix(asOGIntegerScalar());
 }
 
 OGTerminal::Ptr
@@ -666,21 +666,21 @@ copy() const
 }
 
 template<typename T>
-OGRealMatrix::Ptr
+OGRealDenseMatrix::Ptr
 OGArray<T>::
-asFullOGRealMatrix() const
+asFullOGRealDenseMatrix() const
 {
   // this is a default backstop impl whilst waiting for a traited version
-  throw rdag_error("Cannot convert asFullOGRealMatrix(), concrete implementation class required for operation.");
+  throw rdag_error("Cannot convert asFullOGRealDenseMatrix(), concrete implementation class required for operation.");
 }
 
 template<typename T>
-OGComplexMatrix::Ptr
+OGComplexDenseMatrix::Ptr
 OGArray<T>::
-asFullOGComplexMatrix() const
+asFullOGComplexDenseMatrix() const
 {
   // this is a default backstop impl whilst waiting for a traited version
-  throw rdag_error("Cannot convert asFullOGComplexMatrix(), concrete implementation class required for operation.");
+  throw rdag_error("Cannot convert asFullOGComplexDenseMatrix(), concrete implementation class required for operation.");
 }
 
 template<typename T>
@@ -782,12 +782,12 @@ OGMatrix<T>::createOwningCopy() const
 }
 
 template<typename T>
-OGComplexMatrix::Ptr
-OGMatrix<T>::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGMatrix<T>::asFullOGComplexDenseMatrix() const
 {
   complex16 * newdata = new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return OGComplexMatrix::create(newdata,this->getRows(),this->getCols(),OWNER);
+  return OGComplexDenseMatrix::create(newdata,this->getRows(),this->getCols(),OWNER);
 }
 
 template<typename T>
@@ -839,75 +839,75 @@ template<>
 ExprType_t
 OGMatrix<real8>::getType() const
 {
-  return REAL_MATRIX_ENUM;
+  return REAL_DENSE_MATRIX_ENUM;
 }
 
 template<>
 ExprType_t
 OGMatrix<complex16>::getType() const
 {
-  return COMPLEX_MATRIX_ENUM;
+  return COMPLEX_DENSE_MATRIX_ENUM;
 }
 
 template class OGMatrix<real8>;
 template class OGMatrix<complex16>;
 
 /**
- * OGRealMatrix
+ * OGRealDenseMatrix
  */
 
 OGNumeric::Ptr
-OGRealMatrix::copy() const
+OGRealDenseMatrix::copy() const
 {
   return create(this->getData(), this->getRows(), this->getCols());
 }
 
-OGRealMatrix::Ptr
-OGRealMatrix::create(real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
+OGRealDenseMatrix::Ptr
+OGRealDenseMatrix::create(real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
 {
-  return OGRealMatrix::Ptr{new OGRealMatrix{data, rows, cols, access_spec}};
+  return OGRealDenseMatrix::Ptr{new OGRealDenseMatrix{data, rows, cols, access_spec}};
 }
 
-OGRealMatrix::Ptr
-OGRealMatrix::asOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGRealDenseMatrix::asOGRealDenseMatrix() const
 {
-  return static_pointer_cast<const OGRealMatrix, const OGNumeric>(shared_from_this());
+  return static_pointer_cast<const OGRealDenseMatrix, const OGNumeric>(shared_from_this());
 }
 
 ExprType_t
-OGRealMatrix::getType() const
+OGRealDenseMatrix::getType() const
 {
-  return REAL_MATRIX_ENUM;
+  return REAL_DENSE_MATRIX_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGRealMatrix::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGRealDenseMatrix::asFullOGRealDenseMatrix() const
 {
   real8 * ret = new real8[this->getDatalen()];
   memcpy(ret,this->getData(),this->getDatalen()*sizeof(real8));
-  return OGRealMatrix::create(ret,this->getRows(),this->getCols(),OWNER);
+  return OGRealDenseMatrix::create(ret,this->getRows(),this->getCols(),OWNER);
 }
 
-OGComplexMatrix::Ptr
-OGRealMatrix::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGRealDenseMatrix::asFullOGComplexDenseMatrix() const
 {
-  return _converter.convertToOGComplexMatrix(asOGRealMatrix());
+  return _converter.convertToOGComplexDenseMatrix(asOGRealDenseMatrix());
 }
 
 OGTerminal::Ptr
-OGRealMatrix::createOwningCopy() const
+OGRealDenseMatrix::createOwningCopy() const
 {
   real8 * newdata =  new real8[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return OGRealMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGRealDenseMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 OGTerminal::Ptr
-OGRealMatrix::createComplexOwningCopy() const
+OGRealDenseMatrix::createComplexOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return OGComplexMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGComplexDenseMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 /**
@@ -927,66 +927,66 @@ OGLogicalMatrix::asOGLogicalMatrix() const
 
 
 /**
- * OGComplexMatrix
+ * OGComplexDenseMatrix
  */
 
-OGComplexMatrix::Ptr
-OGComplexMatrix::create(complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
+OGComplexDenseMatrix::Ptr
+OGComplexDenseMatrix::create(complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec)
 {
-  return OGComplexMatrix::Ptr{new OGComplexMatrix{data, rows, cols, access_spec}};
+  return OGComplexDenseMatrix::Ptr{new OGComplexDenseMatrix{data, rows, cols, access_spec}};
 }
 
 
 complex16**
-OGComplexMatrix::toComplex16ArrayOfArrays() const
+OGComplexDenseMatrix::toComplex16ArrayOfArrays() const
 {
   return this->toArrayOfArrays();
 }
 
 OGNumeric::Ptr
-OGComplexMatrix::copy() const
+OGComplexDenseMatrix::copy() const
 {
   return create(this->getData(), this->getRows(), this->getCols());
 }
 
-OGComplexMatrix::Ptr
-OGComplexMatrix::asOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGComplexDenseMatrix::asOGComplexDenseMatrix() const
 {
-  return static_pointer_cast<const OGComplexMatrix, const OGNumeric>(shared_from_this());
+  return static_pointer_cast<const OGComplexDenseMatrix, const OGNumeric>(shared_from_this());
 }
 
 ExprType_t
-OGComplexMatrix::getType() const
+OGComplexDenseMatrix::getType() const
 {
-  return COMPLEX_MATRIX_ENUM;
+  return COMPLEX_DENSE_MATRIX_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGComplexMatrix::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGComplexDenseMatrix::asFullOGRealDenseMatrix() const
 {
   throw rdag_error("Cannot represent complex data in linear memory of type real8");
 }
 
-OGComplexMatrix::Ptr
-OGComplexMatrix::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGComplexDenseMatrix::asFullOGComplexDenseMatrix() const
 {
   size_t len = this->getDatalen();
   complex16 * data = this->getData();
   complex16 * ret = new complex16[len];
   memcpy(ret,data,len*sizeof(complex16));
-  return OGComplexMatrix::create(ret,this->getRows(),this->getCols(),OWNER);
+  return OGComplexDenseMatrix::create(ret,this->getRows(),this->getCols(),OWNER);
 }
 
 OGTerminal::Ptr
-OGComplexMatrix::createOwningCopy() const
+OGComplexDenseMatrix::createOwningCopy() const
 {
   complex16 * newdata =  new complex16[this->getDatalen()];
   std::copy(this->getData(), this->getData()+this->getDatalen(), newdata);
-  return OGComplexMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
+  return OGComplexDenseMatrix::create(newdata, this->getRows(), this->getCols(), OWNER);
 }
 
 OGTerminal::Ptr
-OGComplexMatrix::createComplexOwningCopy() const
+OGComplexDenseMatrix::createComplexOwningCopy() const
 {
   return createOwningCopy();
 }
@@ -1115,16 +1115,16 @@ OGRealDiagonalMatrix::getType() const
   return REAL_DIAGONAL_MATRIX_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGRealDiagonalMatrix::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGRealDiagonalMatrix::asFullOGRealDenseMatrix() const
 {
-    return _converter.convertToOGRealMatrix(asOGRealDiagonalMatrix());
+    return _converter.convertToOGRealDenseMatrix(asOGRealDiagonalMatrix());
 }
 
-OGComplexMatrix::Ptr
-OGRealDiagonalMatrix::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGRealDiagonalMatrix::asFullOGComplexDenseMatrix() const
 {
-  return _converter.convertToOGComplexMatrix(asOGRealDiagonalMatrix());
+  return _converter.convertToOGComplexDenseMatrix(asOGRealDiagonalMatrix());
 }
 
 OGTerminal::Ptr
@@ -1216,16 +1216,16 @@ OGComplexDiagonalMatrix::getType() const
   return COMPLEX_DIAGONAL_MATRIX_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGComplexDiagonalMatrix::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGComplexDiagonalMatrix::asFullOGRealDenseMatrix() const
 {
   throw rdag_error("Cannot represent complex data in linear memory of type real8");
 }
 
-OGComplexMatrix::Ptr
-OGComplexDiagonalMatrix::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGComplexDiagonalMatrix::asFullOGComplexDenseMatrix() const
 {
-  return _converter.convertToOGComplexMatrix(asOGComplexDiagonalMatrix());
+  return _converter.convertToOGComplexDenseMatrix(asOGComplexDiagonalMatrix());
 }
 
 
@@ -1449,16 +1449,16 @@ OGRealSparseMatrix::getType() const
   return REAL_SPARSE_MATRIX_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGRealSparseMatrix::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGRealSparseMatrix::asFullOGRealDenseMatrix() const
 {
-  return _converter.convertToOGRealMatrix(asOGRealSparseMatrix());
+  return _converter.convertToOGRealDenseMatrix(asOGRealSparseMatrix());
 }
 
-OGComplexMatrix::Ptr
-OGRealSparseMatrix::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGRealSparseMatrix::asFullOGComplexDenseMatrix() const
 {
-  return _converter.convertToOGComplexMatrix(asOGRealSparseMatrix());
+  return _converter.convertToOGComplexDenseMatrix(asOGRealSparseMatrix());
 }
 
 OGTerminal::Ptr
@@ -1542,16 +1542,16 @@ OGComplexSparseMatrix::getType() const
   return COMPLEX_SPARSE_MATRIX_ENUM;
 }
 
-OGRealMatrix::Ptr
-OGComplexSparseMatrix::asFullOGRealMatrix() const
+OGRealDenseMatrix::Ptr
+OGComplexSparseMatrix::asFullOGRealDenseMatrix() const
 {
   throw rdag_error("Cannot represent complex data in linear memory of type real8");
 }
 
-OGComplexMatrix::Ptr
-OGComplexSparseMatrix::asFullOGComplexMatrix() const
+OGComplexDenseMatrix::Ptr
+OGComplexSparseMatrix::asFullOGComplexDenseMatrix() const
 {
-  return _converter.convertToOGComplexMatrix(asOGComplexSparseMatrix());
+  return _converter.convertToOGComplexDenseMatrix(asOGComplexSparseMatrix());
 }
 
 OGTerminal::Ptr
@@ -1577,13 +1577,13 @@ OGComplexSparseMatrix::createComplexOwningCopy() const
 template<>
 OGNumeric::Ptr makeConcreteDenseMatrix(real8 * data, size_t rows, size_t cols, DATA_ACCESS access)
 {
-  return OGRealMatrix::create(data, rows, cols, access);
+  return OGRealDenseMatrix::create(data, rows, cols, access);
 }
 
 template<>
 OGNumeric::Ptr makeConcreteDenseMatrix(complex16 * data, size_t rows, size_t cols, DATA_ACCESS access)
 {
-  return OGComplexMatrix::create(data, rows, cols, access);
+  return OGComplexDenseMatrix::create(data, rows, cols, access);
 }
 
 // Concrete template factory for scalars

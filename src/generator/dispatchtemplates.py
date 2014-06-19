@@ -119,8 +119,8 @@ template<typename T> class DispatchUnaryOp: public DispatchOp<T>
     // Methods for specific terminals
 %(dispatchunaryop_terminal_methods)s
     // Backstop methods for generic implementation
-    virtual T run(RegContainer& reg, OGRealMatrix::Ptr arg) const = 0;
-    virtual T run(RegContainer& reg, OGComplexMatrix::Ptr arg) const = 0;
+    virtual T run(RegContainer& reg, OGRealDenseMatrix::Ptr arg) const = 0;
+    virtual T run(RegContainer& reg, OGComplexDenseMatrix::Ptr arg) const = 0;
 };
 """
 
@@ -143,8 +143,8 @@ template<typename T> class  DispatchBinaryOp: public DispatchOp<T>
     // Methods for specific terminals
 %(dispatchbinaryop_terminal_methods)s
     // Required backstop impls
-    virtual T run(RegContainer& reg0, OGComplexMatrix::Ptr arg0, OGComplexMatrix::Ptr arg1) const = 0;
-    virtual T run(RegContainer& reg0, OGRealMatrix::Ptr arg0, OGRealMatrix::Ptr arg1) const = 0;
+    virtual T run(RegContainer& reg0, OGComplexDenseMatrix::Ptr arg0, OGComplexDenseMatrix::Ptr arg1) const = 0;
+    virtual T run(RegContainer& reg0, OGRealDenseMatrix::Ptr arg0, OGRealDenseMatrix::Ptr arg1) const = 0;
 };
 """
 

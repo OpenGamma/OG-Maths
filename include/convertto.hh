@@ -30,8 +30,8 @@ namespace librdag {
 class OGRealScalar;
 class OGComplexScalar;
 class OGIntegerScalar;
-class OGRealMatrix;
-class OGComplexMatrix;
+class OGRealDenseMatrix;
+class OGComplexDenseMatrix;
 class OGLogicalMatrix;
 class OGRealDiagonalMatrix;
 class OGComplexDiagonalMatrix;
@@ -43,21 +43,21 @@ class ConvertTo
 {
   public:
     ConvertTo();
-    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGRealScalar> thing) const;
-    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGIntegerScalar> thing) const;
-    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGRealDiagonalMatrix> thing) const;
-    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGLogicalMatrix> thing) const;
-    std::shared_ptr<const OGRealMatrix> convertToOGRealMatrix(std::shared_ptr<const OGRealSparseMatrix> thing) const;
+    std::shared_ptr<const OGRealDenseMatrix> convertToOGRealDenseMatrix(std::shared_ptr<const OGRealScalar> thing) const;
+    std::shared_ptr<const OGRealDenseMatrix> convertToOGRealDenseMatrix(std::shared_ptr<const OGIntegerScalar> thing) const;
+    std::shared_ptr<const OGRealDenseMatrix> convertToOGRealDenseMatrix(std::shared_ptr<const OGRealDiagonalMatrix> thing) const;
+    std::shared_ptr<const OGRealDenseMatrix> convertToOGRealDenseMatrix(std::shared_ptr<const OGLogicalMatrix> thing) const;
+    std::shared_ptr<const OGRealDenseMatrix> convertToOGRealDenseMatrix(std::shared_ptr<const OGRealSparseMatrix> thing) const;
 
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGRealScalar> thing) const;
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGIntegerScalar> thing) const;
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGComplexScalar> thing) const;
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGRealDiagonalMatrix>  thing) const;
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGComplexDiagonalMatrix> thing) const;
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGRealSparseMatrix> thing) const;
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGComplexSparseMatrix> thing) const;
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGRealMatrix> thing) const;
-    std::shared_ptr<const OGComplexMatrix> convertToOGComplexMatrix(std::shared_ptr<const OGLogicalMatrix> thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGRealScalar> thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGIntegerScalar> thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGComplexScalar> thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGRealDiagonalMatrix>  thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGComplexDiagonalMatrix> thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGRealSparseMatrix> thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGComplexSparseMatrix> thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGRealDenseMatrix> thing) const;
+    std::shared_ptr<const OGComplexDenseMatrix> convertToOGComplexDenseMatrix(std::shared_ptr<const OGLogicalMatrix> thing) const;
 };
 
 }

@@ -51,7 +51,7 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGIntegerScalar)
 }
 
 
-TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealMatrix)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealDenseMatrix)
 {
   const size_t rows = 3;
   const size_t cols = 2;
@@ -60,7 +60,7 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealMatrix)
   dataAoA[0] = new real8[cols]{1,2};
   dataAoA[1] = new real8[cols]{3,4};
   dataAoA[2] = new real8[cols]{5,6};
-  OGNumeric::Ptr mat = OGRealMatrix::create(data,rows,cols, OWNER);
+  OGNumeric::Ptr mat = OGRealDenseMatrix::create(data,rows,cols, OWNER);
   Real8AoA r = Real8AoA{mat};
   ASSERT_TRUE(r.getRows()==rows);
   ASSERT_TRUE(r.getCols()==cols);
@@ -72,9 +72,9 @@ TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGRealMatrix)
   delete [] dataAoA;
 }
 
-TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexMatrix)
+TEST(JDispatch, Test_DispatchToReal8ArrayOfArrays_OGComplexDenseMatrix)
 {
-  OGNumeric::Ptr mat = OGComplexMatrix::create(new complex16[1]{12},1,1, OWNER);
+  OGNumeric::Ptr mat = OGComplexDenseMatrix::create(new complex16[1]{12},1,1, OWNER);
   ASSERT_THROW(Real8AoA{mat}, convert_error);
 }
 
@@ -189,7 +189,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGIntegerScalar)
   ASSERT_THROW(Complex16AoA{scal}, convert_error);
 }
 
-TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexDenseMatrix)
 {
   const size_t rows = 3;
   const size_t cols = 2;
@@ -198,7 +198,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
   dataAoA[0] = new complex16[cols]{{1,10},{2,20}};
   dataAoA[1] = new complex16[cols]{{3,30},{4,40}};
   dataAoA[2] = new complex16[cols]{{5,50},{6,60}};
-  OGNumeric::Ptr mat = OGComplexMatrix::create(data,rows,cols,OWNER);
+  OGNumeric::Ptr mat = OGComplexDenseMatrix::create(data,rows,cols,OWNER);
   Complex16AoA c = Complex16AoA{mat};
   ASSERT_TRUE(c.getRows()==rows);
   ASSERT_TRUE(c.getCols()==cols);
@@ -210,7 +210,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGComplexMatrix)
   delete [] dataAoA;
 }
 
-TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
+TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealDenseMatrix)
 {
   const size_t rows = 3;
   const size_t cols = 2;
@@ -219,7 +219,7 @@ TEST(JDispatch, Test_DispatchToComplex16ArrayOfArrays_OGRealMatrix)
   dataAoA[0] = new complex16[cols]{{1,0},{2,0}};
   dataAoA[1] = new complex16[cols]{{3,0},{4,0}};
   dataAoA[2] = new complex16[cols]{{5,0},{6,0}};
-  OGNumeric::Ptr mat = OGRealMatrix::create(data,rows,cols,OWNER);
+  OGNumeric::Ptr mat = OGRealDenseMatrix::create(data,rows,cols,OWNER);
   Complex16AoA c = Complex16AoA{mat};
   ASSERT_TRUE(c.getRows()==rows);
   ASSERT_TRUE(c.getCols()==cols);

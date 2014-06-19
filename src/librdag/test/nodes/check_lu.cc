@@ -125,32 +125,32 @@ LUTestDataHolder testData[] =
                   ),
   // real 5x4 matrix test
   LUTestDataHolder(
-                  OGRealMatrix::create(rcondok5x4,5,4,VIEWER),
-                  OGRealMatrix::create(new real8[20] {0.5,0.9,1,0.8,0.1,1,0.2,0,0.4,-0.2,0,1,0,0.0645161290322571,0.1290322580645162,0,0,0,1,0.1480519480519481},5,4,OWNER),
-                  OGRealMatrix::create(new real8[16] {10,0,0,0,19,-0.5,0,0,29,-4.5,-6.2,0,21,-2.5,-3.4,12.4193548387096779}, 4,4, OWNER)
+                  OGRealDenseMatrix::create(rcondok5x4,5,4,VIEWER),
+                  OGRealDenseMatrix::create(new real8[20] {0.5,0.9,1,0.8,0.1,1,0.2,0,0.4,-0.2,0,1,0,0.0645161290322571,0.1290322580645162,0,0,0,1,0.1480519480519481},5,4,OWNER),
+                  OGRealDenseMatrix::create(new real8[16] {10,0,0,0,19,-0.5,0,0,29,-4.5,-6.2,0,21,-2.5,-3.4,12.4193548387096779}, 4,4, OWNER)
                   ),
   // real 2x10 matrix test
   LUTestDataHolder(
-                  OGRealMatrix::create(rcondok5x4,2,10,VIEWER),
-                  OGRealMatrix::create(new real8[4] {0.5555555555555555,1.,1.,0.},2,2,OWNER),
-                  OGRealMatrix::create(new real8[20] {9,0,8,5.5555555555555554,9,-4,19,6.4444444444444446,2,13.8888888888888893,19,-0.5555555555555554,21,17.3333333333333321,8,-1.4444444444444446,21,3.3333333333333321,4,25.7777777777777786}, 2,10, OWNER)
+                  OGRealDenseMatrix::create(rcondok5x4,2,10,VIEWER),
+                  OGRealDenseMatrix::create(new real8[4] {0.5555555555555555,1.,1.,0.},2,2,OWNER),
+                  OGRealDenseMatrix::create(new real8[20] {9,0,8,5.5555555555555554,9,-4,19,6.4444444444444446,2,13.8888888888888893,19,-0.5555555555555554,21,17.3333333333333321,8,-1.4444444444444446,21,3.3333333333333321,4,25.7777777777777786}, 2,10, OWNER)
                   ),
   // real reverse pivot in matrix test
   LUTestDataHolder(
-                  OGRealMatrix::create(rpivot5_1,5,3,VIEWER),
-                  OGRealMatrix::create(new real8[15] {-0.0769230769230769,-0.3076923076923077,-0.5384615384615385,0.7692307692307693,1.,0.0424028268551237,-0.4275618374558304,0.0212014134275618,1.,0,-0.1093167701863354,-0.0695652173913043,1.,0,0},5,3,OWNER),
-                  OGRealMatrix::create(new real8[9]  {-13.,0.,0.,-14.,21.7692307692307701,0.,-15.,-0.4615384615384617,-17.0671378091872832}, 3,3, OWNER)
+                  OGRealDenseMatrix::create(rpivot5_1,5,3,VIEWER),
+                  OGRealDenseMatrix::create(new real8[15] {-0.0769230769230769,-0.3076923076923077,-0.5384615384615385,0.7692307692307693,1.,0.0424028268551237,-0.4275618374558304,0.0212014134275618,1.,0,-0.1093167701863354,-0.0695652173913043,1.,0,0},5,3,OWNER),
+                  OGRealDenseMatrix::create(new real8[9]  {-13.,0.,0.,-14.,21.7692307692307701,0.,-15.,-0.4615384615384617,-17.0671378091872832}, 3,3, OWNER)
                   ),
   // real horizontal vector test
   LUTestDataHolder(
-                  OGRealMatrix::create(r1_10,1,10,VIEWER),
+                  OGRealDenseMatrix::create(r1_10,1,10,VIEWER),
                   OGRealScalar::create(1),
-                  OGRealMatrix::create(r1_10,1,10, VIEWER)
+                  OGRealDenseMatrix::create(r1_10,1,10, VIEWER)
                   ),
   // real vertical vector test
   LUTestDataHolder(
-                  OGRealMatrix::create(r1_10,10,1,VIEWER),
-                  OGRealMatrix::create(new real8[10]{0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0},10,1, OWNER),
+                  OGRealDenseMatrix::create(r1_10,10,1,VIEWER),
+                  OGRealDenseMatrix::create(new real8[10]{0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0},10,1, OWNER),
                   OGRealScalar::create(10)
                   ),
   // complex scalar test
@@ -161,26 +161,26 @@ LUTestDataHolder testData[] =
                   ),
   // complex 5x4 matrix test
   LUTestDataHolder(
-                  OGComplexMatrix::create(ccondok5x4,5,4,VIEWER),
-                  OGRealMatrix::create(new real8[20] {0.5,0.9,1.,0.8,0.1,1.,0.2,0.,0.4,-0.2,0.,1.,0.,0.0645161290322568,0.1290322580645157,0.,0.,0.,1.,0.1480519480519480},5,4,OWNER),
-                  OGComplexMatrix::create(new complex16[16] {{10.,-20.}, {0.,0.}, {0.,0.}, {0.,0.}, {19.,-38.}, {-0.5,1.}, {0.,0.}, {0.,0.}, {29.,-58.}, {-4.5,9.}, {-6.2000000000000171,12.4000000000000341}, {0.,0.}, {21.,-42.}, {-2.5,5.}, {-3.4000000000000092,6.8000000000000185}, {12.4193548387096779,-24.8387096774193559}}, 4,4, OWNER)
+                  OGComplexDenseMatrix::create(ccondok5x4,5,4,VIEWER),
+                  OGRealDenseMatrix::create(new real8[20] {0.5,0.9,1.,0.8,0.1,1.,0.2,0.,0.4,-0.2,0.,1.,0.,0.0645161290322568,0.1290322580645157,0.,0.,0.,1.,0.1480519480519480},5,4,OWNER),
+                  OGComplexDenseMatrix::create(new complex16[16] {{10.,-20.}, {0.,0.}, {0.,0.}, {0.,0.}, {19.,-38.}, {-0.5,1.}, {0.,0.}, {0.,0.}, {29.,-58.}, {-4.5,9.}, {-6.2000000000000171,12.4000000000000341}, {0.,0.}, {21.,-42.}, {-2.5,5.}, {-3.4000000000000092,6.8000000000000185}, {12.4193548387096779,-24.8387096774193559}}, 4,4, OWNER)
                   ),
   // complex 2x10 matrix test
   LUTestDataHolder(
-                  OGComplexMatrix::create(ccondok5x4,2,10,VIEWER),
-                  OGRealMatrix::create(new real8[4] {0.5555555555555555,1.,1.,0.},2,2,OWNER),
-                  OGComplexMatrix::create(new complex16[20] {{9.,-18.}, {0., 0.}, {8.,-16.}, {5.5555555555555554,-11.1111111111111107}, {9.,-18.}, {-4., 8.}, {19.,-38.}, {6.4444444444444446,-12.8888888888888893}, {2.,-4.}, {13.8888888888888893,-27.7777777777777786}, {19.,-38.}, {-0.5555555555555554, 1.1111111111111107}, {21.,-42.}, {17.3333333333333321,-34.6666666666666643}, {8.,-16.}, {-1.4444444444444446, 2.8888888888888893}, {21.,-42.}, {3.3333333333333321,-6.6666666666666643}, {4.,-8.}, {25.7777777777777786,-51.5555555555555571}}, 2,10, OWNER)
+                  OGComplexDenseMatrix::create(ccondok5x4,2,10,VIEWER),
+                  OGRealDenseMatrix::create(new real8[4] {0.5555555555555555,1.,1.,0.},2,2,OWNER),
+                  OGComplexDenseMatrix::create(new complex16[20] {{9.,-18.}, {0., 0.}, {8.,-16.}, {5.5555555555555554,-11.1111111111111107}, {9.,-18.}, {-4., 8.}, {19.,-38.}, {6.4444444444444446,-12.8888888888888893}, {2.,-4.}, {13.8888888888888893,-27.7777777777777786}, {19.,-38.}, {-0.5555555555555554, 1.1111111111111107}, {21.,-42.}, {17.3333333333333321,-34.6666666666666643}, {8.,-16.}, {-1.4444444444444446, 2.8888888888888893}, {21.,-42.}, {3.3333333333333321,-6.6666666666666643}, {4.,-8.}, {25.7777777777777786,-51.5555555555555571}}, 2,10, OWNER)
                   ),
   // complex horizontal vector test
   LUTestDataHolder(
-                  OGComplexMatrix::create(c1_10,1,10,VIEWER),
+                  OGComplexDenseMatrix::create(c1_10,1,10,VIEWER),
                   OGRealScalar::create(1),
-                  OGComplexMatrix::create(c1_10,1,10, VIEWER)
+                  OGComplexDenseMatrix::create(c1_10,1,10, VIEWER)
                   ),
   // complex vertical vector test
   LUTestDataHolder(
-                  OGComplexMatrix::create(c1_10,10,1,VIEWER),
-                  OGRealMatrix::create(new real8[10]{0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0},10,1, OWNER),
+                  OGComplexDenseMatrix::create(c1_10,10,1,VIEWER),
+                  OGRealDenseMatrix::create(new real8[10]{0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0},10,1, OWNER),
                   OGComplexScalar::create({10,100})
                   )
 };
@@ -192,9 +192,9 @@ OGTerminal::Ptr testSingluarData[] =
 {
   // real scalar test
   OGRealScalar::create(0),
-  OGRealMatrix::create(rsingular3x3,3,3),
+  OGRealDenseMatrix::create(rsingular3x3,3,3),
   OGComplexScalar::create({0,0}),
-  OGComplexMatrix::create(csingular3x3,3,3)
+  OGComplexDenseMatrix::create(csingular3x3,3,3)
 };
 
 INSTANTIATE_TEST_CASE_P(LUTesting, LUSingularTest, ::testing::ValuesIn(testSingluarData));

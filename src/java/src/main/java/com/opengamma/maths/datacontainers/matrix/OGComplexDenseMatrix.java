@@ -20,7 +20,7 @@ import com.opengamma.maths.helpers.MatrixPrimitiveUtils;
  * Dense complex matrix
  */
 public class OGComplexDenseMatrix extends OGDenseMatrix {
-  private static ExprEnum s_type = ExprEnum.OGComplexMatrix;
+  private static ExprEnum s_type = ExprEnum.OGComplexDenseMatrix;
 
   private double[] _data;
   private int _rows, _cols;
@@ -199,7 +199,7 @@ public class OGComplexDenseMatrix extends OGDenseMatrix {
 
   @Override
   public String toString() {
-    String str = "\nOGComplexMatrix:" + "\ndata = " + Arrays.toString(_data) + "\nrows = " + _rows + "\ncols = " + _cols;
+    String str = "\nOGComplexDenseMatrix:" + "\ndata = " + Arrays.toString(_data) + "\nrows = " + _rows + "\ncols = " + _cols;
     str = str + "\n====Pretty Print====\n";
     double imag;
     for (int i = 0; i < 2 * _rows; i += 2) {

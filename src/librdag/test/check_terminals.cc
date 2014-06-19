@@ -80,8 +80,8 @@ TEST(TerminalsTest, OGScalarTest) {
   OGScalar<real8>::Ptr tmp = OGScalar<real8>::create(10);
 
   ASSERT_THROW(tmp->copy(), rdag_error);
-  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
-  ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGComplexDenseMatrix()), rdag_error);
   ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
   ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
 
@@ -191,7 +191,7 @@ TEST(TerminalsTest, OGComplexScalarTest) {
   ASSERT_EQ(tmp->getType(), COMPLEX_SCALAR_ENUM);
 
   // check can't promote as real
-  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[1] = {{3.14e0, 0.00159e0}};
@@ -292,8 +292,8 @@ TEST(TerminalsTest, OGArrayTest) {
 
   ASSERT_THROW((tmp->copy()), rdag_error);
   ASSERT_THROW((tmp->debug_print()), rdag_error);
-  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
-  ASSERT_THROW((tmp->asFullOGComplexMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGComplexDenseMatrix()), rdag_error);
   ASSERT_THROW((tmp->createOwningCopy()), rdag_error);
   ASSERT_THROW((tmp->createComplexOwningCopy()), rdag_error);
 }
@@ -319,9 +319,9 @@ TEST(TerminalsTest, OGMatrix_T_complex16) {
 }
 
 /*
- * Test OGRealMatrix
+ * Test OGRealDenseMatrix
  */
-TEST(TerminalsTest, OGRealMatrixTest) {
+TEST(TerminalsTest, OGRealDenseMatrixTest) {
   // data
   real8 data [12] = {1e0,2e0,3e0,4e0,5e0,6e0,7e0,8e0,9e0,10e0,11e0,12e0};
   size_t rows = 3;
@@ -329,19 +329,19 @@ TEST(TerminalsTest, OGRealMatrixTest) {
 
   // attempt construct from nullptr, should throw
   real8 * null = nullptr;
-  OGRealMatrix::Ptr tmp;
-  ASSERT_THROW(OGRealMatrix::create(null,rows,cols), rdag_error);
+  OGRealDenseMatrix::Ptr tmp;
+  ASSERT_THROW(OGRealDenseMatrix::create(null,rows,cols), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = OGRealMatrix::create(new real8[2]{10,20},1,2, OWNER);
-  ASSERT_NE(tmp, OGRealMatrix::Ptr{});
+  tmp = OGRealDenseMatrix::create(new real8[2]{10,20},1,2, OWNER);
+  ASSERT_NE(tmp, OGRealDenseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = OGRealMatrix::create(data,rows,cols);
+  tmp = OGRealDenseMatrix::create(data,rows,cols);
 
   // check ctor worked
-  ASSERT_NE(tmp, OGRealMatrix::Ptr{});
+  ASSERT_NE(tmp, OGRealDenseMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -359,7 +359,7 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
 
   // check getType() is ok
-  ASSERT_EQ(tmp->getType(), REAL_MATRIX_ENUM);  
+  ASSERT_EQ(tmp->getType(), REAL_DENSE_MATRIX_ENUM);
 
   // wire up array for ArrOfArr test
   real8 expectedtmp[12] = {1e0,4e0,7e0,10e0,2e0,5e0,8e0,11e0,3e0,6e0,9e0,12e0};
@@ -399,26 +399,27 @@ TEST(TerminalsTest, OGRealMatrixTest) {
   delete [] c_computed;
   delete [] c_expected;
 
-  // check copy and asOGRealMatrix
+
+  // check copy and asOGRealDenseMatrix
   OGNumeric::Ptr copy = tmp->copy();
-  ASSERT_EQ(tmp->getData(),copy->asOGRealMatrix()->getData());
-  ASSERT_TRUE(ArrayEquals<real8>(tmp->getData(),copy->asOGRealMatrix()->getData(),tmp->getDatalen()));
-  ASSERT_EQ(tmp->getRows(),copy->asOGRealMatrix()->getRows());
-  ASSERT_EQ(tmp->getCols(),copy->asOGRealMatrix()->getCols());
-  ASSERT_EQ(copy,copy->asOGRealMatrix());
+  ASSERT_EQ(tmp->getData(),copy->asOGRealDenseMatrix()->getData());
+  ASSERT_TRUE(ArrayEquals<real8>(tmp->getData(),copy->asOGRealDenseMatrix()->getData(),tmp->getDatalen()));
+  ASSERT_EQ(tmp->getRows(),copy->asOGRealDenseMatrix()->getRows());
+  ASSERT_EQ(tmp->getCols(),copy->asOGRealDenseMatrix()->getCols());
+  ASSERT_EQ(copy,copy->asOGRealDenseMatrix());
 
   // check createOwningCopy
   OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
-  ASSERT_FALSE(tmp->getData()==owningCopy->asOGRealMatrix()->getData()); // make sure the data is unique
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGRealDenseMatrix()->getData()); // make sure the data is unique
 
   // check createComplexOwningCopy
   OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   complex16 * cdata = new complex16[rows*cols]();
   std::copy(data,data+(rows*cols),cdata);
-  OGComplexMatrix::Ptr cmplx_tmp = OGComplexMatrix::create(cdata, rows, cols, OWNER);
+  OGComplexDenseMatrix::Ptr cmplx_tmp = OGComplexDenseMatrix::create(cdata, rows, cols, OWNER);
   ASSERT_TRUE(*cmplx_tmp->asOGTerminal()==~*owningComplexCopy);
-  ASSERT_FALSE(tmp->getData()==reinterpret_cast<real8 *>(owningComplexCopy->asOGComplexMatrix()->getData())); // make sure the data is unique
+  ASSERT_FALSE(tmp->getData()==reinterpret_cast<real8 *>(owningComplexCopy->asOGComplexDenseMatrix()->getData())); // make sure the data is unique
 
   // Check debug string
   copy->debug_print();
@@ -427,9 +428,9 @@ TEST(TerminalsTest, OGRealMatrixTest) {
 
 
 /*
- * Test OGComplexMatrix
+ * Test OGComplexDenseMatrix
  */
-TEST(TerminalsTest, OGComplexMatrixTest) {
+TEST(TerminalsTest, OGComplexDenseMatrixTest) {
   // data
   complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
   size_t rows = 3;
@@ -437,18 +438,18 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
 
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
-  OGComplexMatrix::Ptr tmp;
-  ASSERT_THROW(OGComplexMatrix::create(null,rows,cols), rdag_error);
+  OGComplexDenseMatrix::Ptr tmp;
+  ASSERT_THROW(OGComplexDenseMatrix::create(null,rows,cols), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
-  tmp = OGComplexMatrix::create(new complex16[2]{{10,20},{30,40}},1,2, OWNER);
-  ASSERT_NE(tmp, OGComplexMatrix::Ptr{});
+  tmp = OGComplexDenseMatrix::create(new complex16[2]{{10,20},{30,40}},1,2, OWNER);
+  ASSERT_NE(tmp, OGComplexDenseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
   // attempt construct from ok data
-  tmp = OGComplexMatrix::create(data,rows,cols);
+  tmp = OGComplexDenseMatrix::create(data,rows,cols);
   // check ctor worked
-  ASSERT_NE(tmp, OGComplexMatrix::Ptr{});
+  ASSERT_NE(tmp, OGComplexDenseMatrix::Ptr{});
 
   // check it's a view context
   ASSERT_TRUE(tmp->getDataAccess()==VIEWER);
@@ -466,10 +467,10 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   ASSERT_TRUE(ArrayEquals(tmp->getData(),data,tmp->getDatalen()));
 
   // check getType() is ok
-  ASSERT_EQ(tmp->getType(), COMPLEX_MATRIX_ENUM);    
+  ASSERT_EQ(tmp->getType(), COMPLEX_DENSE_MATRIX_ENUM);    
 
   // check can't promote as real
-  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0},{2e0,20e0},{5e0,50e0},{8e0,80e0},{11e0,110e0},{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}};
@@ -498,23 +499,23 @@ TEST(TerminalsTest, OGComplexMatrixTest) {
   // check toReal8ArrayOfArrays, expect throw
   ASSERT_THROW((tmp->toReal8ArrayOfArrays()), rdag_error);
 
-  // check copy and asOGComplexMatrix
+  // check copy and asOGComplexDenseMatrix
   OGNumeric::Ptr copy = tmp->copy();
-  ASSERT_EQ(tmp->getData(),copy->asOGComplexMatrix()->getData());
-  ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexMatrix()->getData(),tmp->getDatalen()));
-  ASSERT_EQ(tmp->getRows(),copy->asOGComplexMatrix()->getRows());
-  ASSERT_EQ(tmp->getCols(),copy->asOGComplexMatrix()->getCols());
-  ASSERT_EQ(copy,copy->asOGComplexMatrix());
+  ASSERT_EQ(tmp->getData(),copy->asOGComplexDenseMatrix()->getData());
+  ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexDenseMatrix()->getData(),tmp->getDatalen()));
+  ASSERT_EQ(tmp->getRows(),copy->asOGComplexDenseMatrix()->getRows());
+  ASSERT_EQ(tmp->getCols(),copy->asOGComplexDenseMatrix()->getCols());
+  ASSERT_EQ(copy,copy->asOGComplexDenseMatrix());
 
   // check createOwningCopy
   OGTerminal::Ptr owningCopy{tmp->createOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningCopy);
-  ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexMatrix()->getData()); // make sure the data is unique
+  ASSERT_FALSE(tmp->getData()==owningCopy->asOGComplexDenseMatrix()->getData()); // make sure the data is unique
 
   // check createComplexOwningCopy
   OGTerminal::Ptr owningComplexCopy{tmp->createComplexOwningCopy()};
   ASSERT_TRUE(*tmp->asOGTerminal()==~*owningComplexCopy);
-  ASSERT_FALSE(tmp->getData()==owningComplexCopy->asOGComplexMatrix()->getData());
+  ASSERT_FALSE(tmp->getData()==owningComplexCopy->asOGComplexDenseMatrix()->getData());
 
   // Check debug string
   copy->debug_print();
@@ -604,7 +605,7 @@ TEST(TerminalsTest, OGRealDiagonalMatrix) {
   // check toComplex16ArrayOfArrays, expect throw
   ASSERT_THROW((tmp->toComplex16ArrayOfArrays()), rdag_error);
 
-  // check copy and asOGRealMatrix
+  // check copy and asOGRealDenseMatrix
   OGNumeric::Ptr  copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGRealDiagonalMatrix()->getData());
   ASSERT_TRUE(ArrayEquals<real8>(tmp->getData(),copy->asOGRealDiagonalMatrix()->getData(),tmp->getDatalen()));
@@ -677,7 +678,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   ASSERT_EQ(tmp->getType(), COMPLEX_DIAGONAL_MATRIX_ENUM);  
 
   // check can't promote as real
-  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[12] = {{1e0,10e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{2e0,20e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{0e0,0e0},{3e0,30e0},{0e0,0e0}};
@@ -719,7 +720,7 @@ TEST(TerminalsTest, OGComplexDiagonalMatrix) {
   // check toReal8ArrayOfArrays, expect throw
   ASSERT_THROW((tmp->toReal8ArrayOfArrays()), rdag_error);
 
-  // check copy and asOGRealMatrix
+  // check copy and asOGComplexDiagonalMatrix
   OGNumeric::Ptr copy = tmp->copy();
   ASSERT_EQ(tmp->getData(),copy->asOGComplexDiagonalMatrix()->getData());
   ASSERT_TRUE(ArrayEquals<complex16>(tmp->getData(),copy->asOGComplexDiagonalMatrix()->getData(),tmp->getDatalen()));
@@ -936,7 +937,7 @@ TEST(TerminalsTest, OGComplexSparseMatrix) {
   ASSERT_EQ(tmp->getType(), COMPLEX_SPARSE_MATRIX_ENUM);  
 
   // check can't promote as real
-  ASSERT_THROW((tmp->asFullOGRealMatrix()), rdag_error);
+  ASSERT_THROW((tmp->asFullOGRealDenseMatrix()), rdag_error);
 
   // wire up array for ArrOfArr test
   complex16 expectedtmp[20] = {

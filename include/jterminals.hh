@@ -78,32 +78,32 @@ class DLLEXPORT_C JOGIntegerScalar: public OGIntegerScalar
 };
 
 /*
- * An OGRealMatrix backed by data pinned from a Java based OGRealMatrix
+ * An OGRealDenseMatrix backed by data pinned from a Java based OGRealDenseMatrix
  */
-class DLLEXPORT_C JOGRealMatrix: public OGRealMatrix
+class DLLEXPORT_C JOGRealDenseMatrix: public OGRealDenseMatrix
 {
   public:
-    typedef std::shared_ptr<const JOGRealMatrix> Ptr;
-    static JOGRealMatrix::Ptr create(jobject obj);
-    virtual ~JOGRealMatrix() override;
+    typedef std::shared_ptr<const JOGRealDenseMatrix> Ptr;
+    static JOGRealDenseMatrix::Ptr create(jobject obj);
+    virtual ~JOGRealDenseMatrix() override;
     virtual void debug_print() const override;
   private:
-    JOGRealMatrix(jobject obj);
+    JOGRealDenseMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 
 /*
- * An OGComplexMatrix backed by data pinned from a Java based OGComplexMatrix
+ * An OGComplexDenseMatrix backed by data pinned from a Java based OGComplexDenseMatrix
  */
-class DLLEXPORT_C JOGComplexMatrix: public OGComplexMatrix
+class DLLEXPORT_C JOGComplexDenseMatrix: public OGComplexDenseMatrix
 {
   public:
-    typedef std::shared_ptr<const JOGComplexMatrix> Ptr;
-    static JOGComplexMatrix::Ptr create(jobject obj);
-    virtual ~JOGComplexMatrix() override;
+    typedef std::shared_ptr<const JOGComplexDenseMatrix> Ptr;
+    static JOGComplexDenseMatrix::Ptr create(jobject obj);
+    virtual ~JOGComplexDenseMatrix() override;
     virtual void debug_print() const override;
   private:
-    JOGComplexMatrix(jobject obj);
+    JOGComplexDenseMatrix(jobject obj);
     jobject _backingObject = nullptr;
 };
 

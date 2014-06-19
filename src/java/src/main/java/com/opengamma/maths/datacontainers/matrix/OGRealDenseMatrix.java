@@ -19,13 +19,13 @@ import com.opengamma.maths.helpers.FuzzyEquals;
  * Dense real matrix
  */
 public class OGRealDenseMatrix extends OGDenseMatrix {
-  private static ExprEnum s_type = ExprEnum.OGRealMatrix;
+  private static ExprEnum s_type = ExprEnum.OGRealDenseMatrix;
 
   private double[] _data;
   private int _rows, _cols;
 
   /**
-   * Takes a row major java double[][] and turns it into an OGRealMatrix
+   * Takes a row major java double[][] and turns it into an OGRealDenseMatrix
    * @param dataIn a row major java double[][] 
    */
   public OGRealDenseMatrix(double[][] dataIn) {
@@ -36,7 +36,7 @@ public class OGRealDenseMatrix extends OGDenseMatrix {
   }
 
   /**
-   * Takes a column major double[] and turns it into an OGRealMatrix
+   * Takes a column major double[] and turns it into an OGRealDenseMatrix
    * @param dataIn the backing data
    * @param rows number of rows
    * @param columns number of columns
@@ -112,7 +112,7 @@ public class OGRealDenseMatrix extends OGDenseMatrix {
 
   @Override
   public String toString() {
-    String str = "OGRealMatrix:" + "\ndata = " + Arrays.toString(_data) + "\nrows = " + _rows + "\ncols = " + _cols;
+    String str = "OGRealDenseMatrix:" + "\ndata = " + Arrays.toString(_data) + "\nrows = " + _rows + "\ncols = " + _cols;
     str = str + "\n====Pretty Print====\n";
     for (int i = 0; i < _rows; i++) {
       for (int j = 0; j < _cols; j++) {

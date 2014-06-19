@@ -237,7 +237,7 @@ template<typename T>class Fake_JNIEnv_for_OGMatrix_T: public Fake_JNIEnv
     T * _value;
 };
 
-TEST(JTerminals, Test_JOGRealMatrix_ctor)
+TEST(JTerminals, Test_JOGRealDenseMatrix_ctor)
 {
     size_t rval = 2;
     real8 * datav = new real8[4]{1,2,3,4};
@@ -247,7 +247,7 @@ TEST(JTerminals, Test_JOGRealMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGRealMatrix::Ptr mat = JOGRealMatrix::create(obj);
+    JOGRealDenseMatrix::Ptr mat = JOGRealDenseMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));
@@ -291,7 +291,7 @@ TEST(JTerminals, Test_JOGLogicalMatrix_ctor)
     delete jvm;
 }
 
-TEST(JTerminals, Test_JOGComplexMatrix_ctor)
+TEST(JTerminals, Test_JOGComplexDenseMatrix_ctor)
 {
     size_t rval = 2;
     complex16 * datav = new complex16[4]{{1,10},{2,20},{3,30},{4,40}};
@@ -301,7 +301,7 @@ TEST(JTerminals, Test_JOGComplexMatrix_ctor)
     JVMManager::initialize(jvm);
 
     jobject obj =  new _jobject();
-    JOGComplexMatrix::Ptr mat = JOGComplexMatrix::create(obj);
+    JOGComplexDenseMatrix::Ptr mat = JOGComplexDenseMatrix::create(obj);
     ASSERT_TRUE(mat->getRows()==rval);
     ASSERT_TRUE(mat->getCols()==rval);
     ASSERT_TRUE(ArrayFuzzyEquals(mat->getData(), datav, 4));

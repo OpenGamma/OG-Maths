@@ -59,8 +59,8 @@ class %(nodename)sRunner: public DispatchVoidBinaryOp, private Uncopyable
 {
   public:
     using DispatchBinaryOp<void *>::run;
-    virtual void * run(RegContainer& reg0, OGComplexMatrix::Ptr arg0, OGComplexMatrix::Ptr arg1) const override;
-    virtual void * run(RegContainer& reg0, OGRealMatrix::Ptr    arg0, OGRealMatrix::Ptr    arg1) const override;
+    virtual void * run(RegContainer& reg0, OGComplexDenseMatrix::Ptr arg0, OGComplexDenseMatrix::Ptr arg1) const override;
+    virtual void * run(RegContainer& reg0, OGRealDenseMatrix::Ptr    arg0, OGRealDenseMatrix::Ptr    arg1) const override;
     virtual void * run(RegContainer& reg0, OGRealScalar::Ptr    arg0, OGRealScalar::Ptr    arg1) const override;
 };
 
@@ -185,8 +185,8 @@ class %(nodename)sRunner: public DispatchVoidUnaryOp, private Uncopyable
 {
   public:
     virtual void * run(RegContainer& reg, OGRealScalar::Ptr    arg) const override;
-    virtual void * run(RegContainer& reg, OGRealMatrix::Ptr    arg) const override;
-    virtual void * run(RegContainer& reg, OGComplexMatrix::Ptr arg) const override;
+    virtual void * run(RegContainer& reg, OGRealDenseMatrix::Ptr    arg) const override;
+    virtual void * run(RegContainer& reg, OGComplexDenseMatrix::Ptr arg) const override;
 };
 """
 

@@ -147,7 +147,7 @@ public class OGRealDenseMatrixTest {
   @Test
   public void testGetTypeEnum() {
     OGRealDenseMatrix D = new OGRealDenseMatrix(data4x3unwound, 4, 3);
-    assertTrue(D.getType().equals(ExprEnum.OGRealMatrix));
+    assertTrue(D.getType().equals(ExprEnum.OGRealDenseMatrix));
   }
 
   @Test

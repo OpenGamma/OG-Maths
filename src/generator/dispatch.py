@@ -103,7 +103,7 @@ class DispatchUnaryOp(object):
     def __init__(self, terminals, nodes):
         self._terminals = terminals
         self._nodes = nodes
-        self._backstop_terminals = [ 'OGRealMatrix', 'OGComplexMatrix' ]
+        self._backstop_terminals = [ 'OGRealDenseMatrix', 'OGComplexDenseMatrix' ]
 
     @property
     def class_definition(self):
@@ -122,7 +122,7 @@ class DispatchUnaryOp(object):
         terminal_methods = ''
         for t in self._terminals:
             d = { 'nodetype': t.typename, 'nodeenumtype': t.enumname, \
-                  'typetoconvertto': 'OGComplexMatrix' }
+                  'typetoconvertto': 'OGComplexDenseMatrix' }
                   # FIXME: This is the dumbest possible choice.
             eval_cases += dispatchunaryop_eval_case % d
             if t.typename not in self._backstop_terminals:
@@ -141,7 +141,7 @@ class DispatchBinaryOp(object):
     def __init__(self, terminals, nodes):
         self._terminals = terminals
         self._nodes = nodes
-        self._backstop_terminals = [ 'OGRealMatrix', 'OGComplexMatrix' ]
+        self._backstop_terminals = [ 'OGRealDenseMatrix', 'OGComplexDenseMatrix' ]
 
     @property
     def class_definition(self):
@@ -164,9 +164,9 @@ class DispatchBinaryOp(object):
             for t1 in self._terminals:
                 # Figure out which type we need to convert to
                 if 'Complex' in (t0.datatype, t1.datatype):
-                    type_to_convert_to = 'OGComplexMatrix'
+                    type_to_convert_to = 'OGComplexDenseMatrix'
                 else:
-                    type_to_convert_to = 'OGRealMatrix'
+                    type_to_convert_to = 'OGRealDenseMatrix'
                 # Check if we need to convert arg0 at all and act accordingly
                 if t0.typename == type_to_convert_to:
                     d = { 'argno': '0', 'nodetype': type_to_convert_to }

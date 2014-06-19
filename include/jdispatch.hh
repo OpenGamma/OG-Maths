@@ -129,56 +129,56 @@ class JavaTerminal: private Uncopyable
      * Create a Java OGRealScalar object and store it.
      *
      * @param env the JNI environment pointer
-     * @parame node an OGRealScalar to convert
+     * @param node an OGRealScalar to convert
      */
     void createRealScalar(JNIEnv* env, const OGNumeric::Ptr& node);
     /**
      * Create a Java OGComplexScalar object and store it.
      *
      * @param env the JNI environment pointer
-     * @parame node an OGComplexScalar to convert
+     * @param node an OGComplexScalar to convert
      */
     void createComplexScalar(JNIEnv* env, const OGNumeric::Ptr& node);
     /**
-     * Create a Java OGRealMatrix object and store it.
+     * Create a Java OGRealDenseMatrix object and store it.
      *
      * @param env the JNI environment pointer
-     * @parame node an OGRealMatrix to convert
+     * @param node an OGRealDenseMatrix to convert
      */
-    void createRealMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
+    void createRealDenseMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
     /**
-     * Create a Java OGComplexMatrix object and store it.
+     * Create a Java OGComplexDenseMatrix object and store it.
      *
      * @param env the JNI environment pointer
-     * @parame node an OGComplexMatrix to convert
+     * @param node an OGComplexDenseMatrix to convert
      */
-    void createComplexMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
+    void createComplexDenseMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
     /**
      * Create a Java OGRealDiagonalMatrix object and store it.
      *
      * @param env the JNI environment pointer
-     * @parame node an OGRealDiagonalMatrix to convert
+     * @param node an OGRealDiagonalMatrix to convert
      */
     void createRealDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
     /**
      * Create a Java OGComplexDiagonalMatrix object and store it.
      *
      * @param env the JNI environment pointer
-     * @parame node an OGComplexDiagonalMatrix to convert
+     * @param node an OGComplexDiagonalMatrix to convert
      */
     void createComplexDiagonalMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
     /**
      * Create a Java OGRealSparseMatrix object and store it.
      *
      * @param env the JNI environment pointer
-     * @parame node an OGRealSparseMatrix to convert
+     * @param node an OGRealSparseMatrix to convert
      */
     void createRealSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
     /**
      * Create a Java OGComplexSparseMatrix object and store it.
      *
      * @param env the JNI environment pointer
-     * @parame node an OGComplexSparseMatrix to convert
+     * @param node an OGComplexSparseMatrix to convert
      */
     void createComplexSparseMatrix(JNIEnv* env, const OGNumeric::Ptr& node);
     jobject _obj;
