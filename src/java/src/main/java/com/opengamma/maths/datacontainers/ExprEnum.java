@@ -23,7 +23,7 @@ public enum ExprEnum {
   OGRealScalar            (0x0002L),
   OGComplexScalar         (0x0003L),
   OGRealDenseMatrix       (0x0005L),
-  OGComplexDenseMatrix    (0x0007L),
+  OGComplexDenseMatrix         (0x0007L),
   OGRealSparseMatrix      (0x000BL),
   OGComplexSparseMatrix   (0x000DL),
   OGRealDiagonalMatrix    (0x0011L),
@@ -45,6 +45,7 @@ public enum ExprEnum {
   CTRANSPOSE_ENUM   (0x0137L),
   LU_ENUM           (0x0139L),
   INV_ENUM          (0x013DL),
+  MLDIVIDE_ENUM     (0x014BL),
 
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
   ABS_ENUM (0X0175L),
@@ -80,13 +81,12 @@ public enum ExprEnum {
   TAN_ENUM (0X0239L),
   WILKINSON_ENUM (0X023BL),
   HORZCAT_ENUM (0X0241L),
-  MLDIVIDE_ENUM (0X024BL),
-  PLUS_ENUM (0X0251L),
-  POWER_ENUM (0X0257L),
-  RDIVIDE_ENUM (0X0259L),
-  TIMES_ENUM (0X025FL),
-  VERTCAT_ENUM (0X0265L),
-  DOT_ENUM (0X0269L);
+  PLUS_ENUM (0X024BL),
+  POWER_ENUM (0X0251L),
+  RDIVIDE_ENUM (0X0257L),
+  TIMES_ENUM (0X0259L),
+  VERTCAT_ENUM (0X025FL),
+  DOT_ENUM (0X0265L);
 
   //CSON
   //@formatter:on

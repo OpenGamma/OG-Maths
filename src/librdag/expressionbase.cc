@@ -470,4 +470,42 @@ MTIMES::getType() const
   return MTIMES_ENUM;
 }
 
+
+/**
+ * MLDIVIDE node
+ */
+
+MLDIVIDE::MLDIVIDE(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1): OGBinaryExpr{arg0, arg1} {}
+
+MLDIVIDE::Ptr
+MLDIVIDE::create(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1)
+{
+  return MLDIVIDE::Ptr{new MLDIVIDE{arg0, arg1}};
+}
+
+
+OGNumeric::Ptr
+MLDIVIDE::copy() const
+{
+  return OGNumeric::Ptr{new MLDIVIDE(_args[0]->copy(), _args[1]->copy())};
+}
+
+MLDIVIDE::Ptr
+MLDIVIDE::asMLDIVIDE() const
+{
+  return static_pointer_cast<const MLDIVIDE, const OGNumeric>(shared_from_this());
+}
+
+void
+MLDIVIDE::debug_print() const
+{
+        cout << "MLDIVIDE base class" << endl;
+}
+
+ExprType_t
+MLDIVIDE::getType() const
+{
+  return MLDIVIDE_ENUM;
+}
+
 } // namespace librdag
