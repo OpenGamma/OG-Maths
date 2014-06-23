@@ -335,8 +335,16 @@ TEST(TerminalsTest, OGRealDenseMatrixTest) {
 
   // attempt construct from nullptr, should throw
   real8 * null = nullptr;
+  real8 ** null2 = nullptr;
   OGRealDenseMatrix::Ptr tmp, arr_ctor, init_ctor;
   ASSERT_THROW(OGRealDenseMatrix::create(null,rows,cols), rdag_error);
+  ASSERT_THROW(OGRealDenseMatrix::create(null2,rows,cols), rdag_error);
+
+  // attempt construct from bad init list
+  ASSERT_THROW(OGRealDenseMatrix::create({{1e0,4e0,7e0,10e0},{2e0,5e0,8e0},{3e0,6e0,9e0,12e0}}),rdag_error);
+
+  // attempt construct from init list
+  init_ctor = OGRealDenseMatrix::create({{1e0,4e0,7e0,10e0},{2e0,5e0,8e0,11e0},{3e0,6e0,9e0,12e0}});
 
   // attempt construct from ok data, own the data and delete it
   tmp = OGRealDenseMatrix::create(new real8[2]{10,20},1,2, OWNER);
@@ -458,8 +466,13 @@ TEST(TerminalsTest, OGComplexDenseMatrixTest) {
 
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
+  complex16 ** null2 = nullptr;
   OGComplexDenseMatrix::Ptr tmp, arr_ctor, init_ctor;
   ASSERT_THROW(OGComplexDenseMatrix::create(null,rows,cols), rdag_error);
+  ASSERT_THROW(OGComplexDenseMatrix::create(null2,rows,cols), rdag_error);
+
+  // attempt construct from bad init list
+  ASSERT_THROW(OGComplexDenseMatrix::create({{{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0}},{{2e0,20e0},{5e0,50e0},{8e0,80e0}},{{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}}}),rdag_error);
 
   // attempt construct from ok data, own the data and delete it
   tmp = OGComplexDenseMatrix::create(new complex16[2]{{10,20},{30,40}},1,2, OWNER);
