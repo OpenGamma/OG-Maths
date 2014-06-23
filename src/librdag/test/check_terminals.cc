@@ -10,6 +10,7 @@
 #include "gtest/gtest.h"
 #include "warningmacros.h"
 #include "exprtypeenum.h"
+#include "test/test_utils.hh"
 
 using namespace std;
 using namespace librdag;
@@ -318,18 +319,23 @@ TEST(TerminalsTest, OGMatrix_T_complex16) {
   ASSERT_TRUE(*tmp==~*(copy->asOGTerminal()));
 }
 
+
 /*
  * Test OGRealDenseMatrix
  */
 TEST(TerminalsTest, OGRealDenseMatrixTest) {
   // data
   real8 data [12] = {1e0,2e0,3e0,4e0,5e0,6e0,7e0,8e0,9e0,10e0,11e0,12e0};
-  size_t rows = 3;
-  size_t cols = 4;
+  real8 arr_data[][4] = {{1e0,4e0,7e0,10e0},{2e0,5e0,8e0,11e0},{3e0,6e0,9e0,12e0}};
+
+  constexpr size_t rows = 3;
+  constexpr size_t cols = 4;
+
+  auto ptr = testutils::stack2heap<real8, rows, cols>(arr_data);
 
   // attempt construct from nullptr, should throw
   real8 * null = nullptr;
-  OGRealDenseMatrix::Ptr tmp;
+  OGRealDenseMatrix::Ptr tmp, arr_ctor, init_ctor;
   ASSERT_THROW(OGRealDenseMatrix::create(null,rows,cols), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
@@ -337,8 +343,18 @@ TEST(TerminalsTest, OGRealDenseMatrixTest) {
   ASSERT_NE(tmp, OGRealDenseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
+  // attempt construct from real8[][]
+  arr_ctor = OGRealDenseMatrix::create(ptr.get(),rows,cols);
+
   // attempt construct from ok data
   tmp = OGRealDenseMatrix::create(data,rows,cols);
+
+  // attempt construct from init list
+  init_ctor = OGRealDenseMatrix::create({{1e0,4e0,7e0,10e0},{2e0,5e0,8e0,11e0},{3e0,6e0,9e0,12e0}});
+
+  // check ctors do the give same underlying representation
+  ASSERT_TRUE(*arr_ctor==~*tmp);
+  ASSERT_TRUE(*init_ctor==~*tmp);
 
   // check ctor worked
   ASSERT_NE(tmp, OGRealDenseMatrix::Ptr{});
@@ -433,12 +449,16 @@ TEST(TerminalsTest, OGRealDenseMatrixTest) {
 TEST(TerminalsTest, OGComplexDenseMatrixTest) {
   // data
   complex16 data [12] = {{1e0,10e0},{2e0,20e0},{3e0,30e0},{4e0,40e0},{5e0,50e0},{6e0,60e0},{7e0,70e0},{8e0,80e0},{9e0,90e0},{10e0,100e0},{11e0,110e0},{12e0,120e0}};
-  size_t rows = 3;
-  size_t cols = 4;
+  complex16 arr_data[][4] = {{{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0}},{{2e0,20e0},{5e0,50e0},{8e0,80e0},{11e0,110e0}},{{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}}};
+
+  constexpr size_t rows = 3;
+  constexpr size_t cols = 4;
+
+  auto ptr = testutils::stack2heap<complex16, rows, cols>(arr_data);
 
   // attempt construct from nullptr, should throw
   complex16 * null = nullptr;
-  OGComplexDenseMatrix::Ptr tmp;
+  OGComplexDenseMatrix::Ptr tmp, arr_ctor, init_ctor;
   ASSERT_THROW(OGComplexDenseMatrix::create(null,rows,cols), rdag_error);
 
   // attempt construct from ok data, own the data and delete it
@@ -446,8 +466,19 @@ TEST(TerminalsTest, OGComplexDenseMatrixTest) {
   ASSERT_NE(tmp, OGComplexDenseMatrix::Ptr{});
   ASSERT_TRUE(tmp->getDataAccess()==OWNER);
 
+  // attempt construct from complex16[][]
+  arr_ctor = OGComplexDenseMatrix::create(ptr.get(),rows,cols);
+
   // attempt construct from ok data
   tmp = OGComplexDenseMatrix::create(data,rows,cols);
+
+  // attempt construct from init list
+  init_ctor = OGComplexDenseMatrix::create({{{1e0,10e0},{4e0,40e0},{7e0,70e0},{10e0,100e0}},{{2e0,20e0},{5e0,50e0},{8e0,80e0},{11e0,110e0}},{{3e0,30e0},{6e0,60e0},{9e0,90e0},{12e0,120e0}}});
+
+  // check ctors do the give same underlying representation
+  ASSERT_TRUE(*arr_ctor==~*tmp);
+  ASSERT_TRUE(*init_ctor==~*tmp);
+
   // check ctor worked
   ASSERT_NE(tmp, OGComplexDenseMatrix::Ptr{});
 

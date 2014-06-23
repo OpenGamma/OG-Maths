@@ -31,9 +31,19 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 {
   T * data1 = arg0->getData();
   T * data2 = arg1->getData();
+  std::size_t rows1 = arg0->getRows();
+  std::size_t rows2 = arg1->getRows();
+
+  if(rows1!=rows2)
+  {
+    stringstream msg;
+    msg << "System does not commute. Rows in arg0: " << rows1 << ". Rows in arg1 " << rows2 << std::endl;
+    throw rdag_error(msg.str());
+  }
+
   T * ans = new T[1]();
   ans[0]=data1[0]+data2[0];
-  OGNumeric::Ptr ret = makeConcreteDenseMatrix(ans,1,1,VIEWER);
+  OGNumeric::Ptr ret = makeConcreteDenseMatrix(ans,1,1,OWNER);
   reg0.push_back(ret);
 
   return nullptr;
