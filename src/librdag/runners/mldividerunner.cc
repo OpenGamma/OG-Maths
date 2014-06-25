@@ -436,34 +436,49 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         // cholesky decompose, shove in lower triangle
 //         _lapack.dpotrf('L', rows1, data1, rows1, info);
         info = 0;
-        lapack::xpotrf(lapack::L, &int4rows1, data1, &int4rows1, &info);
-//         if (info[0] == 0) { // Cholesky factorisation was ok, matrix is s.p.d. Factorisation is in the lower triangle, back solve based on this
-          if (debug_) {
-           cout << "70. Cholesky success.  Computing condition based on cholesky factorisation" << std::endl;
+        try
+        {
+          lapack::xpotrf(lapack::L, &int4rows1, data1, &int4rows1, &info);
+        }
+        catch(rdag_error& e)
+        {
+          if(info < 0)
+          {
+            throw;
+          } 
+        }
+        
+        if(info == 0)
+        {
+  //         if (info[0] == 0) { // Cholesky factorisation was ok, matrix is s.p.d. Factorisation is in the lower triangle, back solve based on this
+          if (debug_)
+          {
+            cout << "70. Cholesky success.  Computing condition based on cholesky factorisation" << std::endl;
           }
-//           anorm = _lapack.dlansy('1', 'L', rows1, array1.getData(), rows1, work);
-          anorm = lapack::xlansy(lapack::ONE, lapack::L, &int4rows1, data1, &int4rows1);
-          // Cholesky condition estimate
-          lapack::xpocon(lapack::L, &int4rows1, data1, &int4rows1, &anorm, &rcond, &info);
-          if (debug_) {
-           cout << "80. Cholesky condition estimate. " << rcond << std::endl;
-          }
-          if (1.e0 + rcond != 1.e0) {
-            if (debug_)
-            {
-              cout << "90. Cholesky condition acceptable. Backsolve and return." << std::endl;
-            }
-            lapack::xpotrs(lapack::L, &int4rows1, &int4cols2, data1, &int4rows1, data2, &int4rows2, &info);
-            // info[0] will be zero. Any -ve info[0] will be handled by XERBLA
-            ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
-            reg0.push_back(ret);
-            return nullptr;
-          } else {
+  //           anorm = _lapack.dlansy('1', 'L', rows1, array1.getData(), rows1, work);
+            anorm = lapack::xlansy(lapack::ONE, lapack::L, &int4rows1, data1, &int4rows1);
+            // Cholesky condition estimate
+            lapack::xpocon(lapack::L, &int4rows1, data1, &int4rows1, &anorm, &rcond, &info);
             if (debug_) {
-             cout << "100. Cholesky condition bad. Mark as singular." << std::endl;
+            cout << "80. Cholesky condition estimate. " << rcond << std::endl;
             }
-            singular = true;
-          }
+            if (1.e0 + rcond != 1.e0) {
+              if (debug_)
+              {
+                cout << "90. Cholesky condition acceptable. Backsolve and return." << std::endl;
+              }
+              lapack::xpotrs(lapack::L, &int4rows1, &int4cols2, data1, &int4rows1, data2, &int4rows2, &info);
+              // info[0] will be zero. Any -ve info[0] will be handled by XERBLA
+              ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
+              reg0.push_back(ret);
+              return nullptr;
+            } else {
+              if (debug_) {
+              cout << "100. Cholesky condition bad. Mark as singular." << std::endl;
+              }
+              singular = true;
+            }
+        }
           // stu - this branch from "if (info[0] == 0)" following xpotrf call is now dead
           // lapack will throw if there's a problem, it's an input error if {xerbla} or {not spd}
 //         } else { // factorisation failed
@@ -644,7 +659,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         for (size_t i = 0; i < cols2; i++)
         {
 //           System.arraycopy(ref, i * ldb, data2, i * cols1, cols1);
-          std::copy(ref + (i * ldb), ref + ((i+1) * ldb), data2 + (i * cols1));
+          std::copy(ref + (i * ldb), ref + ((i * ldb)+cols1), data2 + (i * cols1));
         }
 //         return new OGMatrix(data2, cols1, cols2);
         ret = makeConcreteDenseMatrix(data2, cols1, cols2, OWNER);

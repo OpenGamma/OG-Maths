@@ -186,7 +186,119 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     // expected
     OGRealDenseMatrix::create({ {2.0475247524752480 }, {-0.7168316831683170 }, {0.5287128712871273 }, {0.2000000000000003 } }),
     MATHSEQUAL
+  ),
+  //test PermutedUpperTriangularSingularToMachPrec Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A18,
+    C2,
+    // expected
+    OGRealDenseMatrix::create({ {-0.0000000000000001, 5.7657712505229739 }, {-0.0000000000000001, -1.3196460795883791 }, {-0.0000000000000001, 2.6102410879868061 },
+      {0.0000000000000000, 0.2699985638374270 }, {0.2000000000000001, 1.5925606778687353 } }),
+    MATHSEQUAL
+  ),
+  //test TriDefinedSingular Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A10,
+    A1,
+    // expected
+    OGRealDenseMatrix::create( { {0.2941176470588236, 0.5882352941176472, 0.8823529411764708 }, {-0.1303167420814479, -0.2606334841628958, -0.3909502262443438 },
+      {-0.0162895927601810, -0.0325791855203620, -0.0488687782805430 } }),
+    MATHSEQUAL
+  ),
+  //test TriMachPrecSingular Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A11,
+    A1,
+    // expected
+    OGRealDenseMatrix::create({ {0.2941176470588236, 0.5882352941176472, 0.8823529411764708 }, {-0.1303167420814479, -0.2606334841628958, -0.3909502262443438 },
+      {-0.0162895927601810, -0.0325791855203620, -0.0488687782805430 } }),
+    MATHSEQUAL
+  ),
+  //test LUP Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A3,
+    A1,
+    // expected
+    OGRealDenseMatrix::create({ {0.0812641083521445, 0.1625282167042890, 0.2437923250564334 }, {0.0609480812641084, 0.1218961625282167, 0.1828442437923251 },
+      {0.0654627539503386, 0.1309255079006772, 0.1963882618510158 } }),
+    MATHSEQUAL
+  ),
+  //test LUPBranchFallToLSQ Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A5,
+    A1,
+    // expected
+    OGRealDenseMatrix::create({ {0.2000000000000003, 0.4000000000000006, 0.6000000000000013 }, {0.4000000000000002, 0.8000000000000004, 1.2000000000000017 },
+      {-0.0000000000000001, -0.0000000000000001, 0.0000000000000000 } }),
+    MATHSEQUAL
+  ),
+   //test Chol Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A2,
+    A1,
+    // expected
+    OGRealDenseMatrix::create({ {0.0059171597633136, 0.0118343195266272, 0.0177514792899408 }, {0.0059171597633136, 0.0118343195266272, 0.0177514792899408 },
+      {0.0059171597633136, 0.0118343195266272, 0.0177514792899408 } }),
+    MATHSEQUAL
+  ),
+   //test Chol Not SPD Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A13,
+    A1,
+    // expected
+    OGRealDenseMatrix::create({ {0.0150267040825563, 0.0300534081651127, 0.0450801122476691 }, {0.0988051054584955, 0.1976102109169910, 0.2964153163754866 },
+      {-0.0030174104583446, -0.0060348209166893, -0.0090522313750339 } }),
+    MATHSEQUAL
+  ),
+   //test Chol Singular Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A12,
+    A1,
+    // expected
+    OGRealDenseMatrix::create({ {0, 0, 0 }, {1e-300, 2e-300, 3e-300 }, {0, 0, 0 } }),
+    MATHSEQUAL
+  ),
+   //test SVD Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A1,
+    A2,
+    // expected
+    OGRealDenseMatrix::create({ {4.0238095238095219, 4.0238095238095228, 4.0238095238095219 }, {8.0476190476190457, 8.0476190476190474, 8.0476190476190457 },
+      {12.0714285714285658, 12.0714285714285694, 12.0714285714285676 } }),
+    MATHSEQUAL
+  ),
+   //test DGELS branch Expansion
+  // this branch tests the necessary expansion of the "B" matrix if the solution to the system is larger than the mallocd space
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    A19,
+    A19,
+    // expected
+    OGRealDenseMatrix::create({ {0.1379310344827586, 0.2068965517241379, 0.2758620689655172 },
+      {0.2068965517241379, 0.3103448275862069, 0.4137931034482758 }, {0.2758620689655172, 0.4137931034482757, 0.5517241379310344 } }),
+    MATHSEQUAL
   )
+
+
   ) // end value
 );
 
@@ -198,4 +310,17 @@ TEST(MLDIVIDETests, CheckBadCommuteThrows) {
   ASSERT_THROW(
   runtree(node),
   rdag_error);
+}
+
+// QR: this is a right pain to test because it's rank deficient the results are pulled 
+// about by floating point behaviour in deficient part of Q
+// we test by reconstruction opposed to absolute value
+TEST(MLDIVIDETests, test_rank_deficient_QR_Branch) {
+  OGExpr::Ptr op = MLDIVIDE::create(A4, B1);
+  runtree(op);
+  OGExpr::Ptr  reconstr = PLUS::create(NEGATE::create(B1), MTIMES::create(A4, op->getRegs()[0]->asOGTerminal()));
+  runtree(reconstr);
+  OGTerminal::Ptr zeros = OGRealDenseMatrix::create({{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}});
+  reconstr->getRegs()[0]->asOGTerminal()->debug_print();
+  EXPECT_TRUE(zeros->mathsequals(reconstr->getRegs()[0]->asOGTerminal(),1e-14,1e-14));
 }
