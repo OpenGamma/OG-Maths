@@ -251,7 +251,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   std::copy(ptrdata2,ptrdata2+len2,data2);
 
   // useful vars
-  real8 rcond; // estimate of reciprocal condition number
+  real8 rcond = 0; // estimate of reciprocal condition number
   real8 anorm = 0; // the 1 norm of a matrix
   bool singular = false; // is the matrix identified as singular
   bool attemptQR = true; // should QR decomposition be attempted for singular/over determined systems prior to using SVD?
@@ -263,6 +263,9 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   unique_ptr<T[]> triPtr2Ptr = nullptr;
   T * triPtr1 = nullptr;
   T * triPtr2 = nullptr;
+
+  // pointer switching for case when xgels creates a bigger system than for which there's space
+  unique_ptr<T[]> bdata2Ptr = nullptr;
 
   // the permutation vector, if needed
   std::size_t * permuteV = nullptr;
@@ -481,7 +484,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         std::copy(arg0->getData(),arg0->getData()+len1,data1);
         // try solving with generalised LUP solver
 //         int[] ipiv = new int[rows1];
-        int4 * ipiv = new int4[rows1];
+        unique_ptr<int[]> ipivPtr (new int4[rows1]);
         // decompose
         if (debug_)
         {
@@ -490,13 +493,12 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 //         _lapack.dgetrf(rows1, cols1, data1, rows1, ipiv, info);
         try
         {
-          lapack::xgetrf(&int4rows1, &int4cols1, data1, &int4rows1, ipiv, &info);
+          lapack::xgetrf(&int4rows1, &int4cols1, data1, &int4rows1, ipivPtr.get(), &info);
         }
         catch (rdag_error& e)
         {
           if(info<0) // caught a xerbla error, rethrow
           {
-            delete [] ipiv;
             throw;
           }
         }
@@ -518,12 +520,11 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           {
             // back solve dgetrs()
 //             _lapack.dgetrs('N', cols1, cols2, data1, cols1, ipiv, data2, cols1, info);
-            lapack::xgetrs(lapack::N, &int4cols1, &int4cols2, data1, &int4cols1, ipiv, data2, &int4cols1, &info);
+            lapack::xgetrs(lapack::N, &int4cols1, &int4cols2, data1, &int4cols1, ipivPtr.get(), data2, &int4cols1, &info);
             if (debug_)
             {
               cout << "150. LUP returning" << std::endl;
             }
-            delete [] ipiv;
 //             return new OGMatrix(data2, rows2, cols2);
             ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
             reg0.push_back(ret);
@@ -535,7 +536,6 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             }
             singular = true;
           }
-          delete [] ipiv;
         }
         else
         {
@@ -578,22 +578,38 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     {
       cout << "210. Attempting QR solve." << std::endl;
     }
-    T * d2ref = data2;
-    if (rows1 < cols1) { // malloc some space for the solution as it will be rows1 * cols2 in size and data2 is rows2*cols2 which may not be big enough
-      T * b = new T[ldb * cols2];
+
+    // malloc some space for the solution as it will be rows1 * cols2 in size and data2 is rows2*cols2 which may not be big enough
+    if (rows1 < cols1)
+    {
+      bdata2Ptr = unique_ptr<T[]>(new T[ldb * cols2]);
+      T * b = bdata2Ptr.get();
       //copy in data strips
       for (size_t i = 0; i < cols2; i++) {
         std::copy(data2 + (i * rows2), data2 + ((i + 1)* rows2), b + i * ldb);
       }
-      // switch pointers
-      data2 = b;
+      // switch pointers so data2 now points at a correct sized alloc
+      data2Ptr.swap(bdata2Ptr);
+      // reassign underlying data2 pointer
+      data2 = data2Ptr.get();
     }
-      // copy in the data
+
+    // copy in the data
 //       _lapack.dgels('N', rows1, cols1, cols2, data1, rows1, data2, ldb, dummywork, lwork, info);
 //       lwork = (int) dummywork[0];
 //       work = new double[lwork];
 //       _lapack.dgels('N', rows1, cols1, cols2, data1, rows1, data2, ldb, work, lwork, info);
-      lapack::xgels(lapack::N, &int4rows1, &int4cols1, &int4cols2, data1, &int4rows1, data2, &ldb, &info);
+      try
+      {
+        lapack::xgels(lapack::N, &int4rows1, &int4cols1, &int4cols2, data1, &int4rows1, data2, &ldb, &info);
+      }
+      catch(rdag_error& e)
+      {
+        if (info < 0)
+        {
+          throw;
+        }
+      }
 
       if (info > 0)
       {
@@ -602,7 +618,14 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           cout <<  "220. QR solve failed" << std::endl;
         }
         cout <<  " WARN: Matrix of coefficients does not have full rank. Rank is " << info << "." << std::endl;
-        data2 = d2ref; // switch back to original data
+        // switch back to original data if we created a "b"
+        if (rows1 < cols1)
+        {
+          data2Ptr.swap(bdata2Ptr);
+          // reassign underlying data2 pointer
+          data2 = data2Ptr.get();
+        }
+
         // take a copy of the original data as it will have been destroyed above
 //         System.arraycopy(array1.getData(), 0, data1, 0, array1.getData().length);
 //         System.arraycopy(array2.getData(), 0, data2, 0, array2.getData().length);
@@ -624,7 +647,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           std::copy(ref + (i * ldb), ref + ((i+1) * ldb), data2 + (i * cols1));
         }
 //         return new OGMatrix(data2, cols1, cols2);
-        ret = makeConcreteDenseMatrix(data2Ptr.release(), cols1, cols2, OWNER);
+        ret = makeConcreteDenseMatrix(data2, cols1, cols2, OWNER);
         reg0.push_back(ret);
         return nullptr;
       }
@@ -636,7 +659,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   }
 
     // so we attempt a general least squares solve
-    real8 * s = new real8[std::min(rows1, cols1)]();
+    unique_ptr<real8[]> sPtr (new real8[std::min(rows1, cols1)]());
     real8 moorePenroseRcond = -1; // this is the definition of singular in the Moore-Penrose sense, if set to -1 machine prec is used
 //     int[] rank = new int[1];
 // 
@@ -653,7 +676,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   int4 rank=0;
   try
   {
-    lapack::xgelsd(&int4rows1, &int4cols1, &int4cols2, data1, &int4rows1, data2, &ldb, s, &moorePenroseRcond, &rank, &info);
+    lapack::xgelsd(&int4rows1, &int4cols1, &int4cols2, data1, &int4rows1, data2, &ldb, sPtr.get(), &moorePenroseRcond, &rank, &info);
   }
   catch (rdag_error& e)
   {
@@ -683,7 +706,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   }
   //     return new OGMatrix(Arrays.copyOf(data2, cols1 * cols2), cols1, cols2);
   // stu - technically the wrong size data *but* C just sees a pointer
-  ret = makeConcreteDenseMatrix(data2, cols1, cols2, OWNER);
+  ret = makeConcreteDenseMatrix(data2Ptr.release(), cols1, cols2, OWNER);
   reg0.push_back(ret);
   return nullptr;
 }
