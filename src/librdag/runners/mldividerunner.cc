@@ -241,11 +241,11 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   T * ptrdata2 = arg1->getData();
   std::size_t rows2 = arg1->getRows();
   std::size_t cols2 = arg1->getCols();
-  std::size_t len2 = rows2 * cols2;
   int4 int4rows2 = rows2;
   int4 int4cols2 = cols2;
-  T * data2 = new T[len2];
-  std::shared_ptr<T> data2Ptr (data2, [](T * foo){delete [] foo;});
+  std::size_t len2 = rows2 * cols2;
+  std::unique_ptr<T[]> data2Ptr (new T[len2]);
+  T * data2 = data2Ptr.get();
   std::copy(ptrdata2,ptrdata2+len2,data2);
 
   // useful vars
@@ -257,6 +257,8 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   //auxiallary vars
 
   // for pointer switching if a perm is needed but system is bad and needs resetting
+  unique_ptr<T[]> triPtr1Ptr = nullptr;
+  unique_ptr<T[]> triPtr2Ptr = nullptr;
   T * triPtr1 = nullptr;
   T * triPtr2 = nullptr;
 
@@ -305,7 +307,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     }
 
     // is the array1 triangular or permuted triangular
-   detail::TriangularStruct * tstruct = detail::isTriangular(data1, rows1, cols1);
+    detail::TriangularStruct * tstruct = detail::isTriangular(data1, rows1, cols1);
     char UPLO = tstruct->flagUPLO;
     char DIAG = tstruct->flagDiag;
     if (UPLO != 'N')  // i.e. this is some breed of triangular
@@ -323,16 +325,22 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         permuteV = tstruct->perm; // the permutation
         if (DATA_PERMUTATION == 'R')
         {
-          triPtr1 = data1; // save pointer for later in case this doesn't work out
-          data1 = new T[len1];
+          triPtr1Ptr = unique_ptr<T[]>(new T[len1]());
+          triPtr1Ptr.swap(data1Ptr); // triPtr1Ptr now points to original data
+          // assign pointers for read/write ops
+          triPtr1  = triPtr1Ptr.get();
+          data1 = data1Ptr.get();
           std::fill(data1,data1+len1,0e0);
           for (size_t i = 0; i < cols1; i++) {
             for (size_t j = 0; j < rows1; j++) {
               data1[i * rows1 + permuteV[j]] = triPtr1[i * rows1 + j];
             }
           }
-          triPtr2 = data2; // save pointer for later in case this doesn't work out
-          data2 = new T[len2];
+          triPtr2Ptr = unique_ptr<T[]>(new T[len2]());
+          triPtr2Ptr.swap(data2Ptr); // triPtr2Ptr now points to original data
+          // assign pointers for read/write ops
+          triPtr2  = triPtr2Ptr.get();
+          data2 = data2Ptr.get();
           std::fill(data2,data2+len2,0e0);
           for (size_t i = 0; i < cols2; i++) {
             for (size_t j = 0; j < rows2; j++) {
@@ -372,8 +380,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           cout << "30. Triangular solve success, returning";
         }
-        delete [] data1;
-        ret = makeConcreteDenseMatrix(data2, rows2, cols2, OWNER);
+        ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
         reg0.push_back(ret);
         return nullptr;
       }
@@ -394,10 +401,12 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           cout << "45. Resetting permutation." << std::endl;
         }
-        delete [] data1;
-        delete [] data2;
-        data1 = triPtr1;
-        data2 = triPtr2;
+
+        // swap back pointers
+        data1Ptr.swap(triPtr1Ptr);
+        data2Ptr.swap(triPtr2Ptr);
+        data1 = data1Ptr.get();
+        data2 = data2Ptr.get();
       }
       jmp = true; // nmatrix is singular, jump to least squares logic 
 
