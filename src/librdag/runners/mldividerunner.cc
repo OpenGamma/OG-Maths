@@ -183,6 +183,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   if (!validPermutation) {
     ret->flagPerm = 'N';
     ret->flagDiag = 'N';
+    delete[] rowStarts;
   } else {
     // permutation is valid, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
     ret->flagPerm = 'R';
@@ -193,26 +194,27 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
 
 
 template<typename T>
-TriangularStruct * isTriangular(T * data, size_t rows, size_t cols)
+std::unique_ptr<TriangularStruct> isTriangular(T * data, size_t rows, size_t cols)
 {
-  TriangularStruct * ret = new TriangularStruct('N', 'N', 'N', nullptr);
+  std::unique_ptr<TriangularStruct> tptr (new TriangularStruct('N', 'N', 'N', nullptr));
+  TriangularStruct * ref = tptr.get();
 
   // See if it's lower triangular
-  checkIfLowerTriangular(data, rows, cols, &(ret->flagUPLO), &(ret->flagDiag));
-  if (ret->flagUPLO != 'N')
+  checkIfLowerTriangular(data, rows, cols, &(ref->flagUPLO), &(ref->flagDiag));
+  if (ref->flagUPLO != 'N')
   {
-    return ret;
+    return tptr;
   }
 
   // See if it's Upper or permuted upper
-  checkIfUpperTriangularPermuteRows(data, rows, cols, ret);
-  if (ret->flagPerm == 'R') {
-    ret->flagUPLO = 'U';
-    return ret;
+  checkIfUpperTriangularPermuteRows(data, rows, cols, ref);
+  if (ref->flagPerm == 'R') {
+    ref->flagUPLO = 'U';
+    return tptr;
   }
 
   // DEFAULT, not triangular in any way
-  return new TriangularStruct('N', 'N', 'N', nullptr);
+  return tptr;
 
 }
 
@@ -307,7 +309,8 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     }
 
     // is the array1 triangular or permuted triangular
-    detail::TriangularStruct * tstruct = detail::isTriangular(data1, rows1, cols1);
+    unique_ptr<detail::TriangularStruct> tptr = detail::isTriangular(data1, rows1, cols1);
+    detail::TriangularStruct * tstruct = tptr.get();
     char UPLO = tstruct->flagUPLO;
     char DIAG = tstruct->flagDiag;
     if (UPLO != 'N')  // i.e. this is some breed of triangular
@@ -349,7 +352,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           }
         }
       } // end permutation branch
-      delete tstruct;
+
 
       // compute reciprocal condition number, if it's bad say so and least squares solve
 //       _lapack.dtrcon('1', UPLO, DIAG, rows1, data1, rows1, rcond, work, iwork, info);
@@ -449,7 +452,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             }
             lapack::xpotrs(lapack::L, &int4rows1, &int4cols2, data1, &int4rows1, data2, &int4rows2, &info);
             // info[0] will be zero. Any -ve info[0] will be handled by XERBLA
-            ret = makeConcreteDenseMatrix(data2, rows2, cols2, OWNER);
+            ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
             reg0.push_back(ret);
             return nullptr;
           } else {
@@ -522,7 +525,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             }
             delete [] ipiv;
 //             return new OGMatrix(data2, rows2, cols2);
-            ret = makeConcreteDenseMatrix(data2, rows2, cols2, OWNER);
+            ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
             reg0.push_back(ret);
             return nullptr;
           } else { // condition bad, mark as singular
@@ -621,7 +624,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           std::copy(ref + (i * ldb), ref + ((i+1) * ldb), data2 + (i * cols1));
         }
 //         return new OGMatrix(data2, cols1, cols2);
-        ret = makeConcreteDenseMatrix(data2, cols1, cols2, OWNER);
+        ret = makeConcreteDenseMatrix(data2Ptr.release(), cols1, cols2, OWNER);
         reg0.push_back(ret);
         return nullptr;
       }
@@ -633,7 +636,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   }
 
     // so we attempt a general least squares solve
-    real8 * s = new real8[std::min(rows1, cols1)];
+    real8 * s = new real8[std::min(rows1, cols1)]();
     real8 moorePenroseRcond = -1; // this is the definition of singular in the Moore-Penrose sense, if set to -1 machine prec is used
 //     int[] rank = new int[1];
 // 
