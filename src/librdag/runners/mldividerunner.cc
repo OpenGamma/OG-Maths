@@ -47,26 +47,6 @@ template<> complex16 ndm(real8 val)
 // Auxiliary structs for holding intermediary guiding data
 
 /**
- * This holds the return struct from deciding if a matrix is a permutation of triangular
- * Flags are based on LAPACK chars
- * @param flagPerm is it permuted
- * @param flagDiag is it diagonal
- * @param perm the permutation applied
- */
-struct PermStruct
-{
-  char flagPerm;
-  char flagDiag;
-  size_t * perm;
-  PermStruct(char Perm, char Diag, size_t * p)
-  {
-    flagPerm = Perm;
-    flagDiag = Diag;
-    perm = p;
-  }
-};
-
-/**
  * This holds the return struct from deciding if a matrix is in some way triangular
  * Flags are based on LAPACK chars
  * @param flagUPLO is it upper or lower
@@ -79,7 +59,7 @@ struct TriangularStruct
   char flagUPLO;
   char flagDiag;
   char flagPerm;
-  size_t * perm;
+  size_t * perm = nullptr;
   TriangularStruct(char UPLO, char Diag, char Perm, size_t * p)
   {
     flagUPLO = UPLO;
@@ -87,13 +67,13 @@ struct TriangularStruct
     flagPerm = Perm;
     perm = p;
   }
-
-  TriangularStruct(char UPLO, PermStruct * p)
+  ~TriangularStruct()
   {
-    flagUPLO = UPLO;
-    flagDiag = p->flagDiag;
-    flagPerm = p->flagPerm;
-    perm = p->perm;
+    if(perm!=nullptr)
+    {
+      delete [] perm;
+      perm = nullptr;
+    }
   }
 };
 
@@ -125,13 +105,13 @@ bool isSymmetric(T * data, size_t rows, size_t cols) {
  * Checks if a matrix is lower triangular
  */
 template<typename T>
-unique_ptr<char> checkIfLowerTriangular(T * data, size_t rows, size_t cols) {
+void checkIfLowerTriangular(T * data, size_t rows, size_t cols, char * tri, char * diag) {
   // check lower
   size_t ir;
-  char tri = 'L';
-  char diag = 'U';
+  *tri = 'L';
+  *diag = 'U';
   if (!SingleValueFuzzyEquals(data[0],ndm<T>(1.e0),std::numeric_limits<real8>::epsilon()),std::numeric_limits<real8>::epsilon()) {
-    diag = 'N';
+    *diag = 'N';
   }
   for (size_t  i = 1; i < cols; i++)
   {
@@ -139,32 +119,35 @@ unique_ptr<char> checkIfLowerTriangular(T * data, size_t rows, size_t cols) {
     // check if diag == 1
     if (!SingleValueFuzzyEquals(data[ir + i],1.e0,std::numeric_limits<real8>::epsilon()),std::numeric_limits<real8>::epsilon())
     {
-      diag = 'N';
+      *diag = 'N';
     }
     for (size_t j = 0; j < i; j++)  // check if upper triangle is empty
     {
       if (data[ir + j] != 0.e0)
       {
-        tri = 'N';
-        goto exitlabel;
+        *tri = 'N';
+        return;
       }
     }
   }
-  exitlabel:
-  return unique_ptr<char>(new char[2] {tri, diag });
 }
 
-/*
-  * Checks if a square matrix contains an upper triangular matrix or row permutation of 
-  */
+/**
+ * Checks if a square matrix contains an upper triangular matrix or row permutation of
+ */
 template<typename T>
-unique_ptr<PermStruct> checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols) {
+void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  TriangularStruct * ret) {
   size_t * rowStarts = new size_t[rows];
   std::fill(rowStarts, rowStarts + rows, -1);// -1 is our flag
-  bool * rowTag = new bool[rows];
-  char diag = 'U';
+
+  std::unique_ptr<bool[]> rowTagPtr (new bool[rows]);
+  bool * rowTag = rowTagPtr.get();
+  std::fill(rowTag,rowTag+rows,false);
+
+  ret->flagDiag = 'U';
   bool upperTriangleIfValidIspermuted = false;
   bool validPermutation = true;
+
   // Check if its lower, walk rows to look for when number appears in [0...0, Number....]
   for (size_t i = 0; i < cols; i++) {
     for (size_t j = 0; j < rows; j++) {
@@ -174,7 +157,7 @@ unique_ptr<PermStruct> checkIfUpperTriangularPermuteRows(T * data, size_t rows, 
          )
       {
         if (!SingleValueFuzzyEquals(data[i * rows + j],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())) {
-          diag = 'N'; // not unit diagonal
+          ret->flagDiag = 'N'; // not unit diagonal
         }
         rowStarts[j] = i;
       }
@@ -191,40 +174,45 @@ unique_ptr<PermStruct> checkIfUpperTriangularPermuteRows(T * data, size_t rows, 
       upperTriangleIfValidIspermuted = true;
     }
   }
-  for (int i = 0; i < rows; i++) {
+  for (size_t i = 0; i < rows; i++) {
     if (!rowTag[i]) {
       validPermutation = false;
       break;
     }
   }
   if (!validPermutation) {
-    return unique_ptr<PermStruct>(new PermStruct('N', 'N', nullptr));
+    ret->flagPerm = 'N';
+    ret->flagDiag = 'N';
   } else {
     // permutation is valid, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
-    return unique_ptr<PermStruct>(new PermStruct('R', diag, rowStarts));
+    ret->flagPerm = 'R';
+    ret->perm = rowStarts;
   }
+  return;
 }
 
 
 template<typename T>
-unique_ptr<TriangularStruct> isTriangular(T * data, size_t rows, size_t cols)
+TriangularStruct * isTriangular(T * data, size_t rows, size_t cols)
 {
-  unique_ptr<char> lapackVals;
+  TriangularStruct * ret = new TriangularStruct('N', 'N', 'N', nullptr);
 
   // See if it's lower triangular
-  lapackVals = checkIfLowerTriangular(data, rows, cols);
-  if (lapackVals.get()[0] != 'N') {
-    return unique_ptr<TriangularStruct>(new TriangularStruct(lapackVals.get()[0], lapackVals.get()[1], 'N', nullptr));
+  checkIfLowerTriangular(data, rows, cols, &(ret->flagUPLO), &(ret->flagDiag));
+  if (ret->flagUPLO != 'N')
+  {
+    return ret;
   }
 
   // See if it's Upper or permuted upper
-  unique_ptr<PermStruct> permStruct = checkIfUpperTriangularPermuteRows(data, rows, cols);
-  if (permStruct.get()->flagPerm == 'R') {
-    return unique_ptr<TriangularStruct>(new TriangularStruct('U', permStruct.get()));
+  checkIfUpperTriangularPermuteRows(data, rows, cols, ret);
+  if (ret->flagPerm == 'R') {
+    ret->flagUPLO = 'U';
+    return ret;
   }
 
   // DEFAULT, not triangular in any way
-  return unique_ptr<TriangularStruct>(new TriangularStruct('N', 'N', 'N', nullptr));
+  return new TriangularStruct('N', 'N', 'N', nullptr);
 
 }
 
@@ -245,8 +233,8 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   int4 int4rows1 = rows1;
   int4 int4cols1 = cols1;
   std::size_t len1 = rows1 * cols1;
-  auto sp_data1 (new T[len1]);
-  T * data1 = sp_data1;
+  std::unique_ptr<T[]> data1Ptr (new T[len1]);
+  T * data1 = data1Ptr.get();
   std::copy(ptrdata1,ptrdata1+len1,data1);
 
   // data from array 2 (B)
@@ -256,8 +244,8 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   std::size_t len2 = rows2 * cols2;
   int4 int4rows2 = rows2;
   int4 int4cols2 = cols2;
-  auto sp_data2 (new T[len2]);
-  T * data2 = sp_data2;
+  T * data2 = new T[len2];
+  std::shared_ptr<T> data2Ptr (data2, [](T * foo){delete [] foo;});
   std::copy(ptrdata2,ptrdata2+len2,data2);
 
   // useful vars
@@ -317,7 +305,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     }
 
     // is the array1 triangular or permuted triangular
-    unique_ptr<detail::TriangularStruct> tstruct = detail::isTriangular(data1, rows1, cols1);
+   detail::TriangularStruct * tstruct = detail::isTriangular(data1, rows1, cols1);
     char UPLO = tstruct->flagUPLO;
     char DIAG = tstruct->flagDiag;
     if (UPLO != 'N')  // i.e. this is some breed of triangular
@@ -336,14 +324,16 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         if (DATA_PERMUTATION == 'R')
         {
           triPtr1 = data1; // save pointer for later in case this doesn't work out
-          data1 = new T[rows1 * cols1];
+          data1 = new T[len1];
+          std::fill(data1,data1+len1,0e0);
           for (size_t i = 0; i < cols1; i++) {
             for (size_t j = 0; j < rows1; j++) {
               data1[i * rows1 + permuteV[j]] = triPtr1[i * rows1 + j];
             }
           }
           triPtr2 = data2; // save pointer for later in case this doesn't work out
-          data2 = new T[rows2 * cols2];
+          data2 = new T[len2];
+          std::fill(data2,data2+len2,0e0);
           for (size_t i = 0; i < cols2; i++) {
             for (size_t j = 0; j < rows2; j++) {
               data2[i * rows2 + permuteV[j]] = triPtr2[i * rows2 + j];
@@ -351,6 +341,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           }
         }
       } // end permutation branch
+      delete tstruct;
 
       // compute reciprocal condition number, if it's bad say so and least squares solve
 //       _lapack.dtrcon('1', UPLO, DIAG, rows1, data1, rows1, rcond, work, iwork, info);
@@ -381,6 +372,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           cout << "30. Triangular solve success, returning";
         }
+        delete [] data1;
         ret = makeConcreteDenseMatrix(data2, rows2, cols2, OWNER);
         reg0.push_back(ret);
         return nullptr;
@@ -402,6 +394,8 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           cout << "45. Resetting permutation." << std::endl;
         }
+        delete [] data1;
+        delete [] data2;
         data1 = triPtr1;
         data2 = triPtr2;
       }
@@ -475,7 +469,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         std::copy(arg0->getData(),arg0->getData()+len1,data1);
         // try solving with generalised LUP solver
 //         int[] ipiv = new int[rows1];
-        unique_ptr<int4> ipiv (new int4[rows1]);
+        int4 * ipiv = new int4[rows1];
         // decompose
         if (debug_)
         {
@@ -484,12 +478,13 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 //         _lapack.dgetrf(rows1, cols1, data1, rows1, ipiv, info);
         try
         {
-          lapack::xgetrf(&int4rows1, &int4cols1, data1, &int4rows1, ipiv.get(), &info);
+          lapack::xgetrf(&int4rows1, &int4cols1, data1, &int4rows1, ipiv, &info);
         }
         catch (rdag_error& e)
         {
           if(info<0) // caught a xerbla error, rethrow
           {
+            delete [] ipiv;
             throw;
           }
         }
@@ -511,11 +506,12 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           {
             // back solve dgetrs()
 //             _lapack.dgetrs('N', cols1, cols2, data1, cols1, ipiv, data2, cols1, info);
-            lapack::xgetrs(lapack::N, &int4cols1, &int4cols2, data1, &int4cols1, ipiv.get(), data2, &int4cols1, &info);
+            lapack::xgetrs(lapack::N, &int4cols1, &int4cols2, data1, &int4cols1, ipiv, data2, &int4cols1, &info);
             if (debug_)
             {
               cout << "150. LUP returning" << std::endl;
             }
+            delete [] ipiv;
 //             return new OGMatrix(data2, rows2, cols2);
             ret = makeConcreteDenseMatrix(data2, rows2, cols2, OWNER);
             reg0.push_back(ret);
@@ -527,6 +523,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             }
             singular = true;
           }
+          delete [] ipiv;
         }
         else
         {
