@@ -59,7 +59,7 @@ OGRealDenseMatrix::Ptr A10 = OGRealDenseMatrix::create({ { 1., 0., 0. }, { 4., 0
 
 // A_lower_triangular_singular_near_zero_on_diag 
 OGRealDenseMatrix::Ptr A11 = OGRealDenseMatrix::create(
-{ { 1., 0., 0. }, { 4., 0.0000000000000001, 0. }, { 7., 8., 1. } });
+{ { 1., 0., 0. }, { 4., 1e-15, 0. }, { 7., 8., 1. } });
 
 // A_square_spd_near_singular 
 OGRealDenseMatrix::Ptr A12 = OGRealDenseMatrix::create({ { 2.0000e+00, 1.0000e+150, 2.0000e+00 }, { 1.0000e+150, 1.0000e+300, 2.0000e+150 }, { 2.0000e+00, 2.0000e+150, 5.0000e+00 } });
@@ -84,7 +84,6 @@ OGRealDenseMatrix::Ptr A18 = OGRealDenseMatrix::create({ { 0., 0., 1.e-300, 14.,
 
 // A_short_row
 OGRealDenseMatrix::Ptr A19 = OGRealDenseMatrix::create({ { 2, 3, 4 } });
-
 
 // B_rectangular
 OGRealDenseMatrix::Ptr B1 = OGRealDenseMatrix::create({ { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 } });
