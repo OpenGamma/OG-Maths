@@ -110,21 +110,29 @@ void checkIfLowerTriangular(T * data, size_t rows, size_t cols, char * tri, char
   size_t ir;
   *tri = 'L';
   *diag = 'U';
-  if (!SingleValueFuzzyEquals(data[0],ndm<T>(1.e0),std::numeric_limits<real8>::epsilon()),std::numeric_limits<real8>::epsilon()) {
+  bool isUnit = true;
+  if (!SingleValueFuzzyEquals(data[0],ndm<T>(1.e0),std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())) {
     *diag = 'N';
   }
   for (size_t  i = 1; i < cols; i++)
   {
     ir = i * rows;
     // check if diag == 1
-    if (!SingleValueFuzzyEquals(data[ir + i],1.e0,std::numeric_limits<real8>::epsilon()),std::numeric_limits<real8>::epsilon())
+    if (isUnit)
     {
-      *diag = 'N';
+      if(!SingleValueFuzzyEquals(data[ir +i],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
+      {
+        cout << "13. checking lower:: not unit diag at element [" << i << "," << i << "]" << "found value = "<< data[ir + i] << std::endl;
+        *diag = 'N';
+        isUnit = false;
+      }
     }
     for (size_t j = 0; j < i; j++)  // check if upper triangle is empty
     {
-      if (data[ir + j] != 0.e0)
+      if (!SingleValueFuzzyEquals(data[ir + j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
       {
+        cout << "14. checking lower:: returning as nonzero in upper triangle at [" << j << "," << i << "]" << "found value = "<< data[ir + j] << std::endl;
+        SingleValueFuzzyEquals(data[ir +j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon());
         *tri = 'N';
         return;
       }
@@ -147,17 +155,23 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   ret->flagDiag = 'U';
   bool upperTriangleIfValidIspermuted = false;
   bool validPermutation = true;
+  bool isUDswitch = true; // is unit diag
 
-  // Check if its lower, walk rows to look for when number appears in [0...0, Number....]
+  // Check if its lower all 0
+  // walk rows to look for when number appears in [0...0, Number....]
   for (size_t i = 0; i < cols; i++) {
     for (size_t j = 0; j < rows; j++) {
-      if (rowStarts[j] == -1
-          &&
+      if (
+          rowStarts[j] == -1 // we've not seen this row before
+          && // AND
+          // it's not got a zero at location j.
           !SingleValueFuzzyEquals(data[i * rows + j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())
          )
       {
-        if (!SingleValueFuzzyEquals(data[i * rows + j],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())) {
+        if (isUDswitch && !SingleValueFuzzyEquals(data[i * rows + j],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())) {
+          cout << "16. checking upper:: not unit diag at element [" << i << "," << j << "]" << std::endl;
           ret->flagDiag = 'N'; // not unit diagonal
+          isUDswitch = false;
         }
         rowStarts[j] = i;
       }
@@ -181,13 +195,24 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
     }
   }
   if (!validPermutation) {
+    cout << "17. checking upper:: not upper triangular, permuted or otherwise" << std::endl;
     ret->flagPerm = 'N';
     ret->flagDiag = 'N';
     delete[] rowStarts;
   } else {
-    // permutation is valid, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
-    ret->flagPerm = 'R';
-    ret->perm = rowStarts;
+    if(upperTriangleIfValidIspermuted)
+    {
+      // permutation is valid, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
+      cout << "18. checking upper:: Row permutation spotted" << std::endl;
+      ret->flagPerm = 'R'; // R = row permute
+      ret->perm = rowStarts;
+    }
+    else
+    {
+      cout << "19. checking upper:: standard upper triangle" << std::endl;
+      ret->flagPerm = 'S'; // S = standard triangle
+      delete[] rowStarts;
+    }
   }
   return;
 }
@@ -196,7 +221,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
 template<typename T>
 std::unique_ptr<TriangularStruct> isTriangular(T * data, size_t rows, size_t cols)
 {
-  std::unique_ptr<TriangularStruct> tptr (new TriangularStruct('N', 'N', 'N', nullptr));
+  std::unique_ptr<TriangularStruct> tptr (new TriangularStruct('N', 'N', 'S', nullptr));
   TriangularStruct * ref = tptr.get();
 
   // See if it's lower triangular
@@ -208,7 +233,7 @@ std::unique_ptr<TriangularStruct> isTriangular(T * data, size_t rows, size_t col
 
   // See if it's Upper or permuted upper
   checkIfUpperTriangularPermuteRows(data, rows, cols, ref);
-  if (ref->flagPerm == 'R') {
+  if (ref->flagPerm == 'R' || ref->flagPerm == 'S') {
     ref->flagUPLO = 'U';
     return tptr;
   }
@@ -313,22 +338,21 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
     // is the array1 triangular or permuted triangular
     unique_ptr<detail::TriangularStruct> tptr = detail::isTriangular(data1, rows1, cols1);
-    detail::TriangularStruct * tstruct = tptr.get();
-    char UPLO = tstruct->flagUPLO;
-    char DIAG = tstruct->flagDiag;
+    char UPLO = tptr->flagUPLO;
+    char DIAG = tptr->flagDiag;
     if (UPLO != 'N')  // i.e. this is some breed of triangular
     {
       if (debug_)
       {
         cout << "20. Matrix is " << (UPLO == 'U' ? "upper" : "lower") << " triangular, " << (DIAG == 'N' ? "non-unit" : "unit") << " diagonal." << std::endl;
       }
-      char DATA_PERMUTATION = tstruct->flagPerm;
-      if (DATA_PERMUTATION != 'N') { // we have a permutation of the data, rewrite
+      char DATA_PERMUTATION = tptr->flagPerm;
+      if (DATA_PERMUTATION != 'S') { // we have a permutation of the data, rewrite
         if (debug_)
         {
           cout << "25. Matrix is " << (DATA_PERMUTATION == 'R' ? "row" : "column") << " permuted triangular." << std::endl;
         }
-        permuteV = tstruct->perm; // the permutation
+        permuteV = tptr->perm; // the permutation
         if (DATA_PERMUTATION == 'R')
         {
           triPtr1Ptr = unique_ptr<T[]>(new T[len1]());
@@ -356,6 +380,8 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         }
       } // end permutation branch
 
+
+      cout << "28. Hitting lapack tri routines with UPLO = " << UPLO << " DIAG = " << DIAG << std::endl;
 
       // compute reciprocal condition number, if it's bad say so and least squares solve
 //       _lapack.dtrcon('1', UPLO, DIAG, rows1, data1, rows1, rcond, work, iwork, info);
@@ -394,14 +420,14 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       {
         if (debug_)
         {
-          cout << "43. Triangular condition was computed as too bad to attempt solve.";
+          cout << "43. Triangular condition was computed as too bad to attempt solve." << std::endl;
         }
         singular = true;
       }
 
       // reset permutation, just a pointer switch, not doing so might influence results from
       // iterative llsq solvers
-      if (DATA_PERMUTATION != 'N')
+      if (DATA_PERMUTATION != 'S')
       {
         if(debug_)
         {
@@ -582,7 +608,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     }
     // take a copy of the original data as it will have been destroyed above
 //       System.arraycopy(array1.getData(), 0, data1, 0, array1.getData().length);
-    std::copy(arg0->getData(),arg0->getData()+len1,data1);
+    std::copy(arg0->getData(),arg0->getData()+len1,data1Ptr.get());
   }
 
   // needed for QR and SVD
