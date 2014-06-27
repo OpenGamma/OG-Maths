@@ -20,6 +20,7 @@
 
 using namespace std;
 
+
 /*
  * Unit contains code for MLDIVIDE node runners
  */
@@ -32,21 +33,6 @@ namespace librdag
  */
 namespace detail
 {
-
-/**
- * Template to create a "real" number in a given domain.
- */
-template<typename T> T ndm(real8 val) {}
-
-template<> real8 ndm(real8 val)
-{
-  return val;
-}
-
-template<> complex16 ndm(real8 val)
-{
-  return complex16(val, 0.e0);
-}
 
 /**
  * Casts a value to a char
@@ -117,41 +103,44 @@ enum class PERMUTATION: char
    * Flags as a column permutation.
    */
   COLUMN   = 'C',
-  /**
-   * Flags as not triangular.
-   */
-  NOTTRIANGULAR = 'N'
 };
 
 /**
  * This struct holds the state from deciding if a matrix is in some way triangular.
+ *
+ * Flags are based on LAPACK chars.
  */
 struct TriangularStruct
 {
+  /**
+   * @param flagUPLO is it upper or lower
+   */
   UPLO flagUPLO = UPLO::NEITHER;
+  /**
+   * @param flagDiag is it diagonal
+   */
   UNITDIAG flagDiag = UNITDIAG::NONUNIT;
+  /**
+   * @param flagPerm is it permuted
+   */
   PERMUTATION flagPerm = PERMUTATION::STANDARD;
+  /**
+   * @param perm the permutation applied, can be null if \a flagPerm is \a PERMUTATION::STANDARD
+   */
   unique_ptr<size_t[]> perm = nullptr;
- /**
-  * Flags are based on LAPACK chars
-  * @param flagUPLO is it upper or lower
-  * @param flagDiag is it diagonal
-  * @param flagPerm is it permuted
-  * @param perm the permutation applied, can be null if \a flagPerm is \a PERMUTATION::STANDARD
-  */
 };
 
 // These are helper routines
 
 /**
- * Checks if a matrix is symmetric.
+ * Checks if a matrix is Hermitian.
  * @param data the data from the matrix, column major
  * @param rows the number of rows
  * @param cols the number of columns
- * @return true if symmetric false else.
+ * @return true if Hermitian false else.
  */
 template<typename T>
-bool isSymmetric(T * data, size_t rows, size_t cols)
+bool isHermitian(T * data, size_t rows, size_t cols)
 {
   size_t ir;
   for (size_t i = 0; i < cols; i++)
@@ -159,7 +148,7 @@ bool isSymmetric(T * data, size_t rows, size_t cols)
     ir = i * rows;
     for (size_t j = 0; j < rows; j++)
     {
-      if (data[ir + j] != data[j * rows + i])
+      if (data[ir + j] != std::conj(data[j * rows + i])) // fp comparison, strict equality
       {
         return false;
       }
@@ -170,17 +159,21 @@ bool isSymmetric(T * data, size_t rows, size_t cols)
 
 
 /**
- * Checks if a matrix is lower triangular
+ * Checks if a matrix is lower triangular.
+ * @param data the column major data
+ * @param rows the number of row in the matrix
+ * @param cols the number of cols in the matrix
+ * @param tri enum pointer of type UPLO to indicate, upper, lower, neither.
+ * 
  */
 template<typename T>
 void checkIfLowerTriangular(T * data, size_t rows, size_t cols, UPLO* tri, UNITDIAG* diag)
 {
-  // check lower
   size_t ir;
   *tri = UPLO::LOWER;
   *diag = UNITDIAG::UNIT;
   bool isUnit = true;
-  if (!SingleValueFuzzyEquals(data[0],ndm<T>(1.e0),std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
+  if (!SingleValueFuzzyEquals(data[0],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
   {
     *diag = UNITDIAG::NONUNIT;
   }
@@ -211,25 +204,41 @@ void checkIfLowerTriangular(T * data, size_t rows, size_t cols, UPLO* tri, UNITD
 }
 
 /**
- * Checks if a square matrix contains an upper triangular matrix or row permutation of
+ * Checks if a square matrix contains an upper triangular matrix or row permutation of.
+ * @param data the column major matrix data.
+ * @param rows the number of rows in the matrix.
+ * @param cols the number of cols in the matrix.
+ * @param ret the struct holding the state of triangular matrix probing.
  */
 template<typename T>
 void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  TriangularStruct * ret)
 {
+  // This holds the location of the "start" of rows, i.e. first non-zero value.
   unique_ptr<size_t[]> rowStarts (new size_t[rows]);
-  std::fill(rowStarts.get(), rowStarts.get() + rows, -1);// -1 is our flag
+  std::fill(rowStarts.get(), rowStarts.get() + rows, -1); // -1 is our flag
 
+  // This holds the logic for whether we've seen a valid row of a triangular matrix before or not.
   std::unique_ptr<bool[]> rowTagPtr (new bool[rows]);
   bool * rowTag = rowTagPtr.get();
   std::fill(rowTag,rowTag+rows,false);
 
+  // Assume we have a unit diagonal matrix and flip it later if not
   ret->flagDiag = UNITDIAG::UNIT;
+
+  // Assume we have upper triangular matrix and flip it later if not
+  ret->flagUPLO = UPLO::UPPER;
+
+  // flag to indicate if a triangular permutation is valid upper permutation
   bool upperTriangleIfValidIspermuted = false;
+
+  // flag to indicate if a triangular permutation is valid
   bool validPermutation = true;
+
+  // flag to cause fast exist on branches testing for unit diagonal if we've already noted it isn't
   bool isUDswitch = true; // is unit diag
 
-  // Check if its lower all 0
-  // walk rows to look for when number appears in [0...0, Number....]
+  // Check if the lower part is all 0 walk rows to look for when number appears in [0...0, Number....]
+  // we assume that there is a valid permutation possible within the data and attempt to find it
   for (size_t i = 0; i < cols; i++)
   {
     for (size_t j = 0; j < rows; j++)
@@ -240,20 +249,29 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
         // it's not got a zero at location j.
         !SingleValueFuzzyEquals(data[i * rows + j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())
       )
-      {
+      { // So set our rowstarts for this location to point to this col.
+        rowStarts.get()[j] = i;
+        // Check and see if the element (which will end up on the diag) is 1 and therefore unit diag 
+        // is a possible optimisation.
         if (isUDswitch && !SingleValueFuzzyEquals(data[i * rows + j],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
         {
           cout << "16. checking upper:: not unit diag at element [" << i << "," << j << "]" << std::endl;
-          ret->flagDiag = UNITDIAG::NONUNIT; // not unit diagonal
+
+          // set as not unit diagonal
+          ret->flagDiag = UNITDIAG::NONUNIT;
+          // flip the switch so we get fast exists in future avoiding calling fuzzy equals
           isUDswitch = false;
         }
-        rowStarts.get()[j] = i;
       }
     }
   }
+
   // Check to see if the matrix is a permutation of an upper triangle
   // Do this by checking that the claimed start of rows cover all columns
   // first set flags, then check flags, complete set needed to assess whether the perm is present
+  // We basically set flags in rowTag based on start locations, then check that all rowTags are set.
+  // If the permutation is valid *but* its not declared as permuted then we just have a standard
+  // upper triangular matrix.
   for (size_t i = 0; i < rows; i++)
   {
     if (!rowTag[rowStarts.get()[i]])
@@ -275,21 +293,22 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   }
   if (!validPermutation)
   {
+    // we don't have a valid upper permutation, return declaring so
     cout << "17. checking upper:: not upper triangular, permuted or otherwise" << std::endl;
-    ret->flagPerm = PERMUTATION::NOTTRIANGULAR;
-    ret->flagDiag = UNITDIAG::NONUNIT;
+    ret->flagUPLO = UPLO::NEITHER;
   }
   else
   {
     if(upperTriangleIfValidIspermuted)
     {
-      // permutation is valid, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
+      // permutation is valid row, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
       cout << "18. checking upper:: Row permutation spotted" << std::endl;
       ret->flagPerm = PERMUTATION::ROW;
       ret->perm = std::move(rowStarts);
     }
     else
     {
+      // permutation is in fact the 1:1 map, we have a triangle already
       cout << "19. checking upper:: standard upper triangle" << std::endl;
       ret->flagPerm = PERMUTATION::STANDARD;
     }
@@ -297,11 +316,20 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   return;
 }
 
-
+/**
+ * This function probes a matrix to see if it is triangular and has related exploitable properties.
+ * @param T data the type, real8 or complex16 are valid.
+ * @param data the column major matrix data.
+ * @param rows the number of rows in the matrix.
+ * @param cols the number of columns in the matrix.
+ * @return a unique_ptr to a \a TriangularStruct type containing the properties found
+ */
 template<typename T>
 std::unique_ptr<TriangularStruct> isTriangular(T * data, size_t rows, size_t cols)
 {
+  // This struct has mutated members updated as properties are found!
   std::unique_ptr<TriangularStruct> tptr (new TriangularStruct());
+
   TriangularStruct * ref = tptr.get();
 
   // See if it's lower triangular
@@ -313,13 +341,8 @@ std::unique_ptr<TriangularStruct> isTriangular(T * data, size_t rows, size_t col
 
   // See if it's Upper or permuted upper
   checkIfUpperTriangularPermuteRows(data, rows, cols, ref);
-  if (ref->flagPerm == PERMUTATION::ROW || ref->flagPerm == PERMUTATION::STANDARD )
-  {
-    ref->flagUPLO = UPLO::UPPER;
-    return tptr;
-  }
 
-  // DEFAULT, not triangular in any way
+  // return anyway, tptr contains state
   return tptr;
 
 }
@@ -327,12 +350,24 @@ std::unique_ptr<TriangularStruct> isTriangular(T * data, size_t rows, size_t col
 
 } // end namespace detail
 
+
 // This is a rough translation of OG mldivide from OG-Maths_Legacy ~2012,
 //  which in turn is based on my libllsq from ~2011
+
+/**
+ * mldivide_dense_runner is the "super solver" routine. Will attempt to optimally (in terms of speed and accuracy) solve any valid linear system of the form AX=B, where A, X and B are all matrices.
+ * @param T the data type, real8 or complex16 are valid.
+ * @param reg0 the register for the return value, X.
+ * @param arg0 the matrix A.
+ * @param arg0 the matrix B.
+ */
 template<typename T>
 void*
 mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, shared_ptr<const OGMatrix<T>> arg1)
 {
+
+  // debug flag, true for debug statements, useful when developing
+  constexpr bool debug_ = true;
 
   // data from array 1 (A)
   T * ptrdata1 = arg0->getData();
@@ -356,13 +391,13 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   T * data2 = data2Ptr.get();
   std::copy(ptrdata2,ptrdata2+len2,data2);
 
-  // useful vars
+  // Inveral variables signifcant in flow control.
   real8 rcond = 0; // estimate of reciprocal condition number
   real8 anorm = 0; // the 1 norm of a matrix
   bool singular = false; // is the matrix identified as singular
   bool attemptQR = true; // should QR decomposition be attempted for singular/over determined systems prior to using SVD?
 
-  //auxiallary vars
+  // Auxiallary variable
 
   // for pointer switching if a perm is needed but system is bad and needs resetting
   unique_ptr<T[]> triPtr1Ptr = nullptr;
@@ -372,13 +407,6 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
   // pointer switching for case when xgels creates a bigger system than for which there's space
   unique_ptr<T[]> bdata2Ptr = nullptr;
-
-  // the permutation vector, if needed
-//   std::size_t * permuteV = nullptr;
-
-  // flow control
-  // set if matrix is triangular and singular so that other standard decompositions are skipped and a least squares result is attempted immediately
-  bool jmp = false;
 
   // return item
   OGNumeric::Ptr ret;
@@ -396,7 +424,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
   // First...
 
-  // LAPACK info
+  // LAPACK info variable, normally seen as kind(int):: INFO in Fortran.
   int4 info = 0;
 
   // check if the system is sane
@@ -407,7 +435,31 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     throw rdag_error(msg.str());
   }
 
-  bool debug_ = true;
+  // check for all zeros system matrix, quick return if so
+  bool allzero=true;
+  for(size_t i = 0; i < len1; i++)
+  {
+    if(data1[i]!=0.e0)
+    {
+      allzero = false;
+      break;
+    }
+  }
+  if(allzero)
+  {
+    if (debug_)
+    {
+      cout << "5. Matrix is all zeros, returning Inf"  << std::endl;
+    }
+    unique_ptr<T[]> retData(new T[len2]);
+    for(size_t i = 0; i < len2; i++)
+    {
+      retData.get()[i]=std::numeric_limits<real8>::infinity();
+    }
+    ret = makeConcreteDenseMatrix(retData.release(), rows2, cols2, OWNER);
+    reg0.push_back(ret);
+  }
+
 
   // Do the alg above:
   // is it square?
@@ -418,24 +470,40 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       cout << "10. Matrix is square"  << std::endl;
     }
 
-    // is the array1 triangular or permuted triangular
+    // Is the array1 triangular or permuted triangular, send probe and get back struct containing result
     unique_ptr<detail::TriangularStruct> tptr = detail::isTriangular(data1, rows1, cols1);
+
+    // Set flags based on triangular probe
     detail::UPLO UPLO = tptr->flagUPLO;
     detail::UNITDIAG DIAG = tptr->flagDiag;
-    if (UPLO != detail::UPLO::NEITHER)  // i.e. this is some breed of triangular
+
+    // Is this matrix layour some breed of triangular?
+    if (UPLO != detail::UPLO::NEITHER)
     {
       if (debug_)
       {
         cout << "20. Matrix is " << (UPLO == detail::UPLO::UPPER ? "upper" : "lower") << " triangular, " << (DIAG == detail::UNITDIAG::NONUNIT ? "non-unit" : "unit") << " diagonal." << std::endl;
       }
+
       detail::PERMUTATION DATA_PERMUTATION = tptr->flagPerm;
-      if (DATA_PERMUTATION != detail::PERMUTATION::STANDARD)   // we have a permutation of the data, rewrite
+      // Is the triangular matrix permuted?
+      if (DATA_PERMUTATION != detail::PERMUTATION::STANDARD)
       {
+        // we have a permutation of the data, so we'll rewire the system
         if (debug_)
         {
           cout << "25. Matrix is " << (DATA_PERMUTATION == detail::PERMUTATION::ROW ? "row" : "column") << " permuted triangular." << std::endl;
         }
-//         permuteV = tptr->perm.get(); // the permutation
+        // We have a row permutation... this gets a bit hairy pointer twiddling wise.
+        // The idea is that it'd be nice when it comes to calling lapack to use the same set of
+        // calls and logic as with the general "it's triangular" branch.
+        // A data rewrite is done based on the permutation to make the system triangular, 
+        // however, we need to keep hold of the original data in case the triangular solve 
+        // fails and we need to try something else. So the new permuted system swaps references 
+        // with the original system so the "original" system logic can be used. Later on, 
+        // should the triangular solve fail, the reverse reference swap occurs so the alg
+        // can proceed with the original data and the smart pointer to the permutation will
+        // delete[] the permuted data allocated here.
         if (DATA_PERMUTATION == detail::PERMUTATION::ROW)
         {
           triPtr1Ptr = unique_ptr<T[]>(new T[len1]());
@@ -465,24 +533,39 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             }
           }
         }
+
+        // TODO:: spot and mutate based on column permutations
+
       } // end permutation branch
 
 
       cout << "28. Hitting lapack tri routines with UPLO = " << (UPLO == detail::UPLO::UPPER ? "upper" : "lower") << " DIAG = " << (DIAG == detail::UNITDIAG::NONUNIT ? "non-unit" : "unit") << std::endl;
 
-      // compute reciprocal condition number, if it's bad say so and least squares solve
-//       _lapack.dtrcon('1', UPLO, DIAG, rows1, data1, rows1, rcond, work, iwork, info);
+      // Compute reciprocal condition number, if it's bad say so and least squares solve
+
+      // Get enumerated values as chars for guiding the lapack call
       auto lapack_uplo = asChar(UPLO);
       auto lapack_diag = asChar(DIAG);
       lapack::xtrcon(lapack::ONE, &lapack_uplo, &lapack_diag, &int4rows1, data1, &int4rows1, &rcond, &info);
 
-      if (rcond + 1.e0 != 1.e0)// rcond ~< D1mach(4)
+      // Test impact of reciprocal condition number on floating point arithmetic at scale of rcond itself.
+      if (rcond + 1.e0 != 1.e0)
       {
-//         _lapack.dtrtrs(UPLO, 'N', DIAG, rows1, cols2, data1, rows1, data2, rows2, info);
+        // branch taken as reciprocal condition number is acceptable to attempt triangular back solve
         info = 0;
         try
         {
+          // try lapack triangular system solve
           lapack::xtrtrs(&lapack_uplo, lapack::N, &lapack_diag, &int4rows1, &int4cols2, data1, &int4rows1, data2, &int4rows2, &info);
+          // Solve was successful so we create a new matrix to return, release the data from unique_ptr
+          // ownership as the matrix shared_ptr container will handle and own it from now.
+          ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
+          reg0.push_back(ret);
+          if (debug_)
+          {
+            cout << "30. Triangular solve success, returning" << std::endl;
+          }
+          return nullptr;
         }
         catch (rdag_error& e)
         {
@@ -490,70 +573,74 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           {
             throw;
           }
+          // In theory, the rest of the code in scope is dead...
+          // Triangular solve should never fail because the condition estimators should pick up
+          // blatently ill-conditioned systems and just move on to a more appropriate method
+          // of solution, however, this branch is left in as part of a catch-all just in case
+          // some system makes it through the ill-conditioned test and the solver then fails.
+          // If this is the case, we mark as singular and if there's a permutation applied 
+          // it is reversed.
           if (debug_)
           {
-            cout<<("40. Triangular solve fail. Mark as singular.");
+            cout<< "40. Triangular solve fail. Mark as singular." << std::endl;
           }
+          // solve failed, system is singular so set the flag to skip doing anything else
+          // in the "exact" solution regime
           singular = true;
-        }
 
-        if (debug_)
-        {
-          cout << "30. Triangular solve success, returning";
+          // If we are here, we've failed to do a triangular solve, but the data might still be the permuted
+          // variant, given we are in the realm of least squares solutions, we need to reset the permutation
+          // back to the original data, it's just a pointer switch, not doing so might influence results from
+          // iterative llsq solvers.
+          if (DATA_PERMUTATION != detail::PERMUTATION::STANDARD)
+          {
+            if(debug_)
+            {
+              cout << "45. Resetting permutation." << std::endl;
+            }
+
+            // swap back pointers
+            data1Ptr.swap(triPtr1Ptr);
+            data2Ptr.swap(triPtr2Ptr);
+            data1 = data1Ptr.get();
+            data2 = data2Ptr.get();
+          }
         }
-        ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
-        reg0.push_back(ret);
-        return nullptr;
       }
       else
       {
+        // NOTE: this branch isn't needed, singular can be moved to outer branch, *but* is left in
+        // for debug logic.
+        // Reciprocal condition number was near so near zero solution was not attempted, set singular flag
+        // and abandon any further attemps at exact solution.
         if (debug_)
         {
           cout << "43. Triangular condition was computed as too bad to attempt solve." << std::endl;
         }
         singular = true;
       }
-
-      // reset permutation, just a pointer switch, not doing so might influence results from
-      // iterative llsq solvers
-      if (DATA_PERMUTATION != detail::PERMUTATION::STANDARD)
-      {
-        if(debug_)
-        {
-          cout << "45. Resetting permutation." << std::endl;
-        }
-
-        // swap back pointers
-        data1Ptr.swap(triPtr1Ptr);
-        data2Ptr.swap(triPtr2Ptr);
-        data1 = data1Ptr.get();
-        data2 = data2Ptr.get();
-      }
-      jmp = true; // nmatrix is singular, jump to least squares logic
-
     } // end "this matrix is triangular"
 
     // if it's triangular and it failed, then it's singular and a condition number is already computed and this can be jumped!
-    if (!jmp)
+    if (!singular)
     {
       if (debug_)
       {
         cout << "50. Not triangular" << std::endl;
       }
-      // see if it's Hermitian (symmetric in the real case)
-      // stu - this needs looking at, complex case could be symmetric or Hermitian, in which case
-      // different specialisations are available, template in a thing to deal with this...
-      if (detail::isSymmetric(data1, rows1, cols1))
+      bool cholesky_mangled_data = false;
+      // See if it's Hermitian (symmetric in the real case)
+      if (detail::isHermitian(data1, rows1, cols1))
       {
         if (debug_)
         {
           cout << "60. Is Hermitian" << std::endl;
         }
-        // cholesky decompose, shove in lower triangle
-//         _lapack.dpotrf('L', rows1, data1, rows1, info);
         info = 0;
+        // Attempt to compute a Cholesky factorisation
         try
         {
+          cholesky_mangled_data = true;
           lapack::xpotrf(lapack::L, &int4rows1, data1, &int4rows1, &info);
         }
         catch(rdag_error& e)
@@ -563,22 +650,25 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             throw;
           }
         }
-
+        // If the Cholesky factorisation was ok, matrix is s.p.d.
+        // Factorisation is in the lower triangle, back solve based on this.
         if(info == 0)
         {
-          //         if (info[0] == 0) { // Cholesky factorisation was ok, matrix is s.p.d. Factorisation is in the lower triangle, back solve based on this
           if (debug_)
           {
             cout << "70. Cholesky success.  Computing condition based on cholesky factorisation" << std::endl;
           }
-          //           anorm = _lapack.dlansy('1', 'L', rows1, array1.getData(), rows1, work);
+          // technically this should be zlanhe() in the complex case, but the 1 norm estimate is the same
+          // as sum(abs(A)) == sum(abs(conj(A)))
           anorm = lapack::xlansy(lapack::ONE, lapack::L, &int4rows1, data1, &int4rows1);
-          // Cholesky condition estimate
+
+          // compute a Cholesky condition estimate
           lapack::xpocon(lapack::L, &int4rows1, data1, &int4rows1, &anorm, &rcond, &info);
           if (debug_)
           {
             cout << "80. Cholesky condition estimate. " << rcond << std::endl;
           }
+          // again test if reciprocal condition is acceptable
           if (1.e0 + rcond != 1.e0)
           {
             if (debug_)
@@ -586,13 +676,14 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
               cout << "90. Cholesky condition acceptable. Backsolve and return." << std::endl;
             }
             lapack::xpotrs(lapack::L, &int4rows1, &int4cols2, data1, &int4rows1, data2, &int4rows2, &info);
-            // info[0] will be zero. Any -ve info[0] will be handled by XERBLA
+            // there is no possible numerical exception here, just input
             ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
             reg0.push_back(ret);
             return nullptr;
           }
           else
           {
+            // Cholesky decomposition of matrix indicates condition is bad
             if (debug_)
             {
               cout << "100. Cholesky condition bad. Mark as singular." << std::endl;
@@ -600,33 +691,31 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             singular = true;
           }
         }
-        // stu - this branch from "if (info[0] == 0)" following xpotrf call is now dead
-        // lapack will throw if there's a problem, it's an input error if {xerbla} or {not spd}
-//         } else { // factorisation failed
-//           if (debug_) {
-//            cout << "110. Cholesky factorisation failed. Matrix is not s.p.d." << std::endl;
-//           }
-//         } // end factorisation info==0
-      } // end symmetric branch
+      } // end if Hermitian branch
 
       if (!singular)
       {
+        // We are here if the matrix is not singular, not triangular and not Hermitian.
         if (debug_)
         {
-          cout << "120. Non-symmetric OR not s.p.d." << std::endl;
+          cout << "120. Non-Hermitian OR not s.p.d." << std::endl;
         }
-        //  we're here as matrix isn't s.p.d. as Cholesky failed. Get new copy of matrix
-//         System.arraycopy(array1.getData(), 0, data1, 0, array1.getData().length);
-        std::copy(arg0->getData(),arg0->getData()+len1,data1);
-        // try solving with generalised LUP solver
-//         int[] ipiv = new int[rows1];
+        //  we're here as matrix isn't s.p.d. as Cholesky failed. 
+        // Get new copy of the matrix data if cholesky ran
+        if(cholesky_mangled_data)
+        {
+          std::copy(arg0->getData(),arg0->getData()+len1,data1);
+        }
+
+        // try solving with generalised LUP solver, will need a pivot store first
         unique_ptr<int[]> ipivPtr (new int4[rows1]);
-        // decompose
+
         if (debug_)
         {
           cout << "130. LUP attempted" << std::endl;
         }
-//         _lapack.dgetrf(rows1, cols1, data1, rows1, ipiv, info);
+
+        // Try a LUP decomposition
         try
         {
           lapack::xgetrf(&int4rows1, &int4cols1, data1, &int4rows1, ipivPtr.get(), &info);
@@ -641,32 +730,32 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
         if (info == 0)
         {
+          // LUP decomposition was successful, check 
           if (debug_)
           {
             cout << "140. LUP success. Computing condition based on LUP factorisation." << std::endl;
           }
-//           anorm = _lapack.dlange('1', rows1, cols1, array1.getData(), rows1, work);
-          anorm = lapack::xlange(lapack::ONE, &int4rows1, &int4cols1, arg0->getData(), &int4rows1);
 
-//           _lapack.dgecon('1', rows1, data1, rows1, anorm, rcond, work, iwork, info);
+          // compute a reciprocal condition estimate based on decomposition
+          anorm = lapack::xlange(lapack::ONE, &int4rows1, &int4cols1, arg0->getData(), &int4rows1);
           lapack::xgecon(lapack::ONE, &int4rows1, data1, &int4rows1, &anorm, &rcond, &info);
 
           // if condition estimate isn't too bad then back solve
           if (1.e0 + rcond != 1.e0)
           {
-            // back solve dgetrs()
-//             _lapack.dgetrs('N', cols1, cols2, data1, cols1, ipiv, data2, cols1, info);
-            lapack::xgetrs(lapack::N, &int4cols1, &int4cols2, data1, &int4cols1, ipivPtr.get(), data2, &int4cols1, &info);
+            // back solving using LUP system solver
+            lapack::xgetrs(lapack::N, &int4rows1, &int4cols2, data1, &int4rows1, ipivPtr.get(), data2, &int4rows2, &info);
             if (debug_)
             {
               cout << "150. LUP returning" << std::endl;
             }
-//             return new OGMatrix(data2, rows2, cols2);
+            // no throw possible unless on bad input, create return matrix 
+            // freeing unique_ptr ref so shared_ptr in matrix type can have ownership on the way.
             ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
             reg0.push_back(ret);
             return nullptr;
           }
-          else     // condition bad, mark as singular
+          else // reciprocal condition was computed as bad, mark as singular
           {
             if (debug_)
             {
@@ -675,7 +764,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             singular = true;
           }
         }
-        else
+        else // decomposition failed due to singularity in matrix, mark as singular
         {
           if (debug_)
           {
@@ -687,7 +776,8 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     }
   } // end if square branch
 
-  // branch on rcond if computed, if cond is sky high then rcond is near zero, we use 1 here so cutoff is near 1e-16
+  // branch on rcond if computed, if cond is sky high then rcond is near zero
+  // we use 1.e0 here againso cutoff is near machine precision
   if (singular)
   {
     cout << "Square matrix is singular to machine precision. RCOND estimate = " << rcond << std::endl;
@@ -701,15 +791,35 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       {
         cout << "200. Condition of square matrix is too bad for QR least squares." << std::endl;
       }
+      // Condition is really bad so don't use QR
       attemptQR = false;
     }
-    // take a copy of the original data as it will have been destroyed above
-//       System.arraycopy(array1.getData(), 0, data1, 0, array1.getData().length);
+    // take a copy of the original data as it will have been destroyed above in the decomp trials
     std::copy(arg0->getData(),arg0->getData()+len1,data1Ptr.get());
   }
 
-  // needed for QR and SVD
+  // needed for QR and SVD, the leading dimension of matrix "B"
   int4 ldb = std::max(rows1, cols1);
+  // allocated enough space for the solution as it will be rows1 * cols2 in size 
+  // and data2 is rows2*cols2 which may not be big enough.
+  // again this involves pointer swapping as with the permutation branch in the triangular solve
+  // more details on the process are available at its call site.
+  if (rows1 < cols1)
+  {
+    bdata2Ptr = unique_ptr<T[]>(new T[ldb * cols2]);
+    T * b = bdata2Ptr.get();
+    //copy in data strips
+    for (size_t i = 0; i < cols2; i++)
+    {
+      std::copy(data2 + (i * rows2), data2 + ((i + 1)* rows2), b + i * ldb);
+    }
+    // switch pointers so data2 now points at a correct sized alloc
+    data2Ptr.swap(bdata2Ptr);
+    // reassign underlying data2 pointer
+    data2 = data2Ptr.get();
+  }
+
+  // first, attempt QR if we haven't already decided it's a bad idea
   if (attemptQR)
   {
     if (debug_)
@@ -717,27 +827,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       cout << "210. Attempting QR solve." << std::endl;
     }
 
-    // malloc some space for the solution as it will be rows1 * cols2 in size and data2 is rows2*cols2 which may not be big enough
-    if (rows1 < cols1)
-    {
-      bdata2Ptr = unique_ptr<T[]>(new T[ldb * cols2]);
-      T * b = bdata2Ptr.get();
-      //copy in data strips
-      for (size_t i = 0; i < cols2; i++)
-      {
-        std::copy(data2 + (i * rows2), data2 + ((i + 1)* rows2), b + i * ldb);
-      }
-      // switch pointers so data2 now points at a correct sized alloc
-      data2Ptr.swap(bdata2Ptr);
-      // reassign underlying data2 pointer
-      data2 = data2Ptr.get();
-    }
-
-    // copy in the data
-//       _lapack.dgels('N', rows1, cols1, cols2, data1, rows1, data2, ldb, dummywork, lwork, info);
-//       lwork = (int) dummywork[0];
-//       work = new double[lwork];
-//       _lapack.dgels('N', rows1, cols1, cols2, data1, rows1, data2, ldb, work, lwork, info);
+    // Attempt a least squares solve
     try
     {
       lapack::xgels(lapack::N, &int4rows1, &int4cols1, &int4cols2, data1, &int4rows1, data2, &ldb, &info);
@@ -752,69 +842,64 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
     if (info > 0)
     {
+      // It failed with a rank deficiency problem, clean up before moving on to SVD
       if (debug_)
       {
         cout <<  "220. QR solve failed" << std::endl;
       }
       cout <<  " WARN: Matrix of coefficients does not have full rank. Rank is " << info << "." << std::endl;
-      // switch back to original data if we created a "b"
+
+      // copy back in data1 and strips of data2, both will be needed for svd
+      // no point in freeing here
       if (rows1 < cols1)
       {
-        data2Ptr.swap(bdata2Ptr);
-        // reassign underlying data2 pointer
-        data2 = data2Ptr.get();
+        //copy in data2 strips, remember the pointers are still swapped!
+        for (size_t i = 0; i < cols2; i++)
+        {
+          std::copy(bdata2Ptr.get() + (i * rows2), bdata2Ptr.get() + ((i + 1)* rows2), data2Ptr.get() + i * ldb);
+        }
       }
-
       // take a copy of the original data as it will have been destroyed above
-//         System.arraycopy(array1.getData(), 0, data1, 0, array1.getData().length);
-//         System.arraycopy(array2.getData(), 0, data2, 0, array2.getData().length);
       std::copy(arg0->getData(),arg0->getData()+len1,data1);
-      std::copy(arg1->getData(),arg1->getData()+len2,data2);
     }
     else
     {
+      // the QR solve was successful, pull out the solution data into a new allocation and return
       if (debug_)
       {
         cout << "230. QR solve success, returning" << std::endl;
       }
-      // 1:cols1 from each column of data2 needs to be returned
+      // new alloc
       T * ref = data2;
-      data2 = new T[cols1 * cols2];
+      unique_ptr<T[]> newdata2Ptr (new T[cols1 * cols2]);
+      data2 = newdata2Ptr.get();
+      // and copy 1:cols1 from each column of data2 needs to be returned
       for (size_t i = 0; i < cols2; i++)
       {
-//           System.arraycopy(ref, i * ldb, data2, i * cols1, cols1);
         std::copy(ref + (i * ldb), ref + ((i * ldb)+cols1), data2 + (i * cols1));
       }
-//         return new OGMatrix(data2, cols1, cols2);
-      ret = makeConcreteDenseMatrix(data2, cols1, cols2, OWNER);
+      // wire in return
+      ret = makeConcreteDenseMatrix(newdata2Ptr.release(), cols1, cols2, OWNER);
       reg0.push_back(ret);
       return nullptr;
     }
   }
 
+  // If all else fails... we attempt a general least squares solve with SVD
   if (debug_)
   {
     cout <<  "240. Attempting SVD" << std::endl;
   }
 
-  // so we attempt a general least squares solve
-  unique_ptr<real8[]> sPtr (new real8[std::min(rows1, cols1)]());
-  real8 moorePenroseRcond = -1; // this is the definition of singular in the Moore-Penrose sense, if set to -1 machine prec is used
-//     int[] rank = new int[1];
-//
-//     // internal calls in svd to ilaenv() to get parameters for svd call seems broken in netlib jars, will need to patch the byte code or override
-//     lwork = -1;
-//     _lapack.dgelsd(rows1, cols1, cols2, data1, Math.max(1, rows1), data2, Math.max(1, Math.max(rows1, cols1)), s, moorePenroseRcond, rank, dummywork, lwork, dummyiwork, info);
-//     lwork = (int) dummywork[0];
-//     work = new double[lwork];
-//     iwork = new int[dummyiwork[0]];
-//
-//     // make the call to the least squares solver
-//     _lapack.dgelsd(rows1, cols1, cols2, data1, Math.max(1, rows1), data2, Math.max(1, Math.max(rows1, cols1)), s, moorePenroseRcond, rank, work, lwork, iwork, info);
+  // allocate space for the singular vectors
+  unique_ptr<real8[]> sPtr (new real8[ldb]());
+  real8 moorePenroseRcond = -1.e0; // this is the definition of singular in the Moore-Penrose sense, if set to -1 machine prec is used
 
-  int4 rank=0;
+  int4 rank=0; // needed for call but not used info
   try
   {
+    // NOTE: Using the divide and conquer based SVD, uses twisted factorisation, is much quicker
+    // at the cost of occasional loss of accuracy
     lapack::xgelsd(&int4rows1, &int4cols1, &int4cols2, data1, &int4rows1, data2, &ldb, sPtr.get(), &moorePenroseRcond, &rank, &info);
   }
   catch (rdag_error& e)
@@ -825,17 +910,20 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     }
   }
 
-  // handle fail on info
+  // handle fails
   if (info != 0)
   {
+    // something went wrong in the solver, nothing we can do so throw...
     if (debug_)
     {
       cout << "250. SVD failed" << std::endl;
     }
-    cout << "SVD Failed to converege. " << info << " out of " << std::max(rows1, cols1) << " off diagonals failed to converge to zero. RCOND = " << rcond << std::endl;
+    stringstream msg;
+    msg << "SVD Failed to converege. " << info << " out of " << std::max(rows1, cols1) << " off diagonals failed to converge to zero. RCOND = " << rcond << std::endl;
+    throw rdag_error(msg.str());
   }
   else
-  {
+  { // dead branch, used for debug
     if (debug_)
     {
       cout << "260. SVD success" << std::endl;
@@ -845,9 +933,18 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   {
     cout << "270. SVD returning" << std::endl;
   }
-  //     return new OGMatrix(Arrays.copyOf(data2, cols1 * cols2), cols1, cols2);
-  // stu - technically the wrong size data *but* C just sees a pointer
-  ret = makeConcreteDenseMatrix(data2Ptr.release(), cols1, cols2, OWNER);
+
+  // new alloc
+  T * ref = data2;
+  unique_ptr<T[]> newdata2Ptr (new T[cols1 * cols2]);
+  data2 = newdata2Ptr.get();
+  // and copy 1:cols1 from each column of data2 needs to be returned
+  for (size_t i = 0; i < cols2; i++)
+  {
+    std::copy(ref + (i * ldb), ref + ((i * ldb)+cols1), data2 + (i * cols1));
+  }
+  // wire in return
+  ret = makeConcreteDenseMatrix(newdata2Ptr.release(), cols1, cols2, OWNER);
   reg0.push_back(ret);
   return nullptr;
 }
@@ -872,7 +969,7 @@ MLDIVIDERunner::run(RegContainer& reg0, OGRealScalar::Ptr arg0, OGRealScalar::Pt
 {
   real8 data1 = arg0->getValue();
   real8 data2 = arg1->getValue();
-  OGNumeric::Ptr ret = OGRealScalar::create(data1+data2);
+  OGNumeric::Ptr ret = OGRealScalar::create(data2/data1);
   reg0.push_back(ret);
   return nullptr;
 }
