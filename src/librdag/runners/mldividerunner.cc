@@ -59,21 +59,13 @@ struct TriangularStruct
   char flagUPLO;
   char flagDiag;
   char flagPerm;
-  size_t * perm = nullptr;
-  TriangularStruct(char UPLO, char Diag, char Perm, size_t * p)
+  unique_ptr<size_t[]> perm;
+  TriangularStruct(char UPLO, char Diag, char Perm, unique_ptr<size_t[]> p)
   {
     flagUPLO = UPLO;
     flagDiag = Diag;
     flagPerm = Perm;
-    perm = p;
-  }
-  ~TriangularStruct()
-  {
-    if(perm!=nullptr)
-    {
-      delete [] perm;
-      perm = nullptr;
-    }
+    perm = std::move(p);
   }
 };
 
@@ -145,8 +137,8 @@ void checkIfLowerTriangular(T * data, size_t rows, size_t cols, char * tri, char
  */
 template<typename T>
 void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  TriangularStruct * ret) {
-  size_t * rowStarts = new size_t[rows];
-  std::fill(rowStarts, rowStarts + rows, -1);// -1 is our flag
+  unique_ptr<size_t[]> rowStarts (new size_t[rows]);
+  std::fill(rowStarts.get(), rowStarts.get() + rows, -1);// -1 is our flag
 
   std::unique_ptr<bool[]> rowTagPtr (new bool[rows]);
   bool * rowTag = rowTagPtr.get();
@@ -162,7 +154,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   for (size_t i = 0; i < cols; i++) {
     for (size_t j = 0; j < rows; j++) {
       if (
-          rowStarts[j] == -1 // we've not seen this row before
+          rowStarts.get()[j] == -1 // we've not seen this row before
           && // AND
           // it's not got a zero at location j.
           !SingleValueFuzzyEquals(data[i * rows + j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())
@@ -173,7 +165,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
           ret->flagDiag = 'N'; // not unit diagonal
           isUDswitch = false;
         }
-        rowStarts[j] = i;
+        rowStarts.get()[j] = i;
       }
     }
   }
@@ -181,10 +173,10 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   // Do this by checking that the claimed start of rows cover all columns
   // first set flags, then check flags, complete set needed to assess whether the perm is present
   for (size_t i = 0; i < rows; i++) {
-    if (!rowTag[rowStarts[i]]) {
-      rowTag[rowStarts[i]] = true;
+    if (!rowTag[rowStarts.get()[i]]) {
+      rowTag[rowStarts.get()[i]] = true;
     }
-    if (!upperTriangleIfValidIspermuted && rowStarts[i] != i) {
+    if (!upperTriangleIfValidIspermuted && rowStarts.get()[i] != i) {
       upperTriangleIfValidIspermuted = true;
     }
   }
@@ -198,20 +190,18 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
     cout << "17. checking upper:: not upper triangular, permuted or otherwise" << std::endl;
     ret->flagPerm = 'N';
     ret->flagDiag = 'N';
-    delete[] rowStarts;
   } else {
     if(upperTriangleIfValidIspermuted)
     {
       // permutation is valid, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
       cout << "18. checking upper:: Row permutation spotted" << std::endl;
       ret->flagPerm = 'R'; // R = row permute
-      ret->perm = rowStarts;
+      ret->perm = std::move(rowStarts);
     }
     else
     {
       cout << "19. checking upper:: standard upper triangle" << std::endl;
       ret->flagPerm = 'S'; // S = standard triangle
-      delete[] rowStarts;
     }
   }
   return;
@@ -293,7 +283,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   unique_ptr<T[]> bdata2Ptr = nullptr;
 
   // the permutation vector, if needed
-  std::size_t * permuteV = nullptr;
+//   std::size_t * permuteV = nullptr;
 
   // flow control
   // set if matrix is triangular and singular so that other standard decompositions are skipped and a least squares result is attempted immediately
@@ -352,7 +342,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           cout << "25. Matrix is " << (DATA_PERMUTATION == 'R' ? "row" : "column") << " permuted triangular." << std::endl;
         }
-        permuteV = tptr->perm; // the permutation
+//         permuteV = tptr->perm.get(); // the permutation
         if (DATA_PERMUTATION == 'R')
         {
           triPtr1Ptr = unique_ptr<T[]>(new T[len1]());
@@ -363,7 +353,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           std::fill(data1,data1+len1,0e0);
           for (size_t i = 0; i < cols1; i++) {
             for (size_t j = 0; j < rows1; j++) {
-              data1[i * rows1 + permuteV[j]] = triPtr1[i * rows1 + j];
+              data1[i * rows1 + tptr->perm.get()[j]] = triPtr1[i * rows1 + j];
             }
           }
           triPtr2Ptr = unique_ptr<T[]>(new T[len2]());
@@ -374,7 +364,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           std::fill(data2,data2+len2,0e0);
           for (size_t i = 0; i < cols2; i++) {
             for (size_t j = 0; j < rows2; j++) {
-              data2[i * rows2 + permuteV[j]] = triPtr2[i * rows2 + j];
+              data2[i * rows2 + tptr->perm.get()[j]] = triPtr2[i * rows2 + j];
             }
           }
         }
