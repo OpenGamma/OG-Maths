@@ -18,7 +18,6 @@
 #include <complex>
 #include <sstream>
 
-
 using namespace std;
 
 /*
@@ -28,11 +27,15 @@ using namespace std;
 namespace librdag
 {
 
-
+/**
+ * Local implementation details.
+ */
 namespace detail
 {
 
-
+/**
+ * Template to create a "real" number in a given domain.
+ */
 template<typename T> T ndm(real8 val) {}
 
 template<> real8 ndm(real8 val)
@@ -45,30 +48,97 @@ template<> complex16 ndm(real8 val)
   return complex16(val, 0.e0);
 }
 
+/**
+ * Casts a value to a char
+ * @param the value to cast
+ * @return the char representation of the value
+ */
+template<typename T> char asChar(T value)
+{
+  return static_cast<char>(value);
+}
 
 // Auxiliary structs for holding intermediary guiding data
 
+
+// NOTE: The following enums are used in some cases to pass flags to lapack.
+// Ideally lapack:: members holding `char *` would be used, but these are
+// declared extern which conflicts with the constexpr needed in the following.
+// At some point, for completeness, this could be fixed.
+
 /**
- * This holds the return struct from deciding if a matrix is in some way triangular
- * Flags are based on LAPACK chars
- * @param flagUPLO is it upper or lower
- * @param flagDiag is it diagonal
- * @param flagPerm is it permuted
- * @param perm the permutation applied
+ * UPLO flags upper or lower triangular matrix.
+ */
+enum class UPLO: char
+{
+  /**
+   * Flags neither upper or lower.
+   */
+  NEITHER = 'N',
+  /**
+   * Flags an upper triangular matrix.
+   */
+  UPPER = 'U',
+  /**
+   * Flags a lower triangular matrix.
+   */
+  LOWER = 'L'
+};
+
+/**
+ * UNITDIAG flags if a triangular matrix has a unit diagonal.
+ */
+enum class UNITDIAG: char
+{
+  /**
+   * Flags a unit diagonal.
+   */
+  UNIT    = 'U',
+  /**
+   * Flags a non-unit diagonal.
+   */
+  NONUNIT = 'N'
+};
+
+/**
+ * PERMUTATION flags the possible permutation type identifiable in a triangular matrix.
+ */
+enum class PERMUTATION: char
+{
+  /**
+   * Flags as standard, no permutation present.
+   */
+  STANDARD = 'S',
+  /**
+   * Flags as a row permutation.
+   */
+  ROW      = 'R',
+  /**
+   * Flags as a column permutation.
+   */
+  COLUMN   = 'C',
+  /**
+   * Flags as not triangular.
+   */
+  NOTTRIANGULAR = 'N'
+};
+
+/**
+ * This struct holds the state from deciding if a matrix is in some way triangular.
  */
 struct TriangularStruct
 {
-  char flagUPLO;
-  char flagDiag;
-  char flagPerm;
-  unique_ptr<size_t[]> perm;
-  TriangularStruct(char UPLO, char Diag, char Perm, unique_ptr<size_t[]> p)
-  {
-    flagUPLO = UPLO;
-    flagDiag = Diag;
-    flagPerm = Perm;
-    perm = std::move(p);
-  }
+  UPLO flagUPLO = UPLO::NEITHER;
+  UNITDIAG flagDiag = UNITDIAG::NONUNIT;
+  PERMUTATION flagPerm = PERMUTATION::STANDARD;
+  unique_ptr<size_t[]> perm = nullptr;
+ /**
+  * Flags are based on LAPACK chars
+  * @param flagUPLO is it upper or lower
+  * @param flagDiag is it diagonal
+  * @param flagPerm is it permuted
+  * @param perm the permutation applied, can be null if \a flagPerm is \a PERMUTATION::STANDARD
+  */
 };
 
 // These are helper routines
@@ -103,16 +173,16 @@ bool isSymmetric(T * data, size_t rows, size_t cols)
  * Checks if a matrix is lower triangular
  */
 template<typename T>
-void checkIfLowerTriangular(T * data, size_t rows, size_t cols, char * tri, char * diag)
+void checkIfLowerTriangular(T * data, size_t rows, size_t cols, UPLO* tri, UNITDIAG* diag)
 {
   // check lower
   size_t ir;
-  *tri = 'L';
-  *diag = 'U';
+  *tri = UPLO::LOWER;
+  *diag = UNITDIAG::UNIT;
   bool isUnit = true;
   if (!SingleValueFuzzyEquals(data[0],ndm<T>(1.e0),std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
   {
-    *diag = 'N';
+    *diag = UNITDIAG::NONUNIT;
   }
   for (size_t  i = 1; i < cols; i++)
   {
@@ -123,7 +193,7 @@ void checkIfLowerTriangular(T * data, size_t rows, size_t cols, char * tri, char
       if(!SingleValueFuzzyEquals(data[ir +i],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
       {
         cout << "13. checking lower:: not unit diag at element [" << i << "," << i << "]" << "found value = "<< data[ir + i] << std::endl;
-        *diag = 'N';
+        *diag = UNITDIAG::NONUNIT;
         isUnit = false;
       }
     }
@@ -133,7 +203,7 @@ void checkIfLowerTriangular(T * data, size_t rows, size_t cols, char * tri, char
       {
         cout << "14. checking lower:: returning as nonzero in upper triangle at [" << j << "," << i << "]" << "found value = "<< data[ir + j] << std::endl;
         SingleValueFuzzyEquals(data[ir +j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon());
-        *tri = 'N';
+        *tri = UPLO::NEITHER;
         return;
       }
     }
@@ -153,7 +223,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   bool * rowTag = rowTagPtr.get();
   std::fill(rowTag,rowTag+rows,false);
 
-  ret->flagDiag = 'U';
+  ret->flagDiag = UNITDIAG::UNIT;
   bool upperTriangleIfValidIspermuted = false;
   bool validPermutation = true;
   bool isUDswitch = true; // is unit diag
@@ -174,7 +244,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
         if (isUDswitch && !SingleValueFuzzyEquals(data[i * rows + j],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
         {
           cout << "16. checking upper:: not unit diag at element [" << i << "," << j << "]" << std::endl;
-          ret->flagDiag = 'N'; // not unit diagonal
+          ret->flagDiag = UNITDIAG::NONUNIT; // not unit diagonal
           isUDswitch = false;
         }
         rowStarts.get()[j] = i;
@@ -206,8 +276,8 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   if (!validPermutation)
   {
     cout << "17. checking upper:: not upper triangular, permuted or otherwise" << std::endl;
-    ret->flagPerm = 'N';
-    ret->flagDiag = 'N';
+    ret->flagPerm = PERMUTATION::NOTTRIANGULAR;
+    ret->flagDiag = UNITDIAG::NONUNIT;
   }
   else
   {
@@ -215,13 +285,13 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
     {
       // permutation is valid, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
       cout << "18. checking upper:: Row permutation spotted" << std::endl;
-      ret->flagPerm = 'R'; // R = row permute
+      ret->flagPerm = PERMUTATION::ROW;
       ret->perm = std::move(rowStarts);
     }
     else
     {
       cout << "19. checking upper:: standard upper triangle" << std::endl;
-      ret->flagPerm = 'S'; // S = standard triangle
+      ret->flagPerm = PERMUTATION::STANDARD;
     }
   }
   return;
@@ -231,21 +301,21 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
 template<typename T>
 std::unique_ptr<TriangularStruct> isTriangular(T * data, size_t rows, size_t cols)
 {
-  std::unique_ptr<TriangularStruct> tptr (new TriangularStruct('N', 'N', 'S', nullptr));
+  std::unique_ptr<TriangularStruct> tptr (new TriangularStruct());
   TriangularStruct * ref = tptr.get();
 
   // See if it's lower triangular
   checkIfLowerTriangular(data, rows, cols, &(ref->flagUPLO), &(ref->flagDiag));
-  if (ref->flagUPLO != 'N')
+  if (ref->flagUPLO != UPLO::NEITHER)
   {
     return tptr;
   }
 
   // See if it's Upper or permuted upper
   checkIfUpperTriangularPermuteRows(data, rows, cols, ref);
-  if (ref->flagPerm == 'R' || ref->flagPerm == 'S')
+  if (ref->flagPerm == PERMUTATION::ROW || ref->flagPerm == PERMUTATION::STANDARD )
   {
-    ref->flagUPLO = 'U';
+    ref->flagUPLO = UPLO::UPPER;
     return tptr;
   }
 
@@ -350,23 +420,23 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
     // is the array1 triangular or permuted triangular
     unique_ptr<detail::TriangularStruct> tptr = detail::isTriangular(data1, rows1, cols1);
-    char UPLO = tptr->flagUPLO;
-    char DIAG = tptr->flagDiag;
-    if (UPLO != 'N')  // i.e. this is some breed of triangular
+    detail::UPLO UPLO = tptr->flagUPLO;
+    detail::UNITDIAG DIAG = tptr->flagDiag;
+    if (UPLO != detail::UPLO::NEITHER)  // i.e. this is some breed of triangular
     {
       if (debug_)
       {
-        cout << "20. Matrix is " << (UPLO == 'U' ? "upper" : "lower") << " triangular, " << (DIAG == 'N' ? "non-unit" : "unit") << " diagonal." << std::endl;
+        cout << "20. Matrix is " << (UPLO == detail::UPLO::UPPER ? "upper" : "lower") << " triangular, " << (DIAG == detail::UNITDIAG::NONUNIT ? "non-unit" : "unit") << " diagonal." << std::endl;
       }
-      char DATA_PERMUTATION = tptr->flagPerm;
-      if (DATA_PERMUTATION != 'S')   // we have a permutation of the data, rewrite
+      detail::PERMUTATION DATA_PERMUTATION = tptr->flagPerm;
+      if (DATA_PERMUTATION != detail::PERMUTATION::STANDARD)   // we have a permutation of the data, rewrite
       {
         if (debug_)
         {
-          cout << "25. Matrix is " << (DATA_PERMUTATION == 'R' ? "row" : "column") << " permuted triangular." << std::endl;
+          cout << "25. Matrix is " << (DATA_PERMUTATION == detail::PERMUTATION::ROW ? "row" : "column") << " permuted triangular." << std::endl;
         }
 //         permuteV = tptr->perm.get(); // the permutation
-        if (DATA_PERMUTATION == 'R')
+        if (DATA_PERMUTATION == detail::PERMUTATION::ROW)
         {
           triPtr1Ptr = unique_ptr<T[]>(new T[len1]());
           triPtr1Ptr.swap(data1Ptr); // triPtr1Ptr now points to original data
@@ -398,11 +468,13 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       } // end permutation branch
 
 
-      cout << "28. Hitting lapack tri routines with UPLO = " << UPLO << " DIAG = " << DIAG << std::endl;
+      cout << "28. Hitting lapack tri routines with UPLO = " << (UPLO == detail::UPLO::UPPER ? "upper" : "lower") << " DIAG = " << (DIAG == detail::UNITDIAG::NONUNIT ? "non-unit" : "unit") << std::endl;
 
       // compute reciprocal condition number, if it's bad say so and least squares solve
 //       _lapack.dtrcon('1', UPLO, DIAG, rows1, data1, rows1, rcond, work, iwork, info);
-      lapack::xtrcon(lapack::ONE, &UPLO, &DIAG, &int4rows1, data1, &int4rows1, &rcond, &info);
+      auto lapack_uplo = asChar(UPLO);
+      auto lapack_diag = asChar(DIAG);
+      lapack::xtrcon(lapack::ONE, &lapack_uplo, &lapack_diag, &int4rows1, data1, &int4rows1, &rcond, &info);
 
       if (rcond + 1.e0 != 1.e0)// rcond ~< D1mach(4)
       {
@@ -410,7 +482,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         info = 0;
         try
         {
-          lapack::xtrtrs(&UPLO, lapack::N, &DIAG, &int4rows1, &int4cols2, data1, &int4rows1, data2, &int4rows2, &info);
+          lapack::xtrtrs(&lapack_uplo, lapack::N, &lapack_diag, &int4rows1, &int4cols2, data1, &int4rows1, data2, &int4rows2, &info);
         }
         catch (rdag_error& e)
         {
@@ -444,7 +516,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
       // reset permutation, just a pointer switch, not doing so might influence results from
       // iterative llsq solvers
-      if (DATA_PERMUTATION != 'S')
+      if (DATA_PERMUTATION != detail::PERMUTATION::STANDARD)
       {
         if(debug_)
         {
