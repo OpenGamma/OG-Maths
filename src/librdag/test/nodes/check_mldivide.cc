@@ -37,7 +37,7 @@ OGRealDenseMatrix::Ptr REAL_A_2 = OGRealDenseMatrix::create({ { 123.00, 23.00, 2
 // A_square_non_symmetric_well_conditioned 
 OGRealDenseMatrix::Ptr REAL_A_3 = OGRealDenseMatrix::create({ { 10.00, 2.00, 1.00 }, { 2.00, 3.00, 10.00 }, { 4.00, 10.00, 1.00 } });
 
-// A_rectangular 
+// A_rectangular
 OGRealDenseMatrix::Ptr REAL_A_4 = OGRealDenseMatrix::create({ { 1.00, 2.00, 3.00, 4.00 }, { 5.00, 6.00, 7.00, 8.00 }, { 9.00, 10.00, 11.00, 12.00 }, { 13.00, 14.00, 15.00, 16.00 }, { 17.00, 18.00, 19.00, 20.00 } });
 
 // A_square_non_symmetric_condition_bad_for_lu_ok_for_qr
@@ -49,15 +49,21 @@ OGComplexDenseMatrix::Ptr CMPLX_A_6 = OGComplexDenseMatrix::create({{{1.0,10.0},
 
 // A_unit_upper_triangular
 OGRealDenseMatrix::Ptr REAL_A_7 = OGRealDenseMatrix::create({ { 1., 2., 3. }, { 0., 1., 6. }, { 0., 0., 1. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_7 = OGComplexDenseMatrix::create({{{1.0,0.0},{2.0,20.0},{3.0,30.0}},{{0.0,0.0},{1.0,0.0},{6.0,60.0}},{{0.0,0.0},{0.0,0.0},{1.0,0.0}}});
 
 // A_lower_triangular
 OGRealDenseMatrix::Ptr REAL_A_8 = OGRealDenseMatrix::create({ { 1., 0., 0. }, { 4., 5., 0. }, { 7., 8., 9. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_8 = OGComplexDenseMatrix::create(
+{{{1.0,10.0},{0.0,0.0},{0.0,0.0}},{{4.0,40.0},{5.0,50.0},{0.0,0.0}},{{7.0,70.0},{8.0,80.0},{9.0,90.0}}});
 
 // A_unit_lower_triangular
 OGRealDenseMatrix::Ptr REAL_A_9 = OGRealDenseMatrix::create({ { 1., 0., 0. }, { 4., 1., 0. }, { 7., 8., 1. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_9 = OGComplexDenseMatrix::create(
+{{{1.0,0.0},{0.0,0.0},{0.0,0.0}},{{4.0,40.0},{1.0,0.0},{0.0,0.0}},{{7.0,70.0},{8.0,80.0},{1.0,0.0}}});
 
 // A_lower_triangular_singular_zero_on_diag 
 OGRealDenseMatrix::Ptr REAL_A_10 = OGRealDenseMatrix::create({ { 1., 0., 0. }, { 4., 0., 0. }, { 7., 8., 1. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_10 = OGComplexDenseMatrix::create({{{1.0,10.0},{0.0,0.0},{0.0,0.0}},{{4.0,40.0},{0.0,0.0},{0.0,0.0}},{{7.0,70.0},{8.0,80.0},{1.0,10.0}}});
 
 // A_lower_triangular_singular_near_zero_on_diag 
 OGRealDenseMatrix::Ptr REAL_A_11 = OGRealDenseMatrix::create(
@@ -74,15 +80,21 @@ OGRealDenseMatrix::Ptr REAL_A_14 = OGRealDenseMatrix::create({ { std::numeric_li
 
 // A_square_permuted_upper_triangular 
 OGRealDenseMatrix::Ptr REAL_A_15 = OGRealDenseMatrix::create({ { 0., 0., 13., 14., 15. }, { 1., 2., 3., 4., 5. }, { 0., 7., 8., 9., 10. }, { 0., 0., 0., 0., 25. }, { 0., 0., 0., 19., 20. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_15 = OGComplexDenseMatrix::create(
+{{{0.0,0.0},{0.0,0.0},{13.0,130.0},{14.0,140.0},{15.0,150.0}},{{1.0,10.0},{2.0,20.0},{3.0,30.0},{4.0,40.0},{5.0,50.0}},{{0.0,0.0},{7.0,70.0},{8.0,80.0},{9.0,90.0},{10.0,100.0}},{{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0},{25.0,250.0}},{{0.0,0.0},{0.0,0.0},{0.0,0.0},{19.0,190.0},{20.0,200.0}}});
+
 
 // A_square_permuted_upper_triangular_zero_on_diag
 OGRealDenseMatrix::Ptr REAL_A_16 = OGRealDenseMatrix::create({ { 0., 6., 7., 8. }, { 0., 0., 0., 16. }, { 1., 2., 3., 4. }, { 0., 0., 0., 12. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_16 = OGComplexDenseMatrix::create({{{0.0,0.0},{6.0,60.0},{7.0,70.0},{8.0,80.0}},{{0.0,0.0},{0.0,0.0},{0.0,0.0},{16.0,160.0}},{{1.0,10.0},{2.0,20.0},{3.0,30.0},{4.0,40.0}},{{0.0,0.0},{0.0,0.0},{0.0,0.0},{12.0,120.0}}});
 
 // A_square_almost_permuted_upper_triangular
 OGRealDenseMatrix::Ptr REAL_A_17 = OGRealDenseMatrix::create({ { 0., 12., 13., 14., 15. }, { 1., 2., 3., 4., 5. }, { 0., 7., 8., 9., 10. }, { 0., 0., 0., 0., 25. }, { 0., 0., 0., 19., 20. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_17 = OGComplexDenseMatrix::create( {{{0.0,0.0},{12.0,120.0},{13.0,130.0},{14.0,140.0},{15.0,150.0}},{{1.0,10.0},{2.0,20.0},{3.0,30.0},{4.0,40.0},{5.0,50.0}},{{0.0,0.0},{7.0,70.0},{8.0,80.0},{9.0,90.0},{10.0,100.0}},{{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0},{25.0,250.0}},{{0.0,0.0},{0.0,0.0},{0.0,0.0},{19.0,190.0},{20.0,200.0}}});
 
 // A_square_permuted_upper_triangular_singular_to_mach_prec
 OGRealDenseMatrix::Ptr REAL_A_18 = OGRealDenseMatrix::create({ { 0., 0., 1.e-300, 14., 15. }, { 1., 2., 3., 4., 5. }, { 0., 7., 8., 9., 10. },{ 0., 0., 0., 0., 25. },{ 0., 0., 0., 19., 20. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_18 = OGComplexDenseMatrix::create({{{0.0,0.0},{0.0,0.0},{1.e-300,1.e-299},{14.0,140.0},{15.0,150.0}},{{1.0,10.0},{2.0,20.0},{3.0,30.0},{4.0,40.0},{5.0,50.0}},{{0.0,0.0},{7.0,70.0},{8.0,80.0},{9.0,90.0},{10.0,100.0}},{{0.0,0.0},{0.0,0.0},{0.0,0.0},{0.0,0.0},{25.0,250.0}},{{0.0,0.0},{0.0,0.0},{0.0,0.0},{19.0,190.0},{20.0,200.0}}});
 
 // A_short_row
 OGRealDenseMatrix::Ptr REAL_A_19 = OGRealDenseMatrix::create({ { 2, 3, 4 } });
@@ -95,6 +107,15 @@ OGRealDenseMatrix::Ptr REAL_C_1 = OGRealDenseMatrix::create({{1}, {2}, {3}, {4} 
 
 // C_5len__shuffled_col_matrix
 OGRealDenseMatrix::Ptr REAL_C_2 = OGRealDenseMatrix::create({{3.e0,10.e0},{1.e0,20.e0},{2.e0,30.e0},{5.e0,40.e0},{4.e0,50.e0}});
+OGComplexDenseMatrix::Ptr CMPLX_C_2 = OGComplexDenseMatrix::create({{{3.0,30.0},{10.0,100.0}},{{1.0,10.0},{20.0,200.0}},{{2.0,20.0},{30.0,300.0}},{{5.0,50.0},{40.0,400.0}},{{4.0,40.0},{50.0,500.0}}});
+
+// A more stable LHS for complex space
+OGComplexDenseMatrix::Ptr CMPLX_C_3 = OGComplexDenseMatrix::create({{{1.0,-2.0},{10.0,-20.0}},{{-1.0,2.0},{-10.0,20.0}},{{1.0,-2.0},{10.0,-20.0}},{{-1.0,2.0},{-10.0,20.0}},{{1.0,-2.0},{10.0,-20.0}}});
+
+// 4 row single col variant of CMPLX_C_3
+OGComplexDenseMatrix::Ptr CMPLX_C_4 = OGComplexDenseMatrix::create({{{1.0,-2.0}},{{-1.0,2.0}},{{1.0,-2.0}},{{-1.0,2.0}}});
+
+
 
 
 
@@ -144,6 +165,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {1.0000000000000000, 2.0000000000000000, 3.0000000000000000 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_7,
+    CMPLX_A_1,
+    // expected
+    OGComplexDenseMatrix::create({{{-9476.0,-35170.0},{-9476.0,-35170.0},{-9476.0,-35170.0}},{{1784.0,-340.0},{1784.0,-340.0},{1784.0,-340.0}},{{3.0,30.0},{3.0,30.0},{3.0,30.0}}}),
+    MATHSEQUAL
+  ),
+
   //test LowerTri Branch
   new CheckBinary<MLDIVIDE>
   (
@@ -155,6 +186,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {-0.1333333333333334, -0.2666666666666667, -0.4000000000000000 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_8,
+    CMPLX_A_1,
+    // expected
+    OGComplexDenseMatrix::create( {{{1.0,0.0},{1.0,0.0},{1.0,0.0}},{{-0.4000000000000000,0.0},{-0.4000000000000000,0.0},{-0.4000000000000000,0.0}},{{-0.0888888888888889,-0.0},{-0.0888888888888889,-0.0},{-0.0888888888888889,-0.0}}}),
+    MATHSEQUAL
+  ),
+
   //test UnitLowerTri Branch
   new CheckBinary<MLDIVIDE>
   (
@@ -166,6 +207,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {18.0000000000000000, 36.0000000000000000, 54.0000000000000000 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_9,
+    CMPLX_A_1,
+    // expected
+    OGComplexDenseMatrix::create({{{1.0,10.0},{1.0,10.0},{1.0,10.0}},{{398.0,-60.0},{398.0,-60.0},{398.0,-60.0}},{{-7288.0,-31470.0},{-7288.0,-31470.0},{-7288.0,-31470.0}}}),
+    MATHSEQUAL
+  ),
+
   //test PermutedUpperTriangular Branch
   new CheckBinary<MLDIVIDE>
   (
@@ -177,6 +228,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {0.0000000000000000, 0.9473684210526315 }, {0.2000000000000000, 1.6000000000000001 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_15,
+    CMPLX_C_2,
+    // expected
+    OGComplexDenseMatrix::create({{{0.0,0.0},{8.1445922498554069,-0.0000000000000002}},{{0.0,0.0},{3.1787160208212835,0.0000000000000001}},{{0.0,0.0},{-2.0971659919028340,-0.0}},{{0.0,0.0},{0.9473684210526316,0.0}},{{0.2000000000000000,0.0},{1.6000000000000001,0.0}}}),
+    MATHSEQUAL
+  ),
+
   //test AlmostPermutedUpperTriangular Branch
   new CheckBinary<MLDIVIDE>
   (
@@ -188,6 +249,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {0.0000000000000000, 0.9473684210526315 }, {0.2000000000000000, 1.6000000000000001 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_17,
+    CMPLX_C_3,
+    // expected
+    OGComplexDenseMatrix::create({{{0.3762376237623766,0.2376237623762379},{3.7623762376237662,2.3762376237623792}},{{0.1853465346534657,0.1170609692548206},{1.8534653465346569,1.1706096925482055}},{{-0.1750495049504954,-0.1105575820739972},{-1.7504950495049536,-1.1055758207399717}},{{-0.0178217821782178,-0.0112558624283481},{-0.1782178217821782,-0.1125586242834810}},{{0.0075247524752475,0.0047524752475248},{0.0752475247524752,0.0475247524752475}}}),
+    MATHSEQUAL
+  ),
+
   //test PermutedUpperTriangularZeroOnDiag Branch
   new CheckBinary<MLDIVIDE>
   (
@@ -198,6 +269,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     OGRealDenseMatrix::create({ {2.0475247524752480 }, {-0.7168316831683170 }, {0.5287128712871273 }, {0.2000000000000003 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_16,
+    CMPLX_C_4,
+    // expected
+    OGComplexDenseMatrix::create({{{-0.1067620821488090,-0.0674286834624056}},{{0.0144534849524556,0.0091285168120772}},{{-0.0543123223213409,-0.0343025193608469}},{{0.0131683168316832,0.0083168316831683}}}),
+    MATHSEQUAL
+  ),
+
   //test PermutedUpperTriangularSingularToMachPrec Branch
   new CheckBinary<MLDIVIDE>
   (
@@ -209,6 +290,17 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {0.0000000000000000, 0.2699985638374270 }, {0.2000000000000001, 1.5925606778687353 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_18,
+    CMPLX_C_3,
+    // expected
+    OGComplexDenseMatrix::create( {{{0.2109968569492433,0.1332611728100484},{2.1099685694924331,1.3326117281004841}},{{-0.0803459698947434,-0.0507448230914169},{-0.8034596989474336,-0.5074482309141690}},{{0.0588880750840383,0.0371924684741295},{0.5888807508403830,0.3719246847412949}},{{-0.0191009622289243,-0.0120637656182680},{-0.1910096222892430,-0.1206376561826800}},{{0.0075107036770028,0.0047436023223175},{0.0751070367700277,0.0474360232231754}}}),
+    MATHSEQUAL
+  ),
+
+
   //test TriDefinedSingular Branch
   new CheckBinary<MLDIVIDE>
   (
@@ -220,6 +312,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {-0.0162895927601810, -0.0325791855203620, -0.0488687782805430 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_10,
+    CMPLX_A_1,
+    // expected
+    OGComplexDenseMatrix::create({{{0.5294117647058825,-0.0000000000000001},{0.5294117647058825,-0.0000000000000001},{0.5294117647058825,-0.0000000000000001}},{{-0.0868778280542986,0.0000000000000001},{-0.0868778280542986,0.0000000000000001},{-0.0868778280542986,0.0000000000000001}},{{-0.0108597285067873,0.0},{-0.0108597285067873,0.0},{-0.0108597285067873,0.0}}}),
+    MATHSEQUAL
+  ),
+
   //test TriMachPrecSingular Branch
   new CheckBinary<MLDIVIDE>
   (
