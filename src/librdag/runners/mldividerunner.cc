@@ -240,6 +240,9 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   // Assume we have a unit diagonal matrix and flip it later if not
   ret->flagDiag = UNITDIAG::UNIT;
 
+  // Assume we have upper triangular matrix and flip it later if not
+  ret->flagUPLO = UPLO::UPPER;
+
   // flag to indicate if a triangular permutation is valid upper permutation
   bool upperTriangleIfValidIspermuted = false;
 

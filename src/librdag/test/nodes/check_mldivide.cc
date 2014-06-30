@@ -29,6 +29,7 @@ BINARY_NODE_TEST_SETUP(MLDIVIDE)
 
 // A_square_singular
 OGRealDenseMatrix::Ptr REAL_A_1 = OGRealDenseMatrix::create({ { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 } });
+OGComplexDenseMatrix::Ptr CMPLX_A_1 = OGComplexDenseMatrix::create({{{1.0,10.0},{1.0,10.0},{1.0,10.0}},{{2.0,20.0},{2.0,20.0},{2.0,20.0}},{{3.0,30.0},{3.0,30.0},{3.0,30.0}}});
 
 // A_square_symmetric_positive_definite
 OGRealDenseMatrix::Ptr REAL_A_2 = OGRealDenseMatrix::create({ { 123.00, 23.00, 23.00 }, { 23.00, 123.00, 23.00 }, { 23.00, 23.00, 123.00 } });
@@ -44,6 +45,7 @@ OGRealDenseMatrix::Ptr REAL_A_5 = OGRealDenseMatrix::create({ { 1.00000000000000
 
 // A_upper_triangular
 OGRealDenseMatrix::Ptr REAL_A_6 = OGRealDenseMatrix::create({ { 1., 2., 3. }, { 0., 5., 6. }, { 0., 0., 9. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_6 = OGComplexDenseMatrix::create({{{1.0,10.0},{2.0,20.0},{3.0,30.0}},{{0.0,0.0},{5.0,50.0},{6.0,60.0}},{{0.0,0.0},{0.0,0.0},{9.0,90.0}}});
 
 // A_unit_upper_triangular
 OGRealDenseMatrix::Ptr REAL_A_7 = OGRealDenseMatrix::create({ { 1., 2., 3. }, { 0., 1., 6. }, { 0., 0., 1. } });
@@ -121,6 +123,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       { 0.1111111111111111, 0.2222222222222222, 0.3333333333333333 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_6,
+    CMPLX_A_1,
+    // expected
+    OGRealDenseMatrix::create({{0.0,0.0,0.0},{0.0,0.0,0.0},{0.3333333333333333,0.3333333333333333,0.3333333333333333}}),
+    MATHSEQUAL
+  ),
+
   //test UnitUpperTri Branch
   new CheckBinary<MLDIVIDE>
   (
