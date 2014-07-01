@@ -35,21 +35,6 @@ namespace detail
 {
 
 /**
- * Template to create a "real" number in a given domain.
- */
-template<typename T> T ndm(real8 val) {}
-
-template<> real8 ndm(real8 val)
-{
-  return val;
-}
-
-template<> complex16 ndm(real8 val)
-{
-  return complex16(val, 0.e0);
-}
-
-/**
  * Casts a value to a char
  * @param the value to cast
  * @return the char representation of the value
@@ -188,7 +173,7 @@ void checkIfLowerTriangular(T * data, size_t rows, size_t cols, UPLO* tri, UNITD
   *tri = UPLO::LOWER;
   *diag = UNITDIAG::UNIT;
   bool isUnit = true;
-  if (!SingleValueFuzzyEquals(data[0],ndm<T>(1.e0),std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
+  if (!SingleValueFuzzyEquals(data[0],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
   {
     *diag = UNITDIAG::NONUNIT;
   }
