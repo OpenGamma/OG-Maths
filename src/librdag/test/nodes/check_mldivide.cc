@@ -36,6 +36,7 @@ OGRealDenseMatrix::Ptr REAL_A_2 = OGRealDenseMatrix::create({ { 123.00, 23.00, 2
 
 // A_square_non_symmetric_well_conditioned 
 OGRealDenseMatrix::Ptr REAL_A_3 = OGRealDenseMatrix::create({ { 10.00, 2.00, 1.00 }, { 2.00, 3.00, 10.00 }, { 4.00, 10.00, 1.00 } });
+OGComplexDenseMatrix::Ptr CMPLX_A_3 = OGComplexDenseMatrix::create({{{10.0,100.0},{2.0,20.0},{1.0,10.0}},{{2.0,20.0},{3.0,30.0},{10.0,100.0}},{{4.0,40.0},{10.0,100.0},{1.0,10.0}}});
 
 // A_rectangular
 OGRealDenseMatrix::Ptr REAL_A_4 = OGRealDenseMatrix::create({ { 1.00, 2.00, 3.00, 4.00 }, { 5.00, 6.00, 7.00, 8.00 }, { 9.00, 10.00, 11.00, 12.00 }, { 13.00, 14.00, 15.00, 16.00 }, { 17.00, 18.00, 19.00, 20.00 } });
@@ -361,6 +362,16 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {0.0654627539503386, 0.1309255079006772, 0.1963882618510158 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_3,
+    CMPLX_A_1,
+    // expected
+    OGComplexDenseMatrix::create({{{0.0812641083521445,0.0},{0.1625282167042889,0.0},{0.2437923250564334,0.0}},{{0.0609480812641084,0.0},{0.1218961625282167,0.0},{0.1828442437923251,0.0}},{{0.0654627539503386,0.0},{0.1309255079006772,0.0},{0.1963882618510158,0.0}}}),
+    MATHSEQUAL
+  ),
+
   //test LUPBranchFallToLSQ Branch
   new CheckBinary<MLDIVIDE>
   (

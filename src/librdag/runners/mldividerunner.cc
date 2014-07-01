@@ -727,7 +727,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           if (1.e0 + rcond != 1.e0)
           {
             // back solving using LUP system solver
-            lapack::xgetrs(lapack::N, &int4cols1, &int4cols2, data1, &int4cols1, ipivPtr.get(), data2, &int4cols1, &info);
+            lapack::xgetrs(lapack::N, &int4rows1, &int4cols2, data1, &int4rows1, ipivPtr.get(), data2, &int4rows2, &info);
             if (debug_)
             {
               cout << "150. LUP returning" << std::endl;
