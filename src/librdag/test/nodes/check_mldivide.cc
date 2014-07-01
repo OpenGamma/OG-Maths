@@ -29,7 +29,7 @@ BINARY_NODE_TEST_SETUP(MLDIVIDE)
 
 // A_square_singular
 OGRealDenseMatrix::Ptr REAL_A_1 = OGRealDenseMatrix::create({ { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 } });
-OGComplexDenseMatrix::Ptr CMPLX_A_1 = OGComplexDenseMatrix::create({{{1.0,10.0},{1.0,10.0},{1.0,10.0}},{{2.0,20.0},{2.0,20.0},{2.0,20.0}},{{3.0,30.0},{3.0,30.0},{3.0,30.0}}});
+OGComplexDenseMatrix::Ptr CMPLX_A_1 = OGComplexDenseMatrix::create( {{{1.0,10.0},{2.0,20.0},{3.0,30.0}},{{1.0,10.0},{2.0,20.0},{3.0,30.0}},{{1.0,10.0},{2.0,20.0},{3.0,30.0}}});
 
 // A_square_symmetric_positive_definite
 OGRealDenseMatrix::Ptr REAL_A_2 = OGRealDenseMatrix::create({ { 123.00, 23.00, 23.00 }, { 23.00, 123.00, 23.00 }, { 23.00, 23.00, 123.00 } });
@@ -68,6 +68,8 @@ OGComplexDenseMatrix::Ptr CMPLX_A_10 = OGComplexDenseMatrix::create({{{1.0,10.0}
 // A_lower_triangular_singular_near_zero_on_diag 
 OGRealDenseMatrix::Ptr REAL_A_11 = OGRealDenseMatrix::create(
 { { 1., 0., 0. }, { 4., 1e-15, 0. }, { 7., 8., 1. } });
+OGComplexDenseMatrix::Ptr CMPLX_A_11 = OGComplexDenseMatrix::create(
+{{{1.0,10.0},{0.0,0.0},{0.0,0.0}},{{4.0,40.0},{1e-15,1e-14},{0.0,0.0}},{{7.0,70.0},{8.0,80.0},{1.0,10.0}}});
 
 // A_square_spd_near_singular 
 OGRealDenseMatrix::Ptr REAL_A_12 = OGRealDenseMatrix::create({ { 2.0000e+00, 1.0000e+150, 2.0000e+00 }, { 1.0000e+150, 1.0000e+300, 2.0000e+150 }, { 2.0000e+00, 2.0000e+150, 5.0000e+00 } });
@@ -115,6 +117,9 @@ OGComplexDenseMatrix::Ptr CMPLX_C_3 = OGComplexDenseMatrix::create({{{1.0,-2.0},
 // 4 row single col variant of CMPLX_C_3
 OGComplexDenseMatrix::Ptr CMPLX_C_4 = OGComplexDenseMatrix::create({{{1.0,-2.0}},{{-1.0,2.0}},{{1.0,-2.0}},{{-1.0,2.0}}});
 
+// stable complex space 3x3, like CMPLX_A_1
+OGComplexDenseMatrix::Ptr CMPLX_C_5 = OGComplexDenseMatrix::create({{{1.0,0.0},{2.0,0.0},{3.0,0.0}},{{4.0,0.0},{0.0,5.0},{1.0,2.0}},{{-4.0,-1.0},{3.0,1.0},{-0.0,-5.0}}});
+
 
 
 
@@ -150,7 +155,7 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     CMPLX_A_6,
     CMPLX_A_1,
     // expected
-    OGRealDenseMatrix::create({{0.0,0.0,0.0},{0.0,0.0,0.0},{0.3333333333333333,0.3333333333333333,0.3333333333333333}}),
+    OGComplexDenseMatrix::create({{{0.5333333333333334,0.0},{1.0666666666666669,0.0},{1.6000000000000001,0.0}},{{0.0666666666666667,0.0},{0.1333333333333334,0.0},{0.2000000000000000,0.0}},{{0.1111111111111111,0.0},{0.2222222222222222,0.0},{0.3333333333333333,0.0}}}),
     MATHSEQUAL
   ),
 
@@ -171,7 +176,7 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     CMPLX_A_7,
     CMPLX_A_1,
     // expected
-    OGComplexDenseMatrix::create({{{-9476.0,-35170.0},{-9476.0,-35170.0},{-9476.0,-35170.0}},{{1784.0,-340.0},{1784.0,-340.0},{1784.0,-340.0}},{{3.0,30.0},{3.0,30.0},{3.0,30.0}}}),
+    OGComplexDenseMatrix::create({{{-3092.0,-11730.0},{-6184.0,-23460.0},{-9276.0,-35190.0}},{{595.0,-110.0},{1190.0,-220.0},{1785.0,-330.0}},{{1.0,10.0},{2.0,20.0},{3.0,30.0}}}),
     MATHSEQUAL
   ),
 
@@ -192,7 +197,7 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     CMPLX_A_8,
     CMPLX_A_1,
     // expected
-    OGComplexDenseMatrix::create( {{{1.0,0.0},{1.0,0.0},{1.0,0.0}},{{-0.4000000000000000,0.0},{-0.4000000000000000,0.0},{-0.4000000000000000,0.0}},{{-0.0888888888888889,-0.0},{-0.0888888888888889,-0.0},{-0.0888888888888889,-0.0}}}),
+    OGComplexDenseMatrix::create({{{1.0,0.0},{2.0,0.0},{3.0,0.0}},{{-0.6000000000000000,0.0},{-1.2000000000000000,0.0},{-1.8000000000000000,0.0}},{{-0.1333333333333333,0.0},{-0.2666666666666666,0.0},{-0.4000000000000000,-0.0}}}),
     MATHSEQUAL
   ),
 
@@ -213,7 +218,7 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     CMPLX_A_9,
     CMPLX_A_1,
     // expected
-    OGComplexDenseMatrix::create({{{1.0,10.0},{1.0,10.0},{1.0,10.0}},{{398.0,-60.0},{398.0,-60.0},{398.0,-60.0}},{{-7288.0,-31470.0},{-7288.0,-31470.0},{-7288.0,-31470.0}}}),
+    OGComplexDenseMatrix::create({{{1.0,10.0},{2.0,20.0},{3.0,30.0}},{{397.0,-70.0},{794.0,-140.0},{1191.0,-210.0}},{{-8082.0,-31330.0},{-16164.0,-62660.0},{-24246.0,-93990.0}}}),
     MATHSEQUAL
   ),
 
@@ -318,7 +323,8 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     CMPLX_A_10,
     CMPLX_A_1,
     // expected
-    OGComplexDenseMatrix::create({{{0.5294117647058825,-0.0000000000000001},{0.5294117647058825,-0.0000000000000001},{0.5294117647058825,-0.0000000000000001}},{{-0.0868778280542986,0.0000000000000001},{-0.0868778280542986,0.0000000000000001},{-0.0868778280542986,0.0000000000000001}},{{-0.0108597285067873,0.0},{-0.0108597285067873,0.0},{-0.0108597285067873,0.0}}}),
+    // NOTE: the "zero" values here are highly dubious as they are suceptible to fp issues
+    OGComplexDenseMatrix::create({{{0.2941176470588236,-0.0000000000000001},{0.5882352941176472,-0.0000000000000002},{0.8823529411764708,-0.0000000000000005}},{{-0.1303167420814480,0.0000000000000001},{-0.2606334841628959,0.0000000000000002},{-0.3909502262443439,0.0000000000000006}},{{-0.0162895927601810,0.0},{-0.0325791855203620,0.0},{-0.0488687782805430,0.0}}}),
     MATHSEQUAL
   ),
 
@@ -329,10 +335,21 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     REAL_A_11,
     REAL_A_1,
     // expected
-    OGRealDenseMatrix::create({ {0.2941176470588236, 0.5882352941176472, 0.8823529411764708 }, {-0.1303167420814479, -0.2606334841628958, -0.3909502262443438 },
-      {-0.0162895927601810, -0.0325791855203620, -0.0488687782805430 } }),
+    OGRealDenseMatrix::create({ {0.2941176470588236, 0.5882352941176472, 0.8823529411764708 }, {-0.1303167420814479, -0.2606334841628958, -0.3909502262443438 },      {-0.0162895927601810, -0.0325791855203620, -0.0488687782805430 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_11,
+    CMPLX_C_5,
+    // expected
+    // NOTE: numbers straight from plumbing into fortran
+    OGComplexDenseMatrix::create({{{  0.990099009900991325E-02, -0.990099009900990285E-01},{  0.117647058823529424E+00, -0.543923179043097550E-17},{  0.506697728596388758E-01, -0.361094933022714157E-01}},{{ -0.255902513328255879E-01,  0.132825590251332781E+00},
+    { -0.855158819049325336E-01, -0.353389185072353201E-01},{ -0.104583127996057484E+00,  0.250168003225661913E-01}},{{ -0.319878141660320066E-02,  0.166031987814166011E-01},{ -0.106894852381165684E-01, -0.441736481340441502E-02},{ -0.130728909995071873E-01,  0.312710004032077304E-02}}}),
+    MATHSEQUAL
+  ),
+
   //test LUP Branch
   new CheckBinary<MLDIVIDE>
   (
