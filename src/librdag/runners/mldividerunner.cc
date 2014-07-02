@@ -858,7 +858,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
   // allocate space for the singular vectors
   unique_ptr<real8[]> sPtr (new real8[std::min(rows1, cols1)]());
-  real8 moorePenroseRcond = -1; // this is the definition of singular in the Moore-Penrose sense, if set to -1 machine prec is used
+  real8 moorePenroseRcond = -1.e0; // this is the definition of singular in the Moore-Penrose sense, if set to -1 machine prec is used
 
   int4 rank=0; // needed for call but not used info
   try

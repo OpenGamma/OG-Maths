@@ -106,6 +106,7 @@ OGComplexDenseMatrix::Ptr CMPLX_A_18 = OGComplexDenseMatrix::create({{{0.0,0.0},
 
 // A_short_row
 OGRealDenseMatrix::Ptr REAL_A_19 = OGRealDenseMatrix::create({ { 2, 3, 4 } });
+OGComplexDenseMatrix::Ptr CMPLX_A_19 = OGComplexDenseMatrix::create({{{2,20},{3,30},{4,40}}});
 
 // B_rectangular
 OGRealDenseMatrix::Ptr REAL_B_1 = OGRealDenseMatrix::create({ { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 } });
@@ -473,6 +474,21 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
       {12.0714285714285658, 12.0714285714285694, 12.0714285714285676 } }),
     MATHSEQUAL
   ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_1,
+    CMPLX_A_2,
+    // expected
+    // NOTE: Solving this system on Fedora boxes manually via LAPACK calls and not using
+    // our LAPACK/BLAS will likely result in wild results. Fedora uses ATLAS LAPACK and
+    // ATLAS BLAS if linked with just -llapack. To obtain the result below, one needs to link
+    // with -llapack -lblas such that the system /usr/lib64/libblas.so BLAS is used as it has
+    // superior (IIRC, and this is stretching my memory back 2 years), Householder routines).
+    OGComplexDenseMatrix::create({{{0.0037718057520038,-0.0615275813295615},{0.0075436115040075,-0.0754361150400754},{0.0056577086280057,-0.0327675624705328}},{{0.0075436115040076,-0.1230551626591231},{0.0150872230080151,-0.1508722300801509},{0.0113154172560113,-0.0655351249410655}},{{0.0113154172560114,-0.1845827439886846},{0.0226308345120226,-0.2263083451202263},{0.0169731258840169,-0.0983026874115983}}}),
+    MATHSEQUAL
+  ),
+
    //test DGELS branch Expansion
   // this branch tests the necessary expansion of the "B" matrix if the solution to the system is larger than the mallocd space
   new CheckBinary<MLDIVIDE>
@@ -483,6 +499,15 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     // expected
     OGRealDenseMatrix::create({ {0.1379310344827586, 0.2068965517241379, 0.2758620689655172 },
       {0.2068965517241379, 0.3103448275862069, 0.4137931034482758 }, {0.2758620689655172, 0.4137931034482757, 0.5517241379310344 } }),
+    MATHSEQUAL
+  ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_19,
+    CMPLX_A_19,
+    // expected
+    OGComplexDenseMatrix::create({{{0.1379310344827586,0.0},{0.2068965517241380,0.0},{0.2758620689655172,0.0}},{{0.2068965517241379,0.0},{0.3103448275862069,0.0},{0.4137931034482759,0.0}},{{0.2758620689655172,0.0},{0.4137931034482760,0.0},{0.5517241379310345,0.0}}}),
     MATHSEQUAL
   )
 
