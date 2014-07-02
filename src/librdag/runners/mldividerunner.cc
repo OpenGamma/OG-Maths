@@ -768,31 +768,31 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
   // needed for QR and SVD, the leading dimension of matrix "B"
   int4 ldb = std::max(rows1, cols1);
+  // allocated enough space for the solution as it will be rows1 * cols2 in size 
+  // and data2 is rows2*cols2 which may not be big enough.
+  // again this involves pointer swapping as with the permutation branch in the triangular solve
+  // more details on the process are available at its call site.
+  if (rows1 < cols1)
+  {
+    bdata2Ptr = unique_ptr<T[]>(new T[ldb * cols2]);
+    T * b = bdata2Ptr.get();
+    //copy in data strips
+    for (size_t i = 0; i < cols2; i++)
+    {
+      std::copy(data2 + (i * rows2), data2 + ((i + 1)* rows2), b + i * ldb);
+    }
+    // switch pointers so data2 now points at a correct sized alloc
+    data2Ptr.swap(bdata2Ptr);
+    // reassign underlying data2 pointer
+    data2 = data2Ptr.get();
+  }
+
   // first, attempt QR if we haven't already decided it's a bad idea
   if (attemptQR)
   {
     if (debug_)
     {
       cout << "210. Attempting QR solve." << std::endl;
-    }
-
-    // allocated enough space for the solution as it will be rows1 * cols2 in size 
-    // and data2 is rows2*cols2 which may not be big enough.
-    // again this involves pointer swapping as with the permutation branch in the triangular solve
-    // more details on the process are available at its call site.
-    if (rows1 < cols1)
-    {
-      bdata2Ptr = unique_ptr<T[]>(new T[ldb * cols2]);
-      T * b = bdata2Ptr.get();
-      //copy in data strips
-      for (size_t i = 0; i < cols2; i++)
-      {
-        std::copy(data2 + (i * rows2), data2 + ((i + 1)* rows2), b + i * ldb);
-      }
-      // switch pointers so data2 now points at a correct sized alloc
-      data2Ptr.swap(bdata2Ptr);
-      // reassign underlying data2 pointer
-      data2 = data2Ptr.get();
     }
 
     // Attempt a least squares solve
@@ -901,8 +901,18 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   {
     cout << "270. SVD returning" << std::endl;
   }
-  // technically the wrong size data *but* C just sees a pointer so we can get away with it
-  ret = makeConcreteDenseMatrix(data2Ptr.release(), cols1, cols2, OWNER);
+
+  // new alloc
+  T * ref = data2;
+  unique_ptr<T[]> newdata2Ptr (new T[cols1 * cols2]);
+  data2 = newdata2Ptr.get();
+  // and copy 1:cols1 from each column of data2 needs to be returned
+  for (size_t i = 0; i < cols2; i++)
+  {
+    std::copy(ref + (i * ldb), ref + ((i * ldb)+cols1), data2 + (i * cols1));
+  }
+  // wire in return
+  ret = makeConcreteDenseMatrix(newdata2Ptr.release(), cols1, cols2, OWNER);
   reg0.push_back(ret);
   return nullptr;
 }
