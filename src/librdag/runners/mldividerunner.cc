@@ -816,16 +816,19 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         cout <<  "220. QR solve failed" << std::endl;
       }
       cout <<  " WARN: Matrix of coefficients does not have full rank. Rank is " << info << "." << std::endl;
-      // switch back to original data if we created a new "b" matrix
+
+      // copy back in data1 and strips of data2, both will be needed for svd
+      // no point in freeing here
       if (rows1 < cols1)
       {
-        data2Ptr.swap(bdata2Ptr);
-        // reassign underlying data2 pointer
-        data2 = data2Ptr.get();
+        //copy in data2 strips
+        for (size_t i = 0; i < cols2; i++)
+        {
+          std::copy(data2 + (i * rows2), data2 + ((i + 1)* rows2), bdata2Ptr.get() + i * ldb);
+        }
       }
       // take a copy of the original data as it will have been destroyed above
       std::copy(arg0->getData(),arg0->getData()+len1,data1);
-      std::copy(arg1->getData(),arg1->getData()+len2,data2);
     }
     else
     {
@@ -857,7 +860,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   }
 
   // allocate space for the singular vectors
-  unique_ptr<real8[]> sPtr (new real8[std::min(rows1, cols1)]());
+  unique_ptr<real8[]> sPtr (new real8[ldb]());
   real8 moorePenroseRcond = -1.e0; // this is the definition of singular in the Moore-Penrose sense, if set to -1 machine prec is used
 
   int4 rank=0; // needed for call but not used info
