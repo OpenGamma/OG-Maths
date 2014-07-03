@@ -19,6 +19,7 @@ import com.opengamma.maths.nativeloader.NativeLibraries;
 import com.opengamma.maths.nodes.CTRANSPOSE;
 import com.opengamma.maths.nodes.INV;
 import com.opengamma.maths.nodes.LU;
+import com.opengamma.maths.nodes.MLDIVIDE;
 import com.opengamma.maths.nodes.MTIMES;
 import com.opengamma.maths.nodes.NEGATE;
 import com.opengamma.maths.nodes.NORM2;
@@ -120,6 +121,17 @@ public final class DOGMA {
     return ret;
   }
 
+  public static OGNumeric mldivide(final OGNumeric... args) {
+    if (args.length < 2) {
+      throw new MathsExceptionIllegalArgument("Cannot use mldivide() with just one argument.");
+    }
+    OGNumeric ret = args[0];
+    for (int i = 1; i < args.length; i++) {
+      ret = new MLDIVIDE(ret, args[i]);
+    }
+    return ret;
+  }
+  
   // variadic results
 
   public static OGSVDResult svd(OGNumeric arg0) {
