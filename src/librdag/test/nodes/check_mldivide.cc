@@ -143,17 +143,18 @@ OGComplexDenseMatrix::Ptr CMPLX_C_5 = OGComplexDenseMatrix::create({{{1.0,0.0},{
 INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
   Values
   (
-
-  // CHECKING REAL SPACE MATRICES
+  // CHECKING SCALAR
   new CheckBinary<MLDIVIDE>
   (
     // input
     OGRealScalar::create(2.0),
-    OGRealScalar::create(3.0),
+    OGRealScalar::create(6.0),
     // expected
-    OGRealScalar::create(5.0),
+    OGRealScalar::create(3.0),
     MATHSEQUAL
   ),
+
+  // CHECKING MATRIX-MATRIX VARIANTS
 
   //test catch of all zeros Branch
   new CheckBinary<MLDIVIDE>
@@ -572,17 +573,4 @@ TEST(MLDIVIDETests, CheckBadCommuteThrows) {
   ASSERT_THROW(
   runtree(node),
   rdag_error);
-}
-
-// QR: this is a right pain to test because it's rank deficient the results are pulled 
-// about by floating point behaviour in deficient part of Q
-// we test by reconstruction opposed to absolute value
-TEST(MLDIVIDETests, test_rank_deficient_QR_Branch) {
-  OGExpr::Ptr op = MLDIVIDE::create(REAL_A_4, REAL_B_1);
-  runtree(op);
-  OGExpr::Ptr  reconstr = PLUS::create(NEGATE::create(REAL_B_1), MTIMES::create(REAL_A_4, op->getRegs()[0]->asOGTerminal()));
-  runtree(reconstr);
-  OGTerminal::Ptr zeros = OGRealDenseMatrix::create({{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}});
-  reconstr->getRegs()[0]->asOGTerminal()->debug_print();
-  EXPECT_TRUE(zeros->mathsequals(reconstr->getRegs()[0]->asOGTerminal(),1e-14,1e-14));
 }

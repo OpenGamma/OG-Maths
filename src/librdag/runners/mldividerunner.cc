@@ -969,7 +969,7 @@ MLDIVIDERunner::run(RegContainer& reg0, OGRealScalar::Ptr arg0, OGRealScalar::Pt
 {
   real8 data1 = arg0->getValue();
   real8 data2 = arg1->getValue();
-  OGNumeric::Ptr ret = OGRealScalar::create(data1+data2);
+  OGNumeric::Ptr ret = OGRealScalar::create(data2/data1);
   reg0.push_back(ret);
   return nullptr;
 }
