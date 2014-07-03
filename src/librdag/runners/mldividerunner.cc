@@ -535,6 +535,10 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           // ownership as the matrix shared_ptr container will handle and own it from now.
           ret = makeConcreteDenseMatrix(data2Ptr.release(), rows2, cols2, OWNER);
           reg0.push_back(ret);
+          if (debug_)
+          {
+            cout << "30. Triangular solve success, returning";
+          }
           return nullptr;
         }
         catch (rdag_error& e)
@@ -543,6 +547,13 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           {
             throw;
           }
+          // In theory, the rest of the code in scope is dead...
+          // Triangular solve should never fail because the condition estimators should pick up
+          // blatently ill-conditioned systems and just move on to a more appropriate method
+          // of solution, however, this branch is left in as part of a catch-all just in case
+          // some system makes it through the ill-conditioned test and the solver then fails.
+          // If this is the case, we mark as singular and if there's a permutation applied 
+          // it is reversed.
           if (debug_)
           {
             cout<<("40. Triangular solve fail. Mark as singular.");
@@ -550,11 +561,24 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           // solve failed, system is singular so set the flag to skip doing anything else
           // in the "exact" solution regime
           singular = true;
-        }
 
-        if (debug_)
-        {
-          cout << "30. Triangular solve success, returning";
+          // If we are here, we've failed to do a triangular solve, but the data might still be the permuted
+          // variant, given we are in the realm of least squares solutions, we need to reset the permutation
+          // back to the original data, it's just a pointer switch, not doing so might influence results from
+          // iterative llsq solvers.
+          if (DATA_PERMUTATION != detail::PERMUTATION::STANDARD)
+          {
+            if(debug_)
+            {
+              cout << "45. Resetting permutation." << std::endl;
+            }
+
+            // swap back pointers
+            data1Ptr.swap(triPtr1Ptr);
+            data2Ptr.swap(triPtr2Ptr);
+            data1 = data1Ptr.get();
+            data2 = data2Ptr.get();
+          }
         }
       }
       else
@@ -568,24 +592,6 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           cout << "43. Triangular condition was computed as too bad to attempt solve." << std::endl;
         }
         singular = true;
-      }
-
-      // If we are here, we've failed to do a triangular solve, but the data might still be the permuted
-      // variant, given we are in the realm of least squares solutions, we need to reset the permutation
-      // back to the original data, it's just a pointer switch, not doing so might influence results from
-      // iterative llsq solvers
-      if (DATA_PERMUTATION != detail::PERMUTATION::STANDARD)
-      {
-        if(debug_)
-        {
-          cout << "45. Resetting permutation." << std::endl;
-        }
-
-        // swap back pointers
-        data1Ptr.swap(triPtr1Ptr);
-        data2Ptr.swap(triPtr2Ptr);
-        data1 = data1Ptr.get();
-        data2 = data2Ptr.get();
       }
     } // end "this matrix is triangular"
 
