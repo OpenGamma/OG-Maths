@@ -108,6 +108,11 @@ OGComplexDenseMatrix::Ptr CMPLX_A_18 = OGComplexDenseMatrix::create({{{0.0,0.0},
 OGRealDenseMatrix::Ptr REAL_A_19 = OGRealDenseMatrix::create({ { 2, 3, 4 } });
 OGComplexDenseMatrix::Ptr CMPLX_A_19 = OGComplexDenseMatrix::create({{{2,20},{3,30},{4,40}}});
 
+// A_short_2_x_row
+OGRealDenseMatrix::Ptr REAL_A_20 = OGRealDenseMatrix::create({ { 2e-6,3,4e6 },{ 2e-6,3,4e6 } });
+OGComplexDenseMatrix::Ptr CMPLX_A_20 = OGComplexDenseMatrix::create({{{2e-6,0},{3,1},{4e6,1e40}},{{2e-6,0},{3,1},{4e6,1e40}}});
+
+
 // B_rectangular
 OGRealDenseMatrix::Ptr REAL_B_1 = OGRealDenseMatrix::create({ { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 } });
 
@@ -463,6 +468,28 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     MATHSEQUAL
   ),
 
+  //test DGELS branch Expansion
+  // this branch tests the necessary expansion of the "B" matrix if the solution to the system is larger than the mallocd space
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    REAL_A_19,
+    REAL_A_19,
+    // expected
+    OGRealDenseMatrix::create({ {0.1379310344827586, 0.2068965517241379, 0.2758620689655172 },
+      {0.2068965517241379, 0.3103448275862069, 0.4137931034482758 }, {0.2758620689655172, 0.4137931034482757, 0.5517241379310344 } }),
+    MATHSEQUAL
+  ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_19,
+    CMPLX_A_19,
+    // expected
+    OGComplexDenseMatrix::create({{{0.1379310344827586,0.0},{0.2068965517241380,0.0},{0.2758620689655172,0.0}},{{0.2068965517241379,0.0},{0.3103448275862069,0.0},{0.4137931034482759,0.0}},{{0.2758620689655172,0.0},{0.4137931034482760,0.0},{0.5517241379310345,0.0}}}),
+    MATHSEQUAL
+  ),
+
    //test SVD Branch
   new CheckBinary<MLDIVIDE>
   (
@@ -489,28 +516,25 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     MATHSEQUAL
   ),
 
-   //test DGELS branch Expansion
-  // this branch tests the necessary expansion of the "B" matrix if the solution to the system is larger than the mallocd space
+   //test QR fail, then SVD xgelsd answer size re-uses memory Branch
   new CheckBinary<MLDIVIDE>
   (
     // input
-    REAL_A_19,
-    REAL_A_19,
+    REAL_A_20,
+    REAL_A_20,
     // expected
-    OGRealDenseMatrix::create({ {0.1379310344827586, 0.2068965517241379, 0.2758620689655172 },
-      {0.2068965517241379, 0.3103448275862069, 0.4137931034482758 }, {0.2758620689655172, 0.4137931034482757, 0.5517241379310344 } }),
+    OGRealDenseMatrix::create({{0.0,0.0,0.0000000000005000},{0.0,0.0000000000005625,0.0000007500000000},{0.0000000000005000,0.0000007500000000,0.9999999999994372}}),
     MATHSEQUAL
   ),
   new CheckBinary<MLDIVIDE>
   (
     // input
-    CMPLX_A_19,
-    CMPLX_A_19,
+    CMPLX_A_20,
+    CMPLX_A_20,
     // expected
-    OGComplexDenseMatrix::create({{{0.1379310344827586,0.0},{0.2068965517241380,0.0},{0.2758620689655172,0.0}},{{0.2068965517241379,0.0},{0.3103448275862069,0.0},{0.4137931034482759,0.0}},{{0.2758620689655172,0.0},{0.4137931034482760,0.0},{0.5517241379310345,0.0}}}),
+    OGComplexDenseMatrix::create({{{0.0,0.0},{0.0,0.0},{0.0,0.0}},{{0.0,-0.0},{0.0,0.0},{0.0,0.0}},{{0.0,-0.0},{0.0,-0.0},{1.0000000000000002,0.0}}}),
     MATHSEQUAL
   )
-
 
   ) // end value
 );

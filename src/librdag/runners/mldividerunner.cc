@@ -821,10 +821,10 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       // no point in freeing here
       if (rows1 < cols1)
       {
-        //copy in data2 strips
+        //copy in data2 strips, remember the pointers are still swapped!
         for (size_t i = 0; i < cols2; i++)
         {
-          std::copy(data2 + (i * rows2), data2 + ((i + 1)* rows2), bdata2Ptr.get() + i * ldb);
+          std::copy(bdata2Ptr.get() + (i * rows2), bdata2Ptr.get() + ((i + 1)* rows2), data2Ptr.get() + i * ldb);
         }
       }
       // take a copy of the original data as it will have been destroyed above
