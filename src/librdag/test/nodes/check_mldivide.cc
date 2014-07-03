@@ -11,6 +11,7 @@
 #include "dispatch.hh"
 #include "testnodes.hh"
 #include "runtree.hh"
+#include "numerictypes.hh"
 #include "test/test_utils.hh"
 
 using namespace std;
@@ -112,6 +113,9 @@ OGComplexDenseMatrix::Ptr CMPLX_A_19 = OGComplexDenseMatrix::create({{{2,20},{3,
 OGRealDenseMatrix::Ptr REAL_A_20 = OGRealDenseMatrix::create({ { 2e-6,3,4e6 },{ 2e-6,3,4e6 } });
 OGComplexDenseMatrix::Ptr CMPLX_A_20 = OGComplexDenseMatrix::create({{{2e-6,0},{3,1},{4e6,1e40}},{{2e-6,0},{3,1},{4e6,1e40}}});
 
+OGRealDenseMatrix::Ptr REAL_A_21 = OGRealDenseMatrix::create({ { 0., 0., 0. }, { 0., 0., 0. }, { 0., 0., 0. }});
+OGComplexDenseMatrix::Ptr CMPLX_A_21 = OGComplexDenseMatrix::create({ { 0., 0., 0. }, { 0., 0., 0. }, { 0., 0., 0. }});
+
 
 // B_rectangular
 OGRealDenseMatrix::Ptr REAL_B_1 = OGRealDenseMatrix::create({ { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 }, { 1.00, 2.00, 3.00 } });
@@ -150,6 +154,27 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     OGRealScalar::create(5.0),
     MATHSEQUAL
   ),
+
+  //test catch of all zeros Branch
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    REAL_A_21,
+    REAL_A_1,
+    // expected
+    OGRealDenseMatrix::create( { { getPosInf(), getPosInf(), getPosInf()}, { getPosInf(), getPosInf(), getPosInf()}, { getPosInf(), getPosInf(), getPosInf()} }),
+    MATHSEQUAL
+  ),
+  new CheckBinary<MLDIVIDE>
+  (
+    // input
+    CMPLX_A_21,
+    CMPLX_A_1,
+    // expected
+    OGComplexDenseMatrix::create({ { getPosInf(), getPosInf(), getPosInf()}, { getPosInf(), getPosInf(), getPosInf()}, { getPosInf(), getPosInf(), getPosInf()} }),
+    MATHSEQUAL
+  ),
+
   //test UpperTri Branch
   new CheckBinary<MLDIVIDE>
   (

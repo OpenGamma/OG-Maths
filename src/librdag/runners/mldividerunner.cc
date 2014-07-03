@@ -435,6 +435,32 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     throw rdag_error(msg.str());
   }
 
+  // check for all zeros system matrix, quick return if so
+  bool allzero=true;
+  for(size_t i = 0; i < len1; i++)
+  {
+    if(data1[i]!=0.e0)
+    {
+      allzero = false;
+      break;
+    }
+  }
+  if(allzero)
+  {
+    if (debug_)
+    {
+      cout << "5. Matrix is all zeros, returning Inf"  << std::endl;
+    }
+    unique_ptr<T[]> retData(new T[len2]);
+    for(size_t i = 0; i < len2; i++)
+    {
+      retData.get()[i]=std::numeric_limits<real8>::infinity();
+    }
+    ret = makeConcreteDenseMatrix(retData.release(), rows2, cols2, OWNER);
+    reg0.push_back(ret);
+  }
+
+
   // Do the alg above:
   // is it square?
   if (rows1 == cols1)
@@ -537,7 +563,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           reg0.push_back(ret);
           if (debug_)
           {
-            cout << "30. Triangular solve success, returning";
+            cout << "30. Triangular solve success, returning" << std::endl;
           }
           return nullptr;
         }
@@ -556,7 +582,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           // it is reversed.
           if (debug_)
           {
-            cout<<("40. Triangular solve fail. Mark as singular.");
+            cout<< "40. Triangular solve fail. Mark as singular." << std::endl;
           }
           // solve failed, system is singular so set the flag to skip doing anything else
           // in the "exact" solution regime
