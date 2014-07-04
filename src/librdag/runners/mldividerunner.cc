@@ -185,7 +185,7 @@ void checkIfLowerTriangular(T * data, size_t rows, size_t cols, UPLO* tri, UNITD
     {
       if(!SingleValueFuzzyEquals(data[ir +i],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
       {
-        cout << "13. checking lower:: not unit diag at element [" << i << "," << i << "]" << "found value = "<< data[ir + i] << std::endl;
+        cerr << "13. checking lower:: not unit diag at element [" << i << "," << i << "]" << "found value = "<< data[ir + i] << std::endl;
         *diag = UNITDIAG::NONUNIT;
         isUnit = false;
       }
@@ -194,7 +194,7 @@ void checkIfLowerTriangular(T * data, size_t rows, size_t cols, UPLO* tri, UNITD
     {
       if (!SingleValueFuzzyEquals(data[ir + j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
       {
-        cout << "14. checking lower:: returning as nonzero in upper triangle at [" << j << "," << i << "]" << "found value = "<< data[ir + j] << std::endl;
+        cerr << "14. checking lower:: returning as nonzero in upper triangle at [" << j << "," << i << "]" << "found value = "<< data[ir + j] << std::endl;
         SingleValueFuzzyEquals(data[ir +j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon());
         *tri = UPLO::NEITHER;
         return;
@@ -255,7 +255,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
         // is a possible optimisation.
         if (isUDswitch && !SingleValueFuzzyEquals(data[i * rows + j],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
         {
-          cout << "16. checking upper:: not unit diag at element [" << i << "," << j << "]" << std::endl;
+          cerr << "16. checking upper:: not unit diag at element [" << i << "," << j << "]" << std::endl;
 
           // set as not unit diagonal
           ret->flagDiag = UNITDIAG::NONUNIT;
@@ -294,7 +294,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
   if (!validPermutation)
   {
     // we don't have a valid upper permutation, return declaring so
-    cout << "17. checking upper:: not upper triangular, permuted or otherwise" << std::endl;
+    cerr << "17. checking upper:: not upper triangular, permuted or otherwise" << std::endl;
     ret->flagUPLO = UPLO::NEITHER;
   }
   else
@@ -302,14 +302,14 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
     if(upperTriangleIfValidIspermuted)
     {
       // permutation is valid row, update struct. foo(rowStarts) = 1: length(rowStarts) gives direct perm
-      cout << "18. checking upper:: Row permutation spotted" << std::endl;
+      cerr << "18. checking upper:: Row permutation spotted" << std::endl;
       ret->flagPerm = PERMUTATION::ROW;
       ret->perm = std::move(rowStarts);
     }
     else
     {
       // permutation is in fact the 1:1 map, we have a triangle already
-      cout << "19. checking upper:: standard upper triangle" << std::endl;
+      cerr << "19. checking upper:: standard upper triangle" << std::endl;
       ret->flagPerm = PERMUTATION::STANDARD;
     }
   }
@@ -391,7 +391,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   T * data2 = data2Ptr.get();
   std::copy(ptrdata2,ptrdata2+len2,data2);
 
-  // Inveral variables signifcant in flow control.
+  // Internal variables signifcant in flow control.
   real8 rcond = 0; // estimate of reciprocal condition number
   real8 anorm = 0; // the 1 norm of a matrix
   bool singular = false; // is the matrix identified as singular
@@ -449,7 +449,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   {
     if (debug_)
     {
-      cout << "5. Matrix is all zeros, returning Inf"  << std::endl;
+      cerr << "5. Matrix is all zeros, returning Inf"  << std::endl;
     }
     unique_ptr<T[]> retData(new T[len2]);
     for(size_t i = 0; i < len2; i++)
@@ -467,7 +467,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   {
     if (debug_)
     {
-      cout << "10. Matrix is square"  << std::endl;
+      cerr << "10. Matrix is square"  << std::endl;
     }
 
     // Is the array1 triangular or permuted triangular, send probe and get back struct containing result
@@ -477,12 +477,12 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     detail::UPLO UPLO = tptr->flagUPLO;
     detail::UNITDIAG DIAG = tptr->flagDiag;
 
-    // Is this matrix layour some breed of triangular?
+    // Is this matrix layout some breed of triangular?
     if (UPLO != detail::UPLO::NEITHER)
     {
       if (debug_)
       {
-        cout << "20. Matrix is " << (UPLO == detail::UPLO::UPPER ? "upper" : "lower") << " triangular, " << (DIAG == detail::UNITDIAG::NONUNIT ? "non-unit" : "unit") << " diagonal." << std::endl;
+        cerr << "20. Matrix is " << (UPLO == detail::UPLO::UPPER ? "upper" : "lower") << " triangular, " << (DIAG == detail::UNITDIAG::NONUNIT ? "non-unit" : "unit") << " diagonal." << std::endl;
       }
 
       detail::PERMUTATION DATA_PERMUTATION = tptr->flagPerm;
@@ -492,7 +492,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         // we have a permutation of the data, so we'll rewire the system
         if (debug_)
         {
-          cout << "25. Matrix is " << (DATA_PERMUTATION == detail::PERMUTATION::ROW ? "row" : "column") << " permuted triangular." << std::endl;
+          cerr << "25. Matrix is " << (DATA_PERMUTATION == detail::PERMUTATION::ROW ? "row" : "column") << " permuted triangular." << std::endl;
         }
         // We have a row permutation... this gets a bit hairy pointer twiddling wise.
         // The idea is that it'd be nice when it comes to calling lapack to use the same set of
@@ -539,7 +539,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       } // end permutation branch
 
 
-      cout << "28. Hitting lapack tri routines with UPLO = " << (UPLO == detail::UPLO::UPPER ? "upper" : "lower") << " DIAG = " << (DIAG == detail::UNITDIAG::NONUNIT ? "non-unit" : "unit") << std::endl;
+      cerr << "28. Hitting lapack tri routines with UPLO = " << (UPLO == detail::UPLO::UPPER ? "upper" : "lower") << " DIAG = " << (DIAG == detail::UNITDIAG::NONUNIT ? "non-unit" : "unit") << std::endl;
 
       // Compute reciprocal condition number, if it's bad say so and least squares solve
 
@@ -563,7 +563,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           reg0.push_back(ret);
           if (debug_)
           {
-            cout << "30. Triangular solve success, returning" << std::endl;
+            cerr << "30. Triangular solve success, returning" << std::endl;
           }
           return nullptr;
         }
@@ -582,7 +582,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           // it is reversed.
           if (debug_)
           {
-            cout<< "40. Triangular solve fail. Mark as singular." << std::endl;
+            cerr<< "40. Triangular solve fail. Mark as singular." << std::endl;
           }
           // solve failed, system is singular so set the flag to skip doing anything else
           // in the "exact" solution regime
@@ -596,7 +596,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           {
             if(debug_)
             {
-              cout << "45. Resetting permutation." << std::endl;
+              cerr << "45. Resetting permutation." << std::endl;
             }
 
             // swap back pointers
@@ -615,7 +615,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         // and abandon any further attemps at exact solution.
         if (debug_)
         {
-          cout << "43. Triangular condition was computed as too bad to attempt solve." << std::endl;
+          cerr << "43. Triangular condition was computed as too bad to attempt solve." << std::endl;
         }
         singular = true;
       }
@@ -626,7 +626,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     {
       if (debug_)
       {
-        cout << "50. Not triangular" << std::endl;
+        cerr << "50. Not triangular" << std::endl;
       }
       bool cholesky_mangled_data = false;
       // See if it's Hermitian (symmetric in the real case)
@@ -634,7 +634,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       {
         if (debug_)
         {
-          cout << "60. Is Hermitian" << std::endl;
+          cerr << "60. Is Hermitian" << std::endl;
         }
         info = 0;
         // Attempt to compute a Cholesky factorisation
@@ -656,7 +656,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           if (debug_)
           {
-            cout << "70. Cholesky success.  Computing condition based on cholesky factorisation" << std::endl;
+            cerr << "70. Cholesky success.  Computing condition based on cholesky factorisation" << std::endl;
           }
           // technically this should be zlanhe() in the complex case, but the 1 norm estimate is the same
           // as sum(abs(A)) == sum(abs(conj(A)))
@@ -666,14 +666,14 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           lapack::xpocon(lapack::L, &int4rows1, data1, &int4rows1, &anorm, &rcond, &info);
           if (debug_)
           {
-            cout << "80. Cholesky condition estimate. " << rcond << std::endl;
+            cerr << "80. Cholesky condition estimate. " << rcond << std::endl;
           }
           // again test if reciprocal condition is acceptable
           if (1.e0 + rcond != 1.e0)
           {
             if (debug_)
             {
-              cout << "90. Cholesky condition acceptable. Backsolve and return." << std::endl;
+              cerr << "90. Cholesky condition acceptable. Backsolve and return." << std::endl;
             }
             lapack::xpotrs(lapack::L, &int4rows1, &int4cols2, data1, &int4rows1, data2, &int4rows2, &info);
             // there is no possible numerical exception here, just input
@@ -686,10 +686,17 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             // Cholesky decomposition of matrix indicates condition is bad
             if (debug_)
             {
-              cout << "100. Cholesky condition bad. Mark as singular." << std::endl;
+              cerr << "100. Cholesky condition bad. Mark as singular." << std::endl;
             }
             singular = true;
           }
+        }
+        else
+        {
+            if (debug_)
+            {
+              cerr << "110. Cholesky decomposition failed." << std::endl;
+            }
         }
       } // end if Hermitian branch
 
@@ -698,7 +705,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         // We are here if the matrix is not singular, not triangular and not Hermitian.
         if (debug_)
         {
-          cout << "120. Non-Hermitian OR not s.p.d." << std::endl;
+          cerr << "120. Non-Hermitian OR not s.p.d." << std::endl;
         }
         //  we're here as matrix isn't s.p.d. as Cholesky failed. 
         // Get new copy of the matrix data if cholesky ran
@@ -712,7 +719,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
 
         if (debug_)
         {
-          cout << "130. LUP attempted" << std::endl;
+          cerr << "130. LUP attempted" << std::endl;
         }
 
         // Try a LUP decomposition
@@ -733,7 +740,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           // LUP decomposition was successful, check 
           if (debug_)
           {
-            cout << "140. LUP success. Computing condition based on LUP factorisation." << std::endl;
+            cerr << "140. LUP success. Computing condition based on LUP factorisation." << std::endl;
           }
 
           // compute a reciprocal condition estimate based on decomposition
@@ -747,7 +754,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
             lapack::xgetrs(lapack::N, &int4rows1, &int4cols2, data1, &int4rows1, ipivPtr.get(), data2, &int4rows2, &info);
             if (debug_)
             {
-              cout << "150. LUP returning" << std::endl;
+              cerr << "150. LUP returning" << std::endl;
             }
             // no throw possible unless on bad input, create return matrix 
             // freeing unique_ptr ref so shared_ptr in matrix type can have ownership on the way.
@@ -759,7 +766,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
           {
             if (debug_)
             {
-              cout << "160. LUP failed, condition too high" << std::endl;
+              cerr << "160. LUP failed, condition too high" << std::endl;
             }
             singular = true;
           }
@@ -768,7 +775,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           if (debug_)
           {
-            cout << "170. LUP factorisation failed. Mark as singular." << std::endl;
+            cerr << "170. LUP factorisation failed. Mark as singular." << std::endl;
           }
           singular = true;
         }
@@ -780,16 +787,16 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   // we use 1.e0 here againso cutoff is near machine precision
   if (singular)
   {
-    cout << "Square matrix is singular to machine precision. RCOND estimate = " << rcond << std::endl;
+    cerr << "Square matrix is singular to machine precision. RCOND estimate = " << rcond << std::endl;
     if (debug_)
     {
-      cout << "190. Square matrix is singular." << std::endl;
+      cerr << "190. Square matrix is singular." << std::endl;
     }
     if ((rcond + 1.e0) == 1.e0)
     {
       if (debug_)
       {
-        cout << "200. Condition of square matrix is too bad for QR least squares." << std::endl;
+        cerr << "200. Condition of square matrix is too bad for QR least squares." << std::endl;
       }
       // Condition is really bad so don't use QR
       attemptQR = false;
@@ -824,7 +831,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   {
     if (debug_)
     {
-      cout << "210. Attempting QR solve." << std::endl;
+      cerr << "210. Attempting QR solve." << std::endl;
     }
 
     // Attempt a least squares solve
@@ -845,9 +852,9 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       // It failed with a rank deficiency problem, clean up before moving on to SVD
       if (debug_)
       {
-        cout <<  "220. QR solve failed" << std::endl;
+        cerr <<  "220. QR solve failed" << std::endl;
       }
-      cout <<  " WARN: Matrix of coefficients does not have full rank. Rank is " << info << "." << std::endl;
+      cerr <<  " WARN: Matrix of coefficients does not have full rank. Rank is " << info << "." << std::endl;
 
       // copy back in data1 and strips of data2, both will be needed for svd
       // no point in freeing here
@@ -867,7 +874,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
       // the QR solve was successful, pull out the solution data into a new allocation and return
       if (debug_)
       {
-        cout << "230. QR solve success, returning" << std::endl;
+        cerr << "230. QR solve success, returning" << std::endl;
       }
       // new alloc
       T * ref = data2;
@@ -888,7 +895,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   // If all else fails... we attempt a general least squares solve with SVD
   if (debug_)
   {
-    cout <<  "240. Attempting SVD" << std::endl;
+    cerr <<  "240. Attempting SVD" << std::endl;
   }
 
   // allocate space for the singular vectors
@@ -916,7 +923,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
     // something went wrong in the solver, nothing we can do so throw...
     if (debug_)
     {
-      cout << "250. SVD failed" << std::endl;
+      cerr << "250. SVD failed" << std::endl;
     }
     stringstream msg;
     msg << "SVD Failed to converege. " << info << " out of " << std::max(rows1, cols1) << " off diagonals failed to converge to zero. RCOND = " << rcond << std::endl;
@@ -926,12 +933,12 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   { // dead branch, used for debug
     if (debug_)
     {
-      cout << "260. SVD success" << std::endl;
+      cerr << "260. SVD success" << std::endl;
     }
   }
   if (debug_)
   {
-    cout << "270. SVD returning" << std::endl;
+    cerr << "270. SVD returning" << std::endl;
   }
 
   // new alloc
