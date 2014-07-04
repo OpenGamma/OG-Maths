@@ -195,4 +195,7 @@ template class UnaryOpTest<TRANSPOSE>;
 template class CheckBinary<MTIMES>;
 template class BinaryOpTest<MTIMES>;
 
+template class CheckBinary<MLDIVIDE>;
+template class BinaryOpTest<MLDIVIDE>;
+
 }

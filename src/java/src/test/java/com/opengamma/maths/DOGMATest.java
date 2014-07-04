@@ -13,6 +13,7 @@ import static com.opengamma.maths.DOGMA.disp;
 import static com.opengamma.maths.DOGMA.inv;
 import static com.opengamma.maths.DOGMA.lu;
 import static com.opengamma.maths.DOGMA.minus;
+import static com.opengamma.maths.DOGMA.mldivide;
 import static com.opengamma.maths.DOGMA.mtimes;
 import static com.opengamma.maths.DOGMA.norm2;
 import static com.opengamma.maths.DOGMA.pinv;
@@ -142,7 +143,7 @@ public class DOGMATest {
     mat = new OGComplexDenseMatrix(new double[][] { { 1, 2, 3 }, { 1, 2, 3 }, { -4, -5, 6 } }, new double[][] { { 10, 20, 30 }, { 10, 20, 30 }, { -40, -50, 60 } });
     // TODO: assert warn raised on singular
     toOGTerminal(inv(mat));
-    
+
   }
 
   @Test
@@ -231,6 +232,21 @@ public class DOGMATest {
     assertTrue(D(1e10).mathsequals(toOGTerminal(TenTimes)));
     TenTimes = mtimes(cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat);
     assertTrue(C(72306229251e0, 12853399300e0).mathsequals(toOGTerminal(TenTimes)));
+  }
+
+  @Test
+  public void MldivideTest() {
+    OGTerminal rmat, cmat;
+    rmat = new OGRealDenseMatrix(new double[][] { { 10., 2., 3. }, { 4., 50., 6. }, { 7., 8., 9. } });
+    cmat = new OGComplexDenseMatrix(new double[][] { { 1 }, { 2 }, { 3 } }, new double[][] { { 10 }, { 20 }, { 30 } });
+    OGTerminal expected = new OGComplexDenseMatrix(new double[][] { { 0.0000000000000000 }, { 0.0000000000000000 }, { 0.3333333333333333 } }, new double[][] { { 0.0000000000000000 },
+      { 0.0000000000000000 }, { 3.3333333333333335 } });
+    assertTrue(expected.mathsequals(toOGTerminal(mldivide(rmat, cmat))));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void MldivideBadDataTest() {
+    mldivide(D(10));
   }
 
   @Test

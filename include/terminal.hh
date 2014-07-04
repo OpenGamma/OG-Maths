@@ -140,7 +140,7 @@ class OGTerminal: public OGNumeric
      * @return true if \a this is considered mathematically equal to \a term, false else
      */
     virtual bool mathsequals(const OGTerminal::Ptr& term, real8 maxabserror, real8 maxrelerror)const;
-    
+
     virtual bool operator==(const OGTerminal::Ptr&) const;
     virtual bool operator!=(const OGTerminal::Ptr&) const;
     virtual bool operator%(const OGTerminal::Ptr&) const;
@@ -304,6 +304,8 @@ template <typename T> class OGMatrix: public OGArray<T>
   public:
     typedef std::shared_ptr<const OGMatrix<T>> Ptr;
     static OGMatrix<T>::Ptr create(T* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
+    static OGMatrix<T>::Ptr create(T** data, size_t rows, size_t cols);
+    static OGMatrix<T>::Ptr create(std::initializer_list<std::initializer_list<T>> list);
     virtual void debug_print() const override;
     virtual OGNumeric::Ptr copy() const override;
     virtual OGTerminal::Ptr createOwningCopy() const override;
@@ -314,6 +316,8 @@ template <typename T> class OGMatrix: public OGArray<T>
     T** toArrayOfArrays() const;
   protected:
     OGMatrix(T * data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
+    OGMatrix(T ** data, size_t rows, size_t cols);
+    OGMatrix(std::initializer_list<std::initializer_list<T>> list);
 };
 
 template<> real8 ** OGMatrix<real8>::toReal8ArrayOfArrays() const;
@@ -333,6 +337,8 @@ class OGRealDenseMatrix: public OGMatrix<real8>
      */
     typedef std::shared_ptr<const OGRealDenseMatrix> Ptr;
     static OGRealDenseMatrix::Ptr create(real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
+    static OGRealDenseMatrix::Ptr create(real8** data, size_t rows, size_t cols);
+    static OGRealDenseMatrix::Ptr create(std::initializer_list<std::initializer_list<real8>> list);
     virtual OGNumeric::Ptr copy() const override;
     virtual OGRealDenseMatrix::Ptr asOGRealDenseMatrix() const override;
     virtual ExprType_t getType() const override;
@@ -353,6 +359,8 @@ class OGComplexDenseMatrix: public OGMatrix<complex16>
      */
     typedef std::shared_ptr<const OGComplexDenseMatrix> Ptr;
     static OGComplexDenseMatrix::Ptr create(complex16* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
+    static OGComplexDenseMatrix::Ptr create(complex16** data, size_t rows, size_t cols);
+    static OGComplexDenseMatrix::Ptr create(std::initializer_list<std::initializer_list<complex16>> list);
     virtual complex16 ** toComplex16ArrayOfArrays() const override;
     virtual OGNumeric::Ptr copy() const override;
     virtual OGComplexDenseMatrix::Ptr asOGComplexDenseMatrix() const override;
@@ -375,6 +383,7 @@ class OGLogicalMatrix: public OGRealDenseMatrix
     typedef std::shared_ptr<const OGLogicalMatrix> Ptr;
     // TODO: range limit inputs
     static OGLogicalMatrix::Ptr create(real8* data, size_t rows, size_t cols, DATA_ACCESS access_spec=VIEWER);
+    static OGLogicalMatrix::Ptr create(real8** data, size_t rows, size_t cols);
     virtual OGLogicalMatrix::Ptr asOGLogicalMatrix() const override;
   protected:
     using OGRealDenseMatrix::OGRealDenseMatrix;

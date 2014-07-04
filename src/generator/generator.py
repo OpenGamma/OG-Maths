@@ -51,7 +51,6 @@ nodes = [ UnimplementedUnary('ABS'),
           UnimplementedUnary('TAN'),
           UnimplementedUnary('WILKINSON'),
           UnimplementedBinary('HORZCAT'),
-          UnimplementedBinary('MLDIVIDE'),
           InfixOpRunner('PLUS', 'PLUS_ENUM', '+'),
           UnimplementedBinary('POWER'),
           UnimplementedBinary('RDIVIDE'),
@@ -70,6 +69,7 @@ custom_nodes = [
                 UnaryExpressionRunner('TRANSPOSE','TRANSPOSE_ENUM'),
                 UnaryExpressionRunner('CTRANSPOSE','CTRANSPOSE_ENUM'),
                 UnaryExpressionRunner('LU','LU_ENUM'),
+                BinaryExpressionRunner('MLDIVIDE','MLDIVIDE_ENUM'),
                ]
 
 # The list of terminals

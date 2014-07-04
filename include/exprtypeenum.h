@@ -50,6 +50,7 @@ typedef enum
   CTRANSPOSE_ENUM      = 0x0137L ,
   LU_ENUM              = 0x0139L ,
   INV_ENUM             = 0x013DL ,
+  MLDIVIDE_ENUM        = 0x014BL ,
 
 #include "exprenum.hh"
 } ExprType_t;
