@@ -80,7 +80,27 @@ INSTANTIATE_NODE_TEST_CASE_P(PINVTests,PINV,
   new CheckUnary<PINV>(
       OGComplexDenseMatrix::create(new complex16[12]{{1,10},{4,40},{7,70},{10,100},{2,20},{5,50},{8,80},{11,110},{3,30},{6,60},{9,90},{12,120}},4,3, OWNER),
       OGComplexDenseMatrix::create(new complex16[12]{{-0.0047854785478551, 0.0478547854785478}, {-0.0003300330033002, 0.0033003300330034}, {0.0041254125412542,-0.0412541254125413}, {-0.0024202420242024, 0.0242024202420241}, {-0.0001100110011000, 0.0011001100110011}, {0.0022002200220021,-0.0220022002200220}, {-0.0000550055005500, 0.0005500550055006}, {0.0001100110011001,-0.0011001100110011}, {0.0002750275027502,-0.0027502750275028}, {0.0023102310231024,-0.0231023102310231}, {0.0003300330033003,-0.0033003300330033}, {-0.0016501650165016, 0.0165016501650165}},3,4,OWNER),
+      MATHSEQUAL),
+
+  // Regression tests for MAT-441, segfault in PINV caused by negative value
+  // written to size_t, which when used as a loop bound causes invalid access.
+  new CheckUnary<PINV>(
+      OGRealDenseMatrix::create(new real8[12](),4,3, OWNER),
+      OGRealDenseMatrix::create(new real8[12](),3,4,OWNER),
+      MATHSEQUAL),
+  new CheckUnary<PINV>(
+      OGComplexDenseMatrix::create(new complex16[12](),4,3, OWNER),
+      OGComplexDenseMatrix::create(new complex16[12](),3,4,OWNER),
+      MATHSEQUAL),
+  new CheckUnary<PINV>(
+      OGRealDenseMatrix::create(new real8[9]{1,0,0,0,1,0,0,0,5e-17},3,3, OWNER),
+      OGRealDenseMatrix::create(new real8[9]{1,0,0,0,1,0,0,0,0},3,3,OWNER),
+      MATHSEQUAL),
+  new CheckUnary<PINV>(
+      OGComplexDenseMatrix::create(new complex16[9]{{1,1},{0,0},{0,0},{0,0},{1,1},{0,0},{0,0},{0,0},{5e-17,5e-17}},3,3, OWNER),
+      OGComplexDenseMatrix::create(new complex16[9]{{0.5,-0.5},{0,0},{0,0},{0,0},{0.5,-0.5},{0,0},{0,0},{0,0},{0,0}},3,3,OWNER),
       MATHSEQUAL)
+
   )
 );
 

@@ -84,6 +84,25 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     const size_t n = arg->getCols();
     const size_t minmn = m > n ? n : m;
 
+    // is the matrix all zeros, if so return zeros
+    bool allzero=true;
+    size_t len = m*n;
+    for(size_t i = 0; i < len; i++)
+    {
+      if(arg->getData()[i]!=0.e0)
+      {
+        allzero = false;
+        break;
+      }
+    }
+    if(allzero)
+    {
+      unique_ptr<T[]> retData(new T[len]());
+      ret = makeConcreteDenseMatrix(retData.release(), n, m, OWNER);
+      reg.push_back(ret);
+      return;
+    }
+
     // Perform SVD on a copy of the argument, since it will get destroyed
     OGExpr::Ptr svd = SVD::create(arg->createOwningCopy());
 
@@ -99,13 +118,24 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     // go backwards as singular values are ordered descending.
     real8 * S = numericS->asOGRealDiagonalMatrix()->getData();
     real8 thres = pinv_threshold(S[0], m, n);
-    size_t lim;
-    for(lim = minmn - 1 ; lim >= 0; lim--)
+    size_t lim = minmn - 1;
+
+    // we have e.g.
+    // S = [big, big, big, threshold+eps, 0, 0 ]
+    // minmn = 6
+    // minmn - 1 = 5
+    // So we want to test in order:
+    // lim = 5, S=0, pass
+    // lim = 4, S=0, pass
+    // lim = 3, S=threshold+eps, escape
+
+    while(lim != 0)
     {
       if(std::abs(S[lim])>thres)
       {
         break;
       }
+      lim--;
     }
 
     // scale the diags in the reachable part, zero the rest
