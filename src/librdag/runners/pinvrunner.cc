@@ -85,7 +85,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     const size_t minmn = m > n ? n : m;
 
     // Perform SVD on a copy of the argument, since it will get destroyed
-    OGExpr::Ptr svd = SVD::create(arg);
+    OGExpr::Ptr svd = SVD::create(arg->createOwningCopy());
 
     // run the tree
     runtree(svd);
