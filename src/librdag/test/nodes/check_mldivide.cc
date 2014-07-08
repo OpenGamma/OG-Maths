@@ -560,7 +560,20 @@ INSTANTIATE_NODE_TEST_CASE_P(MLDIVIDETests,MLDIVIDE,
     // expected
     OGComplexDenseMatrix::create({{{0.0,0.0},{0.0,0.0},{0.0,0.0}},{{0.0,-0.0},{0.0,0.0},{0.0,0.0}},{{0.0,-0.0},{0.0,-0.0},{1.0000000000000002,0.0}}}),
     MATHSEQUAL
+  ),
+
+  // Regression test for [MAT-443], system matrix with row entirely made of zeros
+  new CheckBinary<MLDIVIDE>
+  (
+    // data straight from the fuzzer
+    // input
+    OGComplexDenseMatrix::create({{{1,0},{1302631145,0}},{{0,0},{0,0}}}),
+    OGComplexDenseMatrix::create({{{-749178602,0}, {0,0}, {0,0}, {0,0}},{{0,0}, {-1645077094,0}, {0,0}, {0,0}}}),
+    // expected
+    OGRealDenseMatrix::create({{-0.0000000004415119,0.0,0.0,0.0},{-0.5751271991888387,0.0,0.0,0.0}}),
+    MATHSEQUAL
   )
+
 
   ) // end value
 );
@@ -574,3 +587,4 @@ TEST(MLDIVIDETests, CheckBadCommuteThrows) {
   runtree(node),
   rdag_error);
 }
+
