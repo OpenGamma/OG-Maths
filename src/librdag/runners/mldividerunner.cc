@@ -219,8 +219,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
 
   // This holds the logic for whether we've seen a valid row of a triangular matrix before or not.
   std::unique_ptr<bool[]> rowTagPtr (new bool[rows]);
-  bool * rowTag = rowTagPtr.get();
-  std::fill(rowTag,rowTag+rows,false);
+  std::fill(rowTagPtr.get(),rowTagPtr.get()+rows,false);
 
   // Assume we have a unit diagonal matrix and flip it later if not
   ret->flagDiag = UNITDIAG::UNIT;
@@ -244,13 +243,13 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
     for (size_t j = 0; j < rows; j++)
     {
       if (
-        rowStarts.get()[j] == -1 // we've not seen this row before
+        rowStarts[j] == -1 // we've not seen this row before
         && // AND
         // it's not got a zero at location j.
         !SingleValueFuzzyEquals(data[i * rows + j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())
       )
       { // So set our rowstarts for this location to point to this col.
-        rowStarts.get()[j] = i;
+        rowStarts[j] = i;
         // Check and see if the element (which will end up on the diag) is 1 and therefore unit diag 
         // is a possible optimisation.
         if (isUDswitch && !SingleValueFuzzyEquals(data[i * rows + j],1.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon()))
@@ -266,31 +265,50 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
     }
   }
 
-  // Check to see if the matrix is a permutation of an upper triangle
-  // Do this by checking that the claimed start of rows cover all columns
-  // first set flags, then check flags, complete set needed to assess whether the perm is present
-  // We basically set flags in rowTag based on start locations, then check that all rowTags are set.
-  // If the permutation is valid *but* its not declared as permuted then we just have a standard
-  // upper triangular matrix.
+  // Fix for [MAT-443]
+  // Check to see if the row starts are valid before we work out if the permutation is valid.
+  // i.e. if there's a row which is all zeros, then rowStarts will still contain a -1,
+  // if you go and look up a size_t containing -1 that's a monstrously large number to look
+  // up and will be technically wrong and also likely cause a load of invalid access related problems.
   for (size_t i = 0; i < rows; i++)
   {
-    if (!rowTag[rowStarts.get()[i]])
-    {
-      rowTag[rowStarts.get()[i]] = true;
-    }
-    if (!upperTriangleIfValidIspermuted && rowStarts.get()[i] != i)
-    {
-      upperTriangleIfValidIspermuted = true;
-    }
-  }
-  for (size_t i = 0; i < rows; i++)
-  {
-    if (!rowTag[i])
+    if (rowStarts[i]==-1)
     {
       validPermutation = false;
       break;
     }
   }
+
+  // if it's still possibly valid...
+  if (validPermutation)
+  {
+    // Check to see if the matrix is a permutation of an upper triangle
+    // Do this by checking that the claimed start of rows cover all columns
+    // first set flags, then check flags, complete set needed to assess whether the perm is present
+    // We basically set flags in rowTag based on start locations, then check that all rowTags are set.
+    // If the permutation is valid *but* its not declared as permuted then we just have a standard
+    // upper triangular matrix.
+    for (size_t i = 0; i < rows; i++)
+    {
+      if (!rowTagPtr[rowStarts[i]])
+      {
+        rowTagPtr[rowStarts[i]] = true;
+      }
+      if (!upperTriangleIfValidIspermuted && rowStarts[i] != i)
+      {
+        upperTriangleIfValidIspermuted = true;
+      }
+    }
+    for (size_t i = 0; i < rows; i++)
+    {
+      if (!rowTagPtr[i])
+      {
+        validPermutation = false;
+        break;
+      }
+    }
+  }
+
   if (!validPermutation)
   {
     // we don't have a valid upper permutation, return declaring so
