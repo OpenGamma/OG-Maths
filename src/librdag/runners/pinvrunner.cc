@@ -84,7 +84,25 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     const size_t n = arg->getCols();
     const size_t minmn = m > n ? n : m;
 
-    // Perform SVD on a copy of the argument, since it will get destroyed
+    // is the matrix all zeros, if so return zeros
+    bool allzero=true;
+    size_t len = m*n;
+    for(size_t i = 0; i < len; i++)
+    {
+      if(arg->getData()[i]!=0.e0)
+      {
+        allzero = false;
+        break;
+      }
+    }
+    if(allzero)
+    {
+      ret = makeConcreteDenseMatrix(new T[len](), n, m, OWNER);
+      reg.push_back(ret);
+      return;
+    }
+
+    // Perform SVD
     OGExpr::Ptr svd = SVD::create(arg);
 
     // run the tree
@@ -99,24 +117,53 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     // go backwards as singular values are ordered descending.
     real8 * S = numericS->asOGRealDiagonalMatrix()->getData();
     real8 thres = pinv_threshold(S[0], m, n);
-    size_t lim;
-    for(lim = minmn - 1 ; lim >= 0; lim--)
+
+    // signed type used as we walk backwards through this loop and need to also check 0
+    int64_t lim = minmn - 1;
+
+    // we have e.g.
+    // S = [big, big, big, threshold+eps, 0, 0 ]
+    // minmn = 6
+    // minmn - 1 = 5
+    // So we want to test in order:
+    // lim = 5, S=0, pass
+    // lim = 4, S=0, pass
+    // lim = 3, S=threshold+eps, escape
+
+    while(lim >= 0)
     {
       if(std::abs(S[lim])>thres)
       {
         break;
       }
+      lim--;
     }
 
-    // scale the diags in the reachable part, zero the rest
-    for(size_t i = 0 ; i <= lim; i++)
+    // if lim < 0 then there are no values within tolerance, skip to "else"
+    if(!(lim<0))
     {
-      S[i] = 1.e0/S[i];
+      lim++; // move bound as we now walk forwards
+      // scale the diags in the reachable part
+      // in our example we want to divide 1 by S[0], S[1], S[2], S[3]
+      // lim will now be 4
+      for(size_t i = 0 ; i < lim; i++)
+      {
+        S[i] = 1.e0/S[i];
+      }
+      // zero the rest of the diagonals
+      // set S[4+0], S[4+1] = 0
+      for(size_t i = lim; i < minmn; i++)
+      {
+        S[i] = 0.e0;
+      }
     }
-    for(size_t i = lim + 1; i < minmn; i++)
+    else // this is a safety net, practically impossible to reach here because we catch all zeros input!
     {
-      S[i] = 0.e0;
+      ret = makeConcreteDenseMatrix(new T[len](), n, m, OWNER);
+      reg.push_back(ret);
+      return;
     }
+
 
     // create a new transposed inverted diag matrix.
     // this matrix is just a viewer of S, numericS is the owner

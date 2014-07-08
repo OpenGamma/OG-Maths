@@ -31,12 +31,16 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
   int4 ldvt = n;
   int4 info = 0;
 
-  T * U = new T[ldu*m];
-  T * VT = new T[ldvt*n];
-  real8 * S = new real8[minmn];
+  unique_ptr<T[]> Uptr (new T[ldu*m]);
+  unique_ptr<T[]> VTptr (new T[ldvt*n]);
+  unique_ptr<real8[]> Sptr ( new real8[minmn]);
+  T * U = Uptr.get();
+  T * VT = VTptr.get();
+  real8 * S = Sptr.get();
 
   // copy A else it's destroyed
-  T * A = new T[m*n];
+  unique_ptr<T[]> Aptr (new T[m*n]);
+  T * A = Aptr.get();
   std::memcpy(A, arg->getData(), sizeof(T)*m*n);
 
   // call lapack
@@ -48,10 +52,6 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
   {
     if(info < 0) // illegal arg
     {
-      delete[] A;
-      delete[] U;
-      delete[] VT;
-      delete[] S;
       throw e;
     }
     else // failed convergence TODO: this will end up in logs (MAT-369) and userland (MAT-370).
@@ -59,11 +59,10 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
       cerr << e.what() << std::endl;
     }
   }
-  delete[] A;
 
-  reg.push_back(makeConcreteDenseMatrix(U, m, m, OWNER));
-  reg.push_back(OGRealDiagonalMatrix::create(S, m, n, OWNER));
-  reg.push_back(makeConcreteDenseMatrix(VT, n, n, OWNER));
+  reg.push_back(makeConcreteDenseMatrix(Uptr.release(), m, m, OWNER));
+  reg.push_back(OGRealDiagonalMatrix::create(Sptr.release(), m, n, OWNER));
+  reg.push_back(makeConcreteDenseMatrix(VTptr.release(), n, n, OWNER));
 }
 
 void *
