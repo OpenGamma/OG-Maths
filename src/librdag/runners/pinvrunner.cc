@@ -97,8 +97,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     }
     if(allzero)
     {
-      unique_ptr<T[]> retData(new T[len]());
-      ret = makeConcreteDenseMatrix(retData.release(), n, m, OWNER);
+      ret = makeConcreteDenseMatrix(new T[len](), n, m, OWNER);
       reg.push_back(ret);
       return;
     }
@@ -160,8 +159,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     }
     else // this is a safety net, practically impossible to reach here because we catch all zeros input!
     {
-      unique_ptr<T[]> retData(new T[len]());
-      ret = makeConcreteDenseMatrix(retData.release(), n, m, OWNER);
+      ret = makeConcreteDenseMatrix(new T[len](), n, m, OWNER);
       reg.push_back(ret);
       return;
     }
