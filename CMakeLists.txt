@@ -95,12 +95,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 # Use C99 and C++11, other flags for preventing common errors. Also add thread libs.
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS} -static-libstdc++")
+set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
+# we want static libstdc++ everywhere!
+set(CMAKE_SHARED_LINKER_FLAGS "-static-libstdc++")
 
 # On Linux, add -rdynamic for stack traces
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  set(CMAKE_C_FLAGS"${CMAKE_C_FLAGS} -rdynamic")
-  set(CMAKE_CXX_FLAGS"${CMAKE_CXX_FLAGS} -rdynamic")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -rdynamic")
 endif()
 
 # Use the native assembler on Apple in order to be able to generate AVX instructions.
@@ -145,11 +146,11 @@ if (WIN32)
   # We need a larger than default stack to prevent the entrypt test
   # failing, and we need to force the export of all symbols since
   # they were all visible by default in the original implementation.
-  set (PLATFORM_FLAGS "-Wl,--export-all-symbols -Wl,--stack,4194304")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--export-all-symbols -Wl,--stack,4194304")
 endif()
 
-set(OPT_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG} ${PLATFORM_FLAGS}")
-set(OPT_FLAGS_std "-g ${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG ${PLATFORM_FLAGS}")
+set(OPT_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG}")
+set(OPT_FLAGS_std "-g ${FFAST_MATH_SAFE} -O2 -funroll-loops -DNDEBUG")
 set(OPT_FLAGS_sse41 "-g ${OPT_FLAGS_std} -march=core2 -msse4.1")
 set(OPT_FLAGS_avx1 "-g ${OPT_FLAGS_std}  -march=corei7-avx -mavx256-split-unaligned-load -mavx256-split-unaligned-store")
 
