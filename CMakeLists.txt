@@ -24,6 +24,11 @@ else()
 #This is a temporary thing. Expect later to add in ExternalProject_add to get the code!!
   message( FATAL_ERROR "LAPACK_BUILDDIR must be defined: e.g. -DLAPACK_BUILDDIR=\"/path/to/OG-Lapack/build\"" )
 endif()
+if(IZY_BUILDDIR)
+  set(IZY_BUILDINFO ${IZY_BUILDDIR}/IZY_EXPORTS.cmake)
+else()
+  message( FATAL_ERROR "IZY_BUILDDIR must be defined: e.g. -DIZY_BUILDDIR=\"/path/to/OG-Izy/build\"" )
+endif()
 
 
 enable_language(C)
