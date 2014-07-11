@@ -227,7 +227,7 @@ if(NOT DEFINED BUILDNUMBER)
   set(BUILDNUMBER local)
 endif()
 add_custom_target(verinfo
-                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/verinfo.yaml ${JAR_VERSION} ${LAPACK_BUILDDIR}/verinfo.yaml ${BUILDNUMBER}
+                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/verinfo.yaml ${JAR_VERSION} ${LAPACK_BUILDDIR}/verinfo.yaml ${IZY_BUILDDIR}/verinfo.yaml ${BUILDNUMBER}
                   COMMENT "Generating version info")
 
 add_subdirectory(src)
