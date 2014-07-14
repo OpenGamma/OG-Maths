@@ -4,7 +4,9 @@
 # Please see distribution for license.
 #
 
-include_directories (${NATIVE_HEADER_DIR} ${CMAKE_SOURCE_DIR}/include ${JNIDIR} ${JNI_INCLUDE_DIRS} ${BIN_INCLUDE_DIR})
+include(${IZY_BUILDINFO})
+
+include_directories (${NATIVE_HEADER_DIR} ${CMAKE_SOURCE_DIR}/include ${JNIDIR} ${JNI_INCLUDE_DIRS} ${BIN_INCLUDE_DIR} ${IZY_INCLUDE_DIR})
 SET(CMAKE_FC_FLAGS  "${CMAKE_FC_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} -cpp" )
 SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wl,--no-undefined")
 SET(CMAKE_CC_FLAGS  "${CMAKE_CC_FLAGS} -Wl,--no-undefined -frepo")
@@ -20,6 +22,7 @@ set(RDAG_SOURCES convertto.cc
                  execution.cc
                  expressionbase.cc
                  iss.cc
+                 izy.cc
                  lapack.cc
                  mem.cc
                  numericbase.cc
@@ -45,7 +48,7 @@ add_multitarget_library(rdag
                         SOVERSION ${og_maths_VERSION_MAJOR}
                         SOURCES ${RDAG_SOURCES}
                         DEPENDS runners_cc dispatch_cc expression_cc numeric_cc exprenum_hh
-                        LINK_MULTILIBRARIES oglapack ogblas ogxerbla
+                        LINK_MULTILIBRARIES oglapack ogblas ogxerbla izy izyreference
                         TARGETS ${TARGET_TYPES})
 
 jar_native_multitarget_library(rdag TARGETS ${TARGET_TYPES})
@@ -56,10 +59,16 @@ jar_native_multitarget_library(ogblas TARGETS ${TARGET_TYPES})
 
 jar_native_multitarget_library(ogxerbla TARGETS ${TARGET_TYPES})
 
+jar_native_multitarget_library(izy TARGETS ${TARGET_TYPES})
+
+jar_native_multitarget_library(izyreference TARGETS ${TARGET_TYPES})
+
 if(WIN32)
   windows_import_external_native_multitarget_library(oglapack TARGETS ${TARGET_TYPES})
   windows_import_external_native_multitarget_library(ogblas TARGETS ${TARGET_TYPES})
   windows_import_external_native_multitarget_library(ogxerbla TARGETS ${TARGET_TYPES})
+  windows_import_external_native_multitarget_library(izy TARGETS ${TARGET_TYPES})
+  windows_import_external_native_multitarget_library(izyreference TARGETS ${TARGET_TYPES})
 endif()
 
 add_subdirectory(test)

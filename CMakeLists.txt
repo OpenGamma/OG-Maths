@@ -24,6 +24,11 @@ else()
 #This is a temporary thing. Expect later to add in ExternalProject_add to get the code!!
   message( FATAL_ERROR "LAPACK_BUILDDIR must be defined: e.g. -DLAPACK_BUILDDIR=\"/path/to/OG-Lapack/build\"" )
 endif()
+if(IZY_BUILDDIR)
+  set(IZY_BUILDINFO ${IZY_BUILDDIR}/IZY_EXPORTS.cmake)
+else()
+  message( FATAL_ERROR "IZY_BUILDDIR must be defined: e.g. -DIZY_BUILDDIR=\"/path/to/OG-Izy/build\"" )
+endif()
 
 
 enable_language(C)
@@ -222,7 +227,7 @@ if(NOT DEFINED BUILDNUMBER)
   set(BUILDNUMBER local)
 endif()
 add_custom_target(verinfo
-                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/verinfo.yaml ${JAR_VERSION} ${LAPACK_BUILDDIR}/verinfo.yaml ${BUILDNUMBER}
+                  ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/cmake/verinfo.py ${CMAKE_BINARY_DIR}/verinfo.yaml ${JAR_VERSION} ${LAPACK_BUILDDIR}/verinfo.yaml ${IZY_BUILDDIR}/verinfo.yaml ${BUILDNUMBER}
                   COMMENT "Generating version info")
 
 add_subdirectory(src)

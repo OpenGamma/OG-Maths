@@ -69,6 +69,7 @@ Generally recent versions of the requirements are preferred:
 
 #### Dependencies
 * OG-Lapack, our OpenGamma LAPACK build, available [here](https://github.com/OpenGamma/OG-Lapack/).
+* OG-Izy, our OpenGamma vector maths library implementation, available [here](https://github.com/OpenGamma/OG-Izy/).
 * jcommander 1.17+ (we test with 1.17)
 * TestNG 6.3.1+ (we test with 6.3.1)
 
@@ -97,11 +98,18 @@ variable contains the paths to your `jcommander` and `TestNG` jars. **
 Next run CMake. It is required that the path to the OG-Lapack exports file is
 provided ([build OG-Lapack locally first!](https://github.com/OpenGamma/OG-Lapack/))
 so that the build can link against the LAPACK libraries and include them in the
-built JAR. This is done with the `LAPACK_EXPORT` CMake variable. Invocation of
+built JAR. This is done with the `LAPACK_EXPORT` CMake variable.
+
+In a similar manner to OG-Lapack, it is required that the path to the OG-Izy
+exports file is provided ([build OG-Izy locally first!](https://github.com/OpenGamma/OG-Izy/))
+so that the build can link against the OG-Izy libraries and include them in the
+built JAR. This is done with the `IZY_EXPORT` CMake variable.
+
+Invocation of
 CMake:
 
 ```
-cmake .. -DLAPACK_EXPORT=<path_to_og_lapack>/build/LAPACK_EXPORTS.cmake -DGCC_LIB_FOLDER=<path to gcc RTLs>
+cmake .. -DLAPACK_EXPORT=<path_to_og_lapack>/build/LAPACK_EXPORTS.cmake -DIZY_EXPORT=<path_to_og_izy>/build/IZY_EXPORTS.cmake -DGCC_LIB_FOLDER=<path to gcc RTLs>
 ```
 
 The build process includes the GCC runtime libraries, which are copied from

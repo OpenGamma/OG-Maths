@@ -17,6 +17,7 @@ set(TESTS
   check_execution
   check_expressions
   check_iss
+  check_izy
   check_lapack
   check_mem
   check_numerictypes
