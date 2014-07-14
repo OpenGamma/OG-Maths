@@ -34,7 +34,7 @@ def get_subprojects(*args):
       with open(val, 'r') as f:
           verinfo = load(f, Loader=Loader)
       if len(verinfo['platforms']) != 1 or verinfo['platforms'][0] != platform_code():
-          raise RuntimeError('OG subproject platform mismatch')
+          raise RuntimeError('OG subproject platform mismatch, for project %s.' % val)
       ret.append(verinfo)
     return ret
 
