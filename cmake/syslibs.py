@@ -13,9 +13,9 @@ import argparse, os, shutil, subprocess, sys, re
 from buildutils import platform_code
 
 libs = {}
-libs['lnx'] = [ 'libstdc++.so.6', 'libgcc_s.so.1', 'libgfortran.so.3', 'libquadmath.so.0' ]
-libs['osx'] = [ 'libstdc++.6.dylib', 'libgcc_s.1.dylib', 'libgfortran.3.dylib', 'libquadmath.0.dylib' ]
-libs['win'] = [ 'libstdc++-6.dll', 'libgcc_s_seh-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' ]
+libs['lnx'] = [ 'libgcc_s.so.1', 'libgfortran.so.3', 'libquadmath.so.0' ]
+libs['osx'] = [ 'libgcc_s.1.dylib', 'libgfortran.3.dylib', 'libquadmath.0.dylib' ]
+libs['win'] = [ 'libgcc_s_seh-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' ]
 
 default_gcc_lib_folder = {}
 default_gcc_lib_folder['lnx'] = '/opt/gcc/4.8.2/lib64'

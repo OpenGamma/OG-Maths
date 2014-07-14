@@ -101,11 +101,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 # Use C99 and C++11, other flags for preventing common errors. Also add thread libs.
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
+# we want static libstdc++ everywhere!
+set(CMAKE_SHARED_LINKER_FLAGS "-static-libstdc++")
 
 # On Linux, add -rdynamic for stack traces
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  set(CMAKE_C_FLAGS"${CMAKE_C_FLAGS} -rdynamic")
-  set(CMAKE_CXX_FLAGS"${CMAKE_CXX_FLAGS} -rdynamic")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -rdynamic")
 endif()
 
 # Use the native assembler on Apple in order to be able to generate AVX instructions.
