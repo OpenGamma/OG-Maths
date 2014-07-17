@@ -20,7 +20,9 @@ set(JAVA_FILES
     logging/ILogger.java
     logging/Slf4jLogger.java
     logging/StderrLogger.java
+    nodes/ACOS.java
     nodes/COPY.java
+    nodes/COS.java
     nodes/CTRANSPOSE.java
     nodes/INV.java
     nodes/LU.java

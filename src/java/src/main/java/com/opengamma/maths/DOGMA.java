@@ -16,6 +16,8 @@ import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.materialisers.Materialisers;
 import com.opengamma.maths.nativeloader.NativeLibraries;
+import com.opengamma.maths.nodes.ACOS;
+import com.opengamma.maths.nodes.COS;
 import com.opengamma.maths.nodes.CTRANSPOSE;
 import com.opengamma.maths.nodes.INV;
 import com.opengamma.maths.nodes.LU;
@@ -62,6 +64,14 @@ public final class DOGMA {
 
   // unary nodes
 
+  public static OGNumeric acos(OGNumeric arg0) {
+    return new ACOS(arg0);
+  }
+  
+  public static OGNumeric cos(OGNumeric arg0) {
+    return new COS(arg0);
+  }
+ 
   public static OGNumeric norm2(OGNumeric arg0) {
     return new NORM2(arg0);
   }

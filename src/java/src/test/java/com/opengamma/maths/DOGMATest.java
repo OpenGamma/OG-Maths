@@ -8,6 +8,8 @@ package com.opengamma.maths;
 
 import static com.opengamma.maths.DOGMA.C;
 import static com.opengamma.maths.DOGMA.D;
+import static com.opengamma.maths.DOGMA.acos;
+import static com.opengamma.maths.DOGMA.cos;
 import static com.opengamma.maths.DOGMA.ctranspose;
 import static com.opengamma.maths.DOGMA.disp;
 import static com.opengamma.maths.DOGMA.inv;
@@ -66,6 +68,24 @@ public class DOGMATest {
     OGComplexScalar cs;
     cs = new OGComplexScalar(10);
     disp(cs); // Nothing we can do!
+  }
+
+  @Test
+  public void AcosTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(new double[] { 0.5, -0.5 });
+    assertTrue(new OGRealDenseMatrix(new double[][] { { 1.0471975511965979, 2.0943951023931957 } }).mathsequals(toOGTerminal(acos(mat)), 1e-14, 1e-14));
+    mat = new OGComplexDenseMatrix(new double[] { 3, 6, 4, 8 }, 1, 2);
+    assertTrue(new OGComplexDenseMatrix(new double[] { 1.1115489233324776, -2.5998241937784723, 1.1096346915425495, -2.8860395049475405 }, 1, 2).mathsequals(toOGTerminal(acos(mat)), 1e-14, 1e-14));
+  }
+
+  @Test
+  public void CosTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(new double[] { 3, 4 });
+    assertTrue(new OGRealDenseMatrix(new double[][] { { -0.9899924966004454, -0.6536436208636119 } }).mathsequals(toOGTerminal(cos(mat))));
+    mat = new OGComplexDenseMatrix(new double[] { 3, 6, 4, 8 }, 1, 2);
+    assertTrue(new OGComplexDenseMatrix(new double[] { -199.6969662082171055, -28.4657623938750675, -974.2421957826329617, 1127.9980945611623611 }, 1, 2).mathsequals(toOGTerminal(cos(mat))));
   }
 
   @Test

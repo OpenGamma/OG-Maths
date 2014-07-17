@@ -44,6 +44,7 @@ runners_cc = """\
 #include "expression.hh"
 #include "terminal.hh"
 #include "uncopyable.hh"
+#include "izy.hh"
 
 using namespace std;
 
@@ -227,14 +228,9 @@ unaryfunction_scalar_runner_implementation = """\
 
 unaryfunction_matrix_runner_implementation = """\
   %(datatype)s* data = arg->getData();
-  size_t datalen = arg->getDatalen();
-  %(datatype)s* newData = new %(datatype)s[datalen];
-  for (size_t i = 0; i < datalen; ++i)
-  {
-    newData[i] = %(function)s(data[i]);
-  }
-  ret = %(returntype)s::create(newData, arg->getRows(), arg->getCols(), OWNER);
-
+  const int datalen = arg->getDatalen();
+  std::unique_ptr<%(datatype)s[]> newData = izy::vx_%(function)s(datalen, data);
+  ret = %(returntype)s::create(newData.release(), arg->getRows(), arg->getCols(), OWNER);
 """
 
 # Unimplemented runners
@@ -254,7 +250,7 @@ void *
                         %(arg0type)s::Ptr SUPPRESS_UNUSED arg0,
                         %(arg1type)s::Ptr SUPPRESS_UNUSED arg1) const
 {
-  throw rdag_error("Unimplemented unary expression node");
+  throw rdag_error("Unimplemented binary expression node");
   return nullptr;
 }
 """

@@ -25,11 +25,11 @@ namespace izy
  * @param T the data types <real8> and <complex16> are accepted.
  * @param count the number of elements of \a a to process..
  * @param a the vector of data on which the operation shall be performed.
- * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
+ * @return an array of type <real8> of length \a count wrapped in a unique_ptr<T>, the values of
  * which are obtained from applying the operation to the first \a count members of \a a.
  */
 template<typename T>
-std::unique_ptr<T[]>
+std::unique_ptr<real8[]>
 vx_abs(const int count, T * a);
 
 

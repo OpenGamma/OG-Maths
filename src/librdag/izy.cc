@@ -20,6 +20,42 @@ namespace detail
 
 template<>
 std::unique_ptr<real8[]>
+vx_abs(const int count, real8 * vector)
+{
+  std::unique_ptr<real8[]> ret (new real8[count]);
+  vd_abs(&count, vector, &detail::zero, ret.get(), &detail::zero);
+  return ret;
+}
+
+template<>
+std::unique_ptr<real8[]>
+vx_abs(const int count, complex16 * vector)
+{
+  std::unique_ptr<real8[]> ret (new real8[count]);
+  vz_abs(&count, vector, &detail::zero, ret.get(), &detail::zero);
+  return ret;
+}
+
+template<>
+std::unique_ptr<real8[]>
+vx_acos(const int count, real8 * vector)
+{
+  std::unique_ptr<real8[]> ret (new real8[count]);
+  vd_acos(&count, vector, &detail::zero, ret.get(), &detail::zero);
+  return ret;
+}
+
+template<>
+std::unique_ptr<complex16[]>
+vx_acos(const int count, complex16 * vector)
+{
+  std::unique_ptr<complex16[]> ret (new complex16[count]);
+  vz_acos(&count, vector, &detail::zero, ret.get(), &detail::zero);
+  return ret;
+}
+
+template<>
+std::unique_ptr<real8[]>
 vx_cos(const int count, real8 * vector)
 {
   std::unique_ptr<real8[]> ret (new real8[count]);
