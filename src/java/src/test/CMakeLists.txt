@@ -50,10 +50,16 @@ set(JAVA_FILES
     fuzzer/FuzzerMainTest.java
     fuzzer/TreeFuzzerTest.java
     fuzzer/FixedSizeFIFOTest.java
-    mem/StdlibTest.java
-    mem/AlignedAlignedWriteBufferTest.java
-    mem/AVXAlignedMemoryBlockTest.java
     )
+
+if(BITS64)
+  set(JAVA_FILES
+      ${JAVA_FILES}
+      mem/StdlibTest.java
+      mem/AlignedAlignedWriteBufferTest.java
+      mem/AVXAlignedMemoryBlockTest.java
+      )
+endif()
 
 foreach(JFILE ${JAVA_FILES})
   set(JAR_SOURCES ${JAR_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/java/${JPACKAGEDIR}/${JFILE})
