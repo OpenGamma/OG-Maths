@@ -50,3 +50,10 @@ The files 'cmake/modules/UseJavaClassFilelist.cmake' and
 License, see 'licenses/CMake_BSD3c.txt'. The file 'cmake/modules/UseJava.cmake'
 is based on code from CMake (https://github.com/Kitware/CMake) and it is
 licensed under the the BSD 3-Clause License, see 'licenses/CMake_BSD3c.txt'.
+
+The Microsoft Developer Network:
+The file 'src/win32/test.manifest' is based on a code sample in the document
+http://msdn.microsoft.com/en-us/library/bb530410.aspx retrieved from the
+Microsoft Developer Network on 05/08/2014. This file is licensed under the
+Microsoft Limited Public License. See 'licenses/MLPL.txt' for the text of
+Microsoft Limited Public License.
