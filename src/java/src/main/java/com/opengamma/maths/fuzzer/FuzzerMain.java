@@ -74,7 +74,7 @@ public class FuzzerMain {
   }
 
   /**
-   * Ensures a Long is > 0;
+   * Ensures a Long is greater than 0;
    */
   public static class ValidateLongPositiveNonZero implements IParameterValidator {
     @Override
@@ -87,7 +87,7 @@ public class FuzzerMain {
   }
 
   /**
-   * Ensures an Integer is > 0;
+   * Ensures an Integer is greater than 0;
    */
   public static class ValidateIntPositiveNonZero implements IParameterValidator {
     @Override
