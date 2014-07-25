@@ -138,7 +138,10 @@ enable_testing()
 
 # Multi-target libraries need to be built
 include(MultiLib)
-set(TARGET_TYPES dbg std sse41 avx1)
+set(TARGET_TYPES dbg std)
+if(BITS64)
+  set(TARGET_TYPES ${TARGET_TYPES} sse41 avx1)
+endif()
 
 # Tweak flags. These flags are similar to --ffast-math, except:
 # -funsafe-math-optimizations is missing as it messes with the FPU control word
@@ -152,6 +155,13 @@ if (WIN32)
   # failing, and we need to force the export of all symbols since
   # they were all visible by default in the original implementation.
   set (PLATFORM_FLAGS "-Wl,--export-all-symbols -Wl,--stack,4194304")
+  if (BITS32)
+    # Store all float results in memory locations - casts them to double from
+    # long double for consistency with 64-bit machines
+    set(PLATFORM_FLAGS "${PLATFORM_FLAGS} -ffloat-store")
+    # Export additional symbols without annotations
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--add-stdcall-alias")
+  endif()
 endif()
 
 set(OPT_FLAGS_dbg "-DDEBUG ${CMAKE_C_FLAGS_DEBUG} ${PLATFORM_FLAGS}")
