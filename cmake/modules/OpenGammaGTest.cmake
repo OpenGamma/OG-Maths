@@ -36,6 +36,10 @@ macro(add_multitarget_gtest TESTNAME)
   cmake_parse_arguments(MTGTEST "" ""
                         "SOURCES;LINK_LIBRARIES;COMPILE_DEFINITIONS;TARGETS;SUPPRESSIONS"
                         ${ARGN})
+  if(WIN32)
+    # Add manifest to request execution privileges of invoker
+    set(MTGTEST_SOURCES ${MTGTEST_SOURCES} ${og_maths_SOURCE_DIR}/src/win32/test.rc)
+  endif()
   foreach(TARGET ${MTGTEST_TARGETS})
     if(SUPPORT_${TARGET})
       set(TEST ${TESTNAME}_${TARGET})
