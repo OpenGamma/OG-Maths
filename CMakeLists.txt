@@ -60,15 +60,18 @@ set(maven_VERSION_PATCH 0)
 set(maven_VERSION
   ${maven_VERSION_MAJOR}.${maven_VERSION_MINOR}.${maven_VERSION_PATCH})
 
+# Append local module folder to module path
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
+
 # Construct platform code
-if(WIN32)
-  set(PLATFORM_CODE win)
-else()
-  if(APPLE)
-    set(PLATFORM_CODE osx)
-  else()
-    set(PLATFORM_CODE lnx)
-  endif()
+include(MultiLib)
+include(NativeLibraryUtils)
+set_platform_code(PLATFORM_CODE)
+if(PLATFORM_CODE STREQUAL "lin")
+  set(PLATFORM_CODE "lnx")
+endif()
+if(PLATFORM_CODE STREQUAL "mac")
+  set(PLATFORM_CODE "osx")
 endif()
 
 # JAR VARIABLES
@@ -92,11 +95,6 @@ set(PATH_AND_JAR_NAME "${JARDIR}/${JAR_NAME}" )
 set(PATH_AND_JAR_SOURCES_NAME "${JARDIR}/${JAR_SOURCES_NAME}" )
 set(PATH_AND_JAR_TEST_NAME "${JARDIR}/${JAR_TEST_NAME}" )
 set(PATH_AND_JAR_JAVADOC_NAME "${JARDIR}/${JAR_JAVADOC_NAME}" )
-
-
-# Append local module folder to module path
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
-
 
 # Use C99 and C++11, other flags for preventing common errors. Also add thread libs.
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
@@ -136,8 +134,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${og_maths_BINARY_DIR}/bin)
 
 enable_testing()
 
-# Multi-target libraries need to be built
-include(MultiLib)
+# Set target types
 set(TARGET_TYPES dbg std)
 if(BITS64)
   set(TARGET_TYPES ${TARGET_TYPES} sse41 avx1)
