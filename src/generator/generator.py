@@ -51,10 +51,10 @@ nodes = [ UnimplementedUnary('ABS'),
           UnimplementedUnary('TAN'),
           UnimplementedUnary('WILKINSON'),
           UnimplementedBinary('HORZCAT'),
-          InfixOpRunner('PLUS', 'PLUS_ENUM', '+'),
+          InfixOpRunner('PLUS', 'PLUS_ENUM', '+', 'add','addx','addx'),
           UnimplementedBinary('POWER'),
           UnimplementedBinary('RDIVIDE'),
-          InfixOpRunner('TIMES', 'TIMES_ENUM', '*'),
+          InfixOpRunner('TIMES', 'TIMES_ENUM', '*', 'mul','mulx','mulx'),
           UnimplementedBinary('VERTCAT'),
           UnimplementedBinary('DOT') ]
 
