@@ -35,6 +35,7 @@ set(JAVA_FILES
     nodes/PLUS.java
     nodes/SELECTRESULT.java
     nodes/SVD.java
+    nodes/TIMES.java
     nodes/TRANSPOSE.java
     nativeloader/SupportedInstructionSet.java
     nativeloader/NativeLibraries.java
