@@ -11,16 +11,16 @@ import com.opengamma.maths.datacontainers.OGNumeric;
 import com.opengamma.maths.datacontainers.lazy.OGExpr;
 
 /**
- * Asinh class
+ * Atan class
  */
-public class ASINH extends OGExpr {
+public class ATAN extends OGExpr {
 
   @Override
   public ExprEnum getType() {
-    return ExprEnum.ASINH_ENUM;
+    return ExprEnum.ATAN_ENUM;
   }
 
-  public ASINH(OGNumeric arg) {
+  public ATAN(OGNumeric arg) {
     super(arg);
   }
 

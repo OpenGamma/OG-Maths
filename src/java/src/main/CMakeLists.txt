@@ -22,9 +22,11 @@ set(JAVA_FILES
     logging/StderrLogger.java
     nodes/ACOS.java
     nodes/ASINH.java
+    nodes/ATAN.java
     nodes/COPY.java
     nodes/COS.java
     nodes/CTRANSPOSE.java
+    nodes/EXP.java
     nodes/INV.java
     nodes/LU.java
     nodes/MTIMES.java

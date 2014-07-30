@@ -18,8 +18,10 @@ import com.opengamma.maths.materialisers.Materialisers;
 import com.opengamma.maths.nativeloader.NativeLibraries;
 import com.opengamma.maths.nodes.ACOS;
 import com.opengamma.maths.nodes.ASINH;
+import com.opengamma.maths.nodes.ATAN;
 import com.opengamma.maths.nodes.COS;
 import com.opengamma.maths.nodes.CTRANSPOSE;
+import com.opengamma.maths.nodes.EXP;
 import com.opengamma.maths.nodes.INV;
 import com.opengamma.maths.nodes.LU;
 import com.opengamma.maths.nodes.MLDIVIDE;
@@ -72,6 +74,10 @@ public final class DOGMA {
   public static OGNumeric asinh(OGNumeric arg0) {
     return new ASINH(arg0);
   }
+  
+  public static OGNumeric atan(OGNumeric arg0) {
+    return new ATAN(arg0);
+  }
 
   public static OGNumeric cos(OGNumeric arg0) {
     return new COS(arg0);
@@ -81,6 +87,10 @@ public final class DOGMA {
     return new CTRANSPOSE(arg0);
   }
 
+  public static OGNumeric exp(OGNumeric arg0) {
+    return new EXP(arg0);
+  }
+  
   public static OGNumeric inv(OGNumeric arg0) {
     return new INV(arg0);
   }
