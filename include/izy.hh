@@ -102,7 +102,7 @@ vx_addx(const int count, T * a, T b);
  * which are obtained from applying the operation to the first \a count members of \a a.
  */
 template<typename T>
-std::unique_ptr<T[]>
+std::unique_ptr<real8[]>
 vx_arg(const int count, T * a);
 
 
@@ -152,7 +152,7 @@ vx_atan(const int count, T * a);
  * Vectorised atan2() function, y:=atan2(a,b).
  * Computes the principal values of the inverse tangent of a/b and further uses the signs 
  * given in the two arguments to determine the quandrant in which the result lies.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the first vector of data on which the operation shall be performed.
  * @param b the second vector of data on which the operation shall be performed.
@@ -179,9 +179,9 @@ vx_atanh(const int count, T * a);
 
 
 /**
- * Vectorised cbrt() function, y:=cbtr(a).
+ * Vectorised cbrt() function, y:=cbrt(a).
  * Computes the cube root of \a a.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -195,7 +195,7 @@ vx_cbrt(const int count, T * a);
 /**
  * Vectorised cdfnorm() function, y:=cdfnorm(a).
  * Computes the cumulative normal distribution of \a a.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
 
@@ -211,7 +211,7 @@ vx_cdfnorm(const int count, T * a);
 /**
  * Vectorised cdfnorminv() function, y:=cdfnorminv(a).
  * Computes the inverse cumulative normal distribution of \a a.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -281,7 +281,7 @@ vx_cosh(const int count, T * a);
 /**
  * Vectorised div() function, y:=a/b.
  * Computes the arithmetic division of \a a by \a b such that y:=a/b
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the first vector of data on which the operation shall be performed.
  * @param b the second vector of data on which the operation shall be performed.
@@ -290,7 +290,7 @@ vx_cosh(const int count, T * a);
  */
 template<typename T>
 std::unique_ptr<T[]>
-vx_div(const int count, T * a);
+vx_div(const int count, T * a, T * b);
 
 
 /**
@@ -312,7 +312,7 @@ vx_divx(const int count, T * a, T b);
 /**
  * Vectorised erf() function, y:=erf(a).
  * Computes the value of the error function at \a a.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -326,7 +326,7 @@ vx_erf(const int count, T * a);
 /**
  * Vectorised erfc() function, y:=erfc(a).
  * Computes the value of the complimentary error function at \a a.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -340,7 +340,7 @@ vx_erfc(const int count, T * a);
 /**
  * Vectorised erfcinv() function, y:=erfcinv(a).
  * Computes the value of the inverse complimentary error function at \a a.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -354,7 +354,7 @@ vx_erfcinv(const int count, T * a);
 /**
  * Vectorised erfinv() function, y:=erfinv(a).
  * Computes the value of the inverse error function at \a a.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -558,7 +558,7 @@ vx_mul(const int count, T * a, T * b);
  * Vectorised mulbyconj() function, y:=a*conj(b).
  * Computes the arithmetic multiplication of \a a by the complex conjugate of \a b 
  * such that y:=a*conj(b).
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <complex16> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the first vector of data on which the operation shall be performed.
  * @param b the second vector of data on which the operation shall be performed.
@@ -619,7 +619,7 @@ vx_negate(const int count, T * a);
 /**
  * Vectorised negatereal() function, y:=-real(a)+imag(a).
  * Computes complex negation of the real part of \a a, the imaginary part is ignored.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <complex16> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -642,13 +642,13 @@ vx_negatereal(const int count, T * a);
  */
 template<typename T>
 std::unique_ptr<T[]>
-vx_pow(const int count, T * a, T b);
+vx_pow(const int count, T * a, T * b);
 
 
 /**
  * Vectorised pow2o3() function, y:=pow2o3(a).
  * Computes \a a raised to the power of (2/3).
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -663,7 +663,7 @@ vx_pow2o3(const int count, T * a);
 /**
  * Vectorised pow3o2() function, y:=pow3o2(a).
  * Computes \a a raised to the power of (3/2).
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -730,7 +730,7 @@ vx_sin(const int count, T * a);
  * Pair::first contains the sine of \a a, the returned Pair::second contains the cosine of \a a.
  */
 template<typename T>
-std::unique_ptr<T[]>
+std::pair<std::unique_ptr<T[]>,std::unique_ptr<T[]>>
 vx_sincos(const int count, T * a);
 
 
@@ -751,7 +751,7 @@ vx_sinh(const int count, T * a);
 /**
  * Vectorised sqr() function, y:=sqr(a).
  * Computes the square of \a a, this is the equivalent of y:=a*a.
- * @param T the data types <real8> and <complex16> are accepted.
+ * @param T the data type <real8> is accepted.
  * @param count the number of elements of \a a to process.
  * @param a the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
@@ -804,7 +804,7 @@ vx_sub(const int count, T * a, T * b);
  */
 template<typename T>
 std::unique_ptr<T[]>
-vx_subx(const int count, T * a);
+vx_subx(const int count, T * a, T b);
 
 
 /**
@@ -870,14 +870,14 @@ vx_trunc(const int count, T * a);
  * @param T the data types <real8> and <complex16> are accepted.
  * @param count the number of elements of \a a to process.
  * @param a a scalar constant on which the operation shall be performed.
- * @param b the second vector of data on which the operation shall be performed.
+ * @param b the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
  * which are obtained from applying the operation to the first \a count members of \a b
  * and the value \a a.
  */
 template<typename T>
 std::unique_ptr<T[]>
-vx_xdiv(const int count, T * a);
+vx_xdiv(const int count, T a, T * b);
 
 
 /**
@@ -886,14 +886,14 @@ vx_xdiv(const int count, T * a);
  * @param T the data types <real8> and <complex16> are accepted.
  * @param count the number of elements of \a a to process.
  * @param a a scalar constant on which the operation shall be performed.
- * @param b the second vector of data on which the operation shall be performed.
+ * @param b the vector of data on which the operation shall be performed.
  * @return an array of type T of length \a count wrapped in a unique_ptr<T>, the values of
  * which are obtained from applying the operation to the first \a count members of \a b
  * and the value \a a.
  */
 template<typename T>
 std::unique_ptr<T[]>
-vx_xsub(const int count, T * a);
+vx_xsub(const int count, T a, T * b);
 
 
 }
