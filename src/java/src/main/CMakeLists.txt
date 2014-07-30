@@ -21,6 +21,7 @@ set(JAVA_FILES
     logging/Slf4jLogger.java
     logging/StderrLogger.java
     nodes/ACOS.java
+    nodes/ASINH.java
     nodes/COPY.java
     nodes/COS.java
     nodes/CTRANSPOSE.java
