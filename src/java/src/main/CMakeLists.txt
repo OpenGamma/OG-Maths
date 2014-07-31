@@ -36,8 +36,13 @@ set(JAVA_FILES
     nodes/NORM2.java
     nodes/PINV.java
     nodes/PLUS.java
+    nodes/RDIVIDE.java
     nodes/SELECTRESULT.java
+    nodes/SIN.java
+    nodes/SINH.java
     nodes/SVD.java
+    nodes/TAN.java
+    nodes/TANH.java
     nodes/TIMES.java
     nodes/TRANSPOSE.java
     nativeloader/SupportedInstructionSet.java

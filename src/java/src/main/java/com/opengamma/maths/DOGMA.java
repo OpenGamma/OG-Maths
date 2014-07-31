@@ -30,7 +30,13 @@ import com.opengamma.maths.nodes.NEGATE;
 import com.opengamma.maths.nodes.NORM2;
 import com.opengamma.maths.nodes.PINV;
 import com.opengamma.maths.nodes.PLUS;
+import com.opengamma.maths.nodes.RDIVIDE;
+import com.opengamma.maths.nodes.SIN;
+import com.opengamma.maths.nodes.SINH;
 import com.opengamma.maths.nodes.SVD;
+import com.opengamma.maths.nodes.TAN;
+import com.opengamma.maths.nodes.TANH;
+import com.opengamma.maths.nodes.TIMES;
 import com.opengamma.maths.nodes.TRANSPOSE;
 
 /**
@@ -103,12 +109,28 @@ public final class DOGMA {
     return new PINV(arg0);
   }
 
-  public static OGNumeric uminus(OGNumeric arg0) {
-    return new NEGATE(arg0);
+  public static OGNumeric sin(OGNumeric arg0) {
+    return new SIN(arg0);
   }
 
+  public static OGNumeric sinh(OGNumeric arg0) {
+    return new SINH(arg0);
+  }
+  
+  public static OGNumeric tan(OGNumeric arg0) {
+    return new TAN(arg0);
+  }
+
+  public static OGNumeric tanh(OGNumeric arg0) {
+    return new TANH(arg0);
+  }
+  
   public static OGNumeric transpose(OGNumeric arg0) {
     return new TRANSPOSE(arg0);
+  }
+  
+  public static OGNumeric uminus(OGNumeric arg0) {
+    return new NEGATE(arg0);
   }
 
   // binary nodes
@@ -157,6 +179,27 @@ public final class DOGMA {
     return ret;
   }
 
+  public static OGNumeric rdivide(final OGNumeric... args) {
+    if (args.length < 2) {
+      throw new MathsExceptionIllegalArgument("Cannot use rdivide() with just one argument.");
+    }
+    OGNumeric ret = args[0];
+    for (int i = 1; i < args.length; i++) {
+      ret = new RDIVIDE(ret, args[i]);
+    }
+    return ret;
+  }
+  
+  public static OGNumeric times(final OGNumeric... args) {
+    if (args.length < 2) {
+      throw new MathsExceptionIllegalArgument("Cannot use times() with just one argument.");
+    }
+    OGNumeric ret = args[0];
+    for (int i = 1; i < args.length; i++) {
+      ret = new TIMES(ret, args[i]);
+    }
+    return ret;
+  }
 
   // variadic results
   

@@ -23,7 +23,12 @@ import static com.opengamma.maths.DOGMA.mtimes;
 import static com.opengamma.maths.DOGMA.norm2;
 import static com.opengamma.maths.DOGMA.pinv;
 import static com.opengamma.maths.DOGMA.plus;
+import static com.opengamma.maths.DOGMA.rdivide;
+import static com.opengamma.maths.DOGMA.sin;
+import static com.opengamma.maths.DOGMA.sinh;
 import static com.opengamma.maths.DOGMA.svd;
+import static com.opengamma.maths.DOGMA.tan;
+import static com.opengamma.maths.DOGMA.tanh;
 import static com.opengamma.maths.DOGMA.toComplexArrayContainer;
 import static com.opengamma.maths.DOGMA.toDoubleArrayOfArrays;
 import static com.opengamma.maths.DOGMA.toOGTerminal;
@@ -122,14 +127,14 @@ public class DOGMATest {
     assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, -20, 3, 30, 4, -40, 5, 50, 6, -60, 7, 70, 8, -80, 9, 90, 10, -100, 11, 110, 12, -120 }, 3, 4)
         .mathsequals(toOGTerminal(ctranspose(mat))));
   }
-  
+
   @Test
   public void ExpTest() {
     OGTerminal mat;
     mat = new OGRealDenseMatrix(new double[] { 0.5, -0.5 });
-    assertTrue(new OGRealDenseMatrix(new double[][] { { 1.648721270700128   ,0.606530659712633 } }).mathsequals(toOGTerminal(exp(mat)), 1e-14, 1e-14));
+    assertTrue(new OGRealDenseMatrix(new double[][] { { 1.648721270700128, 0.606530659712633 } }).mathsequals(toOGTerminal(exp(mat)), 1e-14, 1e-14));
     mat = new OGComplexDenseMatrix(new double[] { 3, 6, 4, 8 }, 1, 2);
-    assertTrue(new OGComplexDenseMatrix(new double[] { 19.2855357450636120,-5.6122103059854025,-7.9440326757102406,54.0171299856719145 }, 1, 2).mathsequals(toOGTerminal(exp(mat)), 1e-14, 1e-14));
+    assertTrue(new OGComplexDenseMatrix(new double[] { 19.2855357450636120, -5.6122103059854025, -7.9440326757102406, 54.0171299856719145 }, 1, 2).mathsequals(toOGTerminal(exp(mat)), 1e-14, 1e-14));
   }
 
   @Test
@@ -201,12 +206,39 @@ public class DOGMATest {
   }
 
   @Test
-  public void UminusTest() {
+  public void SinTest() {
     OGTerminal mat;
-    mat = new OGRealDenseMatrix(10);
-    assertTrue(D(-10).mathsequals(toOGTerminal(uminus(mat))));
-    mat = new OGRealDenseMatrix(new double[] { 1, 2, 3, 4, 5 });
-    assertTrue(new OGRealDenseMatrix(new double[] { -1, -2, -3, -4, -5 }).mathsequals(toOGTerminal(uminus(mat))));
+    mat = new OGRealDenseMatrix(new double[] { 3, 4 });
+    assertTrue(new OGRealDenseMatrix(new double[][] { { 0.141120008059867, -0.756802495307928 } }).mathsequals(toOGTerminal(sin(mat))));
+    mat = new OGComplexDenseMatrix(new double[] { 3, 6, 4, 8 }, 1, 2);
+    assertTrue(new OGComplexDenseMatrix(new double[] { 28.466112195402, -199.694512262161, -1127.998348440116, -974.241976509626 }, 1, 2).mathsequals(toOGTerminal(sin(mat)), 1e-14, 1e-14));
+  }
+
+  @Test
+  public void SinhTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(new double[] { 3, 4 });
+    assertTrue(new OGRealDenseMatrix(new double[][] { { 10.0178749274099, 27.2899171971277 } }).mathsequals(toOGTerminal(sinh(mat))));
+    mat = new OGComplexDenseMatrix(new double[] { 3, 6, 4, 8 }, 1, 2);
+    assertTrue(new OGComplexDenseMatrix(new double[] { 9.61886584067868, -2.81306079224864, -3.97068387481635, 27.01762535702433 }, 1, 2).mathsequals(toOGTerminal(sinh(mat)), 1e-14, 1e-14));
+  }
+
+  @Test
+  public void TanTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(new double[] { 3, 4 });
+    assertTrue(new OGRealDenseMatrix(new double[][] { { -0.142546543074278, 1.157821282349577 } }).mathsequals(toOGTerminal(tan(mat))));
+    mat = new OGComplexDenseMatrix(new double[] { 3, 6, 4, 8 }, 1, 2);
+    assertTrue(new OGComplexDenseMatrix(new double[] { -0.0000034335357991, 0.9999882010834399, 0.0000002226752136, 1.0000000327477192 }, 1, 2).mathsequals(toOGTerminal(tan(mat)), 1e-14, 1e-14));
+  }
+
+  @Test
+  public void TanhTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(new double[] { 3, 4 });
+    assertTrue(new OGRealDenseMatrix(new double[][] { { 0.995054753686730, 0.999329299739067 } }).mathsequals(toOGTerminal(tanh(mat))));
+    mat = new OGComplexDenseMatrix(new double[] { 3, 6, 4, 8 }, 1, 2);
+    assertTrue(new OGComplexDenseMatrix(new double[] { 0.9958218066674143, -0.0026489645969457, 1.0006427057390959, -0.0001932857742051 }, 1, 2).mathsequals(toOGTerminal(tanh(mat)), 1e-14, 1e-14));
   }
 
   @Test
@@ -225,6 +257,15 @@ public class DOGMATest {
     assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, 20, 3, 30 }, 3, 1).mathsequals(toOGTerminal(transpose(mat))));
     mat = new OGComplexDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 }, { 10, 11, 12 } }, new double[][] { { 10, 20, 30 }, { 40, 50, 60 }, { 70, 80, 90 }, { 100, 110, 120 } });
     assertTrue(new OGComplexDenseMatrix(new double[] { 1, 10, 2, 20, 3, 30, 4, 40, 5, 50, 6, 60, 7, 70, 8, 80, 9, 90, 10, 100, 11, 110, 12, 120 }, 3, 4).mathsequals(toOGTerminal(transpose(mat))));
+  }
+
+  @Test
+  public void UminusTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(10);
+    assertTrue(D(-10).mathsequals(toOGTerminal(uminus(mat))));
+    mat = new OGRealDenseMatrix(new double[] { 1, 2, 3, 4, 5 });
+    assertTrue(new OGRealDenseMatrix(new double[] { -1, -2, -3, -4, -5 }).mathsequals(toOGTerminal(uminus(mat))));
   }
 
   // binary nodes tests
@@ -292,6 +333,40 @@ public class DOGMATest {
 
   @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
   public void MtimesBadDataTest() {
+    mtimes(D(10));
+  }
+
+  @Test
+  public void RdivideTest() {
+    OGTerminal rmat, cmat;
+    OGNumeric TenTimes;
+    rmat = new OGRealDenseMatrix(10);
+    cmat = new OGComplexDenseMatrix(new double[] { 10, -7 }, 1, 1);
+    TenTimes = rdivide(rmat, rmat, rmat, rmat, rmat, rmat, rmat, rmat, rmat, rmat);
+    assertTrue(D(1e-8).mathsequals(toOGTerminal(TenTimes)));
+    TenTimes = rdivide(cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat);
+    assertTrue(C(0.0000000003500837, -0.0000000019984415).mathsequals(toOGTerminal(TenTimes)));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void RdivideBadDataTest() {
+    rdivide(D(10));
+  }
+
+  @Test
+  public void TimesTest() {
+    OGTerminal rmat, cmat;
+    OGNumeric TenTimes;
+    rmat = new OGRealDenseMatrix(10);
+    cmat = new OGComplexDenseMatrix(new double[] { 10, -7 }, 1, 1);
+    TenTimes = mtimes(rmat, rmat, rmat, rmat, rmat, rmat, rmat, rmat, rmat, rmat);
+    assertTrue(D(1e10).mathsequals(toOGTerminal(TenTimes)));
+    TenTimes = mtimes(cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat, cmat);
+    assertTrue(C(72306229251e0, 12853399300e0).mathsequals(toOGTerminal(TenTimes)));
+  }
+
+  @Test(expectedExceptions = MathsExceptionIllegalArgument.class)
+  public void TimesBadDataTest() {
     mtimes(D(10));
   }
 
