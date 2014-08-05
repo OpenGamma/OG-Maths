@@ -14,9 +14,6 @@ set(JAVA_FILES
       logging/TestSlf4jLogger.java
       logging/TestLogger.java
       logging/TestStderrLogger.java
-      mem/StdlibTest.java
-      mem/AVXAlignedMemoryBlockTest.java
-      mem/AlignedAlignedWriteBufferTest.java
       helpers/CatchersTest.java
       helpers/DenseMemoryManipulationTest.java
       helpers/FuzzyEqualsTest.java

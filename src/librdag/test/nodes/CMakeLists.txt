@@ -32,6 +32,11 @@ set(TESTS
     check_selectresult
     check_svd
     check_transpose
+    # auto generated
+    check_plus
+    check_minus
+    check_rdivide
+    check_times
    )
 
 # Compile and link each test and add to the list of tests

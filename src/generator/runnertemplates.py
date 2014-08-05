@@ -147,7 +147,7 @@ infix_matrix_runner_implementation = """\
     {% if izysymbol_sv == izysymbol_vs %}
       newData = izy::vx_{{ izysymbol_vs }}(datalen, data1, data0[0]);
     {% else %}
-      newData = izy::vx_{{ izysymbol_vs }}(datalen, data0, data1[0]);
+      newData = izy::vx_{{ izysymbol_sv }}(datalen, data0[0], data1);
     {% endif %}
   }
   else if (arg1scalar)

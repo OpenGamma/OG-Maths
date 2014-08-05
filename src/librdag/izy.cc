@@ -787,4 +787,22 @@ vx_xdiv(const int count, complex16 scalar0, complex16 * vector0)
   return ret;
 }
 
+template<>
+std::unique_ptr<real8[]>
+vx_xsub(const int count, real8 scalar0, real8 * vector0)
+{
+  std::unique_ptr<real8[]> ret (new real8[count]);
+  vd_xsub(&count, &scalar0, &detail::zero, vector0, &detail::zero, ret.get(), &detail::zero);
+  return ret;
+}
+
+template<>
+std::unique_ptr<complex16[]>
+vx_xsub(const int count, complex16 scalar0, complex16 * vector0)
+{
+  std::unique_ptr<complex16[]> ret (new complex16[count]);
+  vz_xsub(&count, &scalar0, &detail::zero, vector0, &detail::zero, ret.get(), &detail::zero);
+  return ret;
+}
+
 }
