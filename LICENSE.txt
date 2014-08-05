@@ -51,6 +51,13 @@ License, see 'licenses/CMake_BSD3c.txt'. The file 'cmake/modules/UseJava.cmake'
 is based on code from CMake (https://github.com/Kitware/CMake) and it is
 licensed under the the BSD 3-Clause License, see 'licenses/CMake_BSD3c.txt'.
 
+UFL:
+The file 'src/generator/util.py' is based on code from UFL
+(https://bitbucket.org/fenics-project/ufl/src/
+571866775dcccd0dd3c68fde3a9c18b744fbb667/ufl/common.py?at=master)
+and is licensed under the GNU Lesser General Public License version 3, see
+'licenses/LGPLv3.txt' for license text.
+
 The Microsoft Developer Network:
 The file 'src/win32/test.manifest' is based on a code sample in the document
 http://msdn.microsoft.com/en-us/library/bb530410.aspx retrieved from the
