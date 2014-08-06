@@ -193,19 +193,29 @@ public final class NativeLibraries {
   }
 
   /**
+   * Get the architecture's bit width
+   *
+   * @return the width in bits, either 32 or 64
+   */
+  private static int getWidth() {
+    String arch = System.getProperty("os.arch");
+    if (arch.equals("amd64") || arch.equals("x86_64")) {
+      return 64;
+    } else {
+      return 32;
+    }
+  }
+
+  /**
    * Check whether the current platform is supported.
    *
    * We support Mac OS X, Windows, and Linux running on x86 64-bit architectures.
    */
   private static void checkPlatformSupported() {
-    String arch = System.getProperty("os.arch");
-    if (!arch.equals("amd64") && !arch.equals("x86_64")) {
-      throw new MathsExceptionUnsupportedPlatform(
-          "Your architecture " + arch + " is unsupported. Only 64-bit systems are supported.");
-    }
     List<String> supportedPlatforms = new ArrayList<>();
     supportedPlatforms.add("lin");
     supportedPlatforms.add("win");
+    supportedPlatforms.add("w32");
     supportedPlatforms.add("mac");
     String platform = getShortPlatform();
     if (!supportedPlatforms.contains(platform)) {
@@ -273,7 +283,8 @@ public final class NativeLibraries {
    * @return the platform
    */
   private static String getPlatform() {
-    return System.getProperty("os.name");
+    String osName = System.getProperty("os.name");
+    return osName + " " + getWidth() + "-bit";
   }
 
   /**
@@ -282,7 +293,11 @@ public final class NativeLibraries {
    * These will match up with the names referred to in the NativeLibraries.properties file
    */
   private static String getShortPlatform() {
-    return getPlatform().toLowerCase().substring(0, 3);
+    String shortPlatform =  getPlatform().toLowerCase().substring(0, 3);
+    if (getWidth() == 32) {
+      shortPlatform = shortPlatform.substring(0, 1) + "32";
+    }
+    return shortPlatform;
   }
 
   /**

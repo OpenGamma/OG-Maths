@@ -81,11 +81,17 @@ set(JAVA_FILES
     fuzzer/FixedSizeFIFO.java
     fuzzer/FuzzerResult.java
     fuzzer/TransformAnnotationFuzzOnly.java
-    mem/AlignedAlignedWriteBuffer.java
-    mem/AVXAlignedMemoryBlock.java
-    mem/InvalidAccessException.java
-    mem/Stdlib.java
     )
+
+if(BITS64)
+  set(JAVA_FILES
+      ${JAVA_FILES}
+      mem/AlignedAlignedWriteBuffer.java
+      mem/AVXAlignedMemoryBlock.java
+      mem/InvalidAccessException.java
+      mem/Stdlib.java
+      )
+endif()
 
 foreach(JFILE ${JAVA_FILES})
   set(JAR_SOURCES ${JAR_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/java/${JPACKAGEDIR}/${JFILE})
