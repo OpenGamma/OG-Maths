@@ -1163,20 +1163,20 @@ OGRealDiagonalMatrix::debug_print() const
     {
       if(j==i && i < this->getDatalen())
       {
-        printf("%6.4f, ",this->getData()[ptr++]);
+        printf("%18.16f, ",this->getData()[ptr++]);
       }
       else
       {
-        printf("%6.4f, ",0.e0);
+        printf("%18.16f, ",0.e0);
       }
     }
     if(i==this->getCols()-1 && i < this->getDatalen())
     {
-      printf("%6.4f\n",this->getData()[ptr++]);
+      printf("%18.16f\n",this->getData()[ptr++]);
     }
     else
     {
-      printf("%6.4f\n",0.e0);
+      printf("%18.16f\n",0.e0);
     }
   }
 }
@@ -1261,22 +1261,22 @@ OGComplexDiagonalMatrix::debug_print() const
     {
       if(j==i && i < this->getDatalen())
       {
-        printf("%6.4f + %6.4fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
+        printf("%18.16f + %18.16fi, ",this->getData()[ptr].real(),this->getData()[ptr].imag());
         ptr++;
       }
       else
       {
-        printf("%6.4f + %6.4fi, ",0.e0,0.e0);
+        printf("%18.16f + %18.16fi, ",0.e0,0.e0);
       }
     }
     if(i==this->getCols()-1 && i < this->getDatalen())
     {
-      printf("%6.4f + %6.4fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
+      printf("%18.16f + %18.16fi\n",this->getData()[ptr].real(),this->getData()[ptr].imag());
       ptr++;
     }
     else
     {
-      printf("%6.4f + %6.4fi\n",0.e0,0.e0);
+      printf("%18.16f + %18.16fi\n",0.e0,0.e0);
     }
   }
 }
@@ -1509,7 +1509,7 @@ OGRealSparseMatrix::debug_print() const
   {
     for (int4 i = colPtr[ir]; i < colPtr[ir + 1]; i++)
     {
-      printf("(%d,%zd) = %6.4f\n",this->getRowIdx()[i],ir,this->getData()[i]);
+      printf("(%d,%zd) = %18.16f\n",this->getRowIdx()[i],ir,this->getData()[i]);
     }
   }
 }
@@ -1602,7 +1602,7 @@ OGComplexSparseMatrix::debug_print() const
   {
     for (int4 i = colPtr[ir]; i < colPtr[ir + 1]; i++)
     {
-      printf("(%d,%zd) = %6.4f + %6.4fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
+      printf("(%d,%zd) = %18.16f + %18.16fi \n",this->getRowIdx()[i],ir,this->getData()[i].real(),this->getData()[i].imag());
     }
   }
 }

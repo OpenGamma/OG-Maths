@@ -8,6 +8,7 @@
 #define _TESTNODES_HH
 
 #include "terminal.hh"
+#include "equals.hh"
 #include "expressionbase.hh"
 #include "execution.hh"
 #include "dispatch.hh"
@@ -100,8 +101,10 @@ template <typename T> class CheckNode
        * Construct with test node.
        * @param expected the expected result.
        * @param comparisonMethod how the results should be compared.
+       * @param maxabserror the maximum absolute error used in comparison.
+       * @param maxrelerror the maximum relative error used in comparison.
        */
-      CheckNode(OGNumeric::Ptr expected, CompareMethod comparisonMethod);
+      CheckNode(OGNumeric::Ptr expected, CompareMethod comparisonMethod, real8 maxabserror = FuzzyEquals_default_maxabserror, real8 maxrelerror = FuzzyEquals_default_maxrelerror);
       /**
        * Standard destructor
        */
@@ -128,7 +131,14 @@ template <typename T> class CheckNode
        * Gets the comparison method.
        */
       virtual CompareMethod getComparisonMethod() const;
-
+      /**
+       * Gets the maximum absolute error.
+       */
+      virtual real8 getMaxAbsError() const;
+      /**
+       * Gets the maximum relative error.
+       */
+      virtual real8 getMaxRelError() const;
   protected:
     /**
      * Method called to do the actual execution of the operation.
@@ -137,6 +147,8 @@ template <typename T> class CheckNode
   private:
     OGNumeric::Ptr _expected;
     CompareMethod _comparisonMethod;
+    real8 _maxabserror;
+    real8 _maxrelerror;
 };
 
 /**
@@ -151,8 +163,10 @@ template <typename T> class CheckUnary: public CheckNode<T>
      * @param input the input value.
      * @param expected the expected value.
      * @param comparisonMethod how the results should be compared.
+     * @param maxabserror the maximum absolute error used in comparison.
+     * @param maxrelerror the maximum relative error used in comparison.
      */
-    CheckUnary(OGNumeric::Ptr input, OGNumeric::Ptr expected, CompareMethod comparisonMethod);
+    CheckUnary(OGNumeric::Ptr input, OGNumeric::Ptr expected, CompareMethod comparisonMethod, real8 maxabserror = FuzzyEquals_default_maxabserror, real8 maxrelerror = FuzzyEquals_default_maxrelerror);
     ~CheckUnary();
     virtual bool comparesCorrectlyTypeInvariant() const override;
     virtual bool comparesCorrectly() const override;
@@ -196,8 +210,10 @@ template <typename T> class CheckBinary: public CheckNode<T>
      * @param second_input the second input value.
      * @param expected the expected value.
      * @param comparisonMethod how the results should be compared.
+     * @param maxabserror the maximum absolute error used in comparison.
+     * @param maxrelerror the maximum relative error used in comparison.
      */
-    CheckBinary(OGNumeric::Ptr first_input, OGNumeric::Ptr second_input, OGNumeric::Ptr expected, CompareMethod comparisonMethod);
+    CheckBinary(OGNumeric::Ptr first_input, OGNumeric::Ptr second_input, OGNumeric::Ptr expected, CompareMethod comparisonMethod, real8 maxabserror = FuzzyEquals_default_maxabserror, real8 maxrelerror = FuzzyEquals_default_maxrelerror);
     ~CheckBinary();
     virtual bool comparesCorrectlyTypeInvariant() const override;
     virtual bool comparesCorrectly() const override;

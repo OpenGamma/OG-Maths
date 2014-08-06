@@ -32,7 +32,17 @@ set(TESTS
     check_selectresult
     check_svd
     check_transpose
-    # auto generated
+    # auto generated functions
+    check_acos
+    check_asinh
+    check_atan
+    check_cos
+    check_exp
+    check_sin
+    check_sinh
+    check_tan
+    check_tanh
+    # auto generated infix
     check_plus
     check_minus
     check_rdivide
