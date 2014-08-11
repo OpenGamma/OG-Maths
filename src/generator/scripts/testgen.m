@@ -4,6 +4,18 @@
 % Please see distribution for license.
 %
 
+%
+% This script will generate the unit test code for "safe" functions (those which don't change
+% domain depending on numerical value of input).
+%
+% To generate the test code run:
+% ${PATH_TO_MCODE_BINARY} testgen.m
+%
+% Output location (defaults to ${OG_MATHS_ROOT}/librdag/test/nodes/)
+% is influenced by the 'outdir' variable set below.
+%
+
+
 clear all; close all; clc;
 
 %% output dir
