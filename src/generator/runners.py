@@ -6,9 +6,11 @@ from runnertemplates import runners_header, runners_cc, binary_runner_class_defi
                             prefix_matrix_runner_implementation, \
                             unaryfunction_scalar_runner_implementation, \
                             unaryfunction_matrix_runner_implementation, \
-                            unimplementedunary_runner_function, unimplementedbinary_runner_function, \
+                            unimplementedunary_runner_function, \
+                            unimplementedbinary_runner_function, \
                             integer_parameter_runner_class_definition
 from exprtree import UnaryExpression, BinaryExpression
+from jinja2 import Environment, DictLoader
 
 class UnaryExpressionRunner(UnaryExpression):
     """For generating the runner code for a UnaryExpression."""
@@ -144,13 +146,33 @@ class SelectResultRunner(BinaryExpression):
 class InfixOpRunner(BinaryExpressionRunner):
     """An InfixOp is a BinaryExpression that has a particular symbol that is
     placed infix in its two arguments in the generated code."""
-    def __init__(self, nodename, enumname, symbol):
+    def __init__(self, nodename, enumname, symbol, izysymbol_vv, izysymbol_vs, izysymbol_sv):
         super(InfixOpRunner, self).__init__(nodename, enumname)
         self._symbol = symbol
+        self._izysymbol_vv = izysymbol_vv
+        self._izysymbol_vs = izysymbol_vs
+        self._izysymbol_sv = izysymbol_sv
+        self._env = Environment(loader=DictLoader({'infix_matrix_runner_implementation': infix_matrix_runner_implementation}))
+
+    @property
+    def env(self):
+        return self._env
 
     @property
     def symbol(self):
         return self._symbol
+
+    @property
+    def izysymbol_vv(self):
+        return self._izysymbol_vv
+
+    @property
+    def izysymbol_vs(self):
+        return self._izysymbol_vs
+
+    @property
+    def izysymbol_sv(self):
+        return self._izysymbol_sv
 
     @property
     def scalar_implementation(self):
@@ -161,16 +183,25 @@ class InfixOpRunner(BinaryExpressionRunner):
     @property
     def real_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
+              'izysymbol_vv':     self.izysymbol_vv,
+              'izysymbol_vs':     self.izysymbol_vs,
+              'izysymbol_sv':     self.izysymbol_sv,
               'datatype':   'real8',
               'returntype': 'OGRealDenseMatrix' }
-        return infix_matrix_runner_implementation % d
+        template = self.env.get_template('infix_matrix_runner_implementation');
+        return template.render(d);
 
     @property
     def complex_matrix_implementation(self):
         d = { 'symbol':     self.symbol,
+              'izysymbol_vv':     self.izysymbol_vv,
+              'izysymbol_vs':     self.izysymbol_vs,
+              'izysymbol_sv':     self.izysymbol_sv,
               'datatype':   'complex16',
               'returntype': 'OGComplexDenseMatrix' }
-        return infix_matrix_runner_implementation % d
+        template = self.env.get_template('infix_matrix_runner_implementation');
+        return template.render(d);
+
 
 class PrefixOpRunner(UnaryExpressionRunner):
     """A PrefixOp is a UnaryFunction whose symbol is placed just before its

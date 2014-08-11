@@ -16,7 +16,12 @@ import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.materialisers.Materialisers;
 import com.opengamma.maths.nativeloader.NativeLibraries;
+import com.opengamma.maths.nodes.ACOS;
+import com.opengamma.maths.nodes.ASINH;
+import com.opengamma.maths.nodes.ATAN;
+import com.opengamma.maths.nodes.COS;
 import com.opengamma.maths.nodes.CTRANSPOSE;
+import com.opengamma.maths.nodes.EXP;
 import com.opengamma.maths.nodes.INV;
 import com.opengamma.maths.nodes.LU;
 import com.opengamma.maths.nodes.MLDIVIDE;
@@ -25,7 +30,13 @@ import com.opengamma.maths.nodes.NEGATE;
 import com.opengamma.maths.nodes.NORM2;
 import com.opengamma.maths.nodes.PINV;
 import com.opengamma.maths.nodes.PLUS;
+import com.opengamma.maths.nodes.RDIVIDE;
+import com.opengamma.maths.nodes.SIN;
+import com.opengamma.maths.nodes.SINH;
 import com.opengamma.maths.nodes.SVD;
+import com.opengamma.maths.nodes.TAN;
+import com.opengamma.maths.nodes.TANH;
+import com.opengamma.maths.nodes.TIMES;
 import com.opengamma.maths.nodes.TRANSPOSE;
 
 /**
@@ -62,30 +73,66 @@ public final class DOGMA {
 
   // unary nodes
 
-  public static OGNumeric norm2(OGNumeric arg0) {
-    return new NORM2(arg0);
+  public static OGNumeric acos(OGNumeric arg0) {
+    return new ACOS(arg0);
   }
 
-  public static OGNumeric uminus(OGNumeric arg0) {
-    return new NEGATE(arg0);
+  public static OGNumeric asinh(OGNumeric arg0) {
+    return new ASINH(arg0);
+  }
+  
+  public static OGNumeric atan(OGNumeric arg0) {
+    return new ATAN(arg0);
+  }
+
+  public static OGNumeric cos(OGNumeric arg0) {
+    return new COS(arg0);
+  }
+
+  public static OGNumeric ctranspose(OGNumeric arg0) {
+    return new CTRANSPOSE(arg0);
+  }
+
+  public static OGNumeric exp(OGNumeric arg0) {
+    return new EXP(arg0);
+  }
+  
+  public static OGNumeric inv(OGNumeric arg0) {
+    return new INV(arg0);
+  }
+
+  public static OGNumeric norm2(OGNumeric arg0) {
+    return new NORM2(arg0);
   }
 
   public static OGNumeric pinv(OGNumeric arg0) {
     return new PINV(arg0);
   }
 
-  public static OGNumeric inv(OGNumeric arg0) {
-    return new INV(arg0);
+  public static OGNumeric sin(OGNumeric arg0) {
+    return new SIN(arg0);
   }
 
+  public static OGNumeric sinh(OGNumeric arg0) {
+    return new SINH(arg0);
+  }
+  
+  public static OGNumeric tan(OGNumeric arg0) {
+    return new TAN(arg0);
+  }
+
+  public static OGNumeric tanh(OGNumeric arg0) {
+    return new TANH(arg0);
+  }
+  
   public static OGNumeric transpose(OGNumeric arg0) {
     return new TRANSPOSE(arg0);
   }
-
-  public static OGNumeric ctranspose(OGNumeric arg0) {
-    return new CTRANSPOSE(arg0);
-  }
   
+  public static OGNumeric uminus(OGNumeric arg0) {
+    return new NEGATE(arg0);
+  }
+
   // binary nodes
 
   public static OGNumeric plus(final OGNumeric... args) {
@@ -110,17 +157,6 @@ public final class DOGMA {
     return ret;
   }
 
-  public static OGNumeric mtimes(final OGNumeric... args) {
-    if (args.length < 2) {
-      throw new MathsExceptionIllegalArgument("Cannot use mtimes() with just one argument.");
-    }
-    OGNumeric ret = args[0];
-    for (int i = 1; i < args.length; i++) {
-      ret = new MTIMES(ret, args[i]);
-    }
-    return ret;
-  }
-
   public static OGNumeric mldivide(final OGNumeric... args) {
     if (args.length < 2) {
       throw new MathsExceptionIllegalArgument("Cannot use mldivide() with just one argument.");
@@ -132,14 +168,47 @@ public final class DOGMA {
     return ret;
   }
   
-  // variadic results
-
-  public static OGSVDResult svd(OGNumeric arg0) {
-    return new OGSVDResult(new SVD(arg0));
+  public static OGNumeric mtimes(final OGNumeric... args) {
+    if (args.length < 2) {
+      throw new MathsExceptionIllegalArgument("Cannot use mtimes() with just one argument.");
+    }
+    OGNumeric ret = args[0];
+    for (int i = 1; i < args.length; i++) {
+      ret = new MTIMES(ret, args[i]);
+    }
+    return ret;
   }
+
+  public static OGNumeric rdivide(final OGNumeric... args) {
+    if (args.length < 2) {
+      throw new MathsExceptionIllegalArgument("Cannot use rdivide() with just one argument.");
+    }
+    OGNumeric ret = args[0];
+    for (int i = 1; i < args.length; i++) {
+      ret = new RDIVIDE(ret, args[i]);
+    }
+    return ret;
+  }
+  
+  public static OGNumeric times(final OGNumeric... args) {
+    if (args.length < 2) {
+      throw new MathsExceptionIllegalArgument("Cannot use times() with just one argument.");
+    }
+    OGNumeric ret = args[0];
+    for (int i = 1; i < args.length; i++) {
+      ret = new TIMES(ret, args[i]);
+    }
+    return ret;
+  }
+
+  // variadic results
   
   public static OGLUResult lu(OGNumeric arg0) {
     return new OGLUResult(new LU(arg0));
+  }
+  
+  public static OGSVDResult svd(OGNumeric arg0) {
+    return new OGSVDResult(new SVD(arg0));
   }
 
   // materialisers
@@ -148,12 +217,12 @@ public final class DOGMA {
     System.out.println(Materialisers.toOGTerminal(arg0).toString());
   }
 
-  public static double[][] toDoubleArrayOfArrays(OGNumeric arg0) {
-    return Materialisers.toDoubleArrayOfArrays(arg0);
-  }
-
   public static ComplexArrayContainer toComplexArrayContainer(OGNumeric arg0) {
     return Materialisers.toComplexArrayContainer(arg0);
+  }
+  
+  public static double[][] toDoubleArrayOfArrays(OGNumeric arg0) {
+    return Materialisers.toDoubleArrayOfArrays(arg0);
   }
 
   public static OGTerminal toOGTerminal(OGNumeric arg0) {

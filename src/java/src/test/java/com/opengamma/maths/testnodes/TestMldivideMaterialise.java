@@ -10,6 +10,7 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 import com.opengamma.maths.datacontainers.OGTerminal;
+import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.exceptions.MathsExceptionNativeComputation;
 import com.opengamma.maths.materialisers.Materialisers;
@@ -26,7 +27,7 @@ public class TestMldivideMaterialise {
   // 2 Test for expected warn
   // 3 Test for real space
   // 4 Test for complex space
-  
+
   @Test(expectedExceptions = MathsExceptionNativeComputation.class)
   public void checkThrowOnNonCommute() {
     OGRealDenseMatrix A = new OGRealDenseMatrix(new double[] { 1, 2, 3, 4, 5, 6 }, 3, 2);
@@ -54,13 +55,21 @@ public class TestMldivideMaterialise {
   }
 
   public void checkComplexSpaceResult() {
-    OGRealDenseMatrix A = new OGRealDenseMatrix(new double[][] { { 10.0000000000000000, 2.0000000000000000, 3.0000000000000000 }, { 4.0000000000000000, 50.0000000000000000, 6.0000000000000000 },
-      { 7.0000000000000000, 8.0000000000000000, 9.0000000000000000 } });
-    OGRealDenseMatrix B = new OGRealDenseMatrix(new double[][] { { 1.0000000000000000, 4.0000000000000000 }, { 2.0000000000000000, 5.0000000000000000 }, { 3.0000000000000000, 6.0000000000000000 } });
+    double[][] rp, ip;
+    rp = new double[][] { { 3.0000000000000000, 3.0000000000000000, 5.0000000000000000 }, { 2.0000000000000000, 5.0000000000000000, 3.0000000000000000 },
+      { 3.0000000000000000, 2.0000000000000000, 7.0000000000000000 } };
+    ip = new double[][] { { 0.0000000000000000, 4.0000000000000000, -6.0000000000000000 }, { -1.0000000000000000, 10.0000000000000000, -2.0000000000000000 },
+      { 1.0000000000000000, -1.0000000000000000, -4.0000000000000000 } };
+    OGComplexDenseMatrix A = new OGComplexDenseMatrix(rp, ip);
+    rp = new double[][] { { 1.0000000000000000, 4.0000000000000000 }, { 2.0000000000000000, 5.0000000000000000 }, { 3.0000000000000000, 6.0000000000000000 } };
+    ip = new double[][] { { 2.0000000000000000, 8.0000000000000000 }, { 4.0000000000000000, 10.0000000000000000 }, { 6.0000000000000000, 12.0000000000000000 } };
+    OGComplexDenseMatrix B = new OGComplexDenseMatrix(rp, ip);
     MLDIVIDE mldivide = new MLDIVIDE(A, B);
     OGTerminal answer = Materialisers.toOGTerminal(mldivide);
-    OGTerminal expected = new OGRealDenseMatrix(new double[][] { { 0.0000000000000001, 1.1052631578947369 }, { 0.0000000000000000, 0.1105263157894738 }, { 1.3999999999999997, 1.8421052631578940 } });
-    assertTrue(expected.mathsequals(answer,1e-15,1e-15));
+    rp = new double[][] { { -0.7926829268292659, 0.3048780487804908 }, { -0.4786585365853658, -0.2774390243902438 }, { 1.9420731707317069, 2.2530487804878043 } };
+    ip = new double[][] { { 5.6158536585365875, 7.9939024390243905 }, { 0.4420731707317078, 0.7530487804878054 }, { -0.5213414634146353, -0.7225609756097574 } };
+    OGTerminal expected = new OGComplexDenseMatrix(rp, ip);
+    assertTrue(expected.mathsequals(answer, 1e-15, 1e-15));
   }
 
 }

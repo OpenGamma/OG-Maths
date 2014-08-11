@@ -44,6 +44,7 @@ runners_cc = """\
 #include "expression.hh"
 #include "terminal.hh"
 #include "uncopyable.hh"
+#include "izy.hh"
 
 using namespace std;
 
@@ -96,28 +97,26 @@ infix_scalar_runner_implementation = """\
   ret = %(returntype)s::create(arg0->getValue() %(symbol)s arg1->getValue());\
 """
 
+# this is a jinja2 template
 infix_matrix_runner_implementation = """\
   size_t r0 = arg0->getRows();
   size_t r1 = arg1->getRows();
   size_t c0 = arg0->getCols();
   size_t c1 = arg1->getCols();
-  
+
   bool arg0scalar = false, arg1scalar = false;
-  %(datatype)s arg0value = 0.0, arg1value = 0.0;
 
   size_t newRows, newCols;
-  
+
   if ((r0 == 1) && (c0 == 1))
   {
     arg0scalar = true;
-    arg0value = arg0->getData()[0];
     newRows = arg1->getRows();
     newCols = arg1->getCols();
   }
   else if ((r1 == 1) && (c1 == 1))
   {
     arg1scalar = true;
-    arg1value = arg1->getData()[0];
     newRows = arg0->getRows();
     newCols = arg0->getCols();
   }
@@ -126,7 +125,7 @@ infix_matrix_runner_implementation = """\
     newRows = arg0->getRows();
     newCols = arg0->getCols();
   }
-  
+
   if (((r0 != r1) || (c0 != c1)) && !arg0scalar && !arg1scalar)
   {
     stringstream s;
@@ -134,49 +133,41 @@ infix_matrix_runner_implementation = """\
     s << "(" << r0 << "," << c0 << ")";
     s << " and ";
     s << "(" << r1 << "," << c1 << ")";
-    s << " mismatch for operation: %(symbol)s";
+    s << " mismatch for operation: {{ symbol }}";
     throw rdag_error(s.str());
   }
 
-  %(datatype)s* newData;
+  unique_ptr<{{ datatype }}[]> newData = nullptr;
 
   if (arg0scalar)
   {
     size_t datalen = arg1->getDatalen();
-    %(datatype)s* data1 = arg1->getData();
-    newData = new %(datatype)s[datalen];
-    
-    for (size_t i = 0; i < datalen; i++)
-    {
-      newData[i] = data1[i] %(symbol)s arg0value;
-    }
+    {{ datatype }}* data0 = arg0->getData();
+    {{ datatype }}* data1 = arg1->getData();
+    {% if izysymbol_sv == izysymbol_vs %}
+      newData = izy::vx_{{ izysymbol_vs }}(datalen, data1, data0[0]);
+    {% else %}
+      newData = izy::vx_{{ izysymbol_sv }}(datalen, data0[0], data1);
+    {% endif %}
   }
   else if (arg1scalar)
   {
     size_t datalen = arg0->getDatalen();
-    %(datatype)s* data0 = arg0->getData();
-    newData = new %(datatype)s[datalen];
-    
-    for (size_t i = 0; i < datalen; i++)
-    {
-      newData[i] = data0[i] %(symbol)s arg1value;
-    }
+    {{ datatype }}* data0 = arg0->getData();
+    {{ datatype }}* data1 = arg1->getData();
+    newData = izy::vx_{{ izysymbol_vs }}(datalen, data0, data1[0]);
   }
   else
   {
     size_t datalen = arg0->getDatalen();
-    %(datatype)s* data0 = arg0->getData();
-    %(datatype)s* data1 = arg1->getData();
-    newData = new %(datatype)s[datalen];
-    
-    for (size_t i = 0; i < datalen; i++)
-    {
-      newData[i] = data0[i] %(symbol)s data1[i];
-    }
+    {{ datatype }}* data0 = arg0->getData();
+    {{ datatype }}* data1 = arg1->getData();
+    newData = izy::vx_{{ izysymbol_vv }}(datalen, data0, data1);
   }
 
-  ret = %(returntype)s::create(newData, newRows, newCols, OWNER);
+  ret = {{ returntype }}::create(newData.release(), newRows, newCols, OWNER);
 """
+
 
 # Unary runner
 
@@ -227,14 +218,9 @@ unaryfunction_scalar_runner_implementation = """\
 
 unaryfunction_matrix_runner_implementation = """\
   %(datatype)s* data = arg->getData();
-  size_t datalen = arg->getDatalen();
-  %(datatype)s* newData = new %(datatype)s[datalen];
-  for (size_t i = 0; i < datalen; ++i)
-  {
-    newData[i] = %(function)s(data[i]);
-  }
-  ret = %(returntype)s::create(newData, arg->getRows(), arg->getCols(), OWNER);
-
+  const int datalen = arg->getDatalen();
+  std::unique_ptr<%(datatype)s[]> newData = izy::vx_%(function)s(datalen, data);
+  ret = %(returntype)s::create(newData.release(), arg->getRows(), arg->getCols(), OWNER);
 """
 
 # Unimplemented runners
@@ -254,7 +240,7 @@ void *
                         %(arg0type)s::Ptr SUPPRESS_UNUSED arg0,
                         %(arg1type)s::Ptr SUPPRESS_UNUSED arg1) const
 {
-  throw rdag_error("Unimplemented unary expression node");
+  throw rdag_error("Unimplemented binary expression node");
   return nullptr;
 }
 """

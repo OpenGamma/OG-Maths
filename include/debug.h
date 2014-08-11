@@ -13,7 +13,7 @@
 #endif
 
 // default precision used in debug output
-#define __DEBUG_PRECISION 10
+#define __DEBUG_PRECISION 16
 
 // Used by VAL64BIT_PRINT
 #define INT64HIGHLOW(val,high,low) \

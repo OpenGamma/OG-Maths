@@ -20,8 +20,13 @@ set(JAVA_FILES
     logging/ILogger.java
     logging/Slf4jLogger.java
     logging/StderrLogger.java
+    nodes/ACOS.java
+    nodes/ASINH.java
+    nodes/ATAN.java
     nodes/COPY.java
+    nodes/COS.java
     nodes/CTRANSPOSE.java
+    nodes/EXP.java
     nodes/INV.java
     nodes/LU.java
     nodes/MTIMES.java
@@ -31,8 +36,14 @@ set(JAVA_FILES
     nodes/NORM2.java
     nodes/PINV.java
     nodes/PLUS.java
+    nodes/RDIVIDE.java
     nodes/SELECTRESULT.java
+    nodes/SIN.java
+    nodes/SINH.java
     nodes/SVD.java
+    nodes/TAN.java
+    nodes/TANH.java
+    nodes/TIMES.java
     nodes/TRANSPOSE.java
     nativeloader/SupportedInstructionSet.java
     nativeloader/NativeLibraries.java
