@@ -68,7 +68,7 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     std::memcpy(A, arg->getData(), sizeof(T)*m*n);
 
     // call lapack
-    lapack::xgesvd(lapack::N, lapack::N, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
+    lapack::xgesvd<T,lapack::OnInputCheck::isfinite>(lapack::N, lapack::N, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
 
     ret = OGRealScalar::create(std::real(S[0]));
     delete[] A;

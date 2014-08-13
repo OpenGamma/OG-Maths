@@ -77,4 +77,31 @@ bool isComplex(const OGTerminal::Ptr& terminal)
   return !isReal(terminal);
 }
 
+
+template<>
+bool isfinite(real8 * data, int4 n)
+{
+  for(int4 k = 0; k < n; k++)
+  {
+    if(!std::isfinite(data[k]))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+template<>
+bool isfinite(complex16 * data, int4 n)
+{
+  for(int4 k = 0; k < n; k++)
+  {
+    if(!(std::isfinite(std::real(data[k]))||std::isfinite(std::imag(data[k]))))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 } // end namespace librdag

@@ -46,7 +46,7 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
   // call lapack
   try
   {
-    lapack::xgesvd(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
+    lapack::xgesvd<T, lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
   }
   catch (exception& e)
   {

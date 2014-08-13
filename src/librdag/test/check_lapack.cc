@@ -270,7 +270,7 @@ TEST(LAPACKTest_xgesvd, dgesvd) {
   real8 * Acpy = new real8[6];
   std::copy(A,A+m*n,Acpy);
 
-  lapack::xgesvd(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO);
+  lapack::xgesvd<real8,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expectedU,U,9,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedS,S,2,1e-14,1e-14));
@@ -279,7 +279,7 @@ TEST(LAPACKTest_xgesvd, dgesvd) {
   // check throw on bad arg
   std::copy(A,A+m*n,Acpy);
   m = -1;
-  EXPECT_THROW(lapack::xgesvd(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO), rdag_error);
+  EXPECT_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_error);
 
   delete[] U;
   delete[] S;
@@ -309,7 +309,7 @@ TEST(LAPACKTest_xgesvd, zgesvd) {
   complex16 * Acpy = new complex16[6];
   std::copy(A,A+m*n,Acpy);
 
-  lapack::xgesvd(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO);
+  lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expectedU,U,9,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedS,S,2,1e-14,1e-14));
@@ -318,7 +318,7 @@ TEST(LAPACKTest_xgesvd, zgesvd) {
   // check throw on bad arg
   std::copy(A,A+m*n,Acpy);
   m = -1;
-  EXPECT_THROW(lapack::xgesvd(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO), rdag_error);
+  EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_error);
 
   delete[] U;
   delete[] S;

@@ -18,6 +18,16 @@
 namespace lapack
 {
 
+/**
+ * Enumeration of checks available for input data.
+ */
+enum class OnInputCheck
+{
+  isfinite,
+  nothing
+};
+
+
 namespace detail
 {
 // constants
@@ -57,6 +67,15 @@ template<typename T> void xgetrs(char * TRANS, int4 * N, int4 * NRHS, T * A, int
 template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T * A, int4 * LDA, T * B, int4 * LDB, T * WORK, int4 * LWORK, int4 * INFO );
 template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, T * WORK, int4 * LWORK, int4 *INFO);
 template<typename T> void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, T * WORK, int4 * LWORK, int4 * INFO);
+
+template<typename T, OnInputCheck Check> void checkData(T * data, int4 n);
+
+// Partial template specialisation (PTS) buffer, bounce function templates via structs
+// so that PTS can be used
+template<typename T, OnInputCheck CHECK> struct PTSBuffer
+{
+  static void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, T * A, int4 * LDA, real8 * S, T * U, int4 * LDU, T * VT, int4 * LDVT, int4 * INFO);
+};
 
 }
 
@@ -206,7 +225,7 @@ template<typename T> real8 xnrm2(int4 * N, T * X, int4 * INCX);
  * @param INFO as LAPACK dgesvd INFO
  * @throws rdag_error on illegal input OR non-convergence
  */
-template<typename T> void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, T * A, int4 * LDA, real8 * S, T * U, int4 * LDU, T * VT, int4 * LDVT, int4 * INFO);
+template<typename T, OnInputCheck CHECK> void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, T * A, int4 * LDA, real8 * S, T * U, int4 * LDU, T * VT, int4 * LDVT, int4 * INFO);
 
 /**
  * xgetrf() computes the LU decomposition using parital pivoting
