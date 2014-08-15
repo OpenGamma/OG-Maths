@@ -110,8 +110,21 @@ public class OGRealDenseMatrix extends OGDenseMatrix {
     return _cols;
   }
 
+  
   @Override
   public String toString() {
+    String str = "";
+    for (int i = 0; i < _rows; i++) {
+      for (int j = 0; j < _cols; j++) {
+        str += String.format("%24.18f ", _data[j * _rows + i]);
+      }
+      str += String.format("\n");
+    }
+    return str;
+  }
+  
+  @Override
+  public String toDebugString() {
     String str = "OGRealDenseMatrix:" + "\ndata = " + Arrays.toString(_data) + "\nrows = " + _rows + "\ncols = " + _cols;
     str = str + "\n====Pretty Print====\n";
     for (int i = 0; i < _rows; i++) {

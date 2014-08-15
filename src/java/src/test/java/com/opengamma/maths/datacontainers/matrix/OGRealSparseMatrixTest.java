@@ -189,11 +189,17 @@ public class OGRealSparseMatrixTest {
   }
 
   @Test
+  public void toDebugStringTest() {
+    OGRealSparseMatrix D = new OGRealSparseMatrix(data);
+    D.toDebugString();
+  }
+
+  @Test
   public void toStringTest() {
     OGRealSparseMatrix D = new OGRealSparseMatrix(data);
     D.toString();
   }
-
+  
   @Test
   public void testHashCode() {
     assertTrue(defaultVal.hashCode() == same.hashCode());

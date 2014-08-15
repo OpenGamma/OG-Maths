@@ -262,6 +262,12 @@ public class OGComplexDiagonalMatrixTest {
   }
 
   @Test
+  public void toDebugStringTest() {
+    OGComplexDiagonalMatrix D = new OGComplexDiagonalMatrix(data4x3diagdreal, data4x3diagdimag);
+    D.toDebugString();
+  }
+  
+  @Test
   public void toStringTest() {
     OGComplexDiagonalMatrix D = new OGComplexDiagonalMatrix(data4x3diagdreal, data4x3diagdimag);
     D.toString();

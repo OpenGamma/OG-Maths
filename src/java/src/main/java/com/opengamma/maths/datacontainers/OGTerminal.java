@@ -111,4 +111,11 @@ public abstract class OGTerminal implements OGNumeric {
   @Override
   public abstract boolean equals(final Object obj);
 
+  /**
+   * Functionality similar to {@code toString()}, but with added debugging
+   * output appropriate for the class.
+   * @return a string containing debugging output.
+   */
+  public abstract String toDebugString();
+
 }

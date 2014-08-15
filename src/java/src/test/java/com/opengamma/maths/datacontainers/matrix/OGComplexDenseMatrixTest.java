@@ -334,6 +334,12 @@ public class OGComplexDenseMatrixTest {
     OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
     assertTrue(D.getType().equals(ExprEnum.OGComplexDenseMatrix));
   }
+
+  @Test
+  public void toDebugStringTest() {
+    OGComplexDenseMatrix D = new OGComplexDenseMatrix(interleaved4x3, 4, 3);
+    D.toDebugString();
+  }
   
   @Test
   public void toStringTest() {

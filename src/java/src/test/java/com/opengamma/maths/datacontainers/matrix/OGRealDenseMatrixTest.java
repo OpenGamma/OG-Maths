@@ -151,6 +151,12 @@ public class OGRealDenseMatrixTest {
   }
 
   @Test
+  public void toDebugStringTest() {
+    OGRealDenseMatrix D = new OGRealDenseMatrix(data4x3unwound, 4, 3);
+    D.toDebugString();
+  }
+  
+  @Test
   public void toStringTest() {
     OGRealDenseMatrix D = new OGRealDenseMatrix(data4x3unwound, 4, 3);
     D.toString();

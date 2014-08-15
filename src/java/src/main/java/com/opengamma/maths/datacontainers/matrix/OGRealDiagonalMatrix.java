@@ -5,8 +5,9 @@
  */
 package com.opengamma.maths.datacontainers.matrix;
 
+import java.util.Arrays;
+
 import com.opengamma.maths.datacontainers.ExprEnum;
-import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
 import com.opengamma.maths.exceptions.MathsExceptionNullPointer;
 import com.opengamma.maths.helpers.Catchers;
@@ -120,6 +121,41 @@ public class OGRealDiagonalMatrix extends OGDiagonalMatrix {
   @Override
   public int getCols() {
     return _cols;
+  }
+
+  @Override
+  public String toDebugString() {
+    String str = "OGRealDiagonalMatrix:" + "\ndata = " + Arrays.toString(_data) + "\nrows = " + _rows + "\ncols = " + _cols;
+    str = str + "\n====Pretty Print====\n";
+    String zeroStr = String.format("%24.18f ", 0.d);
+    for (int i = 0; i < _rows; i++) {
+      for (int j = 0; j < _cols; j++) {
+        if (i == j && i < _data.length && j < _data.length) {
+          str += String.format("%24.18f ", _data[i]);
+        } else {
+          str += zeroStr;
+        }
+      }
+      str += String.format("\n");
+    }
+    return str;
+  }
+
+  @Override
+  public String toString() {
+    String str = "Diagonal Matrix:\n";
+    String zeroStr = String.format("%24.18f ", 0.d);
+    for (int i = 0; i < _rows; i++) {
+      for (int j = 0; j < _cols; j++) {
+        if (i == j && i < _data.length && j < _data.length) {
+          str += String.format("%24.18f ", _data[i]);
+        } else {
+          str += zeroStr;
+        }
+      }
+      str += String.format("\n");
+    }
+    return str;
   }
 
   @Override

@@ -465,6 +465,12 @@ public class OGComplexSparseMatrixTest {
   }
 
   @Test
+  public void toDebugStringTest() {
+    OGComplexSparseMatrix D = new OGComplexSparseMatrix(new double[][] { { 1, -1 } }, new double[][] { { 1, -1 } });
+    D.toDebugString();
+  }
+  
+  @Test
   public void toStringTest() {
     OGComplexSparseMatrix D = new OGComplexSparseMatrix(new double[][] { { 1, -1 } }, new double[][] { { 1, -1 } });
     D.toString();

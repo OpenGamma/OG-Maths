@@ -461,7 +461,7 @@ public class OGComplexSparseMatrix extends OGSparseMatrix {
   }
 
   @Override
-  public String toString() {
+  public String toDebugString() {
     StringBuffer sb = new StringBuffer();
     Formatter formatter = new Formatter(sb);
     double abstmp;
@@ -489,6 +489,37 @@ public class OGComplexSparseMatrix extends OGSparseMatrix {
     return "\nvalues=" + Arrays.toString(_data) + "\nrowInd=" + Arrays.toString(_rowIdx) + "\ncolPtr=" + Arrays.toString(_colPtr) + "\ncols=" + _cols + "\nrows=" + _rows + "\nels=" + _els + "\n" +
         sb.toString();
 
+  }
+
+  @Override
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    Formatter formatter = new Formatter(sb);
+    double nnz = 50 * _data.length / (_rows * _cols);
+    double abstmp;
+    sb.append("\nSparse Matrix:\n");
+    formatter.format("[nnz density = %2.0f%%. rows = %d, columns = %d]\n", nnz, _rows, _cols);
+    for (int ir = 0; ir < _cols; ir++) {
+      for (int i = _colPtr[ir]; i < _colPtr[ir + 1]; i++) {
+        sb.append("(");
+        sb.append(_rowIdx[i]);
+        sb.append(",");
+        sb.append(ir);
+        sb.append(") = ");
+        formatter.format("%24.18f", _data[2 * i]);
+        abstmp = (_data[2 * i + 1]);
+        if (abstmp < 0) {
+          sb.append(" -");
+        } else {
+          sb.append(" +");
+        }
+        formatter.format("%24.18f", Math.abs(abstmp));
+        sb.append("i ");
+        sb.append("\n");
+      }
+    }
+    formatter.close();
+    return sb.toString();
   }
 
   @Override

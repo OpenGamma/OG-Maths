@@ -47,9 +47,14 @@ public class OGIntegerScalar extends OGScalar {
   }
 
   @Override
-  public String toString() {
+  public String toDebugString() {
     String str = "\nOGIntegerScalar: value = " + String.format("%d\n", _data[0]);
     return str;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%d\n", _data[0]);
   }
 
   @Override

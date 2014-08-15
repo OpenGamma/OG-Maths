@@ -45,9 +45,14 @@ public class OGRealScalar extends OGScalar {
   }
 
   @Override
-  public String toString() {
+  public String toDebugString() {
     String str = "\nOGRealScalar: value = " + String.format("%24.18f\n", _data[0]);
     return str;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%24.18f\n", _data[0]);
   }
 
   @Override

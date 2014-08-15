@@ -136,11 +136,17 @@ public class OGRealDiagonalMatrixTest {
   }
 
   @Test
+  public void toDebugStringTest() {
+    OGRealDiagonalMatrix D = new OGRealDiagonalMatrix(data4x3diagd, 4, 3);
+    D.toDebugString();
+  }
+  
+  @Test
   public void toStringTest() {
     OGRealDiagonalMatrix D = new OGRealDiagonalMatrix(data4x3diagd, 4, 3);
     D.toString();
   }
-
+  
   @Test
   public void testHashCode() {
     assertTrue(defaultVal.hashCode() == same.hashCode());

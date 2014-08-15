@@ -218,9 +218,28 @@ public class OGComplexDiagonalMatrix extends OGDiagonalMatrix {
   }
 
   @Override
-  public String toString() {
+  public String toDebugString() {
     String str = "OGComplexDiagonalMatrix:" + "\ndata = " + Arrays.toString(_data) + "\nrows = " + _rows + "\ncols = " + _cols;
     str = str + "\n====Pretty Print====\n";
+    String zeroStr = String.format("%24.18f + %24.18fi ", 0.d, 0.d);
+    double imag;
+    for (int i = 0; i < 2 * _rows; i += 2) {
+      for (int j = 0; j < 2 * _cols; j += 2) {
+        if (i == j && i < _data.length && j < _data.length) {
+          imag = _data[i + 1];
+          str += String.format("%24.18f " + (imag >= 0 ? "+" : "-") + "%24.18fi, ", _data[i], Math.abs(imag));
+        } else {
+          str += zeroStr;
+        }
+      }
+      str += String.format("\n");
+    }
+    return str;
+  }
+  
+  @Override
+  public String toString() {
+    String str = "Diagonal Matrix:";
     String zeroStr = String.format("%24.18f + %24.18fi ", 0.d, 0.d);
     double imag;
     for (int i = 0; i < 2 * _rows; i += 2) {

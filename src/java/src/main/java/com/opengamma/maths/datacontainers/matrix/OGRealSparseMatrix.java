@@ -6,6 +6,7 @@
 package com.opengamma.maths.datacontainers.matrix;
 
 import java.util.Arrays;
+import java.util.Formatter;
 
 import com.opengamma.maths.datacontainers.ExprEnum;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
@@ -207,9 +208,31 @@ public class OGRealSparseMatrix extends OGSparseMatrix {
   }
 
   @Override
-  public String toString() {
+  public String toDebugString() {
     String str = "OGRealSparseMatrix:\n";
     return str + "\nvalues=" + Arrays.toString(_data) + "\nrowInd=" + Arrays.toString(_rowIdx) + "\ncolPtr=" + Arrays.toString(_colPtr) + "\ncols=" + _cols + "\nrows=" + _rows + "\nels=" + _els;
+  }
+
+  @Override
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    Formatter formatter = new Formatter(sb);
+    double nnz = 100 * _data.length / (_rows * _cols);
+    sb.append("\nSparse Matrix:\n");
+    formatter.format("[nnz density = %2.0f%%. rows = %d, columns = %d]\n", nnz, _rows, _cols);
+    for (int ir = 0; ir < _cols; ir++) {
+      for (int i = _colPtr[ir]; i < _colPtr[ir + 1]; i++) {
+        sb.append("(");
+        sb.append(_rowIdx[i]);
+        sb.append(",");
+        sb.append(ir);
+        sb.append(") = ");
+        formatter.format("%24.18f", _data[i]);
+        sb.append("\n");
+      }
+    }
+    formatter.close();
+    return sb.toString();
   }
 
   @Override
