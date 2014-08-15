@@ -4,5 +4,6 @@
 # Please see distribution for license.
 #
 
-add_subdirectory(main) 
+add_subdirectory(main)
 add_subdirectory(test)
+add_subdirectory(demo)
