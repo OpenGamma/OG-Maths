@@ -18,6 +18,7 @@ import com.opengamma.maths.datacontainers.matrix.OGRealDiagonalMatrix;
 import com.opengamma.maths.datacontainers.other.ComplexArrayContainer;
 import com.opengamma.maths.exceptions.MathsException;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
+import com.opengamma.maths.exceptions.MathsExceptionNativeComputation;
 import com.opengamma.maths.helpers.FuzzyEquals;
 import com.opengamma.maths.materialisers.Materialisers;
 import com.opengamma.maths.nodes.MTIMES;
@@ -177,4 +178,26 @@ public class TestSVDMaterialise {
     input.getArg(1);
   }
 
+  /**
+   * Check SVD will throw if NaN is present in real system matrix
+   */
+  @Test(expectedExceptions = MathsExceptionNativeComputation.class)
+  public void throwIfNaNPresentRealDataTest() {
+    OGRealDenseMatrix mat = new OGRealDenseMatrix(new double[][] { { 1, 2 }, { 3, Double.NaN } });
+    SVD svd = new SVD(mat);
+    OGNumeric U = svd.getU();
+    Materialisers.toOGTerminal(U);
+  }
+
+  /**
+   * Check SVD will throw if NaN is present in complex system matrix
+   */
+  @Test(expectedExceptions = MathsExceptionNativeComputation.class)
+  public void throwIfNaNPresentComplexDataTest() {
+    OGComplexDenseMatrix mat = new OGComplexDenseMatrix(new double[][] { { 1, 2 }, { 3, Double.NaN } });
+    SVD svd = new SVD(mat);
+    OGNumeric U = svd.getU();
+    Materialisers.toOGTerminal(U);
+  }
+  
 }

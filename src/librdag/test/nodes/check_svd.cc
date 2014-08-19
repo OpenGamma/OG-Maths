@@ -11,6 +11,7 @@
 #include "dispatch.hh"
 #include "testnodes.hh"
 #include "equals.hh"
+#include "runtree.hh"
 
 using namespace std;
 using namespace librdag;
@@ -120,6 +121,11 @@ TEST(SVDTests,CheckRealDenseMatrix)
   }
   reconstruct = m2->getRegs()[0];
   EXPECT_TRUE((*M) ==~ (*(reconstruct->asOGTerminal())));
+
+  // Check sending in a non finite number throws unrecoverable error
+  OGTerminal::Ptr Mbad = OGRealDenseMatrix::create(new real8[6]{std::numeric_limits<real8>::signaling_NaN(),3,5,2,4,6},3,2,OWNER);
+  svd = SVD::create(Mbad);
+  EXPECT_THROW(runtree(svd), rdag_unrecoverable_error);
 }
 
 // MAT-404, test demonstrates fixing of bug.
@@ -241,4 +247,9 @@ TEST(SVDTests,CheckComplexDenseMatrix)
   reconstruct = m2->getRegs()[0];
   // FP fuzz causes grief on reconstruction
   EXPECT_TRUE(ArrayFuzzyEquals(M->asOGComplexDenseMatrix()->getData(),reconstruct->asOGComplexDenseMatrix()->getData(),1e-15,1e-15));
+
+  // Check sending in a non finite number throws unrecoverable error
+  OGTerminal::Ptr Mbad = OGComplexDenseMatrix::create(new complex16[6]{{std::numeric_limits<real8>::signaling_NaN(),10}, {3,30}, {5,50}, {2,20}, {4,40}, {6,60}},3,2,OWNER);
+  svd = SVD::create(Mbad);
+  EXPECT_THROW(runtree(svd), rdag_unrecoverable_error);
 }
