@@ -276,10 +276,22 @@ TEST(LAPACKTest_xgesvd, dgesvd) {
   EXPECT_TRUE(ArrayFuzzyEquals(expectedS,S,2,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedVT,VT,4,1e-14,1e-14));
 
-  // check throw on bad arg
+  // check errors on bad arg (m=-1)
   std::copy(A,A+m*n,Acpy);
   m = -1;
-  EXPECT_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_error);
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::nothing>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 3;
+  std::copy(A,A+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::nothing>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)));
 
   delete[] U;
   delete[] S;
@@ -318,7 +330,7 @@ TEST(LAPACKTest_xgesvd, zgesvd) {
   // check throw on bad arg
   std::copy(A,A+m*n,Acpy);
   m = -1;
-  EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_error);
+  EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
 
   delete[] U;
   delete[] S;

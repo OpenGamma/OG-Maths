@@ -96,7 +96,7 @@ bool isfinite(complex16 * data, int4 n)
 {
   for(int4 k = 0; k < n; k++)
   {
-    if(!(std::isfinite(std::real(data[k]))||std::isfinite(std::imag(data[k]))))
+    if(!(std::isfinite(std::real(data[k]))&&std::isfinite(std::imag(data[k]))))
     {
       return false;
     }

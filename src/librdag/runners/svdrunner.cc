@@ -50,14 +50,16 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
   }
   catch (exception& e)
   {
-    if(info < 0) // illegal arg
+    try
     {
-      throw e;
+      throw;
     }
-    else // failed convergence TODO: this will end up in logs (MAT-369) and userland (MAT-370).
+    catch (rdag_unrecoverable_error& e)
     {
-      cerr << e.what() << std::endl;
+      throw;
     }
+    // error is recoverable so just complain
+    cerr << e.what() << std::endl;
   }
 
   reg.push_back(makeConcreteDenseMatrix(Uptr.release(), m, m, OWNER));

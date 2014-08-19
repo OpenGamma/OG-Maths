@@ -226,17 +226,29 @@ namespace detail
   // Data checkers
   template<> void checkData<real8, lapack::OnInputCheck::isfinite>(real8 * data, int4 n)
   {
+    if(n < 0)
+    {
+      std::stringstream message;
+      message << "Invalid data length (" << n << ") specified.";
+      throw rdag_unrecoverable_error(message.str());
+    }
     if(!librdag::isfinite(data, n))
     {
-      throw rdag_error("Only finite data is permitted in this function.");
+      throw rdag_unrecoverable_error("Only finite data is permitted in this function.");
     }
   }
   template<> void checkData<real8, lapack::OnInputCheck::nothing>(real8 SUPPRESS_UNUSED * data, int4 SUPPRESS_UNUSED n){}
   template<> void checkData<complex16, lapack::OnInputCheck::isfinite>(complex16 * data, int4 n)
   {
+    if(n < 0)
+    {
+      std::stringstream message;
+      message << "Invalid data length (" << n << ") specified.";
+      throw rdag_unrecoverable_error(message.str());
+    }
     if(!librdag::isfinite(data, n))
     {
-      throw rdag_error("Only finite data is permitted in this function.");
+      throw rdag_unrecoverable_error("Only finite data is permitted in this function.");
     }
   }
   template<> void checkData<complex16, lapack::OnInputCheck::nothing>(complex16 SUPPRESS_UNUSED * data, int4 SUPPRESS_UNUSED n){}
@@ -260,7 +272,7 @@ namespace detail
       {
         std::stringstream message;
         message << "Input to LAPACK::dgesvd call incorrect at arg: " << -(*INFO);
-        throw rdag_error(message.str());
+        throw rdag_unrecoverable_error(message.str());
       }
 
       // query complete tmp contains size needed
@@ -273,7 +285,7 @@ namespace detail
 
       if(*INFO!=0)
       {
-        throw rdag_error("LAPACK::dgesvd, internal call to dbdsqr did not converge.");
+        throw rdag_recoverable_error("LAPACK::dgesvd, internal call to dbdsqr did not converge.");
       }
     };
   };
@@ -296,7 +308,7 @@ namespace detail
       {
         std::stringstream message;
         message << "Input to LAPACK::zgesvd call incorrect at arg: " << -(*INFO);
-        throw rdag_error(message.str());
+        throw rdag_unrecoverable_error(message.str());
       }
 
       // query complete tmp contains size needed
@@ -312,7 +324,7 @@ namespace detail
 
       if(*INFO!=0)
       {
-        throw rdag_error("LAPACK::zgesvd, internal call to zbdsqr did not converge.");
+        throw rdag_recoverable_error("LAPACK::zgesvd, internal call to zbdsqr did not converge.");
       }
     };
   };

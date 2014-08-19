@@ -112,6 +112,22 @@ class rdag_error: public ::dogma_exceptions::dogma_error
   using ::dogma_exceptions::dogma_error::dogma_error;
 };
 
+/**
+ * To be thrown when an unrecoverable (but not fatal) error has occurred.
+ */
+class rdag_unrecoverable_error: public rdag_error
+{
+  using rdag_error::rdag_error;
+};
+
+/**
+ * To be thrown when an recoverable error has occurred.
+ */
+class rdag_recoverable_error: public rdag_error
+{
+  using rdag_error::rdag_error;
+};
+
 } // namespace librdag
 
 namespace convert {
