@@ -329,6 +329,26 @@ namespace detail
     };
   };
 
+  // PTSBuffer impls
+  template<typename T, OnInputCheck CHECK> void TemplateBuffer<T, CHECK>::xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO)
+  {
+    set_xerbla_death_switch(lapack::izero);
+    lapack::detail::xgetrf(M,N,A,LDA,IPIV,INFO);
+    if(*INFO!=0)
+    {
+      std::stringstream message;
+      if(*INFO<0)
+      {
+        message << "Input to LAPACK::xgetrf call incorrect at arg: " << -(*INFO) << ".";
+      }
+      else
+      {
+        message << "LAPACK::xgetrf, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
+      }
+      throw rdag_error(message.str());
+    }
+  }
+
 }
 
 
@@ -399,47 +419,25 @@ template real8 xnrm2<real8>(int4 * N, real8 * X, int4 * INCX);
 template real8 xnrm2<complex16>(int4 * N, complex16 * X, int4 * INCX);
 
 // xGESVD specialisations
-template<> void xgesvd<real8, lapack::OnInputCheck::isfinite>(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO)
+template<typename T, lapack::OnInputCheck CHECK> void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, T * A, int4 * LDA, real8 * S, T * U, int4 * LDU, T * VT, int4 * LDVT, int4 * INFO)
 {
-  detail::PTSBuffer<real8,lapack::OnInputCheck::isfinite>::xgesvd(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, INFO);
+  detail::PTSBuffer<T,CHECK>::xgesvd(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, INFO);
 }
+template void xgesvd<real8, lapack::OnInputCheck::nothing>(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO);
+template void xgesvd<real8, lapack::OnInputCheck::isfinite>(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO);
+template void xgesvd<complex16, lapack::OnInputCheck::nothing>(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, int4 * INFO);
+template void xgesvd<complex16, lapack::OnInputCheck::isfinite>(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, int4 * INFO);
 
-template<> void xgesvd<real8, lapack::OnInputCheck::nothing>(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO)
+// xGETRF specialisations
+template<typename T, lapack::OnInputCheck CHECK> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO)
 {
-  detail::PTSBuffer<real8,lapack::OnInputCheck::nothing>::xgesvd(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, INFO);
+  detail::TemplateBuffer<T, CHECK>::xgetrf(M,N,A,LDA,IPIV,INFO);
 }
+template void xgetrf<real8, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template void xgetrf<real8, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template void xgetrf<complex16, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, complex16 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template void xgetrf<complex16, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, complex16 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 
-template<> void xgesvd<complex16, lapack::OnInputCheck::isfinite>(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, int4 * INFO)
-{
-  detail::PTSBuffer<complex16,lapack::OnInputCheck::isfinite>::xgesvd(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, INFO);
-}
-
-template<> void xgesvd<complex16, lapack::OnInputCheck::nothing>(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, int4 * INFO)
-{
-  detail::PTSBuffer<complex16,lapack::OnInputCheck::nothing>::xgesvd(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, INFO);
-}
-
-// xGETRF
-template<typename T> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO)
-{
-  set_xerbla_death_switch(lapack::izero);
-  detail::xgetrf(M,N,A,LDA,IPIV,INFO);
-  if(*INFO!=0)
-  {
-    std::stringstream message;
-    if(*INFO<0)
-    {
-      message << "Input to LAPACK::xgetrf call incorrect at arg: " << -(*INFO) << ".";
-    }
-    else
-    {
-      message << "LAPACK::xgetrf, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
-    }
-    throw rdag_error(message.str());
-  }
-}
-template void xgetrf<real8>(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
-template void xgetrf<complex16>(int4 * M, int4 * N, complex16 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 
 template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 * INFO)
 {

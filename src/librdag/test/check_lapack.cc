@@ -357,7 +357,7 @@ TEST(LAPACKTest_xgetrf, dgetrf) {
   real8 * Acpy = new real8[20];
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   EXPECT_TRUE(ArrayBitEquals(expectedIPIV,ipiv,4));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedA,Acpy,20));
@@ -365,13 +365,13 @@ TEST(LAPACKTest_xgetrf, dgetrf) {
   // check throw on bad arg
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
   m = -1;
-  EXPECT_THROW(lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO), rdag_error);
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_error);
 
   // check throw on singular
   m=3;
   n=3;
   std::copy(rsingular3x3,rsingular3x3+m*n,Acpy);
-  EXPECT_THROW(lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO), rdag_error);
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_error);
 
   delete [] ipiv;
   delete [] expectedIPIV;
@@ -393,7 +393,7 @@ TEST(LAPACKTest_xgetrf, zgetrf) {
   complex16 * Acpy = new complex16[20];
   std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   EXPECT_TRUE(ArrayBitEquals(expectedIPIV,ipiv,4));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedA,Acpy,20));
@@ -401,13 +401,13 @@ TEST(LAPACKTest_xgetrf, zgetrf) {
   // check throw on bad arg
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
   m = -1;
-  EXPECT_THROW(lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO), rdag_error);
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_error);
 
   // check throw on singular
   m=3;
   n=3;
   std::copy(csingular3x3,csingular3x3+m*n,Acpy);
-  EXPECT_THROW(lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO), rdag_error);
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_error);
 
   delete [] ipiv;
   delete [] expectedIPIV;
@@ -796,7 +796,7 @@ TEST(LAPACKTest_xgecon, dgecon) {
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // make the call
   real8 rcond = 0;
@@ -833,7 +833,7 @@ TEST(LAPACKTest_xgecon, zgecon) {
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // make the call
   real8 rcond = 0;
@@ -863,7 +863,7 @@ TEST(LAPACKTest_xgetrs, dgetrs) {
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // need an RHS
   real8 * rhs = new real8[8]{1,2,3,4,1,2,3,4};
@@ -901,7 +901,7 @@ TEST(LAPACKTest_xgetrs, zgetrs) {
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // need an RHS
   complex16 * rhs = new complex16[8]{{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.},{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}};

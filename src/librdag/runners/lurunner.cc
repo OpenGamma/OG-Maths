@@ -47,7 +47,7 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
   // call lapack
   try
   {
-    lapack::xgetrf(&m, &n, A, &lda, ipiv, &info);
+    lapack::xgetrf<T, lapack::OnInputCheck::isfinite>(&m, &n, A, &lda, ipiv, &info);
   }
   catch (exception& e)
   {

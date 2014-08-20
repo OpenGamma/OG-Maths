@@ -743,7 +743,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         // Try a LUP decomposition
         try
         {
-          lapack::xgetrf(&int4rows1, &int4cols1, data1, &int4rows1, ipivPtr.get(), &info);
+          lapack::xgetrf<T, lapack::OnInputCheck::isfinite>(&int4rows1, &int4cols1, data1, &int4rows1, ipivPtr.get(), &info);
         }
         catch (rdag_error& e)
         {

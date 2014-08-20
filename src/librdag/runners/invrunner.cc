@@ -100,7 +100,7 @@ inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     try
     {
       // LU decomp
-      lapack::xgetrf(&size, &size, A, &lda, ipiv, &info);
+      lapack::xgetrf<T, lapack::OnInputCheck::isfinite>(&size, &size, A, &lda, ipiv, &info);
       // Inversion backsolve
       lapack::xgetri(&size, A, &lda, ipiv, &info);
     }

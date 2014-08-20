@@ -71,10 +71,15 @@ template<typename T> void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA
 template<typename T, OnInputCheck Check> void checkData(T * data, int4 n);
 
 // Partial template specialisation (PTS) buffer, bounce function templates via structs
-// so that PTS can be used
+// so that PTS can be used.
 template<typename T, OnInputCheck CHECK> struct PTSBuffer
 {
   static void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, T * A, int4 * LDA, real8 * S, T * U, int4 * LDU, T * VT, int4 * LDVT, int4 * INFO);
+};
+
+template<typename T, OnInputCheck CHECK> struct TemplateBuffer
+{
+  static void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 };
 
 }
@@ -244,7 +249,7 @@ template<typename T, OnInputCheck CHECK> void xgesvd(char * JOBU, char * JOBVT, 
  * @param IPIV as LAPACK dgetrf IPIV
  * @param INFO as LAPACK dgetrf INFO
  */
-template<typename T> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template<typename T, OnInputCheck CHECK> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 
 /**
  * xgetri() computes the inverse of a matrix via LU decomposition
