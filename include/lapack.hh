@@ -145,6 +145,7 @@ extern complex16 * czero;
 
 /**
  * xscal generalised vector scaling
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param N as BLAS dscal N
  * @param DA data type specific with intent as BLAS dscal DA
  * @param DX data type specific with intent as BLAS dscal DX
@@ -154,6 +155,7 @@ template<typename T> void xscal(int4 * N, T * DA, T * DX, int4 * INCX);
 
 /**
  * xswap generalised vector interchange
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param N as BLAS dswap N
  * @param DX data type specific with intent as BLAS dswap DX
  * @param INCX as BLAS dswap INCX
@@ -166,6 +168,7 @@ template<typename T>void xswap(int4 * N, T * DX, int4 * INCX, T * DY, int4 * INC
 /**
  * xgemv generalised matrix vector multiplication.
  * @param TRANS as BLAS dgemv TRANS
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param M as BLAS dgemv M
  * @param N as BLAS dgemv N
  * @param ALPHA data type specific with intent as BLAS dgemv ALPHA
@@ -181,6 +184,7 @@ template<typename T> void xgemv(char * TRANS, int4 * M, int4 * N, T * ALPHA, T *
 
 /**
  * xgemm generalised matrix matrix multiplication.
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param TRANSA as BLAS dgemm TRANSA
  * @param TRANSB as BLAS dgemm TRANSB
  * @param M as BLAS dgemm M
@@ -200,6 +204,7 @@ template<typename T> void xgemm(char * TRANSA, char * TRANSB, int4 * M, int4 * N
 
 /**
  * xnrm2 generalised 2-norm implementation
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param N as BLAS dnrm2 N
  * @param X data type specific with intent as BLAS dnrm2 X
  * @param INCX as BLAS dnrm2 INCX
@@ -211,6 +216,8 @@ template<typename T> real8 xnrm2(int4 * N, T * X, int4 * INCX);
 
 /**
  * xgesvd is a generalised svd implementation that takes care of workspaces
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
+ * @tparam CHECK what to assert the input complies with on entry to this routine
  * @param JOBU as LAPACK dgesvd JOBU
  * @param JOBVT as LAPACK dgesvd JOBVT
  * @param M as LAPACK dgesvd M
@@ -229,6 +236,7 @@ template<typename T, OnInputCheck CHECK> void xgesvd(char * JOBU, char * JOBVT, 
 
 /**
  * xgetrf() computes the LU decomposition using parital pivoting
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param M as LAPACK dgetrf M
  * @param N as LAPACK dgetrf N
  * @param A data type specific with intent as LAPACK dgetrf A
@@ -240,6 +248,7 @@ template<typename T> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * I
 
 /**
  * xgetri() computes the inverse of a matrix via LU decomposition
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param N as LAPACK dgetri N
  * @param A  data type specific with intent as LAPACK dgetri A
  * @param LDA as LAPACK dgetri LDA
@@ -250,6 +259,7 @@ template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 
 
 /**
  * xtrcon general triangular matrix condition number estimate
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param NORM as LAPACK dtrcon NORM
  * @param UPLO as LAPACK dtrcon UPLO
  * @param DIAG as LAPACK dtrcon DIAG
@@ -265,6 +275,7 @@ template<typename T> void xtrcon(char * NORM, char * UPLO, char * DIAG, int4 * N
 
 /**
  * Solves a triangular system of the form : A * X = B  or  A**T * X = B
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param UPLO as LAPACK dtrtrs UPLO
  * @param TRANS as LAPACK dtrtrs TRANS
  * @param DIAG as LAPACK dtrtrs DIAG
@@ -281,6 +292,7 @@ template<typename T> void xtrtrs(char * UPLO, char * TRANS, char * DIAG, int4 * 
 
 /**
  * xpotrf() computes the Cholesky factorisation of a Hermitian positive definite matrix A.
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param UPLO as LAPACK dpotrf UPLO
  * @param N as LAPACK dpotrf N
  * @param A data type specific with intent as LAPACK dpotrf A
@@ -293,6 +305,7 @@ template<typename T> void  xpotrf(char * UPLO, int4 * N, T * A, int4 * LDA, int4
 
 /**
  * xpocon() computes the reciprocal condition estimate (in the 1-norm) of a s.p.d. matrix using the factorization computed by xpotrf().
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param UPLO as LAPACK dpocon UPLO
  * @param N as LAPACK dpocon N
  * @param A data type specific with intent as LAPACK dpocon A
@@ -305,6 +318,7 @@ template<typename T> void xpocon(char * UPLO, int4 * N, T * A, int4 * LDA, real8
 
 /**
  * xlansy() computes condition numbers for a symmetric matrix.
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param NORM as LAPACK dlansy NORM
  * @param UPLO as LAPACK dlansy UPLO
  * @param N as LAPACK dlansy N
@@ -327,6 +341,7 @@ real8 zlanhe(char * NORM, char * UPLO, int4 * N, complex16 * A, int4 * LDA);
 
 /**
  * xpotrs() solves s.p.d. systems via Cholesky decomposition as computed by xpotrf().
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param UPLO as LAPACK dpotrs UPLO.
  * @param N as LAPACK dpotrs N.
  * @param NRHS as LAPACK dpotrs NRHS.
@@ -340,6 +355,7 @@ template<typename T> void xpotrs(char * UPLO, int4 * N, int4 * NRHS, T * A, int4
 
 /**
  * xlange() computes matrix norms (one, Inf, Frobenius)
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param NORM as LAPACK dlange NORM.
  * @param M as LAPACK dlange M.
  * @param N as LAPACK dlange N.
@@ -351,6 +367,7 @@ template<typename T> real8 xlange(char * NORM, int4 * M, int4 * N, T * A, int4 *
 /**
  * xgecon() computes reciprocal condition numbers calculated from a LU factorisation as
  * computed by xgetrf().
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param NORM as LAPACK dgecon NORM.
  * @param N as LAPACK dgecon N.
  * @param A data type specific with intent as LAPACK dgecon A.
@@ -363,6 +380,7 @@ template<typename T> void xgecon(char * NORM, int4 * N, T * A, int4 * LDA, real8
 
 /**
  * xgetrs() solves linear systems using a LU factorisation computed by xgetrf().
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param TRANS as LAPACK xgetrs TRANS.
  * @param N as LAPACK xgetrs N.
  * @param NRHS as LAPACK xgetrs NRHS.
@@ -377,6 +395,7 @@ template<typename T>void xgetrs(char * TRANS, int4 * N, int4 * NRHS, T * A, int4
 
 /**
  * xgels() solves {over,under}determined linear systems via QR decomposition.
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param TRANS as LAPACK dgels TRANS.
  * @param M as LAPACK dgels M.
  * @param N as LAPACK dgels N.
@@ -391,6 +410,7 @@ template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T
 
 /**
  * xgelsd() solves {over,under}determined linear systems via SV decomposition.
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param M as LAPACK dgelsd M.
  * @param N as LAPACK dgelsd N.
  * @param NRHS as LAPACK dgelsd NRHS.
@@ -407,6 +427,7 @@ template<typename T> void xgelsd(int4 * M, int4 * N, int4 * NRHS, T * A, int4 * 
 
 /**
  * xgeev() computes eigen{values,vectors}.
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param JOBVL as LAPACK dgeev JOBVL.
  * @param JOBVR as LAPACK dgeev JOBVR.
  * @param N as LAPACK dgeev N.
@@ -424,6 +445,7 @@ template<typename T> void xgeev(char * JOBVL, char * JOBVR, int4 * N, T * A, int
 
 /**
  * xgeqrf() computes the QR decomposition.
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param M as LAPACK degqrf M.
  * @param N as LAPACK degqrf N.
  * @param A data type specific with intent as LAPACK degqrf A.
@@ -436,6 +458,7 @@ template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU,
 
 /**
  * xxxgqr() computes the orthogonal Q matrix from elementary reflectors as returned by xgeqrf()
+ * @tparam T the type of the underlying data real8 and complex16 are accepted
  * @param M as LAPACK dorgqr M.
  * @param N as LAPACK dorgqr N.
  * @param K as LAPACK dorgqr K.
