@@ -23,7 +23,14 @@ namespace lapack
  */
 enum class OnInputCheck
 {
+  /**
+   * Indicates that the relevant input data should be checked to ensure it is finite
+   * as defined by std::isfinite();
+   */
   isfinite,
+  /**
+   * Indicates that the relevant input data should not be checked.
+   */
   nothing
 };
 
@@ -68,18 +75,22 @@ template<typename T> void xgels(char * TRANS, int4 * M, int4 * N, int4 * NRHS, T
 template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, T * WORK, int4 * LWORK, int4 *INFO);
 template<typename T> void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, T * WORK, int4 * LWORK, int4 * INFO);
 
-template<typename T, OnInputCheck Check> void checkData(T * data, int4 n);
+/**
+ * Template for checking data local to lapack calls for NaN/Inf on input.
+ * @tparam T data type, real8/complex16 are accepted.
+ * @tparam CHECK what to check.
+ * @param data the data to check.
+ * @param n the count of \a data.
+ */
+template<typename T, OnInputCheck CHECK> void checkData(T * data, int4 n);
 
-// Partial template specialisation (PTS) buffer, bounce function templates via structs
-// so that PTS can be used.
+/**
+ * Partial template specialisation (PTS) buffer for routines that need input
+ * checking and need partial specialisation due to differences in their Fortran prototypes.
+ */
 template<typename T, OnInputCheck CHECK> struct PTSBuffer
 {
   static void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, T * A, int4 * LDA, real8 * S, T * U, int4 * LDU, T * VT, int4 * LDVT, int4 * INFO);
-};
-
-template<typename T, OnInputCheck CHECK> struct TemplateBuffer
-{
-  static void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 };
 
 }
@@ -242,6 +253,7 @@ template<typename T, OnInputCheck CHECK> void xgesvd(char * JOBU, char * JOBVT, 
 /**
  * xgetrf() computes the LU decomposition using parital pivoting
  * @tparam T the type of the underlying data real8 and complex16 are accepted
+ * @tparam CHECK what to assert the input complies with on entry to this routine
  * @param M as LAPACK dgetrf M
  * @param N as LAPACK dgetrf N
  * @param A data type specific with intent as LAPACK dgetrf A

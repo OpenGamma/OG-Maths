@@ -121,7 +121,7 @@ class rdag_unrecoverable_error: public rdag_error
 };
 
 /**
- * To be thrown when an recoverable error has occurred.
+ * To be thrown when a recoverable error has occurred.
  */
 class rdag_recoverable_error: public rdag_error
 {

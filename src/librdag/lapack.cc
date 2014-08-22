@@ -253,7 +253,7 @@ namespace detail
   }
   template<> void checkData<complex16, lapack::OnInputCheck::nothing>(complex16 SUPPRESS_UNUSED * data, int4 SUPPRESS_UNUSED n){}
 
-  // PTS Buffer for routines that need input checking
+  // PTS buffer struct
   template <OnInputCheck CHECK> struct PTSBuffer<real8, CHECK>
   {
     static void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO)
@@ -328,30 +328,6 @@ namespace detail
       }
     };
   };
-
-  // PTSBuffer impls
-  template<typename T, OnInputCheck CHECK> void TemplateBuffer<T, CHECK>::xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO)
-  {
-    set_xerbla_death_switch(lapack::izero);
-
-    checkData<T, CHECK>(A,(*M)*(*N));
-
-    lapack::detail::xgetrf(M,N,A,LDA,IPIV,INFO);
-    if(*INFO!=0)
-    {
-      std::stringstream message;
-      if(*INFO<0)
-      {
-        message << "Input to LAPACK::xgetrf call incorrect at arg: " << -(*INFO) << ".";
-        throw rdag_unrecoverable_error(message.str());
-      }
-      else
-      {
-        message << "LAPACK::xgetrf, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
-        throw rdag_recoverable_error(message.str());
-      }
-    }
-  }
 
 }
 
@@ -435,7 +411,25 @@ template void xgesvd<complex16, lapack::OnInputCheck::isfinite>(char * JOBU, cha
 // xGETRF specialisations
 template<typename T, lapack::OnInputCheck CHECK> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO)
 {
-  detail::TemplateBuffer<T, CHECK>::xgetrf(M,N,A,LDA,IPIV,INFO);
+    set_xerbla_death_switch(lapack::izero);
+
+    lapack::detail::checkData<T, CHECK>(A,(*M)*(*N));
+
+    lapack::detail::xgetrf(M,N,A,LDA,IPIV,INFO);
+    if(*INFO!=0)
+    {
+      std::stringstream message;
+      if(*INFO<0)
+      {
+        message << "Input to LAPACK::xgetrf call incorrect at arg: " << -(*INFO) << ".";
+        throw rdag_unrecoverable_error(message.str());
+      }
+      else
+      {
+        message << "LAPACK::xgetrf, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
+        throw rdag_recoverable_error(message.str());
+      }
+    }
 }
 template void xgetrf<real8, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
 template void xgetrf<real8, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
