@@ -34,35 +34,35 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
 //   L = [m x minmn ]
 //   U = [minmn x n]
 
-  T * L = new T[m*minmn]();
-  T * U = new T[minmn*n]();
+  unique_ptr<T[]> Lptr(new T[m*minmn]());
+  unique_ptr<T[]> Uptr(new T[minmn*n]());
+  unique_ptr<T[]> Aptr(new T[mn]());
+  unique_ptr<int4[]> ipivptr(new int4[minmn]());
+
+  T * L = Lptr.get();
+  T * U = Uptr.get();
 
   // copy A else it's destroyed
-  T * A = new T[mn];
+  T * A = Aptr.get();
   std::memcpy(A, arg->getData(), sizeof(T)*mn);
 
   // create pivot vector
-  int4 * ipiv = new int4[minmn]();
+  int4 * ipiv = ipivptr.get();
 
   // call lapack
   try
   {
     lapack::xgetrf<T, lapack::OnInputCheck::isfinite>(&m, &n, A, &lda, ipiv, &info);
   }
-  catch (exception& e)
+  catch (rdag_recoverable_error& e)
   {
-    if(info < 0) // illegal arg
-    {
-      delete[] ipiv;
-      delete[] A;
-      delete[] U;
-      delete[] L;
-      throw e;
-    }
-    else // failed as system is singular TODO: this will end up in logs (MAT-369) and userland (MAT-370).
-    {
-      cerr << e.what() << std::endl;
-    }
+    // failed as system is singular TODO: this will end up in logs (MAT-369) and userland (MAT-370).
+    cerr << "Warning: singular system detected in matrix decomposition." << std::endl;
+    cerr << "---> LAPACK details: " << e.what() << std::endl;
+  }
+  catch (rdag_error& e)
+  {
+    throw;
   }
 
   // The following is adapted from DOGMAv1
@@ -90,7 +90,8 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
   }
 
   // Transpose the pivot... create as permutation
-  int4 * perm = new int4[m];
+  unique_ptr<int4[]> permptr (new int4[m]);
+  int4 * perm = permptr.get();
   // 1) turn into 0 based indexing
   for (int4 i = 0; i < minmn; i++)
   {
@@ -149,12 +150,8 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
     }
   }
 
-  delete[] ipiv;
-  delete[] A;
-  delete[] perm;
-
-  OGNumeric::Ptr cL = makeConcreteDenseMatrix(L, m, minmn, OWNER);
-  OGNumeric::Ptr cU = makeConcreteDenseMatrix(U, minmn, n, OWNER);
+  OGNumeric::Ptr cL = makeConcreteDenseMatrix(Lptr.release(), m, minmn, OWNER);
+  OGNumeric::Ptr cU = makeConcreteDenseMatrix(Uptr.release(), minmn, n, OWNER);
 
   reg.push_back(cL);
   reg.push_back(cU);

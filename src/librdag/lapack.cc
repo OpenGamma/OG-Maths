@@ -333,6 +333,9 @@ namespace detail
   template<typename T, OnInputCheck CHECK> void TemplateBuffer<T, CHECK>::xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO)
   {
     set_xerbla_death_switch(lapack::izero);
+
+    checkData<T, CHECK>(A,(*M)*(*N));
+
     lapack::detail::xgetrf(M,N,A,LDA,IPIV,INFO);
     if(*INFO!=0)
     {
@@ -340,12 +343,13 @@ namespace detail
       if(*INFO<0)
       {
         message << "Input to LAPACK::xgetrf call incorrect at arg: " << -(*INFO) << ".";
+        throw rdag_unrecoverable_error(message.str());
       }
       else
       {
         message << "LAPACK::xgetrf, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
+        throw rdag_recoverable_error(message.str());
       }
-      throw rdag_error(message.str());
     }
   }
 

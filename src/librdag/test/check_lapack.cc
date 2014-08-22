@@ -327,10 +327,22 @@ TEST(LAPACKTest_xgesvd, zgesvd) {
   EXPECT_TRUE(ArrayFuzzyEquals(expectedS,S,2,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedVT,VT,4,1e-14,1e-14));
 
-  // check throw on bad arg
+  // check errors on bad arg (m=-1)
   std::copy(A,A+m*n,Acpy);
   m = -1;
+  // will throw as data length is bad for finite domain check
   EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::nothing>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 3;
+  std::copy(A,A+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::nothing>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)));
 
   delete[] U;
   delete[] S;
@@ -365,13 +377,26 @@ TEST(LAPACKTest_xgetrf, dgetrf) {
   // check throw on bad arg
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
   m = -1;
-  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_error);
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 5;
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)));
 
   // check throw on singular
   m=3;
   n=3;
   std::copy(rsingular3x3,rsingular3x3+m*n,Acpy);
-  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_error);
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_recoverable_error);
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_recoverable_error);
 
   delete [] ipiv;
   delete [] expectedIPIV;
@@ -399,15 +424,28 @@ TEST(LAPACKTest_xgetrf, zgetrf) {
   EXPECT_TRUE(ArrayFuzzyEquals(expectedA,Acpy,20));
 
   // check throw on bad arg
-  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
   m = -1;
-  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_error);
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 5;
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)));
 
   // check throw on singular
   m=3;
   n=3;
   std::copy(csingular3x3,csingular3x3+m*n,Acpy);
-  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_error);
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_recoverable_error);
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_recoverable_error);
 
   delete [] ipiv;
   delete [] expectedIPIV;

@@ -745,12 +745,13 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           lapack::xgetrf<T, lapack::OnInputCheck::isfinite>(&int4rows1, &int4cols1, data1, &int4rows1, ipivPtr.get(), &info);
         }
+        catch (rdag_recoverable_error& e)
+        {
+          // we're ok, this just means it's singular
+        }
         catch (rdag_error& e)
         {
-          if(info<0) // caught a xerbla error, rethrow
-          {
-            throw;
-          }
+          throw; // something bad happened in decomp, likely unrecoverable
         }
 
         if (info == 0)
