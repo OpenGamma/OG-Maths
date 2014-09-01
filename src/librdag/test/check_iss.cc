@@ -154,6 +154,10 @@ TEST(issTest_isfinite, real8)
 
   EXPECT_TRUE(isfinite(r, 2));
   EXPECT_FALSE(isfinite(r, 4));
+
+  // Check qNaN fires correctly
+  r[2]=std::numeric_limits<real8>::quiet_NaN();
+  EXPECT_FALSE(isfinite(r, 4));
 }
 
 TEST(issTest_isfinite, complex16)
@@ -172,4 +176,9 @@ TEST(issTest_isfinite, complex16)
   c[2]={5,std::numeric_limits<real8>::signaling_NaN()};
   EXPECT_FALSE(isfinite(c, 4));
 
+  // check qNaN in real and imag parts
+  c[2]={std::numeric_limits<real8>::quiet_NaN(),1};
+  EXPECT_FALSE(isfinite(c, 4));
+  c[2]={5, std::numeric_limits<real8>::quiet_NaN()};
+  EXPECT_FALSE(isfinite(c, 4));
 }

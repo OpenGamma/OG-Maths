@@ -48,19 +48,12 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
   {
     lapack::xgesvd<T, lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
   }
-  catch (exception& e)
+  catch (rdag_recoverable_error& e)
   {
-    try
-    {
-      throw;
-    }
-    catch (rdag_unrecoverable_error& e)
-    {
-      throw;
-    }
     // error is recoverable so just complain
     cerr << e.what() << std::endl;
   }
+  // Else, exception propagates, stack unwinds
 
   reg.push_back(makeConcreteDenseMatrix(Uptr.release(), m, m, OWNER));
   reg.push_back(OGRealDiagonalMatrix::create(Sptr.release(), m, n, OWNER));

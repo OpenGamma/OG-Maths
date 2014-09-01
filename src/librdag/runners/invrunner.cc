@@ -111,10 +111,7 @@ inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
       cerr << "Warning: singular system detected in matrix inversion." << std::endl;
       cerr << "---> LAPACK details: " << e.what() << std::endl;
     }
-    catch (rdag_error& e)
-    {
-      throw;
-    }
+    // Else, exception propagates, stack unwinds
 
     ret = makeConcreteDenseMatrix(Aptr.release(), size, size, OWNER);
   }

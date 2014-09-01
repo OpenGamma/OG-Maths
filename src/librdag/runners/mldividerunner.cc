@@ -749,10 +749,7 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
         {
           // we're ok, this just means it's singular
         }
-        catch (rdag_error& e)
-        {
-          throw; // something bad happened in decomp, likely unrecoverable
-        }
+        // Else, exception propagates, stack unwinds
 
         if (info == 0)
         {

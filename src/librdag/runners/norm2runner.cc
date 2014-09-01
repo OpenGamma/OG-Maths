@@ -75,19 +75,12 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     {
       lapack::xgesvd<T,lapack::OnInputCheck::isfinite>(lapack::N, lapack::N, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
     }
-    catch (exception& e)
+    catch (rdag_recoverable_error& e)
     {
-      try
-      {
-        throw;
-      }
-      catch (rdag_unrecoverable_error& e)
-      {
-        throw;
-      }
       // error is recoverable so just complain
       cerr << e.what() << std::endl;
     }
+    // Else, exception propagates, stack unwinds
 
     ret = OGRealScalar::create(std::real(S[0]));
   }

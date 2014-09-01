@@ -60,10 +60,7 @@ template<typename T> void lu_dense_runner(RegContainer& reg, shared_ptr<const OG
     cerr << "Warning: singular system detected in matrix decomposition." << std::endl;
     cerr << "---> LAPACK details: " << e.what() << std::endl;
   }
-  catch (rdag_error& e)
-  {
-    throw;
-  }
+  // Else, exception propagates, stack unwinds
 
   // The following is adapted from DOGMAv1
 
