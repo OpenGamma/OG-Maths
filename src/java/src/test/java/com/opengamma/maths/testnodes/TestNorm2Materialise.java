@@ -17,6 +17,7 @@ import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
 import com.opengamma.maths.exceptions.MathsException;
 import com.opengamma.maths.exceptions.MathsExceptionIllegalArgument;
+import com.opengamma.maths.exceptions.MathsExceptionNativeComputation;
 import com.opengamma.maths.helpers.FuzzyEquals;
 import com.opengamma.maths.materialisers.Materialisers;
 import com.opengamma.maths.nodes.NORM2;
@@ -90,7 +91,27 @@ public class TestNorm2Materialise {
 
   @Test(dataProvider = "dataContainer", expectedExceptions = MathsExceptionIllegalArgument.class)
   public void outsideArgBound(OGExpr input, OGRealScalar expected) {
-    OGNumeric n = input.getArg(1);
+    input.getArg(1);
   }
 
+  /**
+   * Check NORM2 will throw if NaN is present in real system matrix context
+   */
+  @Test(expectedExceptions = MathsExceptionNativeComputation.class)
+  public void throwIfNaNPresentRealDataTest() {
+    OGRealDenseMatrix mat = new OGRealDenseMatrix(new double[][] { { 1, 2 }, { 3, Double.NaN } });
+    NORM2 norm2 = new NORM2(mat);
+    Materialisers.toOGTerminal(norm2);
+  }
+
+  /**
+   * Check NORM2 will throw if NaN is present in complex system matrix context
+   */
+  @Test(expectedExceptions = MathsExceptionNativeComputation.class)
+  public void throwIfNaNPresentComplexDataTest() {
+    OGComplexDenseMatrix mat = new OGComplexDenseMatrix(new double[][] { { 1, 2 }, { 3, Double.NaN } });
+    NORM2 norm2 = new NORM2(mat);
+    Materialisers.toOGTerminal(norm2);
+  }
+  
 }

@@ -46,19 +46,14 @@ template<typename T> void svd_dense_runner(RegContainer& reg, shared_ptr<const O
   // call lapack
   try
   {
-    lapack::xgesvd(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
+    lapack::xgesvd<T, lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
   }
-  catch (exception& e)
+  catch (rdag_recoverable_error& e)
   {
-    if(info < 0) // illegal arg
-    {
-      throw e;
-    }
-    else // failed convergence TODO: this will end up in logs (MAT-369) and userland (MAT-370).
-    {
-      cerr << e.what() << std::endl;
-    }
+    // error is recoverable so just complain
+    cerr << e.what() << std::endl;
   }
+  // Else, exception propagates, stack unwinds
 
   reg.push_back(makeConcreteDenseMatrix(Uptr.release(), m, m, OWNER));
   reg.push_back(OGRealDiagonalMatrix::create(Sptr.release(), m, n, OWNER));

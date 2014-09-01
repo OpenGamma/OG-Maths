@@ -10,6 +10,7 @@
 #include "execution.hh"
 #include "dispatch.hh"
 #include "testnodes.hh"
+#include "runtree.hh"
 
 using namespace std;
 using namespace librdag;
@@ -42,3 +43,24 @@ new CheckUnary<NORM2>( OGComplexScalar::create({-1.0,1.0}), OGRealScalar::create
   new CheckUnary<NORM2>( OGComplexDenseMatrix::create(new complex16[12]{{1,10},{4,40},{7,70},{10,100},{2,20},{5,50},{8,80},{11,110},{3,30},{6,60},{9,90},{12,120}},4,3, OWNER), OGRealScalar::create(255.894027746469), MATHSEQUAL)
   )
 );
+
+TEST(NORM2Tests_check_finite,real8)
+{
+  OGTerminal::Ptr A = OGRealDenseMatrix::create({{1,2,3},{4,5,std::numeric_limits<real8>::signaling_NaN()}});
+
+  OGNumeric::Ptr norm2 = NORM2::create(A);
+
+  EXPECT_THROW(runtree(norm2),rdag_unrecoverable_error);
+
+}
+
+
+TEST(NORM2Tests_check_finite,complex16)
+{
+  OGTerminal::Ptr A = OGComplexDenseMatrix::create({{{1,0},{2,3},{3,5}},{{4,1},{5,2},{std::numeric_limits<real8>::signaling_NaN(),8}}});
+
+  OGNumeric::Ptr norm2 = NORM2::create(A);
+
+  EXPECT_THROW(runtree(norm2),rdag_unrecoverable_error);
+
+}

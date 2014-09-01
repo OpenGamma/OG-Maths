@@ -141,3 +141,44 @@ TEST_F(issTest, isMatrix)
   ASSERT_TRUE (isMatrix(_ogrealsparsematrix));
   ASSERT_TRUE (isMatrix(_ogcomplexsparsematrix));
 }
+
+
+TEST(issTest_isfinite, real8)
+{
+  std::unique_ptr<real8> rd (new real8[4]);
+  real8 * r = rd.get();
+  r[0]=1;
+  r[1]=2;
+  r[2]=std::numeric_limits<real8>::signaling_NaN();
+  r[3]=4;
+
+  EXPECT_TRUE(isfinite(r, 2));
+  EXPECT_FALSE(isfinite(r, 4));
+
+  // Check qNaN fires correctly
+  r[2]=std::numeric_limits<real8>::quiet_NaN();
+  EXPECT_FALSE(isfinite(r, 4));
+}
+
+TEST(issTest_isfinite, complex16)
+{
+  std::unique_ptr<complex16> cd (new complex16[4]);
+  complex16 * c = cd.get();
+  c[0]={1,2};
+  c[1]={2,3};
+  c[2]={std::numeric_limits<real8>::signaling_NaN(),1};
+  c[3]={4,3};
+
+  EXPECT_TRUE(isfinite(c, 2));
+  EXPECT_FALSE(isfinite(c, 4));
+
+  // check NaN in imag part
+  c[2]={5,std::numeric_limits<real8>::signaling_NaN()};
+  EXPECT_FALSE(isfinite(c, 4));
+
+  // check qNaN in real and imag parts
+  c[2]={std::numeric_limits<real8>::quiet_NaN(),1};
+  EXPECT_FALSE(isfinite(c, 4));
+  c[2]={5, std::numeric_limits<real8>::quiet_NaN()};
+  EXPECT_FALSE(isfinite(c, 4));
+}

@@ -61,18 +61,28 @@ norm2_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
 
     T * U = nullptr; //IGNORED
     T * VT = nullptr; //IGNORED
-    real8 * S = new real8[minmn];
+
+    std::unique_ptr<real8[]> Sptr(new real8[minmn]);
+    real8 * S = Sptr.get();
 
     // copy A else it's destroyed
-    T * A = new T[m*n];
+    std::unique_ptr<T[]> Aptr(new T[m*n]);
+    T * A = Aptr.get();
     std::memcpy(A, arg->getData(), sizeof(T)*m*n);
 
     // call lapack
-    lapack::xgesvd(lapack::N, lapack::N, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
+    try
+    {
+      lapack::xgesvd<T,lapack::OnInputCheck::isfinite>(lapack::N, lapack::N, &m, &n, A, &lda, S, U, &ldu, VT, &ldvt, &info);
+    }
+    catch (rdag_recoverable_error& e)
+    {
+      // error is recoverable so just complain
+      cerr << e.what() << std::endl;
+    }
+    // Else, exception propagates, stack unwinds
 
     ret = OGRealScalar::create(std::real(S[0]));
-    delete[] A;
-    delete[] S;
   }
 
   // shove ret into register

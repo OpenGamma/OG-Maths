@@ -90,39 +90,30 @@ inv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
     int4 info = 0;
 
     // copy A else it's destroyed
-    T * A = new T[sizesize];
+    unique_ptr<T[]> Aptr (new T[sizesize]);
+    T * A = Aptr.get();
     std::memcpy(A, arg->getData(), sizeof(T)*sizesize);
 
     // create pivot vector
-    int4 * ipiv = new int4[size]();
+    unique_ptr<int4[]> ipivptr (new int4[size]());
+    int4 * ipiv = ipivptr.get();
 
     // call lapack to get LU decomp
     try
     {
       // LU decomp
-      lapack::xgetrf(&size, &size, A, &lda, ipiv, &info);
+      lapack::xgetrf<T, lapack::OnInputCheck::isfinite>(&size, &size, A, &lda, ipiv, &info);
       // Inversion backsolve
       lapack::xgetri(&size, A, &lda, ipiv, &info);
     }
-    catch (exception& e)
+    catch (rdag_recoverable_error& e)
     {
-      if(info < 0) // illegal arg
-      {
-        delete[] ipiv;
-        delete[] A;
-        throw ;
-      }
-      else
-      {
-        cerr << "Warning: singular system detected in matrix inversion." << std::endl;
-        cerr << "---> LAPACK details: " << e.what() << std::endl;
-      }
+      cerr << "Warning: singular system detected in matrix inversion." << std::endl;
+      cerr << "---> LAPACK details: " << e.what() << std::endl;
     }
+    // Else, exception propagates, stack unwinds
 
-    // normal return, delete pivot info
-    delete [] ipiv;
-
-    ret = makeConcreteDenseMatrix(A, size, size, OWNER);
+    ret = makeConcreteDenseMatrix(Aptr.release(), size, size, OWNER);
   }
 
   // shove ret into register

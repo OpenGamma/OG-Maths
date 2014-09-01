@@ -270,16 +270,28 @@ TEST(LAPACKTest_xgesvd, dgesvd) {
   real8 * Acpy = new real8[6];
   std::copy(A,A+m*n,Acpy);
 
-  lapack::xgesvd(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO);
+  lapack::xgesvd<real8,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expectedU,U,9,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedS,S,2,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedVT,VT,4,1e-14,1e-14));
 
-  // check throw on bad arg
+  // check errors on bad arg (m=-1)
   std::copy(A,A+m*n,Acpy);
   m = -1;
-  EXPECT_THROW(lapack::xgesvd(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO), rdag_error);
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::nothing>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 3;
+  std::copy(A,A+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgesvd<real8,lapack::OnInputCheck::nothing>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)));
 
   delete[] U;
   delete[] S;
@@ -309,16 +321,28 @@ TEST(LAPACKTest_xgesvd, zgesvd) {
   complex16 * Acpy = new complex16[6];
   std::copy(A,A+m*n,Acpy);
 
-  lapack::xgesvd(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO);
+  lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expectedU,U,9,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedS,S,2,1e-14,1e-14));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedVT,VT,4,1e-14,1e-14));
 
-  // check throw on bad arg
+  // check errors on bad arg (m=-1)
   std::copy(A,A+m*n,Acpy);
   m = -1;
-  EXPECT_THROW(lapack::xgesvd(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO), rdag_error);
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::nothing>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 3;
+  std::copy(A,A+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::isfinite>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgesvd<complex16,lapack::OnInputCheck::nothing>(lapack::A, lapack::A, &m, &n, Acpy, &m, S, U, &m, VT, &n, &INFO)));
 
   delete[] U;
   delete[] S;
@@ -345,7 +369,7 @@ TEST(LAPACKTest_xgetrf, dgetrf) {
   real8 * Acpy = new real8[20];
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   EXPECT_TRUE(ArrayBitEquals(expectedIPIV,ipiv,4));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedA,Acpy,20));
@@ -353,13 +377,26 @@ TEST(LAPACKTest_xgetrf, dgetrf) {
   // check throw on bad arg
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
   m = -1;
-  EXPECT_THROW(lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO), rdag_error);
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 5;
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)));
 
   // check throw on singular
   m=3;
   n=3;
   std::copy(rsingular3x3,rsingular3x3+m*n,Acpy);
-  EXPECT_THROW(lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO), rdag_error);
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_recoverable_error);
+  EXPECT_THROW((lapack::xgetrf<real8, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_recoverable_error);
 
   delete [] ipiv;
   delete [] expectedIPIV;
@@ -381,21 +418,34 @@ TEST(LAPACKTest_xgetrf, zgetrf) {
   complex16 * Acpy = new complex16[20];
   std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   EXPECT_TRUE(ArrayBitEquals(expectedIPIV,ipiv,4));
   EXPECT_TRUE(ArrayFuzzyEquals(expectedA,Acpy,20));
 
   // check throw on bad arg
-  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
   m = -1;
-  EXPECT_THROW(lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO), rdag_error);
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 5;
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)));
 
   // check throw on singular
   m=3;
   n=3;
   std::copy(csingular3x3,csingular3x3+m*n,Acpy);
-  EXPECT_THROW(lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO), rdag_error);
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_recoverable_error);
+  EXPECT_THROW((lapack::xgetrf<complex16, lapack::OnInputCheck::isfinite>(&m,&n,Acpy,&m,ipiv,&INFO)), rdag_recoverable_error);
 
   delete [] ipiv;
   delete [] expectedIPIV;
@@ -784,7 +834,7 @@ TEST(LAPACKTest_xgecon, dgecon) {
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // make the call
   real8 rcond = 0;
@@ -821,7 +871,7 @@ TEST(LAPACKTest_xgecon, zgecon) {
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // make the call
   real8 rcond = 0;
@@ -851,7 +901,7 @@ TEST(LAPACKTest_xgetrs, dgetrs) {
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<real8, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // need an RHS
   real8 * rhs = new real8[8]{1,2,3,4,1,2,3,4};
@@ -889,7 +939,7 @@ TEST(LAPACKTest_xgetrs, zgetrs) {
 
   // need a LU decomp
   int4 * ipiv = new int4[minmn]();
-  lapack::xgetrf(&m,&n,Acpy,&m,ipiv,&INFO);
+  lapack::xgetrf<complex16, lapack::OnInputCheck::nothing>(&m,&n,Acpy,&m,ipiv,&INFO);
 
   // need an RHS
   complex16 * rhs = new complex16[8]{{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.},{1.,10.}, {2.,20.}, {3.,30.}, {4.,40.}};

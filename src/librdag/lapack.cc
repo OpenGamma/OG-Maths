@@ -6,6 +6,7 @@
 
 #include "lapack.hh"
 #include "exceptions.hh"
+#include "iss.hh"
 
 #include <memory>
 
@@ -221,7 +222,115 @@ namespace detail
   {
     F77FUNC(zungqr)(M, N, K, A, LDA, TAU, WORK, LWORK, INFO);
   }
+
+  // Data checkers
+  template<> void checkData<real8, lapack::OnInputCheck::isfinite>(real8 * data, int4 n)
+  {
+    if(n < 0)
+    {
+      std::stringstream message;
+      message << "Invalid data length (" << n << ") specified.";
+      throw rdag_unrecoverable_error(message.str());
+    }
+    if(!librdag::isfinite(data, n))
+    {
+      throw rdag_unrecoverable_error("Only finite data is permitted in this function.");
+    }
+  }
+  template<> void checkData<real8, lapack::OnInputCheck::nothing>(real8 SUPPRESS_UNUSED * data, int4 SUPPRESS_UNUSED n){}
+  template<> void checkData<complex16, lapack::OnInputCheck::isfinite>(complex16 * data, int4 n)
+  {
+    if(n < 0)
+    {
+      std::stringstream message;
+      message << "Invalid data length (" << n << ") specified.";
+      throw rdag_unrecoverable_error(message.str());
+    }
+    if(!librdag::isfinite(data, n))
+    {
+      throw rdag_unrecoverable_error("Only finite data is permitted in this function.");
+    }
+  }
+  template<> void checkData<complex16, lapack::OnInputCheck::nothing>(complex16 SUPPRESS_UNUSED * data, int4 SUPPRESS_UNUSED n){}
+
+  // PTS buffer struct
+  template <OnInputCheck CHECK> struct PTSBuffer<real8, CHECK>
+  {
+    static void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO)
+    {
+      set_xerbla_death_switch(lapack::izero);
+
+      checkData<real8, CHECK>(A,(*M)*(*N));
+
+      real8 tmp;
+      int4 lwork = -1; // set for query
+
+      // work space query
+      F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, &tmp, &lwork, INFO);
+
+      if(*INFO < 0)
+      {
+        std::stringstream message;
+        message << "Input to LAPACK::dgesvd call incorrect at arg: " << -(*INFO);
+        throw rdag_unrecoverable_error(message.str());
+      }
+
+      // query complete tmp contains size needed
+      lwork = (int4)tmp;
+      std::unique_ptr<real8[]> workPtr(new real8[lwork]());
+      real8 * WORK = workPtr.get();
+
+      // full execution
+      F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, INFO);
+
+      if(*INFO!=0)
+      {
+        throw rdag_recoverable_error("LAPACK::dgesvd, internal call to dbdsqr did not converge.");
+      }
+    };
+  };
+  template <OnInputCheck CHECK> struct PTSBuffer<complex16, CHECK>
+  {
+    static void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, int4 * INFO)
+    {
+      set_xerbla_death_switch(lapack::izero);
+
+      checkData<complex16, CHECK>(A,(*M)*(*N));
+
+      int4 minmn = *M > *N ? *N : *M; // compute scale for RWORK
+      complex16 tmp;
+      int4 lwork = -1; // set for query
+      real8 * RWORK = nullptr;
+
+      // work space query
+      F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, &tmp, &lwork, RWORK, INFO);
+      if(*INFO < 0)
+      {
+        std::stringstream message;
+        message << "Input to LAPACK::zgesvd call incorrect at arg: " << -(*INFO);
+        throw rdag_unrecoverable_error(message.str());
+      }
+
+      // query complete tmp contains size needed
+      lwork = (int4)(tmp.real());
+
+      std::unique_ptr<complex16[]> workPtr(new complex16[lwork]);
+      complex16 * WORK = workPtr.get();
+      std::unique_ptr<real8[]> rworkPtr(new real8[5*minmn]);
+      RWORK = rworkPtr.get();
+
+      // full execution
+      F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, RWORK, INFO);
+
+      if(*INFO!=0)
+      {
+        throw rdag_recoverable_error("LAPACK::zgesvd, internal call to zbdsqr did not converge.");
+      }
+    };
+  };
+
 }
+
 
 // f77 constants
 char *      N     = &detail::N;
@@ -290,92 +399,43 @@ template real8 xnrm2<real8>(int4 * N, real8 * X, int4 * INCX);
 template real8 xnrm2<complex16>(int4 * N, complex16 * X, int4 * INCX);
 
 // xGESVD specialisations
-template<>  void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO)
+template<typename T, lapack::OnInputCheck CHECK> void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, T * A, int4 * LDA, real8 * S, T * U, int4 * LDU, T * VT, int4 * LDVT, int4 * INFO)
 {
-  set_xerbla_death_switch(lapack::izero);
-
-  real8 tmp;
-  int4 lwork = -1; // set for query
-
-  // work space query
-  F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, &tmp, &lwork, INFO);
-
-  if(*INFO < 0)
-  {
-    std::stringstream message;
-    message << "Input to LAPACK::dgesvd call incorrect at arg: " << -(*INFO);
-    throw rdag_error(message.str());
-  }
-
-  // query complete tmp contains size needed
-  lwork = (int4)tmp;
-  std::unique_ptr<real8[]> workPtr(new real8[lwork]());
-  real8 * WORK = workPtr.get();
-
-  // full execution
-  F77FUNC(dgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, INFO);
-
-  if(*INFO!=0)
-  {
-    throw rdag_error("LAPACK::dgesvd, internal call to dbdsqr did not converge.");
-  }
+  detail::PTSBuffer<T,CHECK>::xgesvd(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, INFO);
 }
+template void xgesvd<real8, lapack::OnInputCheck::nothing>(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO);
+template void xgesvd<real8, lapack::OnInputCheck::isfinite>(char * JOBU, char * JOBVT, int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * S, real8 * U, int4 * LDU, real8 * VT, int4 * LDVT, int4 * INFO);
+template void xgesvd<complex16, lapack::OnInputCheck::nothing>(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, int4 * INFO);
+template void xgesvd<complex16, lapack::OnInputCheck::isfinite>(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, int4 * INFO);
 
-template<>  void xgesvd(char * JOBU, char * JOBVT, int4 * M, int4 * N, complex16 * A, int4 * LDA, real8 * S, complex16 * U, int4 * LDU, complex16 * VT, int4 * LDVT, int4 * INFO)
+// xGETRF specialisations
+template<typename T, lapack::OnInputCheck CHECK> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO)
 {
-  set_xerbla_death_switch(lapack::izero);
+    set_xerbla_death_switch(lapack::izero);
 
-  int4 minmn = *M > *N ? *N : *M; // compute scale for RWORK
-  complex16 tmp;
-  int4 lwork = -1; // set for query
-  real8 * RWORK = nullptr;
+    lapack::detail::checkData<T, CHECK>(A,(*M)*(*N));
 
-  // work space query
-  F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, &tmp, &lwork, RWORK, INFO);
-  if(*INFO < 0)
-  {
-    std::stringstream message;
-    message << "Input to LAPACK::zgesvd call incorrect at arg: " << -(*INFO);
-    throw rdag_error(message.str());
-  }
-
-  // query complete tmp contains size needed
-  lwork = (int4)(tmp.real());
-
-  std::unique_ptr<complex16[]> workPtr(new complex16[lwork]);
-  complex16 * WORK = workPtr.get();
-  std::unique_ptr<real8[]> rworkPtr(new real8[5*minmn]);
-  RWORK = rworkPtr.get();
-
-  // full execution
-  F77FUNC(zgesvd)(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, &lwork, RWORK, INFO);
-
-  if(*INFO!=0)
-  {
-    throw rdag_error("LAPACK::zgesvd, internal call to zbdsqr did not converge.");
-  }
-}
-
-template<typename T> void xgetrf(int4 * M, int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 *INFO)
-{
-  set_xerbla_death_switch(lapack::izero);
-  detail::xgetrf(M,N,A,LDA,IPIV,INFO);
-  if(*INFO!=0)
-  {
-    std::stringstream message;
-    if(*INFO<0)
+    lapack::detail::xgetrf(M,N,A,LDA,IPIV,INFO);
+    if(*INFO!=0)
     {
-      message << "Input to LAPACK::xgetrf call incorrect at arg: " << -(*INFO) << ".";
+      std::stringstream message;
+      if(*INFO<0)
+      {
+        message << "Input to LAPACK::xgetrf call incorrect at arg: " << -(*INFO) << ".";
+        throw rdag_unrecoverable_error(message.str());
+      }
+      else
+      {
+        message << "LAPACK::xgetrf, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
+        throw rdag_recoverable_error(message.str());
+      }
     }
-    else
-    {
-      message << "LAPACK::xgetrf, in LU decomposition, matrix U is singular at U[" << (*INFO - 1) << "," << (*INFO - 1) << "].";
-    }
-    throw rdag_error(message.str());
-  }
 }
-template void xgetrf<real8>(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
-template void xgetrf<complex16>(int4 * M, int4 * N, complex16 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template void xgetrf<real8, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template void xgetrf<real8, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, real8 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template void xgetrf<complex16, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, complex16 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+template void xgetrf<complex16, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, complex16 * A, int4 * LDA, int4 * IPIV, int4 *INFO);
+
 
 template<typename T> void xgetri(int4 * N, T * A, int4 * LDA, int4 * IPIV, int4 * INFO)
 {
