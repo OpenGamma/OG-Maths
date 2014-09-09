@@ -146,7 +146,7 @@ pinv_dense_runner(RegContainer& reg, shared_ptr<const OGMatrix<T>> arg)
       // scale the diags in the reachable part
       // in our example we want to divide 1 by S[0], S[1], S[2], S[3]
       // lim will now be 4
-      for(size_t i = 0 ; i < lim; i++)
+      for(int4 i = 0 ; i < lim; i++)
       {
         S[i] = 1.e0/S[i];
       }
