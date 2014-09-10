@@ -213,10 +213,10 @@ public final class NativeLibraries {
    */
   private static void checkPlatformSupported() {
     List<String> supportedPlatforms = new ArrayList<>();
-    supportedPlatforms.add("lin");
-    supportedPlatforms.add("win");
+    supportedPlatforms.add("lnx");
+    supportedPlatforms.add("w64");
     supportedPlatforms.add("w32");
-    supportedPlatforms.add("mac");
+    supportedPlatforms.add("osx");
     String platform = getShortPlatform();
     if (!supportedPlatforms.contains(platform)) {
       String err = "Your platform, " + getPlatform() + ", is not supported.";

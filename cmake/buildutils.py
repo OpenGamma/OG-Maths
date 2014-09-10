@@ -29,6 +29,6 @@ def platform_code():
         if get_bits() == 32:
             return 'w32'
         else:
-            return 'win'
+            return 'w64'
     else:
         raise NotImplementedError('This platform (%s) is not recognised.' % p)
