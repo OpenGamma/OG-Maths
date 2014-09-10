@@ -229,7 +229,7 @@ def create_main_jar(newverinfo, verinfos):
         jar.writestr(f, data)
 
     # Copy the platform-specific libs into the main jar
-    for p in ('lnx', 'osx', 'win', 'w32'):
+    for p in ('lnx', 'osx', 'w64', 'w32'):
         copy_platform_libs_from_jar(p, verinfos, jar)
     
     # add verinfo to the new jar
