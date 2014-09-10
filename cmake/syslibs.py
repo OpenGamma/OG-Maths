@@ -19,10 +19,10 @@ libs['win'] = [ 'libgcc_s_seh-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' ]
 libs['w32'] = [ 'libgcc_s_sjlj-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' ]
 
 default_gcc_lib_folder = {}
-default_gcc_lib_folder['lnx'] = '/opt/gcc/4.8.2/lib64'
-default_gcc_lib_folder['osx'] = '/opt/local/lib/gcc48'
-default_gcc_lib_folder['win'] = 'C:\\BuildSystem\\mingw-builds\\x64-4.8.1-win32-seh-rev2\\mingw64\\bin'
-default_gcc_lib_folder['w32'] = 'C:\\BuildSystem\\mingw-builds\\x32-4.8.1-release-win32-sjlj-rev2\\mingw32\\bin'
+default_gcc_lib_folder['lnx'] = '/opt/gcc/4.9.1/lib64'
+default_gcc_lib_folder['osx'] = '/opt/local/lib/gcc49'
+default_gcc_lib_folder['win'] = 'C:\\buildsystem\\mingw-w64\\x86_64\\4.9.1\\mingw64\\bin'
+default_gcc_lib_folder['w32'] = 'C:\\buildsystem\\mingw-w64\\x86\\4.9.1\\mingw32\\bin'
 
 # The pattern for spotting a linux lib is GNU_PRELINKED as found in the DSO dynamic section
 pat_gnu_prelinked = re.compile('GNU_PRELINKED');
