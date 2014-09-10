@@ -213,10 +213,10 @@ public final class NativeLibraries {
    */
   private static void checkPlatformSupported() {
     List<String> supportedPlatforms = new ArrayList<>();
-    supportedPlatforms.add("lin");
-    supportedPlatforms.add("win");
+    supportedPlatforms.add("lnx");
+    supportedPlatforms.add("w64");
     supportedPlatforms.add("w32");
-    supportedPlatforms.add("mac");
+    supportedPlatforms.add("osx");
     String platform = getShortPlatform();
     if (!supportedPlatforms.contains(platform)) {
       String err = "Your platform, " + getPlatform() + ", is not supported.";
@@ -294,10 +294,23 @@ public final class NativeLibraries {
    */
   private static String getShortPlatform() {
     String shortPlatform =  getPlatform().toLowerCase().substring(0, 3);
-    if (getWidth() == 32) {
-      shortPlatform = shortPlatform.substring(0, 1) + "32";
+    String ret = null;
+    if(shortPlatform.equals("lin")) {
+      ret = "lnx";
+    } else if(shortPlatform.equals("mac")) {
+      ret = "osx";
+    } else if(shortPlatform.equals("win")) {
+      if (getWidth() == 32) {
+        ret = "w32";
+      } else if (getWidth() == 64) {
+        ret = "w64";
+      } else {
+        throw new MathsExceptionOnInitialization("Unsupported word size found: " + getWidth());
+      }
+    } else {
+      throw new MathsExceptionOnInitialization("Unsupported platform found: " + shortPlatform);
     }
-    return shortPlatform;
+    return ret;
   }
 
   /**

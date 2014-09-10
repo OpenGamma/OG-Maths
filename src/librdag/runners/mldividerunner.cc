@@ -35,6 +35,11 @@ namespace detail
 {
 
 /**
+  * row_start_invalid is used as a flag
+  */
+static constexpr std::size_t row_start_invalid = std::numeric_limits<std::size_t>::max();
+
+/**
  * Casts a value to a char
  * @param the value to cast
  * @return the char representation of the value
@@ -215,7 +220,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
 {
   // This holds the location of the "start" of rows, i.e. first non-zero value.
   unique_ptr<size_t[]> rowStarts (new size_t[rows]);
-  std::fill(rowStarts.get(), rowStarts.get() + rows, -1); // -1 is our flag
+  std::fill(rowStarts.get(), rowStarts.get() + rows, row_start_invalid); // row_start_invalid is our flag
 
   // This holds the logic for whether we've seen a valid row of a triangular matrix before or not.
   std::unique_ptr<bool[]> rowTagPtr (new bool[rows]);
@@ -243,7 +248,7 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
     for (size_t j = 0; j < rows; j++)
     {
       if (
-        rowStarts[j] == -1 // we've not seen this row before
+        rowStarts[j] == row_start_invalid // we've not seen this row before
         && // AND
         // it's not got a zero at location j.
         !SingleValueFuzzyEquals(data[i * rows + j],0.e0,std::numeric_limits<real8>::epsilon(),std::numeric_limits<real8>::epsilon())
@@ -267,12 +272,13 @@ void checkIfUpperTriangularPermuteRows(T * data, size_t rows, size_t cols,  Tria
 
   // Fix for [MAT-443]
   // Check to see if the row starts are valid before we work out if the permutation is valid.
-  // i.e. if there's a row which is all zeros, then rowStarts will still contain a -1,
-  // if you go and look up a size_t containing -1 that's a monstrously large number to look
-  // up and will be technically wrong and also likely cause a load of invalid access related problems.
+  // i.e. if there's a row which is all zeros, then rowStarts will still contain a
+  // row_start_invalid, if you go and look up a size_t containing row_start_invalid
+  // that's a monstrously large number to look up and will be technically wrong and also
+  // likely cause a load of invalid access related problems.
   for (size_t i = 0; i < rows; i++)
   {
-    if (rowStarts[i]==-1)
+    if (rowStarts[i]==row_start_invalid)
     {
       validPermutation = false;
       break;
