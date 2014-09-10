@@ -67,12 +67,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 include(MultiLib)
 include(NativeLibraryUtils)
 set_platform_code(PLATFORM_CODE)
-if(PLATFORM_CODE STREQUAL "lin")
-  set(PLATFORM_CODE "lnx")
-endif()
-if(PLATFORM_CODE STREQUAL "mac")
-  set(PLATFORM_CODE "osx")
-endif()
 
 # JAR VARIABLES
 set(JARDIR ${CMAKE_BINARY_DIR}/jars)
