@@ -53,10 +53,13 @@ licensed under the the BSD 3-Clause License, see 'licenses/CMake_BSD3c.txt'.
 
 UFL:
 The file 'src/generator/util.py' is based on code from UFL
-(https://bitbucket.org/fenics-project/ufl/src/
-571866775dcccd0dd3c68fde3a9c18b744fbb667/ufl/common.py?at=master)
+(https://bitbucket.org/fenics-project/ufl/src/571866775dcccd0dd3c68fde3a9c18b744fbb667/ufl/common.py?at=master)
 and is licensed under the GNU Lesser General Public License version 3, see
 'licenses/LGPLv3.txt' for license text.
+In compliance with the LGPLv3 license, the source code for
+'src/generator/util.py' can be obtained at
+https://github.com/OpenGamma/OG-Maths/blob/master/src/generator/util.py .
+
 
 The Microsoft Developer Network:
 The file 'src/win32/test.manifest' is based on a code sample in the document
@@ -64,3 +67,17 @@ http://msdn.microsoft.com/en-us/library/bb530410.aspx retrieved from the
 Microsoft Developer Network on 05/08/2014. This file is licensed under the
 Microsoft Limited Public License. See 'licenses/MLPL.txt' for the text of
 Microsoft Limited Public License.
+
+
+
+__Binary Releases__
+The OG-Maths binary releases (jars), in addition to the OG-Maths binaries,
+contain binaries compiled from other source repositories, these are:
+
+OG-Lapack (https://github.com/OpenGamma/OG-Lapack) the licenses for which are
+located in the jar at 'JAR_ROOT_DIRECTORY/licenses/OG-Lapack/' and online at
+https://github.com/OpenGamma/OG-Lapack/blob/master/LICENSE.txt
+
+OG-Izy (https://github.com/OpenGamma/OG-Izy) the licenses for which are located
+in the jar at 'JAR_ROOT_DIRECTORY/licenses/OG-Izy/' and online at
+https://github.com/OpenGamma/OG-Izy/blob/master/LICENSE.txt
