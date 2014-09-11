@@ -35,6 +35,7 @@ public class FuzzerMain {
 
   /**
    * Gets the singleton instance of this class.
+   * @return the instance of FuzzerMain.
    */
   public static FuzzerMain getInstance() {
     return FuzzerMainRefHolder.s_ref;

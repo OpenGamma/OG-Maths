@@ -67,7 +67,7 @@ public class ComplexArrayContainer {
 
   /**
    * Returns true if any part of the imaginary data is nonzero
-   * @return
+   * @return true if any part of the imaginary data is nonzero
    */
   public boolean anyImaginary() {
     return _anyImag;

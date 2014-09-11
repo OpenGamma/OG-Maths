@@ -72,8 +72,11 @@ public class ThreadedTreeFuzzer implements Fuzzer {
   /**
    * Sets up internal state of dogma methods via reflection.
    * @param startSeed the start seed for the RNG
-   * @param maxTreeRefs
-   * @param maxDataSize
+   * @param maxTreeRefs the maximum number of references permitted in a tree.
+   * @param maxDataSize the maximum data size permitted in an element of the tree.
+   * @param nthreads the number of threads, each will contain it's own fuzzing instance.
+   * @param logging true to log, false to not.
+   * @param logDir the directory for logs, applicable if {@code logging} is true.
    */
   public ThreadedTreeFuzzer(long startSeed, int maxTreeRefs, int maxDataSize, int nthreads, boolean logging, File logDir) {
     _startSeed = startSeed;
