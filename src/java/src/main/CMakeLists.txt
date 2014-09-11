@@ -113,7 +113,10 @@ endforeach()
 include(${IZY_BUILDINFO})
 include(${LAPACK_BUILDINFO})
 
-# This sort out the licensing directory that gets bundled into the jar root
+# This cache is used to trigger dependencies in add_jar
+set(jar_licenses ${licensing_dirs} CACHE INTERNAL "The jar licenses")
+
+# This sorts out the licensing directory that gets bundled into the jar root
 add_custom_target (licensing_dirs
 # root level license dir (license_root_dir)
 COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/licenses
@@ -135,14 +138,21 @@ COMMAND ${CMAKE_COMMAND} -E copy_directory ${IZY_SRC_DIR}/licenses/ ${CMAKE_BINA
 
 # the OG-Lapack licenses go into (license_root_dir/licenses/OG-Lapack)
 COMMAND ${CMAKE_COMMAND} -E copy ${LAPACK_SRC_DIR}/LICENSE.txt ${CMAKE_BINARY_DIR}/licenses/OG-Lapack/LICENSE.txt
-
 COMMENT "Creating licensing directories"
 )
 
+# make it impossible to create native libs without also creating licenses
+# jar_native_libraries comes from the cache established by NativeLibraryBuilder
+foreach(item ${jar_native_libraries})
+  add_dependencies(${item} licensing_dirs)
+endforeach()
+set(jar_licenses ${licensing_dirs} CACHE INTERNAL "The jar licenses")
+
 add_jar(${JAR_NAME_NO_EXTN} ${JAR_SOURCES}
-        RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/config ${CMAKE_BINARY_DIR}/verinfo.yaml ${CMAKE_BINARY_DIR}/licenses
+        RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/config ${CMAKE_BINARY_DIR}/verinfo.yaml
         INCLUDE_NATIVE TRUE
-        DEPENDS verinfo licensing_dirs
+        INCLUDE_LICENSES TRUE
+        DEPENDS verinfo
         ENTRY_POINT com/opengamma/maths/nativeloader/NativeLibrariesSelfTest
         OUTPUT_DIR ${JARDIR})
 

@@ -241,7 +241,7 @@ function(add_jar _TARGET_NAME)
     cmake_parse_arguments(_add_jar
       ""
       "VERSION;OUTPUT_DIR;OUTPUT_NAME;ENTRY_POINT"
-      "SOURCES;RESOURCES;INCLUDE_NATIVE;INCLUDE_JARS;DEPENDS"
+      "SOURCES;RESOURCES;INCLUDE_NATIVE;INCLUDE_LICENSES;INCLUDE_JARS;DEPENDS"
       ${ARGN}
     )
 
@@ -256,6 +256,12 @@ function(add_jar _TARGET_NAME)
         set(_JAVA_INCLUDE_NATIVE FALSE)
     else()
         set(_JAVA_INCLUDE_NATIVE _add_jar_INCLUDE_NATIVE)
+    endif()
+
+    if (NOT DEFINED _add_jar_INCLUDE_LICENSES)
+        set(_JAVA_INCLUDE_LICENSES FALSE)
+    else()
+        set(_JAVA_INCLUDE_LICENSES ${_add_jar_INCLUDE_LICENSES})
     endif()
 
     if (_add_jar_ENTRY_POINT)
@@ -405,6 +411,19 @@ function(add_jar _TARGET_NAME)
       list(APPEND _JAVA_DEPENDS copyrtl)
     endif()
 
+    set(_JAVA_LICENSE_FILES)
+
+    if(_JAVA_INCLUDE_LICENSES)
+      set(_src ${CMAKE_BINARY_DIR}/licenses)
+      set(_dest ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/licenses)
+      add_custom_target(copylicenses
+                        cmake -E copy_directory ${_src} ${_dest}
+                        DEPENDS ${jar_licenses} ${_add_jar_DEPENDS}
+                        COMMENT "Copying license file to the build directory")
+      list(APPEND _JAVA_LICENSE_FILES "licenses")
+      list(APPEND _JAVA_DEPENDS copylicenses)
+    endif()
+
     # create an empty java_class_filelist
     if (NOT EXISTS ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/java_class_filelist)
         file(WRITE ${CMAKE_JAVA_CLASS_OUTPUT_PATH}/java_class_filelist "")
@@ -449,7 +468,7 @@ function(add_jar _TARGET_NAME)
             OUTPUT ${_JAVA_JAR_OUTPUT_PATH}
             COMMAND ${Java_JAR_EXECUTABLE}
                 -cf${_ENTRY_POINT_OPTION} ${_JAVA_JAR_OUTPUT_PATH} ${_ENTRY_POINT_VALUE}
-                ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} @java_class_filelist
+                ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} ${_JAVA_LICENSE_FILES} @java_class_filelist
             COMMAND ${CMAKE_COMMAND}
                 -D_JAVA_TARGET_DIR=${_add_jar_OUTPUT_DIR}
                 -D_JAVA_TARGET_OUTPUT_NAME=${_JAVA_TARGET_OUTPUT_NAME}
@@ -470,7 +489,7 @@ function(add_jar _TARGET_NAME)
             add_custom_target(${_TARGET_NAME} ALL
                 ${Java_JAR_EXECUTABLE}
                     -cf${_ENTRY_POINT_OPTION} ${_JAVA_JAR_OUTPUT_PATH} ${_ENTRY_POINT_VALUE}
-                    ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} @java_class_filelist
+                    ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} ${_JAVA_LICENSE_FILES} @java_class_filelist
                 COMMAND ${CMAKE_COMMAND}
                     -D_JAVA_TARGET_DIR=${_add_jar_OUTPUT_DIR}
                     -D_JAVA_TARGET_OUTPUT_NAME=${_JAVA_TARGET_OUTPUT_NAME}
@@ -485,7 +504,7 @@ function(add_jar _TARGET_NAME)
                 OUTPUT ${_JAVA_JAR_OUTPUT_PATH}
                 COMMAND ${Java_JAR_EXECUTABLE}
                     -cf${_ENTRY_POINT_OPTION} ${_JAVA_JAR_OUTPUT_PATH} ${_ENTRY_POINT_VALUE}
-                    ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} @java_class_filelist
+                    ${_JAVA_RESOURCE_FILES} ${_JAVA_NATIVE_FILES} ${_JAVA_LICENSE_FILES} @java_class_filelist
                 COMMAND ${CMAKE_COMMAND}
                     -D_JAVA_TARGET_DIR=${_add_jar_OUTPUT_DIR}
                     -D_JAVA_TARGET_OUTPUT_NAME=${_JAVA_TARGET_OUTPUT_NAME}
