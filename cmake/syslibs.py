@@ -20,7 +20,7 @@ libs['w32'] = [ 'libgcc_s_sjlj-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' 
 
 default_gcc_lib_folder = {}
 default_gcc_lib_folder['lnx'] = '/opt/gcc/4.9.1/lib64'
-default_gcc_lib_folder['osx'] = '/opt/local/lib/gcc49'
+default_gcc_lib_folder['osx'] = '/opt/gcc/4.9.1/lib'
 default_gcc_lib_folder['w64'] = 'C:\\buildsystem\\mingw-w64\\x86_64\\4.9.1\\mingw64\\bin'
 default_gcc_lib_folder['w32'] = 'C:\\buildsystem\\mingw-w64\\x86\\4.9.1\\mingw32\\bin'
 
