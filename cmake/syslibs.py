@@ -14,7 +14,7 @@ from buildutils import platform_code
 
 libs = {}
 libs['lnx'] = [ 'libgcc_s.so.1', 'libgfortran.so.3', 'libquadmath.so.0' ]
-libs['osx'] = [ 'libgcc_s.1.dylib', 'libgfortran.3.dylib', 'libquadmath.0.dylib' ]
+libs['osx'] = [ 'libgcc_s.1.dylib', 'libstdc++.6.dylib', 'libgfortran.3.dylib', 'libquadmath.0.dylib' ]
 libs['w64'] = [ 'libgcc_s_seh-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' ]
 libs['w32'] = [ 'libgcc_s_sjlj-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' ]
 
