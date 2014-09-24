@@ -253,17 +253,17 @@ JNIEXPORT jobjectArray JNICALL Java_com_opengamma_maths_materialisers_Materialis
 
     returnVal = Real8AoA{answer}.toJDoubleAoA(env);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     convertExceptionJava(env, e);
     return nullptr;
   }
-  catch (rdag_error e)
+  catch (rdag_error& e)
   {
     rdagExceptionJava(env, e);
     return nullptr;
   }
-  catch (exception e)
+  catch (exception& e)
   {
     unspecifiedExceptionJava(env, e);
     return nullptr;
@@ -304,17 +304,17 @@ JNIEXPORT jobject JNICALL Java_com_opengamma_maths_materialisers_Materialisers_m
                                JVMManager::getComplexArrayContainerClazz_ctor_DAoA_DAoA(),
                                realPart, imagPart);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     convertExceptionJava(env, e);
     return nullptr;
   }
-  catch (rdag_error e)
+  catch (rdag_error& e)
   {
     rdagExceptionJava(env, e);
     return nullptr;
   }
-  catch (exception e)
+  catch (exception& e)
   {
     unspecifiedExceptionJava(env, e);
     return nullptr;
@@ -355,17 +355,17 @@ Java_com_opengamma_maths_materialisers_Materialisers_materialiseToOGTerminal(JNI
 
     result = JavaTerminal{env, answer}.getObject();
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     convertExceptionJava(env, e);
     return nullptr;
   }
-  catch (rdag_error e)
+  catch (rdag_error& e)
   {
     rdagExceptionJava(env, e);
     return nullptr;
   }
-  catch (exception e)
+  catch (exception& e)
   {
     unspecifiedExceptionJava(env, e);
     return nullptr;

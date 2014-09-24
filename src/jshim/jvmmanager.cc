@@ -44,7 +44,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void __attribute__ ((unused)) *re
   try {
     JVMManager::initialize(jvm);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     DEBUG_PRINT("Exception in JNI_OnLoad: %s\n.", e.what());
     return JNI_ERR;

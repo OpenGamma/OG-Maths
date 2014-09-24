@@ -77,7 +77,7 @@ JOGRealScalar::~JOGRealScalar()
   try {
     unbindOGArrayData<real8, jdoubleArray>(this->_dataRef, _backingObject);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGRealScalar): convert_error thrown when unbinding Java array data" << endl;
   }
@@ -121,7 +121,7 @@ JOGComplexScalar::~JOGComplexScalar()
   try {
     unbindOGArrayData<complex16, jdoubleArray>(this->_dataRef, _backingObject);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGComplexScalar): convert_error thrown when unbinding Java array data" << endl;
   }
@@ -206,7 +206,7 @@ JOGRealDenseMatrix::~JOGRealDenseMatrix()
   try {
     unbindOGArrayData<real8, jdoubleArray>(this->getData(), _backingObject);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGRealDenseMatrix): convert_error thrown when unbinding Java array data" << endl;
   }
@@ -244,7 +244,7 @@ JOGComplexDenseMatrix::~JOGComplexDenseMatrix() {
   try {
     unbindOGArrayData<complex16, jdoubleArray>(this->getData(), _backingObject);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGComplexDenseMatrix): convert_error thrown when unbinding Java array data" << endl;
   }
@@ -283,7 +283,7 @@ JOGLogicalMatrix::~JOGLogicalMatrix()
   try {
     unbindOGArrayData<real8, jdoubleArray>(this->getData(), _backingObject);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGLogicalMatrix): convert_error thrown when unbinding Java array data" << endl;
   }
@@ -326,7 +326,7 @@ JOGRealSparseMatrix::~JOGRealSparseMatrix()
     unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getRowIdx()), _backingObject, JVMManager::getOGSparseMatrixClazz_getRowIdx());
     unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getColPtr()), _backingObject, JVMManager::getOGSparseMatrixClazz_getColPtr());
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGRealSparseMatrix): convert_error thrown when unbinding Java array data" << endl;
   }
@@ -381,7 +381,7 @@ JOGComplexSparseMatrix::~JOGComplexSparseMatrix()
     unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getRowIdx()), _backingObject, JVMManager::getOGSparseMatrixClazz_getRowIdx());
     unbindPrimitiveArrayData<jint, jintArray>(reinterpret_cast<jint*>(this->getColPtr()), _backingObject, JVMManager::getOGSparseMatrixClazz_getColPtr());
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGComplexSparseMatrix): convert_error thrown when unbinding Java array data" << endl;
   }
@@ -432,7 +432,7 @@ JOGRealDiagonalMatrix::~JOGRealDiagonalMatrix()
   try {
     unbindOGArrayData<real8, jdoubleArray>(this->getData(), _backingObject);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGRealDiagonalMatrix): convert_error thrown when unbinding Java array data" << endl;
   }
@@ -471,7 +471,7 @@ JOGComplexDiagonalMatrix::~JOGComplexDiagonalMatrix()
   try {
     unbindOGArrayData<complex16, jdoubleArray>(this->getData(), _backingObject);
   }
-  catch (convert_error e)
+  catch (convert_error& e)
   {
     cerr << "Warning (~JOGRealDiagonalMatrix): convert_error thrown when unbinding Java array data" << endl;
   }
