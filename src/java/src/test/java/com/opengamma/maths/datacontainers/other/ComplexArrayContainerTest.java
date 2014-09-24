@@ -92,4 +92,9 @@ public class ComplexArrayContainerTest {
     tmp[0][0] = Double.longBitsToDouble(2L << 63);
     assertFalse(new ComplexArrayContainer(real, tmp).anyImaginary());
   }
+
+  @Test
+  public void toStringTest() {
+    new ComplexArrayContainer(real, imag).toString();
+  }
 }
