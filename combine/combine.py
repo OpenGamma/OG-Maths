@@ -221,7 +221,7 @@ def create_main_jar(newverinfo, verinfos):
 
     # Copy the platform-independent files into the main jar from the linux main jar
     nl = mainjar.namelist()
-    files = [ n for n in nl if (n[:3] == 'com' or n[:6] == 'config' or n[:8] == 'META-INF') and n[-1] != '/' ]
+    files = [ n for n in nl if (n[:3] == 'com' or n[:6] == 'config' or n[:8] == 'META-INF' or n[:8] == 'licenses') and n[-1] != '/' ]
     for f in files:
         if DEBUG:
             print "Adding %s to main jar" % f

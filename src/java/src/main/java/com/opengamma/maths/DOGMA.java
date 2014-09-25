@@ -92,8 +92,8 @@ public final class DOGMA {
    * Instantiates a new OGComplexScalar with the real part taken from the numerical
    * value extracted from an object of the java Number class. The imaginary part is
    * set to zero.
-   * @param num the number from which to create the real part of the complex scalar.
-   * @return an OGComplexScalar representing {@code num}.
+   * @param real the number from which to create the real part of the complex scalar.
+   * @return an OGComplexScalar representing {@code real}.
    */
 
   public static OGTerminal C(Number real) {
@@ -113,7 +113,7 @@ public final class DOGMA {
    * the numerical value extracted from objects of the java Number class. 
    * @param real the number from which to create the real part of the complex scalar.
    * @param imag the number from which to create the imaginary part of the complex scalar.
-   * @return an OGComplexScalar representing {@code num}.
+   * @return an OGComplexScalar representing {@code real+i*imag}.
    */
   public static OGTerminal C(Number real, Number imag) {
     return new OGComplexScalar(real, imag);
@@ -597,8 +597,7 @@ public final class DOGMA {
    * is a single number it is applied as a scaling, whereas if both arguments 
    * are the same dimension element wise multiplication takes place.
    * <p>
-   * @param arg0 The first argument to multiply.
-   * @param arg1 The second argument to multiply
+   * @param args the arguments to times.
    *
    * @return The element wise multiplication of the first argument by all subsequent arguments.
    */

@@ -29,7 +29,7 @@ public class FixedSizeFIFO<T> {
    * The capacity of this container
    */
   private int _capacity;
-  
+
   /**
    * The list that acts as backing storage for this container.
    */
@@ -55,7 +55,7 @@ public class FixedSizeFIFO<T> {
   /**
    * Add an element to the container, if the container is at capacity then the oldest
    * element in the container is dropped and the new added.
-   * @param element
+   * @param element the element to add.
    */
   public void add(T element) {
     if (_backing.size() == _capacity) {
