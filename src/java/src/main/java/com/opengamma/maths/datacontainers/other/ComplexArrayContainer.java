@@ -6,6 +6,8 @@
 
 package com.opengamma.maths.datacontainers.other;
 
+import java.util.Arrays;
+
 import com.opengamma.maths.helpers.Catchers;
 import com.opengamma.maths.helpers.MatrixPrimitiveUtils;
 
@@ -69,6 +71,24 @@ public class ComplexArrayContainer {
    */
   public boolean anyImaginary() {
     return _anyImag;
+  }
+
+  @Override
+  public String toString() {
+    String str = "ComplexArrayContainer:";
+    str = str + "\n====Pretty Print====\n";
+    int rows = _real.length;
+    int cols = _real[0].length;
+    str = str + "Rows: " + rows + "Cols: " + cols + "\n";
+    str = str + "Data:\n";
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        str += String.format("%24.18f + %24.18fi, ", _real[i][j], _imag[i][j]);
+      }
+      str += String.format("\n");
+    }
+    str += "\n";
+    return str;
   }
 
 }

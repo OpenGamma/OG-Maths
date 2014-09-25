@@ -93,8 +93,11 @@ set(PATH_AND_JAR_JAVADOC_NAME "${JARDIR}/${JAR_JAVADOC_NAME}" )
 # Use C99 and C++11, other flags for preventing common errors. Also add thread libs.
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -Wno-sign-compare -Werror -Wextra -pedantic ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_CXX_FLAGS}")
-# we want static libstdc++ everywhere!
-set(CMAKE_SHARED_LINKER_FLAGS "-static-libstdc++")
+
+if(NOT APPLE)
+  # we want static libstdc++ everywhere apart from apple who does the 2 layer namespace thing!
+  set(CMAKE_SHARED_LINKER_FLAGS "-static-libstdc++")
+endif()
 
 # On Linux, add -rdynamic for stack traces
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

@@ -14,13 +14,13 @@ from buildutils import platform_code
 
 libs = {}
 libs['lnx'] = [ 'libgcc_s.so.1', 'libgfortran.so.3', 'libquadmath.so.0' ]
-libs['osx'] = [ 'libgcc_s.1.dylib', 'libgfortran.3.dylib', 'libquadmath.0.dylib' ]
+libs['osx'] = [ 'libgcc_s.1.dylib', 'libstdc++.6.dylib', 'libgfortran.3.dylib', 'libquadmath.0.dylib' ]
 libs['w64'] = [ 'libgcc_s_seh-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' ]
 libs['w32'] = [ 'libgcc_s_sjlj-1.dll', 'libgfortran-3.dll', 'libquadmath-0.dll' ]
 
 default_gcc_lib_folder = {}
 default_gcc_lib_folder['lnx'] = '/opt/gcc/4.9.1/lib64'
-default_gcc_lib_folder['osx'] = '/opt/local/lib/gcc49'
+default_gcc_lib_folder['osx'] = '/opt/gcc/4.9.1/lib'
 default_gcc_lib_folder['w64'] = 'C:\\buildsystem\\mingw-w64\\x86_64\\4.9.1\\mingw64\\bin'
 default_gcc_lib_folder['w32'] = 'C:\\buildsystem\\mingw-w64\\x86\\4.9.1\\mingw32\\bin'
 
