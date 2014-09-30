@@ -293,6 +293,18 @@ add_custom_target(maven_install
                           -Dsources=${JAR_SOURCES_NAME}
                   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/jars)
 
+# Test deploy to local maven repository
+add_custom_target(maven_test_deploy
+                  COMMAND mvn -X deploy:deploy-file
+                          -Durl=file:///${CMAKE_BINARY_DIR}/deploy_test
+                          -DrepositoryId=release
+                          -DpomFile=${CMAKE_SOURCE_DIR}/src/java/pom.xml
+                          -Dfile=${JAR_NAME}
+                          -Djavadoc=${JAR_JAVADOC_NAME}
+                          -Dsources=${JAR_SOURCES_NAME}
+                  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/jars
+)
+
 message("Build type: " ${CMAKE_BUILD_TYPE})
 
 message("
