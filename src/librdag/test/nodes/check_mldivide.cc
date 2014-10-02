@@ -585,6 +585,15 @@ TEST(MLDIVIDETests, CheckBadCommuteThrows) {
   OGExpr::Ptr node = MLDIVIDE::create(m1, m2);
   ASSERT_THROW(
   runtree(node),
-  rdag_error);
+  rdag_unrecoverable_error);
+}
+
+TEST(MLDIVIDETests, CheckNonFiniteSystemMatrixThrows) {
+  OGNumeric::Ptr m1 = OGRealDenseMatrix::create(new real8[6]{std::numeric_limits<real8>::signaling_NaN(),3,5,2,4,6},3,2,OWNER);
+  OGNumeric::Ptr m2 = OGRealDenseMatrix::create(new real8[7]{10,30,20,40,50,60},3,2,OWNER);
+  OGExpr::Ptr node = MLDIVIDE::create(m1, m2);
+  ASSERT_THROW(
+  runtree(node),
+  rdag_unrecoverable_error);
 }
 

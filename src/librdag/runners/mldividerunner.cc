@@ -481,7 +481,12 @@ mldivide_dense_runner(RegContainer& reg0, shared_ptr<const OGMatrix<T>> arg0, sh
   {
     stringstream msg;
     msg << "System does not commute. Rows in arg0: " << rows1 << ". Rows in arg1 " << rows2 << std::endl;
-    throw rdag_error(msg.str());
+    throw rdag_unrecoverable_error(msg.str());
+  }
+  // and that system matrix is finite
+  if(!isfinite(data1, rows1*cols1))
+  {
+    throw rdag_unrecoverable_error("System matrix contains data which is not finite. Solution(s) can only be obtained using finite data.");
   }
 
   // check for all zeros system matrix, quick return if so
