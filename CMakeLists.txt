@@ -49,13 +49,13 @@ else()
 endif()
 
 set(og_maths_VERSION_MAJOR 0)
-set(og_maths_VERSION_MINOR 0)
-set(og_maths_VERSION_PATCH 1)
+set(og_maths_VERSION_MINOR 2)
+set(og_maths_VERSION_PATCH 0)
 set(og_maths_VERSION
   ${og_maths_VERSION_MAJOR}.${og_maths_VERSION_MINOR}.${og_maths_VERSION_PATCH})
 
 set(maven_VERSION_MAJOR 0)
-set(maven_VERSION_MINOR 1)
+set(maven_VERSION_MINOR 2)
 set(maven_VERSION_PATCH 0)
 set(maven_VERSION
   ${maven_VERSION_MAJOR}.${maven_VERSION_MINOR}.${maven_VERSION_PATCH})
