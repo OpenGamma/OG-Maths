@@ -1224,14 +1224,27 @@ TEST(LAPACKTest_xgeqrf, dgeqrf) {
 
   real8 * expected_TAU = new real8[4]{1.3037283696153934,1.4983520738901965,1.9333778010585592,1.9787321786052121};
 
-  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+  lapack::xgeqrf<real8,lapack::OnInputCheck::nothing>(&m, &n, Acpy, &m, TAU, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_TAU,TAU,n,1e-13,1e-13));
 
-  // xerbla test
-  n=-1;
-  EXPECT_THROW(lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO),rdag_error);
+  // check errors on bad arg (m=-1)
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+  m = -1;
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgeqrf<real8,lapack::OnInputCheck::isfinite>(&m, &n, Acpy, &m, TAU, &INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgeqrf<real8,lapack::OnInputCheck::nothing>(&m, &n, Acpy, &m, TAU, &INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 5;
+  std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgeqrf<real8,lapack::OnInputCheck::isfinite>(&m, &n, Acpy, &m, TAU, &INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgeqrf<real8,lapack::OnInputCheck::nothing>(&m, &n, Acpy, &m, TAU, &INFO)));
 
   delete [] TAU;
   delete [] Acpy;
@@ -1256,14 +1269,27 @@ TEST(LAPACKTest_xgeqrf, zgeqrf) {
 
   complex16 * expected_TAU = new complex16[4]{{1.1358314562310403,-0.27166291246208063},{1.1023389842523179,0.49317452258808697},{1.7631082023084017,-0.43191932046510112},{1.3367239865466765,-0.92188119028587789}};
 
-  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+  lapack::xgeqrf<complex16,lapack::OnInputCheck::nothing>(&m, &n, Acpy, &m, TAU, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
   EXPECT_TRUE(ArrayFuzzyEquals(expected_TAU,TAU,n,1e-13,1e-13));
 
-  // xerbla test
-  n=-1;
-  EXPECT_THROW(lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO),rdag_error);
+  // check errors on bad arg (m=-1)
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+  m = -1;
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xgeqrf<complex16,lapack::OnInputCheck::isfinite>(&m, &n, Acpy, &m, TAU, &INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xgeqrf<complex16,lapack::OnInputCheck::nothing>(&m, &n, Acpy, &m, TAU, &INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 5;
+  std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
+  Acpy[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xgeqrf<complex16,lapack::OnInputCheck::isfinite>(&m, &n, Acpy, &m, TAU, &INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xgeqrf<complex16,lapack::OnInputCheck::nothing>(&m, &n, Acpy, &m, TAU, &INFO)));
 
   delete [] TAU;
   delete [] Acpy;
@@ -1283,26 +1309,43 @@ TEST(LAPACKTest_xxxgqr, dorgqr) {
   real8 * TAU = new real8[minmn];
 
   real8 * Acpy = new real8[20];
+  real8 * Adecomp = new real8[20];
   std::copy(rcondok5x4,rcondok5x4+m*n,Acpy);
 
   real8 * expected = new real8[20] {-0.3037283696153934,-0.5467110653077083,-0.6074567392307869,-0.4859653913846296,-0.0607456739230787,0.8704878387954510,-0.1333179572929945,-0.3842694063151109,0.1176334917291140,-0.2509514490221096,-0.0499168744229821,0.8153089489086596,-0.5158077023707830,-0.2495843721148959,0.0665558325639719,0.2751778011656992,0.0762869151746490,0.4658950891023217,-0.8173598054426700,-0.1825436898821958};
 
   // create a packed QR form with elementary reflectors in lower part
-  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+  lapack::xgeqrf<real8, lapack::OnInputCheck::nothing>(&m, &n, Acpy, &m, TAU, &INFO);
 
   // extract Q from packed form of xgeqrf, scalings are in TAU
   int4 k = n;
-  lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
+  lapack::xxxgqr<real8, lapack::OnInputCheck::nothing>(&m, &n, &k, Acpy, &m, TAU, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
 
-  // xerbla test
-  n=-1;
-  EXPECT_THROW(lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO),rdag_error);
+  // We operate checks on Adecomp, a copy of Acpy (i.e. the decomposed form)
+
+  // check errors on bad arg (m=-1)
+  std::copy(Acpy,Acpy+m*n,Adecomp);
+  m = -1;
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xxxgqr<real8, lapack::OnInputCheck::isfinite>(&m, &n, &k, Adecomp, &m, TAU, &INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xxxgqr<real8, lapack::OnInputCheck::nothing>(&m, &n, &k, Adecomp, &m, TAU, &INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 5;
+  std::copy(Acpy,Acpy+m*n,Adecomp);
+  Adecomp[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xxxgqr<real8, lapack::OnInputCheck::isfinite>(&m, &n, &k, Adecomp, &m, TAU, &INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xxxgqr<real8, lapack::OnInputCheck::nothing>(&m, &n, &k, Adecomp, &m, TAU, &INFO)));
 
 
   delete [] TAU;
   delete [] Acpy;
+  delete [] Adecomp;
   delete [] expected;
 }
 
@@ -1317,25 +1360,43 @@ TEST(LAPACKTest_xxxgqr, zunrgqr) {
   complex16 * TAU = new complex16[minmn];
 
   complex16 * Acpy = new complex16[20];
+  complex16 * Adecomp = new complex16[20];
+  
   std::copy(ccondok5x4,ccondok5x4+m*n,Acpy);
 
   complex16 * expected = new complex16[20] {{     -0.1358314562310403,       0.2716629124620806}, {     -0.2444966212158725,       0.4889932424317451}, {     -0.2716629124620806,       0.5433258249241611}, {     -0.2173303299696644,       0.4346606599393290}, {     -0.0271662912462081,       0.0543325824924161}, {     -0.3892939962266967,       0.7785879924534080}, {      0.0596216030257065,      -0.1192432060514235}, {      0.1718505028388125,      -0.3437010056776262}, {     -0.0526072967873878,       0.1052145935747794}, {      0.1122288998131025,      -0.2244577996262045}, {     -0.0223235048868174,       0.0446470097736447}, {      0.3646172464847307,      -0.7292344929694671}, {     -0.2306762171638115,       0.4613524343276225}, {     -0.1116175244341002,       0.2232350488682011}, {      0.0297646731824274,      -0.0595293463648534}, {      0.1230632538610821,      -0.2461265077221643}, {      0.0341165456248574,      -0.0682330912497137}, {      0.2083546179232226,      -0.4167092358464459}, {     -0.3655344174091633,       0.7310688348183267}, {     -0.0816360198880458,       0.1632720397760899}};
 
   // create a packed QR form with elementary reflectors in lower part
-  lapack::xgeqrf(&m, &n, Acpy, &m, TAU, &INFO);
+  lapack::xgeqrf<complex16, lapack::OnInputCheck::nothing>(&m, &n, Acpy, &m, TAU, &INFO);
 
   // extract Q from packed form of xgeqrf, scalings are in TAU
   int4 k = n;
-  lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO);
+  lapack::xxxgqr<complex16, lapack::OnInputCheck::nothing>(&m, &n, &k, Acpy, &m, TAU, &INFO);
 
   EXPECT_TRUE(ArrayFuzzyEquals(expected,Acpy,m*n,1e-13,1e-13));
 
-  // xerbla test
-  n=-1;
-  EXPECT_THROW(lapack::xxxgqr(&m, &n, &k, Acpy, &m, TAU, &INFO),rdag_error);
+  // We operate checks on Adecomp, a copy of Acpy (i.e. the decomposed form)
+
+  // check errors on bad arg (m=-1)
+  std::copy(Acpy,Acpy+m*n,Adecomp);
+  m = -1;
+  // will throw as data length is bad for finite domain check
+  EXPECT_THROW((lapack::xxxgqr<complex16, lapack::OnInputCheck::isfinite>(&m, &n, &k, Adecomp, &m, TAU, &INFO)), rdag_unrecoverable_error);
+  // will throw from xerbla as m is negative
+  EXPECT_THROW((lapack::xxxgqr<complex16, lapack::OnInputCheck::nothing>(&m, &n, &k, Adecomp, &m, TAU, &INFO)), rdag_unrecoverable_error);
+
+  // check errors with input checking (A[0] = NaN).
+  m = 5;
+  std::copy(Acpy,Acpy+m*n,Adecomp);
+  Adecomp[0]=std::numeric_limits<real8>::signaling_NaN();
+  // will throw as finite domain check sees NaN
+  EXPECT_THROW((lapack::xxxgqr<complex16, lapack::OnInputCheck::isfinite>(&m, &n, &k, Adecomp, &m, TAU, &INFO)), rdag_unrecoverable_error);
+  // will not throw
+  EXPECT_NO_THROW((lapack::xxxgqr<complex16, lapack::OnInputCheck::nothing>(&m, &n, &k, Adecomp, &m, TAU, &INFO)));
 
   delete [] TAU;
   delete [] Acpy;
+  delete [] Adecomp;
   delete [] expected;
 }
 
