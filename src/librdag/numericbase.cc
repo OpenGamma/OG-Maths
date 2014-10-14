@@ -88,6 +88,12 @@ OGNumeric::asMLDIVIDE() const
   return MLDIVIDE::Ptr{};
 }
 
+QR::Ptr
+OGNumeric::asQR() const
+{
+  return QR::Ptr{};
+}
+
 OGExpr::Ptr
 OGNumeric::asOGExpr() const
 {

@@ -210,6 +210,19 @@ class MLDIVIDE: public OGBinaryExpr
     MLDIVIDE(const OGNumeric::Ptr& arg0, const OGNumeric::Ptr& arg1);
 };
 
+class QR: public OGUnaryExpr
+{
+  public:
+    typedef std::shared_ptr<const QR> Ptr;
+    static QR::Ptr create(const OGNumeric::Ptr& arg);
+    virtual OGNumeric::Ptr copy() const override;
+    virtual QR::Ptr asQR() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+  private:
+    QR(const OGNumeric::Ptr& arg);
+};
+
 } // namespace librdag
 
 #endif // _EXPRESSIONBASE_HH

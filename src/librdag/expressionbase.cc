@@ -508,4 +508,41 @@ MLDIVIDE::getType() const
   return MLDIVIDE_ENUM;
 }
 
+
+/**
+ * QR node
+ */
+
+QR::QR(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
+
+QR::Ptr
+QR::create(const OGNumeric::Ptr& arg)
+{
+  return QR::Ptr{new QR{arg}};
+}
+
+OGNumeric::Ptr
+QR::copy() const
+{
+  return OGNumeric::Ptr{new QR(_args[0]->copy())};
+}
+
+QR::Ptr
+QR::asQR() const
+{
+  return static_pointer_cast<const QR, const OGNumeric>(shared_from_this());
+}
+
+void
+QR::debug_print() const
+{
+  cout << "QR node" << endl;
+}
+
+ExprType_t
+QR::getType() const
+{
+  return QR_ENUM;
+}
+
 } // namespace librdag
