@@ -36,6 +36,7 @@ set(JAVA_FILES
     nodes/NORM2.java
     nodes/PINV.java
     nodes/PLUS.java
+    nodes/QR.java
     nodes/RDIVIDE.java
     nodes/SELECTRESULT.java
     nodes/SIN.java
@@ -76,6 +77,7 @@ set(JAVA_FILES
     datacontainers/other/ComplexArrayContainer.java
     datacontainers/other/OGSVDResult.java
     datacontainers/other/OGLUResult.java
+    datacontainers/other/OGQRResult.java
     datacontainers/lazy/OGExpr.java
     datacontainers/lazy/OGExprVariadicReturn.java
     datacontainers/OGNumeric.java

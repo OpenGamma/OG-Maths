@@ -958,9 +958,12 @@ template<> void xgeev(char * JOBVL, char * JOBVR, int4 * N, complex16 * A, int4 
 }
 
 
-template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, int4 *INFO)
+template<typename T, lapack::OnInputCheck CHECK> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, int4 *INFO)
 {
   set_xerbla_death_switch(lapack::izero);
+
+  lapack::detail::checkData<T, CHECK>(A,(*M)*(*N));
+
   T worktmp;
   int4 lwork = -1; // -1 to trigger size query
 
@@ -970,7 +973,7 @@ template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU,
   {
     std::stringstream message;
     message << "Input to LAPACK::" << detail::charmagic<T>() << "geqrf call incorrect at arg: "  << -(*INFO);
-    throw rdag_error(message.str());
+    throw rdag_unrecoverable_error(message.str());
   }
 
   lwork = (int4)std::real(worktmp);
@@ -980,12 +983,24 @@ template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU,
   detail::xgeqrf(M, N, A, LDA, TAU, work, &lwork, INFO );
 
 }
-template void xgeqrf<real8>(int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * TAU, int4 *INFO);
-template void xgeqrf<complex16>(int4 * M, int4 * N, complex16 * A, int4 * LDA, complex16 * TAU, int4 *INFO);
+template void xgeqrf<real8, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * TAU, int4 *INFO);
+template void xgeqrf<real8, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, real8 * A, int4 * LDA, real8 * TAU, int4 *INFO);
+template void xgeqrf<complex16, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, complex16 * A, int4 * LDA, complex16 * TAU, int4 *INFO);
+template void xgeqrf<complex16, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, complex16 * A, int4 * LDA, complex16 * TAU, int4 *INFO);
 
-template<typename T>void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, int4 * INFO)
+
+
+template<typename T, lapack::OnInputCheck CHECK> void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, int4 * INFO)
 {
   set_xerbla_death_switch(lapack::izero);
+
+  lapack::detail::checkData<T, CHECK>(A,(*M)*(*N));
+
+  // tau contains scalars for H(i) = I - tau * v * v**T.
+  // the call chain usually hits BLAS/other calls which
+  // are unlikely to stall for non-finite value.
+  // Therefore no check option is given at present.
+
   T worktmp;
   int4 lwork = -1; // -1 to trigger size query
 
@@ -995,7 +1010,7 @@ template<typename T>void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA,
   {
     std::stringstream message;
     message << "Input to LAPACK::" << detail::xxxgqrcharmagic<T>() << "gqr call incorrect at arg: "  << -(*INFO);
-    throw rdag_error(message.str());
+    throw rdag_unrecoverable_error(message.str());
   }
 
   lwork = (int4)std::real(worktmp);
@@ -1005,7 +1020,9 @@ template<typename T>void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA,
   detail::xxxgqr(M, N, K, A, LDA, TAU, work, &lwork, INFO);
 
 }
-template void xxxgqr<real8>(int4 * M, int4 * N, int4 * K, real8 * A, int4 * LDA, real8 * TAU, int4 * INFO);
-template void xxxgqr<complex16>(int4 * M, int4 * N, int4 * K, complex16 * A, int4 * LDA, complex16 * TAU, int4 * INFO);
+template void xxxgqr<real8, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, int4 * K, real8 * A, int4 * LDA, real8 * TAU, int4 * INFO);
+template void xxxgqr<real8, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, int4 * K, real8 * A, int4 * LDA, real8 * TAU, int4 * INFO);
+template void xxxgqr<complex16, lapack::OnInputCheck::isfinite>(int4 * M, int4 * N, int4 * K, complex16 * A, int4 * LDA, complex16 * TAU, int4 * INFO);
+template void xxxgqr<complex16, lapack::OnInputCheck::nothing>(int4 * M, int4 * N, int4 * K, complex16 * A, int4 * LDA, complex16 * TAU, int4 * INFO);
 
 } // end namespace lapack

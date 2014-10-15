@@ -51,6 +51,7 @@ typedef enum
   LU_ENUM              = 0x0139L ,
   INV_ENUM             = 0x013DL ,
   MLDIVIDE_ENUM        = 0x014BL ,
+  QR_ENUM              = 0x0151L ,
 
 #include "exprenum.hh"
 } ExprType_t;

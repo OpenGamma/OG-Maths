@@ -29,6 +29,7 @@ set(TESTS
     check_mtimes
     check_norm2
     check_pinv
+    check_qr
     check_selectresult
     check_svd
     check_transpose

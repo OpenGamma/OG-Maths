@@ -10,6 +10,7 @@ import com.opengamma.maths.datacontainers.OGNumeric;
 import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.datacontainers.other.ComplexArrayContainer;
 import com.opengamma.maths.datacontainers.other.OGLUResult;
+import com.opengamma.maths.datacontainers.other.OGQRResult;
 import com.opengamma.maths.datacontainers.other.OGSVDResult;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
@@ -30,6 +31,7 @@ import com.opengamma.maths.nodes.NEGATE;
 import com.opengamma.maths.nodes.NORM2;
 import com.opengamma.maths.nodes.PINV;
 import com.opengamma.maths.nodes.PLUS;
+import com.opengamma.maths.nodes.QR;
 import com.opengamma.maths.nodes.RDIVIDE;
 import com.opengamma.maths.nodes.SIN;
 import com.opengamma.maths.nodes.SINH;
@@ -630,6 +632,25 @@ public final class DOGMA {
    */
   public static OGLUResult lu(OGNumeric arg0) {
     return new OGLUResult(new LU(arg0));
+  }
+
+  /**
+   * DOGMA Function: QR
+   * <p>
+   * Short Description:
+   * <p>
+   * The QR function computes the QR decomposition of a matrix.
+   * <p>
+   * Full Description:
+   * <p>
+   * The QR function is the QR workhorse. It computes the QR decomposition of a
+   * matrix.
+   * <p>
+   * @param arg0 The data array from which the QR decomposition shall be found.
+   * @return An OGQRResult containing the Q and R matrices.
+   */
+  public static OGQRResult qr(OGNumeric arg0) {
+    return new OGQRResult(new QR(arg0));
   }
 
   /**

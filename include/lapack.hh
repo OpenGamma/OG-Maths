@@ -463,6 +463,7 @@ template<typename T> void xgeev(char * JOBVL, char * JOBVR, int4 * N, T * A, int
 /**
  * xgeqrf() computes the QR decomposition.
  * @tparam T the type of the underlying data real8 and complex16 are accepted
+ * @tparam CHECK what to assert the input complies with on entry to this routine
  * @param M as LAPACK degqrf M.
  * @param N as LAPACK degqrf N.
  * @param A data type specific with intent as LAPACK degqrf A.
@@ -470,12 +471,13 @@ template<typename T> void xgeev(char * JOBVL, char * JOBVR, int4 * N, T * A, int
  * @param TAU  data type specific with intent as LAPACK degqrf TAU.
  * @param INFO as LAPACK degqrf INFO.
  */
-template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, int4 *INFO);
+template<typename T, OnInputCheck CHECK> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU, int4 *INFO);
 
 
 /**
  * xxxgqr() computes the orthogonal Q matrix from elementary reflectors as returned by xgeqrf()
  * @tparam T the type of the underlying data real8 and complex16 are accepted
+ * @tparam CHECK what to assert the input complies with on entry to this routine
  * @param M as LAPACK dorgqr M.
  * @param N as LAPACK dorgqr N.
  * @param K as LAPACK dorgqr K.
@@ -484,7 +486,7 @@ template<typename T> void xgeqrf(int4 * M, int4 * N, T * A, int4 * LDA, T * TAU,
  * @param TAU  data type specific with intent as LAPACK degqrf TAU.
  * @param INFO as LAPACK degqrf INFO.
  */
-template<typename T>void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, int4 * INFO);
+template<typename T, OnInputCheck CHECK> void xxxgqr(int4 * M, int4 * N, int4 * K, T * A, int4 * LDA, T * TAU, int4 * INFO);
 }
 
 

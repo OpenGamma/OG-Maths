@@ -36,6 +36,7 @@ set(RDAG_SOURCES convertto.cc
                  runners/mtimesrunner.cc
                  runners/norm2runner.cc
                  runners/pinvrunner.cc
+                 runners/qrrunner.cc
                  runners/selectresultrunner.cc
                  runners/svdrunner.cc
                  runners/transposerunner.cc

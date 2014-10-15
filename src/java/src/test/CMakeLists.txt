@@ -36,6 +36,7 @@ set(JAVA_FILES
       testnodes/TestCtransposeMaterialise.java
       testnodes/TestTimesMaterialiseToComplex.java
       testnodes/TestNegateMaterialise.java
+      testnodes/TestQRMaterialise.java
       datacontainers/matrix/OGComplexDenseMatrixTest.java
       datacontainers/matrix/OGLogicalMatrixTest.java
       datacontainers/matrix/OGRealDiagonalMatrixTest.java
