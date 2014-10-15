@@ -1,0 +1,81 @@
+/**
+ * Copyright (C) 2014 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
+
+package com.opengamma.maths.testnodes;
+
+import static org.testng.AssertJUnit.assertTrue;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.opengamma.maths.datacontainers.OGNumeric;
+import com.opengamma.maths.datacontainers.OGTerminal;
+import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
+import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
+import com.opengamma.maths.materialisers.Materialisers;
+import com.opengamma.maths.nodes.MTIMES;
+import com.opengamma.maths.nodes.QR;
+
+/**
+ * A very basic numerical test of the QR decomposition.
+ */
+@Test
+public class TestQRMaterialise {
+
+  @DataProvider
+  public Object[][] jointdataContainer() {
+    Object[][] obj = new Object[2][3];
+    // real space test
+    obj[0][0] = new OGRealDenseMatrix(new double[][] {
+      { 10.e0, 2.e0, 5.e0, 1.e0, 6.e0, -3.e0, 2.e0 },
+      { 5.e0, -15.e0, 3.e0, 4.e0, -2.e0, 8.e0, -3.e0 },
+      { 0.e0, 4.e0, 3.e0, -6.e0, 1.e0, 2.e0, 3.e0 } });
+    obj[0][1] = new OGRealDenseMatrix(new double[][] {
+      { -0.8944271909999157, 0.4307055216465323, -0.1203858530857692 },
+      { -0.4472135954999579, -0.8614110432930647, 0.2407717061715384 },
+      { -0.0000000000000000, 0.2691909510290827, 0.9630868246861536 } });
+    obj[0][2] = new OGRealDenseMatrix(new double[][] {
+      { -11.1803398874989490, 4.9193495504995370, -5.8137767414994528, -2.6832815729997472, -4.4721359549995778, -0.8944271909999162, -0.4472135954999579 },
+      { 0.0000000000000000, 14.8593404968053679, 0.3768673314407160, -4.6300843577002233, 4.5762461674944070, -7.6450230092259499, 4.2532170262595059 },
+      { 0.0000000000000000, 0.0000000000000000, 3.0096463271442300, -4.9358199765165374, -0.2407717061715384, 4.2135048580019223, 1.9261736493723074 } });
+    // complex space test
+    double[][] rp, ip;
+    rp = new double[][] { { 10.0000000000000000, 2.0000000000000000, 5.0000000000000000, 1.0000000000000000, 6.0000000000000000, -3.0000000000000000, 2.0000000000000000 },
+      { 5.0000000000000000, -15.0000000000000000, 3.0000000000000000, 4.0000000000000000, -2.0000000000000000, 8.0000000000000000, -3.0000000000000000 },
+      { 0.0000000000000000, 4.0000000000000000, 3.0000000000000000, -6.0000000000000000, 1.0000000000000000, 2.0000000000000000, 3.0000000000000000 } };
+    ip = new double[][] { { -20.0000000000000000, -4.0000000000000000, -10.0000000000000000, -2.0000000000000000, -12.0000000000000000, 6.0000000000000000, -4.0000000000000000 },
+      { -10.0000000000000000, 30.0000000000000000, -6.0000000000000000, -8.0000000000000000, 4.0000000000000000, -16.0000000000000000, 6.0000000000000000 },
+      { 0.0000000000000000, -8.0000000000000000, -6.0000000000000000, 12.0000000000000000, -2.0000000000000000, -4.0000000000000000, -6.0000000000000000 } };
+    obj[1][0] = new OGComplexDenseMatrix(rp, ip);
+    rp = new double[][] { { -0.3999999999999999, 0.1926173649372306, 0.0538381902058166 }, { -0.1999999999999999, -0.3852347298744613, -0.1076763804116331 },
+      { -0.0000000000000000, 0.1203858530857692, -0.4307055216465324 } };
+    ip = new double[][] { { 0.8000000000000000, -0.3852347298744613, -0.1076763804116330 }, { 0.4000000000000000, 0.7704694597489228, 0.2153527608232662 },
+      { 0.0000000000000000, -0.2407717061715383, 0.8614110432930648 } };
+    obj[1][1] = new OGComplexDenseMatrix(rp, ip);
+    rp = new double[][] { { -25.0000000000000000, 10.9999999999999964, -13.0000000000000000, -5.9999999999999991, -10.0000000000000000, -1.9999999999999989, -1.0000000000000009 },
+      { 0.0000000000000000, 33.2264954516723066, 0.8427009716003837, -10.3531833653761467, 10.2327975122903787, -17.0947911381792252, 9.5104823937757654 },
+      { 0.0000000000000000, 0.0000000000000000, -6.7297737757270690, 11.0368289921923939, 0.5383819020581646, -9.4216832860178954, -4.3070552164653249 } };
+    ip = new double[][] { { 0.0000000000000000, 0.0000000000000027, -0.0000000000000018, -0.0000000000000009, 0.0000000000000000, -0.0000000000000009, 0.0000000000000009 },
+      { 0.0000000000000000, 0.0000000000000000, -0.0000000000000002, -0.0000000000000009, 0.0000000000000000, -0.0000000000000036, 0.0000000000000018 },
+      { 0.0000000000000000, 0.0000000000000000, 0.0000000000000000, 0.0000000000000000, -0.0000000000000003, 0.0000000000000000, 0.0000000000000000 } };
+    obj[1][2] = new OGComplexDenseMatrix(rp, ip);
+    return obj;
+
+  }
+
+  @Test(dataProvider = "jointdataContainer")
+  public void numericalValidityTest(OGTerminal inputData, OGTerminal expectedQ, OGTerminal expectedR) {
+    QR qr = new QR(inputData);
+    // check Q
+    assertTrue(expectedQ.mathsequals(Materialisers.toOGTerminal(qr.getQ())));
+    // check R
+    assertTrue(expectedR.mathsequals(Materialisers.toOGTerminal(qr.getR())));
+
+    // reconstruction check Q*R = input
+    OGNumeric reconstructed = new MTIMES(qr.getQ(), qr.getR());
+    assertTrue(Materialisers.toOGTerminal(inputData).mathsequals(Materialisers.toOGTerminal(reconstructed)));
+  }
+}

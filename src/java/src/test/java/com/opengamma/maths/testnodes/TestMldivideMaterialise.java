@@ -45,6 +45,7 @@ public class TestMldivideMaterialise {
     Materialisers.toOGTerminal(mldivide);
   }
 
+  @Test
   public void checkRealSpaceResult() {
     OGRealDenseMatrix A = new OGRealDenseMatrix(new double[] { 1, 1, 1, 2, 2, 2, 3, 3, 3 }, 3, 3);
     OGRealDenseMatrix B = new OGRealDenseMatrix(new double[] { 1, 2, 3, 4, 5, 6 }, 3, 2);
@@ -54,6 +55,7 @@ public class TestMldivideMaterialise {
     assertTrue(expected.mathsequals(answer));
   }
 
+  @Test
   public void checkComplexSpaceResult() {
     double[][] rp, ip;
     rp = new double[][] { { 3.0000000000000000, 3.0000000000000000, 5.0000000000000000 }, { 2.0000000000000000, 5.0000000000000000, 3.0000000000000000 },

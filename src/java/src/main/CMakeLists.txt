@@ -36,6 +36,7 @@ set(JAVA_FILES
     nodes/NORM2.java
     nodes/PINV.java
     nodes/PLUS.java
+    nodes/QR.java
     nodes/RDIVIDE.java
     nodes/SELECTRESULT.java
     nodes/SIN.java
