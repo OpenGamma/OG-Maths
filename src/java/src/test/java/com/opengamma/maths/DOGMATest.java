@@ -23,6 +23,7 @@ import static com.opengamma.maths.DOGMA.mtimes;
 import static com.opengamma.maths.DOGMA.norm2;
 import static com.opengamma.maths.DOGMA.pinv;
 import static com.opengamma.maths.DOGMA.plus;
+import static com.opengamma.maths.DOGMA.qr;
 import static com.opengamma.maths.DOGMA.rdivide;
 import static com.opengamma.maths.DOGMA.sin;
 import static com.opengamma.maths.DOGMA.sinh;
@@ -44,6 +45,7 @@ import com.opengamma.maths.datacontainers.OGTerminal;
 import com.opengamma.maths.datacontainers.matrix.OGComplexDenseMatrix;
 import com.opengamma.maths.datacontainers.matrix.OGRealDenseMatrix;
 import com.opengamma.maths.datacontainers.other.OGLUResult;
+import com.opengamma.maths.datacontainers.other.OGQRResult;
 import com.opengamma.maths.datacontainers.other.OGSVDResult;
 import com.opengamma.maths.datacontainers.scalar.OGComplexScalar;
 import com.opengamma.maths.datacontainers.scalar.OGRealScalar;
@@ -377,6 +379,13 @@ public class DOGMATest {
     OGTerminal mat = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, -5, 6 }, { 7, 8, -9 }, { -10, 11, -12 }, { -13, -14, -15 } });
     OGLUResult res = lu(mat);
     assertTrue(mat.mathsequals(toOGTerminal(mtimes(res.getL(), res.getU())), 1e-14, 1e-14));
+  }
+
+  @Test
+  public void QRTest() {
+    OGTerminal mat = new OGRealDenseMatrix(new double[][] { { 1, 2, 3 }, { 4, -5, 6 }, { 7, 8, -9 }, { -10, 11, -12 }, { -13, -14, -15 } });
+    OGQRResult res = qr(mat);
+    assertTrue(mat.mathsequals(toOGTerminal(mtimes(res.getQ(), res.getR())), 1e-14, 1e-14));
   }
 
   @Test

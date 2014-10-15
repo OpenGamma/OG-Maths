@@ -77,6 +77,7 @@ set(JAVA_FILES
     datacontainers/other/ComplexArrayContainer.java
     datacontainers/other/OGSVDResult.java
     datacontainers/other/OGLUResult.java
+    datacontainers/other/OGQRResult.java
     datacontainers/lazy/OGExpr.java
     datacontainers/lazy/OGExprVariadicReturn.java
     datacontainers/OGNumeric.java
