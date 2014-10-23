@@ -545,4 +545,77 @@ QR::getType() const
   return QR_ENUM;
 }
 
+/**
+ * SUMCOLS node
+ */
+
+SUMCOLS::SUMCOLS(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
+
+SUMCOLS::Ptr
+SUMCOLS::create(const OGNumeric::Ptr& arg)
+{
+  return SUMCOLS::Ptr{new SUMCOLS{arg}};
+}
+
+OGNumeric::Ptr
+SUMCOLS::copy() const
+{
+  return OGNumeric::Ptr{new SUMCOLS(_args[0]->copy())};
+}
+
+SUMCOLS::Ptr
+SUMCOLS::asSUMCOLS() const
+{
+  return static_pointer_cast<const SUMCOLS, const OGNumeric>(shared_from_this());
+}
+
+void
+SUMCOLS::debug_print() const
+{
+  cout << "SUMCOLS node" << endl;
+}
+
+ExprType_t
+SUMCOLS::getType() const
+{
+  return SUMCOLS_ENUM;
+}
+
+
+/**
+ * SUMROWS node
+ */
+
+SUMROWS::SUMROWS(const OGNumeric::Ptr& arg): OGUnaryExpr{arg} {}
+
+SUMROWS::Ptr
+SUMROWS::create(const OGNumeric::Ptr& arg)
+{
+  return SUMROWS::Ptr{new SUMROWS{arg}};
+}
+
+OGNumeric::Ptr
+SUMROWS::copy() const
+{
+  return OGNumeric::Ptr{new SUMROWS(_args[0]->copy())};
+}
+
+SUMROWS::Ptr
+SUMROWS::asSUMROWS() const
+{
+  return static_pointer_cast<const SUMROWS, const OGNumeric>(shared_from_this());
+}
+
+void
+SUMROWS::debug_print() const
+{
+  cout << "SUMROWS node" << endl;
+}
+
+ExprType_t
+SUMROWS::getType() const
+{
+  return SUMROWS_ENUM;
+}
+
 } // namespace librdag

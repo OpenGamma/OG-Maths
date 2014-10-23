@@ -38,6 +38,8 @@ set(RDAG_SOURCES convertto.cc
                  runners/pinvrunner.cc
                  runners/qrrunner.cc
                  runners/selectresultrunner.cc
+                 runners/sumcolsrunner.cc
+                 runners/sumrowsrunner.cc
                  runners/svdrunner.cc
                  runners/transposerunner.cc
                  ${RDAG_GENERATED})

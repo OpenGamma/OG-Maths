@@ -94,6 +94,18 @@ OGNumeric::asQR() const
   return QR::Ptr{};
 }
 
+SUMCOLS::Ptr
+OGNumeric::asSUMCOLS() const
+{
+  return SUMCOLS::Ptr{};
+}
+
+SUMROWS::Ptr
+OGNumeric::asSUMROWS() const
+{
+  return SUMROWS::Ptr{};
+}
+
 OGExpr::Ptr
 OGNumeric::asOGExpr() const
 {

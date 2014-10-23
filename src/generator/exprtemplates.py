@@ -204,6 +204,8 @@ class MTIMES;
 class LU;
 class MLDIVIDE;
 class QR;
+class SUMCOLS;
+class SUMROWS;
 
 class ConvertTo;
 
@@ -232,6 +234,8 @@ class OGNumeric: private Uncopyable, public std::enable_shared_from_this<OGNumer
     virtual std::shared_ptr<const LU> asLU() const;
     virtual std::shared_ptr<const MLDIVIDE> asMLDIVIDE() const;
     virtual std::shared_ptr<const QR> asQR() const;
+    virtual std::shared_ptr<const SUMCOLS> asSUMCOLS() const;
+    virtual std::shared_ptr<const SUMROWS> asSUMROWS() const;
 %(cast_methods)s
     virtual std::shared_ptr<const OGTerminal> asOGTerminal() const;
     virtual std::shared_ptr<const OGRealScalar> asOGRealScalar() const;

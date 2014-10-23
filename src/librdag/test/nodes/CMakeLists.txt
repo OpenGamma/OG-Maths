@@ -33,6 +33,8 @@ set(TESTS
     check_selectresult
     check_svd
     check_transpose
+    check_sumcols
+    check_sumrows
     # auto generated functions
     check_acos
     check_asinh

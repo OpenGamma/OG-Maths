@@ -223,6 +223,34 @@ class QR: public OGUnaryExpr
     QR(const OGNumeric::Ptr& arg);
 };
 
+class SUMCOLS: public OGUnaryExpr
+{
+  public:
+    typedef std::shared_ptr<const SUMCOLS> Ptr;
+    static SUMCOLS::Ptr create(const OGNumeric::Ptr& arg);
+    virtual OGNumeric::Ptr copy() const override;
+    virtual SUMCOLS::Ptr asSUMCOLS() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+  private:
+    SUMCOLS(const OGNumeric::Ptr& arg);
+};
+
+
+class SUMROWS: public OGUnaryExpr
+{
+  public:
+    typedef std::shared_ptr<const SUMROWS> Ptr;
+    static SUMROWS::Ptr create(const OGNumeric::Ptr& arg);
+    virtual OGNumeric::Ptr copy() const override;
+    virtual SUMROWS::Ptr asSUMROWS() const override;
+    virtual void debug_print() const override;
+    virtual ExprType_t getType() const override;
+  private:
+    SUMROWS(const OGNumeric::Ptr& arg);
+};
+
+
 } // namespace librdag
 
 #endif // _EXPRESSIONBASE_HH

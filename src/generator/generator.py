@@ -74,6 +74,8 @@ custom_nodes = [
                 UnaryExpressionRunner('LU','LU_ENUM'),
                 BinaryExpressionRunner('MLDIVIDE','MLDIVIDE_ENUM'),
                 UnaryExpressionRunner('QR','QR_ENUM'),
+                UnaryExpressionRunner('SUMCOLS','SUMCOLS_ENUM'),
+                UnaryExpressionRunner('SUMROWS','SUMROWS_ENUM'),
                ]
 
 # The list of terminals
