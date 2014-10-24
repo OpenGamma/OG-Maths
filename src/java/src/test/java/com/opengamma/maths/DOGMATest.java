@@ -27,6 +27,7 @@ import static com.opengamma.maths.DOGMA.qr;
 import static com.opengamma.maths.DOGMA.rdivide;
 import static com.opengamma.maths.DOGMA.sin;
 import static com.opengamma.maths.DOGMA.sinh;
+import static com.opengamma.maths.DOGMA.sum;
 import static com.opengamma.maths.DOGMA.svd;
 import static com.opengamma.maths.DOGMA.tan;
 import static com.opengamma.maths.DOGMA.tanh;
@@ -56,6 +57,7 @@ import com.opengamma.maths.helpers.FuzzyEquals;
 /**
  * Test of DOGMA.
  */
+@Test
 public class DOGMATest {
 
   // Type from Number Tests
@@ -223,6 +225,33 @@ public class DOGMATest {
     assertTrue(new OGRealDenseMatrix(new double[][] { { 10.0178749274099, 27.2899171971277 } }).mathsequals(toOGTerminal(sinh(mat))));
     mat = new OGComplexDenseMatrix(new double[] { 3, 6, 4, 8 }, 1, 2);
     assertTrue(new OGComplexDenseMatrix(new double[] { 9.61886584067868, -2.81306079224864, -3.97068387481635, 27.01762535702433 }, 1, 2).mathsequals(toOGTerminal(sinh(mat)), 1e-14, 1e-14));
+  }
+
+  @Test
+  public void SumTest() {
+    OGTerminal mat;
+    mat = new OGRealDenseMatrix(new double[][] { {1, 2, 3 }, {4, 5, 6 }, {7, 8, 9 }, {10, 11, 12 } });
+    assertTrue(new OGRealDenseMatrix(new double[] {22,26,30}).mathsequals(toOGTerminal(sum(mat))));
+    assertTrue(new OGRealDenseMatrix(new double[][] { {6 }, {15 }, {24 }, {33 } }).mathsequals(toOGTerminal(sum(mat, 2))));
+
+    // regression check default summation is sum on dimension 1
+    assertTrue(toOGTerminal(sum(mat)).mathsequals(toOGTerminal(sum(mat, 1))));
+
+    mat = new OGComplexDenseMatrix(new double[][] { {1, 2, 3 }, {4, 5, 6 }, {7, 8, 9 }, {10, 11, 12 } }, new double[][] { {10, 8, 6 }, {4, 2, 0 }, {-2, -4, -6 }, {-8, -10, -12 } });
+    assertTrue(new OGComplexDenseMatrix(new double[][] {{22, 26, 30 } }, new double[][] {{4, -4, -12 } }).mathsequals(toOGTerminal(sum(mat))));
+    assertTrue(new OGComplexDenseMatrix(new double[][] { {6 }, {15 }, {24 }, {33 } }, new double[][] { {24 }, {6 }, {-12 }, {-30 } }).mathsequals(toOGTerminal(sum(mat, 2))));
+
+    // regression check default summation is sum on dimension 1
+    assertTrue(toOGTerminal(sum(mat)).mathsequals(toOGTerminal(sum(mat, 1))));
+
+    // check exception is thrown on provision of invalid dimension
+    boolean caught = false;
+    try {
+      toOGTerminal(sum(mat, 3));
+    } catch (MathsExceptionIllegalArgument ex) {
+      caught = true;
+    }
+    assertTrue(caught);
   }
 
   @Test

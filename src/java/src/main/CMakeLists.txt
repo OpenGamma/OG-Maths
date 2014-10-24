@@ -41,6 +41,8 @@ set(JAVA_FILES
     nodes/SELECTRESULT.java
     nodes/SIN.java
     nodes/SINH.java
+    nodes/SUMCOLS.java
+    nodes/SUMROWS.java
     nodes/SVD.java
     nodes/TAN.java
     nodes/TANH.java

@@ -47,6 +47,9 @@ public enum ExprEnum {
   INV_ENUM          (0x013DL),
   MLDIVIDE_ENUM     (0x014BL),
   QR_ENUM           (0x0151L),
+  SUMCOLS_ENUM      (0x015BL),
+  SUMROWS_ENUM      (0x015DL),
+
 
   // Unary expression nodes - start at 175 to leave room for extra non-generated nodes
   ABS_ENUM (0X0175L),

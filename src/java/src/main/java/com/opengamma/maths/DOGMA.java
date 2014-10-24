@@ -35,6 +35,8 @@ import com.opengamma.maths.nodes.QR;
 import com.opengamma.maths.nodes.RDIVIDE;
 import com.opengamma.maths.nodes.SIN;
 import com.opengamma.maths.nodes.SINH;
+import com.opengamma.maths.nodes.SUMCOLS;
+import com.opengamma.maths.nodes.SUMROWS;
 import com.opengamma.maths.nodes.SVD;
 import com.opengamma.maths.nodes.TAN;
 import com.opengamma.maths.nodes.TANH;
@@ -347,6 +349,56 @@ public final class DOGMA {
    */
   public static OGNumeric sinh(OGNumeric arg0) {
     return new SINH(arg0);
+  }
+
+  /**
+   * DOGMA Function: Sum
+   * <p>
+   * Short Description:
+   * <p>
+   * Returns the sum in the column space of the argument.
+   * <p>
+   * Full Description:
+   * <p>
+   * Returns the element wise sum of each column as row vector.
+   * <p>
+   * @param arg0 The argument for which the sum is to be computed.
+   * <p>
+   * @return the column sum of the argument.
+   */
+  public static OGNumeric sum(OGNumeric arg0) {
+    return new SUMCOLS(arg0);
+  }
+  
+  /**
+   * DOGMA Function: Sum
+   * <p>
+   * Short Description:
+   * <p>
+   * Returns the sum of the argument in a specified dimension.
+   * <p>
+   * Full Description:
+   * <p>
+   * Returns the sum of the argument in a specified dimension.
+   * Sum in the column space returns a row vector, sum in the row
+   * space returns a column vector.
+   * <p>
+   * @param arg0 The argument for which the sum is to be computed.
+   * @param dimension The dimension along which the sum is to be computed.
+   * Acceptable values are "1" for sum in column space and "2" for sum
+   * in row space.
+   * <p>
+   * @return the column sum of the argument.
+   */
+  public static OGNumeric sum(OGNumeric arg0, int dimension) {
+      switch (dimension) {
+        case 1:
+          return new SUMCOLS(arg0);
+        case 2:
+          return new SUMROWS(arg0);
+        default:
+          throw new MathsExceptionIllegalArgument("dimension must have value 1 or 2. Found:" + dimension);
+      }
   }
 
   /**

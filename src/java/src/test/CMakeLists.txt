@@ -28,6 +28,8 @@ set(JAVA_FILES
       testnodes/TestMtimesMaterialise.java
       testnodes/TestPlusMaterialise.java
       testnodes/TestInvMaterialise.java
+      testnodes/TestSumcolsMaterialise.java
+      testnodes/TestSumrowsMaterialise.java
       testnodes/TestSVDMaterialise.java
       testnodes/TestLUMaterialise.java
       testnodes/TestPinvMaterialise.java
